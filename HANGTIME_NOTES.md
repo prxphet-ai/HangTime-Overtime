@@ -357,4 +357,6 @@ Modes:
   from code by `tools/title_logo.py` (`assets/title/`, shipped in the plugin's `title` folder); placed by
   `MenuPatches.AddTitleLogo` as children of the logo sprite so they follow its intro animation. The title buttons move
   down a little to make room. Positions are rows in `sheets/ui.json` (title_overtime, title_credit, title_buttons_shift).
-- Not yet seen in game (your game was open, so I didn't restart it).
+- First version seen by you in game: too big, too low (overlapped CLASSIC) and tilted the wrong way. Now tilted -6 deg like
+  the logo (it slopes down to the right), half the logo's width, tucked under it, credit smaller, buttons moved down
+  2.4 units. Checked with a to-scale mock on your screenshot; not yet re-seen in game (you were mid-match).

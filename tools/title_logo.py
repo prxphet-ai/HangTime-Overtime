@@ -46,9 +46,9 @@ def lettering(text, font_file, size, fill, stroke, stroke_w, tilt, jitter, seed,
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    over = lettering("OVERTIME", "Bangers-Regular.ttf", 220, WHITE, YELLOW, 22, tilt=4, jitter=5, seed=7)
+    over = lettering("OVERTIME", "Bangers-Regular.ttf", 220, WHITE, YELLOW, 22, tilt=-6, jitter=4, seed=7)
     over.save(os.path.join(OUT, "overtime.png"))
-    credit = lettering("by averageprxphet", "PermanentMarker-Regular.ttf", 90, WHITE, BLUE, 7, tilt=2, jitter=3, seed=3)
+    credit = lettering("by averageprxphet", "PermanentMarker-Regular.ttf", 90, WHITE, BLUE, 7, tilt=-6, jitter=2, seed=3)
     credit.save(os.path.join(OUT, "credit.png"))
     print(f"wrote assets/title/overtime.png {over.size}, credit.png {credit.size}")
 

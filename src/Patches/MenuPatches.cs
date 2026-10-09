@@ -28,18 +28,20 @@ namespace HangtimeOvertime.Patches
             if (title == null) { Plugin.Log.LogWarning("Title logo not found; no Overtime logo"); return; }
             if (title.transform.Find("Overtime Logo") != null) return;
             var logo = title.bounds;
-            var over = TitleSprite(title, "Overtime Logo", Ui.TitleOvertime.Text, logo.size.x * 0.62f, 1);
+            var over = TitleSprite(title, "Overtime Logo", Ui.TitleOvertime.Text, logo.size.x * 0.5f, 1);
             if (over == null) return;
-            float cx = logo.center.x + logo.size.x * 0.08f;
+            float cx = logo.center.x + logo.size.x * 0.04f;
             float overTop = logo.min.y + Ui.TitleOvertime.OffsetY;
             over.transform.position = new Vector3(cx, overTop - over.bounds.size.y / 2f, title.transform.position.z);
-            var credit = TitleSprite(title, "Overtime Credit", Ui.TitleCredit.Text, logo.size.x * 0.42f, 2);
+            var credit = TitleSprite(title, "Overtime Credit", Ui.TitleCredit.Text, logo.size.x * 0.34f, 2);
             if (credit != null)
                 credit.transform.position = new Vector3(cx, over.bounds.min.y + Ui.TitleCredit.OffsetY - credit.bounds.size.y / 2f, title.transform.position.z);
             var group = Object.FindObjectsByType<ButtonGroup>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(g => g.name == "Button group");
             if (group != null)
                 foreach (var b in group.buttons.Where(b => b != null))
                     b.transform.position += new Vector3(0f, Ui.TitleButtonsShift.OffsetY, 0f);
+            Plugin.Trace($"title logo {logo.min.y:F2}..{logo.max.y:F2} x {logo.min.x:F2}..{logo.max.x:F2}; overtime {over.bounds.min.y:F2}..{over.bounds.max.y:F2}" +
+                         (group != null ? "; buttons " + string.Join(", ", group.buttons.Where(b => b != null).Select(b => $"{b.name} {b.GetComponent<Collider2D>()?.bounds.max.y:F2}")) : ""));
         }
 
         private static SpriteRenderer TitleSprite(SpriteRenderer title, string name, string file, float worldWidth, int order)
