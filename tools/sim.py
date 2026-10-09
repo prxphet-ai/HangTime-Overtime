@@ -220,6 +220,45 @@ def mode_tune(D, args, rng):
     return {"rounds": rounds, "final": {t: round(w, 3) for t, w in rows}, "max": round(rows[0][1], 3), "min": round(rows[-1][1], 3)}, {"history": history}
 
 
+def mode_builds(D, args, rng):
+    """Random drafted-size builds vs the field, element stacks, and top-perk stacks: do combos trivialize matches?"""
+    teams = D.all_teams()
+
+    def field(perks, cards=()):
+        r = random.Random(args.seed)
+        power = S.player_power(S.build_player(D, list(perks), list(cards)))
+        tot = 0.0
+        for t in teams:
+            tot += S.play_series(D, lambda: S.build_player(D, list(perks), list(cards)), lambda t=t: S.build_opponent(D, t, args.round, r, power), args.n, r)["win_rate"]
+        return tot / len(teams)
+
+    pool = [p for p in D.perks]
+    weights = [{"common": 3, "rare": 2, "epic": 1}[D.perks[p]["rarity"]] for p in pool]
+    rows = []
+    for _ in range(args.builds):
+        build = set()
+        while len(build) < args.size:
+            build.add(rng.choices(pool, weights)[0])
+        rows.append(("random", sorted(build), field(build)))
+    for el in ("fire", "ice", "lightning", "wind", "water", "earth", "shadow", "light"):
+        ps = [p for p in pool if D.perks[p]["element"] == el]
+        ps.sort(key=lambda p: {"epic": 0, "rare": 1, "common": 2}[D.perks[p]["rarity"]])
+        rows.append((el + " x3", ps[:3], field(ps[:3])))
+    if args.top:
+        top = args.top.split(",")
+        rows.append(("top stack", top, field(top)))
+    randoms = sorted(w for k, _, w in rows if k == "random")
+    print(f"{len(randoms)} random {args.size}-perk builds at round {args.round} (power-scaled opponents): "
+          f"median {statistics.median(randoms):.1%}, best {randoms[-1]:.1%}, worst {randoms[0]:.1%}, "
+          f"share above 90%: {sum(1 for w in randoms if w > 0.9) / len(randoms):.0%}")
+    for k, b, w in sorted(rows, key=lambda r: -r[2])[:12]:
+        print(f"  {w:6.1%}  {k:<12} {', '.join(D.perks[p]['title'] for p in b)}")
+    return ({"round": args.round, "median": round(statistics.median(randoms), 3), "best": round(randoms[-1], 3),
+             "share_above_90": round(sum(1 for w in randoms if w > 0.9) / len(randoms), 3),
+             "stacks": {k: round(w, 3) for k, b, w in rows if k != "random"}},
+            {"rows": [(k, b, round(w, 3)) for k, b, w in rows]})
+
+
 def offered_perks(D, owned, rng, k=2):
     pool = []
     for p in D.perks.values():
@@ -314,7 +353,10 @@ def mode_run(D, args, rng):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("mode", choices=["match", "teams", "scaling", "perk", "perks", "run", "tune"])
+    ap.add_argument("mode", choices=["match", "teams", "scaling", "perk", "perks", "run", "tune", "builds"])
+    ap.add_argument("--builds", type=int, default=60, help="builds: random builds to try")
+    ap.add_argument("--size", type=int, default=4, help="builds: perks per random build")
+    ap.add_argument("--top", default="", help="builds: comma list of perks to test stacked")
     ap.add_argument("--iters", type=int, default=4, help="tune: iterations")
     ap.add_argument("--no-stop", action="store_true", help="run: keep drafting after losses (win rate per round for a typical build)")
     ap.add_argument("--only", default="", help="perks: only these kinds (perk,card,vanilla,vcard)")

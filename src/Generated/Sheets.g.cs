@@ -808,7 +808,7 @@ namespace HangtimeOvertime.Generated
     {
         public static readonly UiDef TitleInfiniteButton = new UiDef("title_infinite_button", "Game", "INFINITE", "BEST: {bestInfiniteWins} WINS", -6.6f);
         public static readonly UiDef TitleQuitShift = new UiDef("title_quit_shift", "Game", "-", "-", -3.3f);
-        public static readonly UiDef WinContinueButton = new UiDef("win_continue_button", "Win", "KEEP GOING: LOOP 2", "-", -3.3f);
+        public static readonly UiDef WinContinueButton = new UiDef("win_continue_button", "Win", "LOOP 2", "-", -1.6f);
         public static readonly UiDef LoseResultLine = new UiDef("lose_result_line", "Lose", "Infinite wins: {wins} (best {best})", "Loop {loop} (best loop {bestLoop})", 0.0f);
     }
 

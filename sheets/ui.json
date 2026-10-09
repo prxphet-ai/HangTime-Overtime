@@ -33,10 +33,10 @@
       "id": "win_continue_button",
       "scene": "Win",
       "clone_of": "first RestartButton in the scene",
-      "text": "KEEP GOING: LOOP 2",
+      "text": "LOOP 2",
       "subtext": "-",
-      "offset_y": -3.3,
-      "verified": "no"
+      "offset_y": -1.6,
+      "verified": "in game 2026-10-09: button under BACK on the Win screen; clicking it started Loop 2 (round 9 scaling, random team)"
     },
     {
       "id": "lose_result_line",

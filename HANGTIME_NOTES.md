@@ -200,3 +200,10 @@ Modes:
   situational perks (Showboat, Rival Spirit, Collector) and a few items within ~1% of a band edge.
 - **Curves after batch 3**: fresh build r1 70%; typical build r1 72%, r5 68%, r10 50%, r15 39%, r20 25%.
 - Checked in game: all 16 new perks fired through the dev lab, 0 errors; Oni Gakuen spawned with its emblem.
+
+### Step 5 — combo check and the Loop button
+- New simulator mode `builds`: 60 random 5-perk builds at round 8 (opponents scaled to the player's power): median 46%
+  vs the field, best 69%, none above 90%. Strongest found: wind x3 (Typhoon Serve, Dipping Serve, Cyclone Spike) ~70%;
+  the five strongest perks stacked 66%. Strong builds exist but nothing trivializes a match.
+- Verified in game: beating the final in Classic shows the game's Win screen plus the new **LOOP 2** button (moved up
+  under BACK; it sat on the court before); clicking it starts Loop 2 at round 9 of the scaling with a random opponent.

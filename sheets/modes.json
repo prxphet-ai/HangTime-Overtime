@@ -24,7 +24,7 @@
       "achievements": "allow",
       "best_key": "-",
       "banner": "{bracket}",
-      "verified": "no"
+      "verified": "in game 2026-10-08/09: Classic runs unchanged; final win shows the game's Win screen plus the Loop button"
     },
     {
       "id": "Infinite",
@@ -48,7 +48,7 @@
       "achievements": "allow",
       "best_key": "bestLoop",
       "banner": "Loop {loop} - {bracket}",
-      "verified": "no"
+      "verified": "in game 2026-10-09: Win screen button -> 'Loop 2 started', round 9 scaling, random opponent from the slot pool"
     }
   ]
 }
