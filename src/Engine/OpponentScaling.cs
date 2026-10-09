@@ -114,7 +114,9 @@ namespace HangtimeOvertime.Engine
             stats.techniques.AddRange(given);
             Plugin.Log.LogInfo($"Scaling round {round} ({cls}): {points:F1} points, stats x{sm:F2}, move x{mm:F2}, player power {power:F1}, " +
                                $"perks [{string.Join(", ", given.Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t)))}]");
-            if (given.Count > 0) TeamRoster.Announce(team, string.Join(", ", given.Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t))));
+            // the speech bubble stays readable: four names at most, then "+N more"
+            var names = given.Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t)).ToList();
+            if (names.Count > 0) TeamRoster.Announce(team, string.Join(", ", names.Take(4)) + (names.Count > 4 ? $" +{names.Count - 4} more" : ""));
         }
     }
 }

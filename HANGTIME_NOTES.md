@@ -296,3 +296,11 @@ Modes:
   +5.3%, Jet Setter +4.6%, Overload +15.1% -> +11.2%.
 - Teams 46.9%..52.1% vs the field; fresh build r1 70%; typical build r1 72%, r5 68%, r10 51%, r15 43%; best random
   5-perk build at round 8 65% (Avalanche + Guiding Light + Halo Dig + Iron Serve + Spirit Serve), wind x3 64%.
+
+### Step 11 — late opponents' announcement
+- With the perk cap at 9, the "Our abilities" bubble could run to four lines. It now names four and adds "+N more".
+  Checked in game at round 42: Namasito with 9 perks (stats x1.50, speed x1.20; water-themed draws such as Tidal Pull and
+  Tsunami) — three readable lines.
+- Not changed on purpose: the game's own **Agility** card is still the strongest single pick in the simulator (+36%). It is
+  already offered at epic weight (the rarest); I did not alter vanilla card effects. See open question 1 (how much speed is
+  worth in real play).
