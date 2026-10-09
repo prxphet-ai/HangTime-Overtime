@@ -37,10 +37,12 @@ namespace HangtimeOvertime.Engine
         public static void AddToPool(List<UpgradePair> pool)
         {
             pool.RemoveAll(p => CardOf(p) != null);
+            bool onlyOvertime = Debugging.DevKeys.OnlyOvertimeCards;   // development (F11): test the Overtime cards
+            if (onlyOvertime) pool.Clear();
             foreach (var c in Generated.StatCards.All)
             {
                 float odds = c.Rarity == "epic" ? Generated.StatCards.OddsEpic : c.Rarity == "rare" ? Generated.StatCards.OddsRare : Generated.StatCards.OddsCommon;
-                if (Random.value < odds) pool.Add(MakePair(c));
+                if (onlyOvertime || Random.value < odds) pool.Add(MakePair(c));
             }
             for (int i = pool.Count - 1; i > 0; i--) { int j = Random.Range(0, i + 1); (pool[i], pool[j]) = (pool[j], pool[i]); }
             pool.Capacity = pool.Count;   // the game wraps its index with Capacity

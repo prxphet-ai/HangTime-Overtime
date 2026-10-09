@@ -1023,6 +1023,7 @@ namespace HangtimeOvertime.Generated
             new HookDef("touch_set_pre", "PlayerController", "DoSet", "prefix", "TouchPatches"),
             new HookDef("serve_flight", "BallMovement", "Serve", "postfix", "TouchPatches"),
             new HookDef("serve_flight_float", "BallMovement", "FloatServe", "postfix", "TouchPatches"),
+            new HookDef("stat_chart_cards", "StatChart", "SetPoints", "postfix", "UpgradePatches"),
         };
     }
 

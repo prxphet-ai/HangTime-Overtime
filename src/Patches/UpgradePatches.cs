@@ -142,5 +142,30 @@ namespace HangtimeOvertime.Patches
                 return false;
             }
         }
+
+        // The stats chart draws only the game's own levels; Overtime stat card points (same units: one point is about
+        // one level-up) are added along the matching axis. Speed, Set and Recovery have no axis on the chart.
+        [HarmonyPatch(typeof(StatChart), "SetPoints")]
+        private static class ChartCards
+        {
+            private static readonly string[] axes = { "Bump", "Spike", "Jump", "Block", "FloatServe", "SpinServe" };   // the game's order
+
+            [HarmonyPostfix]
+            private static void Postfix(StatChart __instance)
+            {
+                var points = Traverse.Create(__instance).Field("points").GetValue<Transform[]>();
+                var ps = GameManager.Instance?.playerStats;
+                if (points == null || ps == null) return;
+                for (int i = 0; i < axes.Length && i < points.Length; i++)
+                {
+                    string card = axes[i].EndsWith("Serve") ? "Serve" : axes[i];
+                    if (!StatCards.Points.TryGetValue(card, out var add) || add == 0f) continue;
+                    var stat = ps.GetStat(axes[i]);
+                    float shown = (stat != null ? stat.GetLevel() : 0f) + 1f;
+                    add = Mathf.Max(add, 0.25f - shown);                       // a trade-off never pulls past the centre
+                    points[i].Translate(points[0].transform.up * add, Space.Self);   // same move the game makes per level
+                }
+            }
+        }
     }
 }

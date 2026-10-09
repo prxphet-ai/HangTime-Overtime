@@ -461,6 +461,16 @@
       "purpose": "Same for float serves",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "stat_chart_cards",
+      "target_type": "StatChart",
+      "target_method": "SetPoints",
+      "kind": "postfix",
+      "patch_class": "UpgradePatches",
+      "purpose": "Adds Overtime stat card points to the upgrade screen stats chart",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

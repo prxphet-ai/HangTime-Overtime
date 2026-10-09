@@ -410,3 +410,11 @@ Modes:
   wristbands before the hand, knee pads at the knee), RANDOMIZE -> DONE then the title, a practice match and the upgrade
   screen all showed the new look (white Round hair, gray #54 jersey, green shorts); RESET -> DONE restored the original.
 - I removed the test run save my testing created (your Infinite slot starts empty); the appearance file is at the default.
+
+### Step 18 — stats chart shows the Overtime stat cards (v0.2.1)
+- Bug you found: picking one of the new stat cards didn't change the stats chart on the upgrade screen. The chart
+  (`StatChart.SetPoints`) only draws the game's own stat levels; Overtime cards keep their points separately and apply them
+  in matches. A postfix now moves each chart point by the card points on its axis (same units as a level-up): Receive ->
+  Bump, Spike, Jump, Block, and Serve on both serve axes. Speed, Set and Recovery have no axis on the game's chart.
+  Checked in game: Iron Body (Block +1.5, Receive +1) stretched the Block and Bump points, Block 1.5x as far.
+- Dev key F11 (Overtime-only cards) now also limits the stat card screens to the Overtime cards, for testing.
