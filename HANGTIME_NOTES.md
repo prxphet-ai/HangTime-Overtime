@@ -23,7 +23,7 @@ of **Log**. **Summary** at the top is kept up to date.
   boss slots), the team's own perks first (signatures / vanilla built-ins), then themed random draws (4x weight for the
   team's element); rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
 - **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~46%
-  (round 10), ~40% (round 15), ~25% (round 20). Teams 43%..53% vs the field at equal rounds (26 teams in Infinite pools: 10 vanilla + 22 new... see CATALOG).
+  (round 10), ~40% (round 15), ~25% (round 20). Teams 43%..53% vs the field at equal rounds (32 teams in the Infinite pools: the game's 10 + 22 new).
 - **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
 - **Open questions for you**: see the end of this file.
 
@@ -214,7 +214,7 @@ Modes:
   Surge; epics — Frost Nova, Chain Lightning, Gravity Well (defensive: their spike stalls and loses half its power).
 - **4 new stat cards**: Clutch Training (common), Iron Body, Track Star (rare playstyle), Tank (epic trade-off).
 - **4 new teams** with emblems: Fukurou Owls (light, owl on a branch), Tako Tentacles (water combo, octopus),
-  Byakko Tigers (lightning boss, white tiger), Iwagami Golems (earth boss, stone golem). 26 teams now 43%..53% vs field.
+  Byakko Tigers (lightning boss, white tiger), Iwagami Golems (earth boss, stone golem). All 32 teams (10 vanilla + 22 new) now 43%..53% vs the field.
 - **Simulator**: tip speed now matters when digging a tip (faster-tip effects were worth nothing before, vanilla Long
   Toss too); defensive effects that slow their spike now also lower its speed. Note: tip perks read lower in the sim
   because its AI tips about 1 attack in 5 — for a player who tips on purpose they are worth more.
