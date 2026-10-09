@@ -21,10 +21,20 @@ of **Log**. **Summary** at the top is kept up to date.
   weights (cap level 3), times the player-power factor (0.7..1.4 ratio, weight 0.3). Stats start at 92% (speed 95%) and
   ramp to 100% over 8 rounds, then grow +3%/round past the cap from round 7 (max x1.5). Perks: 0.22 per round (+0.3 in
   boss slots), the team's own perks first (signatures / vanilla built-ins), then themed random draws (4x weight for the
-  team's element); rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
-- **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~46%
-  (round 10), ~40% (round 15), ~25% (round 20). Teams 47%..52% vs the field at equal rounds (40 teams in the Infinite pools: the game's 10 + 30 new).
+  team's element), at most 9; rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
+  Opponents announce their abilities at the start of a match (four names, then "+N more").
+- **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~51%
+  (round 10), ~43% (round 15), ~27% (round 20). Every Overtime perk/card sits in its rarity band at round 5 (common 2-7%,
+  rare 4-10%, epic 7-14% win-rate gain) except deliberately situational ones (tips, comebacks, Collector). Random 5-perk
+  builds top out around 65% vs the field; nothing trivializes a match. Teams 47%..52% vs the field at equal rounds (40 teams in the Infinite pools: the game's 10 + 30 new).
+- **Perk triggers available** (`sheets/triggers.json`): spike, serve, tip, set, setter_set, dig, block, jump, block_jump,
+  passive, streak (clean touches), enemy_streak / win_streak (rallies lost / won in a row), match_point_against,
+  enemy_spike. Effects: `sheets/effects.json` (ball, player, game and visual effects; none can touch the score).
 - **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
+- **Testing in game**: set `DevKeys = true` in the mod's config (off by default for players). F1 fire the lab perk now
+  (Shift: as the opponent), F2 / Shift+F2 cycle the lab perk (held from the next match), F3 force the next opponent
+  (cycles the new teams), F4 serve, F5 / Shift+F5 give a rally point, F6 win / F7 lose the match, F8 next match is the
+  final, F9 log state, F10 every Overtime perk, F11 perk screens show only Overtime perks, F12 Infinite +8 rounds.
 - **Open questions for you**: see the end of this file.
 
 ## What I found in the codebase (before changing anything)
@@ -56,7 +66,8 @@ of **Log**. **Summary** at the top is kept up to date.
 **Banners and emblems**:
 - The gym banner is a generic cloth sprite with a separate team emblem sprite on it
   (`OpponentBanner.mySprite` = `OpponentTeam.banner`). Vanilla emblems are hand-drawn sprites.
-- Mod emblems so far: a plain color disc with the name in game text (the "lackluster" ones).
+- Mod emblems at the start of this session: a plain color disc with the name in game text (the "lackluster" ones) —
+  replaced by hand-drawn emblems in the game's style (Step 1).
 
 ## Simulator
 
@@ -74,7 +85,10 @@ Modes:
 - `teams --round 5` — every team vs every team at one round (field win rates).
 - `scaling --rounds 1,5,10,15` — a fresh player build vs each team.
 - `perk --perk blaze_spike --round 5` / `perks --round 5` — win-rate change from one perk or card.
-- `run --n 500` — simulated infinite runs: the player drafts perks/cards round by round.
+- `run --n 500` — simulated infinite runs: the player drafts perks/cards round by round (`--no-stop`: keep going after
+  losses to get a win rate for every round).
+- `tune --rounds 2,5,8,12` — nudges each team's `points_offset` toward 50% vs the field.
+- `builds --round 8` — random 5-perk builds, element stacks and top-perk stacks vs the field (are combos too strong?).
 - Options: `--seed`, `--n`, `--perks-a a,b`, `--cards-a x,y`, `--random-perks-a K`, `--no-power`, `--label`.
 
 ## Log
