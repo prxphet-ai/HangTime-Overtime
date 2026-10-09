@@ -15,6 +15,8 @@ def load(n):
 
 def fx_text(f):
     p = {k: v for k, v in f.items() if k not in ("on", "when", "fx")}
+    if p.get("dur") in (-1, -2):
+        p["dur"] = "whole match" if p["dur"] == -1 else "rest of rally"
     when = {"now": "", "cross": "after the net: ", "enemy_touch": "on their touch: "}[f["when"]]
     return when + f["fx"] + "(" + ", ".join(f"{k} {v}" for k, v in p.items()) + ")"
 
