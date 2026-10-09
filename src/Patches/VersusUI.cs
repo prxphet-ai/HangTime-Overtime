@@ -109,6 +109,7 @@ namespace HangtimeOvertime.Patches
         private static VersusOverlay open;
         private static GameObject notice;
         private int picker = -1;                      // side choosing an upgrade, or -1
+        private VersusSlot pickerSlot;                // the player choosing for that side
         private List<VersusOffer> offers;
         private readonly List<SpriteRenderer> offerBoxes = new List<SpriteRenderer>();
         private readonly List<SpriteRenderer> endButtons = new List<SpriteRenderer>();
@@ -154,16 +155,18 @@ namespace HangtimeOvertime.Patches
             float pw = W * 0.88f, ph = H * 0.86f;
             Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
             float top = ph / 2f;
-            string head = matchOver ? $"P{winner + 1} WINS THE MATCH!" : $"ROUND {VersusState.Round} TO P{winner + 1}";
+            var setup = VersusState.Setup;
+            string Name(int side) => setup.SideLabel(side);
+            string head = matchOver ? $"{Name(winner)} {(setup.Humans(winner).Count > 1 ? "WIN" : "WINS")} THE MATCH!" : $"ROUND {VersusState.Round} TO {Name(winner)}";
             Text(head, new Vector2(0f, top - 2f), 1.3f, pw - 2f, Color.white);
-            Text($"P1  {w[0]} - {w[1]}  P2", new Vector2(0f, top - 4.6f), 1.6f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+            Text($"{Name(0)}  {w[0]} - {w[1]}  {Name(1)}", new Vector2(0f, top - 4.6f), 1.6f, pw - 2f, new Color(1f, 0.85f, 0.35f));
             Text(matchOver ? "" : $"FIRST TO {VersusState.Target} ROUNDS", new Vector2(0f, top - 6.6f), 0.6f, pw - 2f, new Color(0.85f, 0.95f, 1f));
 
             // both builds, left and right
             for (int side = 0; side < 2; side++)
             {
                 float x = (side == 0 ? -1f : 1f) * pw * 0.36f;
-                Text($"P{side + 1} - {VersusState.TeamName(side, VersusState.Setup.Team[side]).ToUpperInvariant()}", new Vector2(x, top - 8.6f), 0.7f, pw * 0.26f, Color.white);
+                Text($"{Name(side)} - {VersusState.TeamName(side, setup.Team[side]).ToUpperInvariant()}", new Vector2(x, top - 8.6f), 0.7f, pw * 0.26f, Color.white);
                 var build = VersusState.Build(side);
                 string list = build.Count == 0 ? "NO UPGRADES YET" : string.Join("\n", build.Take(12).Select(b => b.ToUpperInvariant())) + (build.Count > 12 ? $"\n+{build.Count - 12} MORE" : "");
                 Text(list, new Vector2(x, top - 8.6f - 1.4f - 7f), 0.68f, pw * 0.26f, new Color(0.85f, 0.95f, 1f), TextAlignmentOptions.Top, height: 14f, wrap: true);
@@ -173,9 +176,11 @@ namespace HangtimeOvertime.Patches
             {
                 picker = loser;
                 offers = VersusState.Offer(loser);
-                Plugin.Log.LogInfo($"Versus: P{loser + 1} offered " + string.Join(" | ", offers.Select((o, i) => $"{i}: {o.Title} ({o.Kind})")));
-                var slot = VersusState.Setup.Human(loser);
-                Text($"P{loser + 1} PICKS AN UPGRADE  <size=70%>({slot?.Input?.Label})</size>", new Vector2(0f, top - 8.6f), 0.8f, pw * 0.42f, Color.white);
+                var slot = VersusState.Picker(loser);
+                pickerSlot = slot;
+                Plugin.Log.LogInfo($"Versus: P{slot?.Number} ({Name(loser)}) offered " + string.Join(" | ", offers.Select((o, i) => $"{i}: {o.Title} ({o.Kind})")));
+                string team = setup.Humans(loser).Count > 1 ? $" FOR {Name(loser)}" : "";
+                Text($"P{slot?.Number} PICKS AN UPGRADE{team}  <size=70%>({slot?.Input?.Label})</size>", new Vector2(0f, top - 8.6f), 0.8f, pw * 0.42f, Color.white);
                 float cw = Mathf.Min(pw * 0.15f, 9f), ch = ph * 0.45f, gap = cw * 0.12f;
                 for (int i = 0; i < offers.Count; i++)
                 {
@@ -190,7 +195,7 @@ namespace HangtimeOvertime.Patches
                     Text(o.Kind + " · " + o.Rarity.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 4.8f), 0.5f, cw - 0.6f, rarity);
                     Text(o.Text, new Vector2(x, y - 2.2f), 0.6f, cw - 1.2f, Color.white, TextAlignmentOptions.Top, height: ch - 8f, wrap: true);
                 }
-                Text($"P{loser + 1}: LEFT / RIGHT TO CHOOSE, JUMP TO TAKE IT", new Vector2(0f, -ph / 2f + 1.6f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
+                Text($"P{slot?.Number}: LEFT / RIGHT TO CHOOSE, JUMP TO TAKE IT", new Vector2(0f, -ph / 2f + 1.6f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
                 sel = 0;
             }
             else
@@ -234,8 +239,8 @@ namespace HangtimeOvertime.Patches
             if (setup == null) return;
             if (picker >= 0)
             {
-                // only the loser's device chooses
-                var s = VersusInput.Read(setup.Human(picker)?.Input);
+                // only the losing side's picker chooses (a pair takes turns, round by round)
+                var s = VersusInput.Read(pickerSlot?.Input);
                 int dx = (s.Right ? 1 : 0) - (s.Left ? 1 : 0);
                 if (dx != 0) { sel = Mathf.Clamp(sel + dx, 0, offers.Count - 1); Refresh(); }
                 if (s.Confirm && offers.Count > 0)
@@ -246,10 +251,10 @@ namespace HangtimeOvertime.Patches
                 }
                 return;
             }
-            // match over: either player (or the mouse) chooses
-            for (int side = 0; side < 2; side++)
+            // match over: any player (or the mouse) chooses
+            foreach (var h in setup.AllHumans)
             {
-                var s = VersusInput.Read(setup.Human(side)?.Input);
+                var s = VersusInput.Read(h.Input);
                 int dx = (s.Right ? 1 : 0) - (s.Left ? 1 : 0);
                 if (dx != 0) { endSel = Mathf.Clamp(endSel + dx, 0, endButtons.Count - 1); Refresh(); }
                 if (s.Confirm) { Choose(endActions[endSel]); return; }
@@ -274,7 +279,7 @@ namespace HangtimeOvertime.Patches
             VersusState.RoundWins[winner]++;
             VersusState.LastWinner = winner;
             bool over = VersusState.RoundWins[winner] >= VersusState.Target;
-            Plugin.Log.LogInfo($"Versus: round {VersusState.Round} to P{winner + 1} ({gm.playerPoints}-{gm.opponentPoints}); rounds {VersusState.RoundWins[0]}-{VersusState.RoundWins[1]}{(over ? ", match over" : "")}");
+            Plugin.Log.LogInfo($"Versus: round {VersusState.Round} to {VersusState.Setup.SideLabel(winner)} ({gm.playerPoints}-{gm.opponentPoints}); rounds {VersusState.RoundWins[0]}-{VersusState.RoundWins[1]}{(over ? ", match over" : "")}");
             yield return new WaitForSeconds(1.3f);
             VersusOverlay.ShowRound(winner, over);
         }

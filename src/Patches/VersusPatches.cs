@@ -42,24 +42,35 @@ namespace HangtimeOvertime.Patches
                 ab.skyServe = ab.riskySet = ab.hybridServe = false;
             }
 
-            var all = Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+            var all = Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             var leftHitter = all.FirstOrDefault(Look.IsPlayerOne);
-            var leftSetter = all.FirstOrDefault(p => p.setter && p.transform.position.x < 0f);
+            var leftPartner = Object.FindFirstObjectByType<LocalInputManager>()?.player2;                        // the game's co-op player 2
+            var leftSetter = all.FirstOrDefault(p => p.setter && p.transform.position.x < 0f);                  // the game's bot setter
             var rightHitter = team.GetComponentsInChildren<PlayerController>(true).FirstOrDefault(p => !p.setter);
             var rightSetter = team.GetComponentsInChildren<PlayerController>(true).FirstOrDefault(p => p.setter);
+            var ball = Object.FindFirstObjectByType<BallMovement>();
             if (leftHitter != null && rightHitter != null) rightHitter.moveSpeed = leftHitter.moveSpeed;
             if (leftSetter != null && rightSetter != null) rightSetter.moveSpeed = leftSetter.moveSpeed;
 
-            // player 2 replaces the right spiker's AI (which would also have registered itself as the right side's server)
+            // a human on the right replaces that player's AI. The spiker's AI would also have registered it as the right
+            // side's server; a human setter becomes a full player like the left side's co-op partner (normal jump, no auto-set).
             if (rightHitter != null)
             {
                 var ai = rightHitter.GetComponent<SpikerInput>();
                 if (ai != null) ai.enabled = false;
-                var ball = Object.FindFirstObjectByType<BallMovement>();
                 if (ball != null) ball.opponent = rightHitter;
             }
+            if (setup.HumanSetter(1) && rightSetter != null)
+            {
+                var ai = rightSetter.GetComponent<SetterInput>();
+                if (ai != null) ai.enabled = false;
+                rightSetter.setter = false;
+                var mate = leftPartner != null && setup.Format == "2v2" ? leftPartner : leftHitter;
+                if (mate != null) rightSetter.moveSpeed = mate.moveSpeed;
+            }
+            ServeTurns.Reset(rightHitter, setup.HumanSetter(1) ? rightSetter : null);
 
-            // player 1 can wear a new team's colours (their own look still goes on top)
+            // player 1's side can wear a new team's colours (player 1's own look still goes on top)
             var def = Generated.Teams.All.FirstOrDefault(t => t.Id == setup.Team[0]);
             if (def != null)
                 foreach (var pc in all.Where(p => p.transform.position.x < 0f))
@@ -70,11 +81,57 @@ namespace HangtimeOvertime.Patches
                     }
 
             var driver = new GameObject("Overtime Versus Driver").AddComponent<VersusDriver>();
-            driver.Players[0] = leftHitter;
-            driver.Players[1] = rightHitter;
-            Plugin.Log.LogInfo($"Versus round {VersusState.Round}: P1 {leftHitter?.name} ({setup.Human(0)?.Input?.Label}) vs P2 {rightHitter?.name} of {team.name} " +
-                               $"({setup.Human(1)?.Input?.Label}); setters {leftSetter?.name}/{rightSetter?.name}; perks {VersusState.PerksOf(0).Count}/{VersusState.RightPerks.Count}");
+            foreach (var slot in setup.AllHumans)
+            {
+                var pc = slot.Side == 0 ? (slot.Role == "partner" ? leftPartner : leftHitter) : (slot.Role == "setter" ? rightSetter : rightHitter);
+                driver.Players[slot] = pc;
+            }
+            Plugin.Log.LogInfo($"Versus {setup.Format} round {VersusState.Round}: " +
+                               string.Join(", ", driver.Players.Select(kv => $"P{kv.Key.Number} {kv.Value?.name} ({kv.Key.Input?.Label})")) +
+                               $"; {team.name} on the right; AI setters {(setup.HumanSetter(0) || setup.Format == "2v2" ? "-" : leftSetter?.name)}/{(setup.HumanSetter(1) ? "-" : rightSetter?.name)}" +
+                               $"; perks {VersusState.PerksOf(0).Count}/{VersusState.RightPerks.Count}");
         }
+
+        // Two humans on the right take turns serving (the game alternates its own co-op pair on the left the same way).
+        internal static class ServeTurns
+        {
+            private static PlayerController first, second;
+            private static bool next;
+            public static void Reset(PlayerController a, PlayerController b) { first = a; second = b; next = false; }
+
+            public static PlayerController Next(PlayerController current)
+            {
+                if (second == null || first == null) return current;
+                var pick = next ? second : first;
+                next = !next;
+                return pick;
+            }
+        }
+
+        [HarmonyPatch(typeof(BallMovement), "opponentGetPoint")]
+        private static class RightServer
+        {
+            [HarmonyPostfix]
+            private static void Postfix(BallMovement __instance, ref PlayerController __result)
+            {
+                if (!VersusState.Active) return;
+                __result = ServeTurns.Next(__result);
+                __instance.opponent = __result;
+            }
+        }
+
+        // The game's co-op input (2v2 sets the game to two players on the left) would drive the left pair from fixed keys.
+        [HarmonyPatch(typeof(ManualInputRouter), "Update")]
+        private static class NoGameCoopKeys { [HarmonyPrefix] private static bool Prefix() => !VersusState.Active; }
+
+        [HarmonyPatch(typeof(LocalInputManager), "OnMoveP2")]
+        private static class NoGameMove2 { [HarmonyPrefix] private static bool Prefix() => !VersusState.Active; }
+
+        [HarmonyPatch(typeof(LocalInputManager), "OnUpP2")]
+        private static class NoGameUp2 { [HarmonyPrefix] private static bool Prefix() => !VersusState.Active; }
+
+        [HarmonyPatch(typeof(LocalInputManager), "OnDownP2")]
+        private static class NoGameDown2 { [HarmonyPrefix] private static bool Prefix() => !VersusState.Active; }
 
         // A round ends: the game would load its upgrade / lose screens; Versus counts the round instead.
         [HarmonyPatch(typeof(GameManager), "EndGame")]

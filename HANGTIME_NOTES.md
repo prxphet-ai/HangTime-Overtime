@@ -497,3 +497,33 @@ Modes:
   the left emblem now shows that team's emblem on its darkened team colour, sized to the cloth and placed at the same spot
   as the right emblem (the left emblem object hangs lower on its cloth). Hoshiyumi keeps the game's own banner.
   Checked in game: Kagaribi Flame and Raijin Tech on the left, opponents' banners on the right unchanged.
+
+### Step 23 — Versus 1v2 and 2v2
+- **Join screen**: mode tabs 1 VS 1 / 1 VS 2 / 2 VS 2 at the top (click, or player 1's DOWN key before readying). Each
+  side's column lists its seats; players fill them in join order: 1v1 = P1 left, P2 right; 1v2 = P1 left (with the AI
+  setter), P2 + P3 right; 2v2 = P1 + P2 left, P3 + P4 right. Four keyboard sets now: W A S D (Space), arrows (Enter),
+  I J K L (H), numpad 8 4 5 6 (numpad Enter), plus any number of gamepads. Each side's first player picks its team;
+  everyone readies; the match starts when every seat is filled and ready. Switching modes drops players past the new
+  seat count and un-readies everyone. The title button reads VERSUS / 1V1 · 1V2 · 2V2.
+- **Who is who**:
+  - left partner (2v2) = the game's own co-op player 2 (`LocalInputManager.player2`; the game is set to two players, so
+    it shows instead of the bot setter and the game alternates the left serve between the pair as in CO-OP);
+  - right second player (1v2, 2v2) = the right team's setter with its `SetterInput` off and `setter = false`, so it
+    jumps and plays like any player (the same as the left co-op partner), with the partner's move speed.
+  - Two humans on the right alternate serving (postfix on `BallMovement.opponentGetPoint`, mirroring how the game
+    alternates the left co-op pair).
+  - The game's co-op input (the P2 actions and the fixed-key `ManualInputRouter`) is blocked in Versus, so each key set
+    or pad only drives its own player; its "connect two controllers" message is hidden.
+- **Picks**: the losing side's players take turns (P1, then P2 next time the left loses; same on the right); only the
+  picker's input works. Round and match screens name sides "P1", "P1 + AI", "P3 & P4". Any player can choose CONTINUE /
+  REMATCH / MENU at match end.
+- **Tested in game** (2026-10-09, four keyboard sets, dev autopilot through the same input path):
+  - 2v2: all four joined; full rallies (receive, set, spike) on both sides; the left pair alternated serving and so did
+    the right pair; picks went P1, P2 (left) and P3, P4 (right) with the other players' keys ignored; a perk and stat
+    cards on both sides; match end 2-5 "P3 & P4 WIN THE MATCH!"; CONTINUE from P4 (first to 10, builds kept).
+  - 1v2: P1 + AI setter vs P2 + P3; P1 spiking off the AI's sets; a 3-5 round; "P1 + AI" picker.
+  - 1v1 still works (a third key set can't join); pause -> MENU -> CO-OP afterwards is plain co-op with the game's own
+    keys driving both players; run save and game save byte-identical; 0 errors.
+  - The dev autopilot now aims for where the ball will land (without an AI setter it never reached serves in time).
+- **Known**: no physical gamepads to test with (keyboards and a virtual pad only). The right team's setter has the
+  right team's look; the left partner wears P1's team colours like the rest of the left side.

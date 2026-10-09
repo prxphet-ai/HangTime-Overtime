@@ -13,7 +13,7 @@ namespace HangtimeOvertime.Core
 
     public enum SlotControl { Human, AI, Remote }
 
-    public enum InputKind { None, KeysWASD, KeysArrows, Gamepad, Remote }
+    public enum InputKind { None, KeysWASD, KeysArrows, KeysIJKL, KeysNumpad, Gamepad, Remote }
 
     public class SlotInput
     {
@@ -26,7 +26,9 @@ namespace HangtimeOvertime.Core
     public class VersusSlot
     {
         public int Side;              // 0 left, 1 right
-        public string Role;           // "hitter" (the game's main player / spiker) or "setter"
+        public int Number;            // player number shown on screen (join order), 0 for AI
+        public string Role;           // "hitter" (the game's main player / the right spiker), "partner" (the game's co-op
+                                      // player 2 on the left) or "setter" (the right team's setter; a full player when human)
         public SlotControl Control;
         public SlotInput Input;    // Human: a local device; Remote: a network peer (later)
     }
@@ -37,18 +39,42 @@ namespace HangtimeOvertime.Core
         public readonly List<VersusSlot> Slots = new List<VersusSlot>();
         public readonly string[] Team = new string[2];   // team key per side: "" = your own team (side 0), a new-team id or the game's prefab name
 
-        public static VersusSetup OneVsOne(SlotInput p1, SlotInput p2, string team1, string team2)
+        public static readonly string[] Formats = { "1v1", "1v2", "2v2" };
+
+        // Which slot each joining player takes, in join order: (side, role).
+        public static (int side, string role)[] Seats(string format) =>
+            format == "1v2" ? new[] { (0, "hitter"), (1, "hitter"), (1, "setter") } :
+            format == "2v2" ? new[] { (0, "hitter"), (0, "partner"), (1, "hitter"), (1, "setter") } :
+                              new[] { (0, "hitter"), (1, "hitter") };
+
+        // 1v1: a human hitter and an AI setter per side. 1v2: player 1 and the AI setter vs two humans (the right setter
+        // becomes a full player). 2v2: two humans per side (the left pair is the game's own co-op pair).
+        public static VersusSetup Create(string format, IList<SlotInput> inputs, string team1, string team2)
         {
-            var s = new VersusSetup();
-            s.Slots.Add(new VersusSlot { Side = 0, Role = "hitter", Control = SlotControl.Human, Input = p1 });
-            s.Slots.Add(new VersusSlot { Side = 0, Role = "setter", Control = SlotControl.AI });
-            s.Slots.Add(new VersusSlot { Side = 1, Role = "hitter", Control = SlotControl.Human, Input = p2 });
-            s.Slots.Add(new VersusSlot { Side = 1, Role = "setter", Control = SlotControl.AI });
+            var s = new VersusSetup { Format = format };
+            var seats = Seats(format);
+            for (int i = 0; i < seats.Length; i++)
+                s.Slots.Add(new VersusSlot { Side = seats[i].side, Role = seats[i].role, Number = i + 1, Control = SlotControl.Human, Input = inputs[i] });
+            foreach (int side in new[] { 0, 1 })
+                if (!s.Slots.Any(x => x.Side == side && x.Role != "hitter"))
+                    s.Slots.Add(new VersusSlot { Side = side, Role = "setter", Control = SlotControl.AI });
             s.Team[0] = team1; s.Team[1] = team2;
             return s;
         }
 
-        public VersusSlot Human(int side) => Slots.FirstOrDefault(x => x.Side == side && x.Control == SlotControl.Human && x.Role == "hitter");
+        public static VersusSetup OneVsOne(SlotInput p1, SlotInput p2, string team1, string team2) => Create("1v1", new[] { p1, p2 }, team1, team2);
+
+        public List<VersusSlot> Humans(int side) => Slots.Where(x => x.Side == side && x.Control == SlotControl.Human).OrderBy(x => x.Number).ToList();
+        public IEnumerable<VersusSlot> AllHumans => Slots.Where(x => x.Control == SlotControl.Human).OrderBy(x => x.Number);
+        public VersusSlot Human(int side) => Humans(side).FirstOrDefault();   // the side's first player (picks its team)
+        public bool HumanSetter(int side) => Slots.Any(x => x.Side == side && x.Role == "setter" && x.Control == SlotControl.Human);
+
+        // "P1", "P1 & P2", "P1 + AI"
+        public string SideLabel(int side)
+        {
+            var names = Humans(side).Select(h => "P" + h.Number).ToList();
+            return string.Join(" & ", names) + (names.Count == 1 && Format != "1v1" ? " + AI" : "");
+        }
     }
 
     // ------------------------------------------------------------ an upgrade on the loser's pick screen
@@ -79,6 +105,7 @@ namespace HangtimeOvertime.Core
     {
         public static VersusSetup Setup;
         public static readonly int[] RoundWins = new int[2];
+        public static readonly int[] Picks = new int[2];             // picks each side has made (two humans on a side take turns)
         public static int Target = VersusRules.RoundsToWin;          // round wins needed (CONTINUE raises it)
         public static int Round = 1;                                 // the round being played
         public static int LastWinner = -1;
@@ -93,6 +120,7 @@ namespace HangtimeOvertime.Core
             Setup = setup;
             RunState.Mode = RunMode.Versus;
             RoundWins[0] = RoundWins[1] = 0;
+            Picks[0] = Picks[1] = 0;
             Target = VersusRules.RoundsToWin;
             Round = 1;
             LastWinner = -1;
@@ -181,11 +209,19 @@ namespace HangtimeOvertime.Core
             return list.LastOrDefault();
         }
 
+        // who chooses for a losing side: its players take turns
+        public static VersusSlot Picker(int side)
+        {
+            var humans = Setup.Humans(side);
+            return humans.Count == 0 ? null : humans[Picks[side] % humans.Count];
+        }
+
         public static void Take(int side, VersusOffer o)
         {
+            Picks[side]++;
             if (o.Card != null) StatCards.Take(o.Card, side);
             else if (o.Perk != null && !PerksOf(side).Contains(o.Perk)) PerksOf(side).Add(o.Perk);
-            Plugin.Log.LogInfo($"Versus: P{side + 1} took {o.Title} ({o.Kind})");
+            Plugin.Log.LogInfo($"Versus: {Setup.SideLabel(side)} took {o.Title} ({o.Kind})");
         }
 
         // a player's build for the screens between rounds: perks and stat totals

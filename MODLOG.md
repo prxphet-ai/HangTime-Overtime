@@ -58,8 +58,8 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Next: watch triggers in normal play (dig, block, setter_set, streak, enemy_streak, match_point_against), stat cards,
   loop button, tier scaling; then switch DevKeys/DumpScenes off for release.
 
-## Versus (1v1)
-- Title VERSUS -> join screen (per-device join, team pick, ready) -> rounds to 5 points, first to 5 rounds; the loser of
+## Versus (1v1, 1v2, 2v2)
+- Title VERSUS -> join screen (mode tabs, per-device join, team pick by each side's first player, ready) -> rounds to 5 points, first to 5 rounds; the loser of
   each round picks one of 3 upgrades. Code: `src/Core/Versus.cs` (setup slots, state, offers),
   `src/Patches/VersusInput.cs` (devices, driver, disconnects), `src/Patches/VersusPatches.cs` (round-end hook, match
   setup), `src/Patches/VersusUI.cs` (overlays, round flow), `src/Patches/VersusMenu.cs` (join screen).

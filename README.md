@@ -14,8 +14,10 @@ dozens of new abilities and teams, a character creator and run saves — all bui
 - **47 stat cards** — boosts, playstyle cards and big-risk trade-offs.
 - **34 new teams** — each with its own colours, hand-drawn banner emblem, voice lines, play style and signature abilities.
   Opponents announce their abilities at the start of a match.
-- **Versus (1 vs 1)** — two players on one PC (WASD, arrow keys or gamepads), each with an AI setter. Rounds to 5 points,
-  first to 5 rounds; the loser of each round picks a perk or stat card, so builds get wilder as the match goes on.
+- **Versus (1v1, 1v2, 2v2)** — up to four players on one PC (WASD, arrow keys, IJKL, numpad or gamepads). 1v1: each
+  player has an AI setter. 1v2: one player and an AI setter against two players. 2v2: two players a side. Rounds to 5
+  points, first to 5 rounds; the losing side picks a perk or stat card each round (a pair takes turns), so builds get
+  wilder as the match goes on.
 - **Run saves** — close the game mid-run (Infinite or Classic) and pick up where you left off with CONTINUE on the title screen.
 - **Character creator** — hair style and colour, skin tone, jersey and shorts colours, number, build, headband, wristbands,
   knee pads and shoes. Cosmetic only.

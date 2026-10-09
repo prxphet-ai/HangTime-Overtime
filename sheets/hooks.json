@@ -541,6 +541,56 @@
       "purpose": "Versus only: camera centred on the net and zoomed out so both sides are fully visible",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "versus_right_server",
+      "target_type": "BallMovement",
+      "target_method": "opponentGetPoint",
+      "kind": "postfix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: two humans on the right take turns serving (the score itself is untouched; the game already counted the point)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_coop_keys",
+      "target_type": "ManualInputRouter",
+      "target_method": "Update",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: the game's fixed co-op keys stop driving the left pair (each player drives their own player)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_game_move2",
+      "target_type": "LocalInputManager",
+      "target_method": "OnMoveP2",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: same, for the game's co-op player 2 actions",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_game_up2",
+      "target_type": "LocalInputManager",
+      "target_method": "OnUpP2",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: same",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_game_down2",
+      "target_type": "LocalInputManager",
+      "target_method": "OnDownP2",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: same",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

@@ -1031,6 +1031,11 @@ namespace HangtimeOvertime.Generated
             new HookDef("versus_scene", "UnityEngine.SceneManagement.SceneManager", "sceneLoaded", "event", "VersusPatches"),
             new HookDef("restart_leave_versus", "RestartButton", "Click", "prefix", "MenuPatches"),
             new HookDef("versus_camera", "CameraController", "FixedUpdate", "postfix", "VersusPatches"),
+            new HookDef("versus_right_server", "BallMovement", "opponentGetPoint", "postfix", "VersusPatches"),
+            new HookDef("versus_no_coop_keys", "ManualInputRouter", "Update", "prefix", "VersusPatches"),
+            new HookDef("versus_no_game_move2", "LocalInputManager", "OnMoveP2", "prefix", "VersusPatches"),
+            new HookDef("versus_no_game_up2", "LocalInputManager", "OnUpP2", "prefix", "VersusPatches"),
+            new HookDef("versus_no_game_down2", "LocalInputManager", "OnDownP2", "prefix", "VersusPatches"),
         };
     }
 
