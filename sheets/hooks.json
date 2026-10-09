@@ -531,6 +531,16 @@
       "purpose": "Leaving a Versus match from the pause menu clears its builds",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "versus_camera",
+      "target_type": "CameraController",
+      "target_method": "FixedUpdate",
+      "kind": "postfix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: camera centred on the net and zoomed out so both sides are fully visible",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

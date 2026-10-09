@@ -92,6 +92,31 @@ namespace HangtimeOvertime.Patches
             private static IEnumerator Nothing() { yield break; }
         }
 
+        // The game's camera leans towards player 1's side (it tracks the left player and the last touch). In Versus it stays
+        // centred on the net, follows the ball only gently, and is zoomed out enough that both serve lines are in view.
+        [HarmonyPatch(typeof(CameraController), "FixedUpdate")]
+        private static class CentredCamera
+        {
+            private static readonly AccessTools.FieldRef<CameraController, Camera> cameraOf = AccessTools.FieldRefAccess<CameraController, Camera>("camera");
+            private static readonly AccessTools.FieldRef<CameraController, Transform> ballOf = AccessTools.FieldRefAccess<CameraController, Transform>("ball");
+            private static float x;
+
+            [HarmonyPostfix]
+            private static void Postfix(CameraController __instance)
+            {
+                if (!VersusState.Active || GameManager.gameOver || TitleController.onTitle) return;
+                var cam = cameraOf(__instance);
+                var ball = ballOf(__instance);
+                if (cam == null || ball == null) return;
+                // the game sets the size to its own target every step, so this never compounds
+                cam.orthographicSize = Mathf.Max(cam.orthographicSize, Generated.VersusRules.CameraHalfWidth / Mathf.Max(0.5f, cam.aspect));
+                x = Mathf.Lerp(x, Mathf.Clamp(ball.position.x * Generated.VersusRules.CameraFollow, -3f, 3f), Time.deltaTime * 2f);
+                var p = __instance.transform.position;
+                float jitter = Random.Range(-CameraController.shake, CameraController.shake);   // keep the game's hit shake
+                __instance.transform.position = new Vector3(x + jitter, p.y, p.z);
+            }
+        }
+
         // In Versus each player drives only their own player (VersusDriver); the game's single-player input would
         // otherwise move player 1 from every keyboard key and gamepad.
         [HarmonyPatch(typeof(LocalInputManager), "OnMoveP1")]

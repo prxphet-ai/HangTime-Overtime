@@ -64,11 +64,13 @@
     }
   ],
   "versus": {
-    "about": "Versus (ROUNDS-style): rounds to points_per_round, first to rounds_to_win round wins takes the match; the loser of each round picks one upgrade.",
+    "about": "Versus (ROUNDS-style): rounds to points_per_round, first to rounds_to_win round wins takes the match; the loser of each round picks one upgrade. Camera: centred on the net, at least camera_half_width world units visible each side (both serve lines), following the ball by camera_follow of its x.",
     "points_per_round": 5,
     "rounds_to_win": 5,
     "continue_rounds": 5,
     "offer_size": 3,
-    "stat_card_share": 0.34
+    "stat_card_share": 0.34,
+    "camera_half_width": 47,
+    "camera_follow": 0
   }
 }

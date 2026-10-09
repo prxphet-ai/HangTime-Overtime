@@ -478,3 +478,15 @@ Modes:
   game's own limit-break effects only show on the left side (the game hard-codes them to x<0). The AI-vs-AI simulator
   does not model Versus yet (a build-vs-build mode would be the way to balance the draft); the last line of your brief
   about the simulator was cut off.
+
+### Step 21 — Versus camera; limit breaks in Versus
+- The game's camera leans towards player 1 (it tracks the left player and the last touch), so the right side was cut off.
+  In Versus it now stays centred on the net and zooms out until both back lines (and the space behind them) are in view;
+  the game's hit shake and zoom-on-kills still play. Config: `sheets/modes.json` -> `versus.camera_half_width` (47 world
+  units each side) and `camera_follow` (0 = fixed on the net). Checked in game: equal margins left and right, both
+  servers visible, steady through rallies.
+- Limit break in Versus: not just the visuals — it can't be reached at all. A limit break is a stat at the game's level 4
+  (bigger stat values, plus the limit serve that sometimes can't be returned); it comes only from the game's own stat
+  level-ups and its Limit Break card, and Versus offers neither (it uses Overtime stat cards and opponent-safe perks).
+  Classic/Infinite are unchanged: limit breaks work there for you as in the game (opponents never get them in the game
+  either). Adding them to Versus would need the effects to work for the right side too (the game hard-codes them to x<0).

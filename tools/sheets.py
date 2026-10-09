@@ -357,7 +357,7 @@ def preflight():
     if {m["id"] for m in S["modes"]["rows"]} != {"Normal", "Infinite", "Loop", "Versus"}:
         errors.append("modes: ids should be Normal, Infinite, Loop, Versus")
     vr = S["modes"].get("versus", {})
-    for k in ("points_per_round", "rounds_to_win", "continue_rounds", "offer_size", "stat_card_share"):
+    for k in ("points_per_round", "rounds_to_win", "continue_rounds", "offer_size", "stat_card_share", "camera_half_width", "camera_follow"):
         if not isinstance(vr.get(k), (int, float)):
             errors.append(f"modes.versus.{k}: missing number")
     save_ids = {s["id"] for s in S["saves"]["rows"]}
@@ -585,6 +585,8 @@ def generate(S):
           f"        public const int ContinueRounds = {int(vr['continue_rounds'])};   // CONTINUE raises the target by this many round wins",
           f"        public const int OfferSize = {int(vr['offer_size'])};   // choices on the loser's pick screen",
           f"        public const float StatCardShare = {fl(vr['stat_card_share'])};   // chance each choice is a stat card instead of a perk",
+          f"        public const float CameraHalfWidth = {fl(vr['camera_half_width'])};   // world units visible each side of the camera centre",
+          f"        public const float CameraFollow = {fl(vr['camera_follow'])};   // how much the camera follows the ball's x (0 = fixed on the net)",
           "    }", ""]
 
     L += ["    // OPPONENT SCALING CONFIG (sheets/scaling.json): one constant per row.",

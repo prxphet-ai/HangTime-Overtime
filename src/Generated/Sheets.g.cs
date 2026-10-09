@@ -1030,6 +1030,7 @@ namespace HangtimeOvertime.Generated
             new HookDef("versus_no_game_down", "LocalInputManager", "OnDownP1", "prefix", "VersusPatches"),
             new HookDef("versus_scene", "UnityEngine.SceneManagement.SceneManager", "sceneLoaded", "event", "VersusPatches"),
             new HookDef("restart_leave_versus", "RestartButton", "Click", "prefix", "MenuPatches"),
+            new HookDef("versus_camera", "CameraController", "FixedUpdate", "postfix", "VersusPatches"),
         };
     }
 
@@ -1056,6 +1057,8 @@ namespace HangtimeOvertime.Generated
         public const int ContinueRounds = 5;   // CONTINUE raises the target by this many round wins
         public const int OfferSize = 3;   // choices on the loser's pick screen
         public const float StatCardShare = 0.34f;   // chance each choice is a stat card instead of a perk
+        public const float CameraHalfWidth = 47.0f;   // world units visible each side of the camera centre
+        public const float CameraFollow = 0.0f;   // how much the camera follows the ball's x (0 = fixed on the net)
     }
 
     // OPPONENT SCALING CONFIG (sheets/scaling.json): one constant per row.
