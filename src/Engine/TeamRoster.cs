@@ -33,9 +33,16 @@ namespace HangtimeOvertime.Engine
         }
 
         // Picks the opponent for this slot; returns the prefab the game should spawn.
+        public static string DevForce;   // development: next opponent (new-team id)
+
         public static GameObject Choose(int slot)
         {
             if (prefabs.Count == 0) CollectPrefabs();
+            if (DevForce != null)
+            {
+                var forced = Generated.Teams.All.FirstOrDefault(t => t.Id == DevForce);
+                if (forced != null && prefabs.ContainsKey(forced.Base)) { Current = forced; currentKey = forced.Id; return prefabs[forced.Base]; }
+            }
             string cls = slot >= 1 && slot <= 8 ? Generated.Teams.SlotClass[slot] : "regular";
             var vanilla = cls == "boss" ? Generated.Teams.VanillaBoss : cls == "combo" ? Generated.Teams.VanillaCombo : Generated.Teams.VanillaRegular;
             var pool = vanilla.Where(prefabs.ContainsKey).Select(n => (key: n, def: (TeamDef)null))
@@ -88,26 +95,17 @@ namespace HangtimeOvertime.Engine
             }
         }
 
-        // The banner's team emblem for a new team: a disc in the team color (the name is drawn on it in game text).
+        // The team's banner emblem: assets/emblems/<id>.png (drawn by tools/emblems.py in the game's emblem style),
+        // shipped in the plugin's emblems folder; sized to the vanilla emblem it replaces.
         private static Sprite Banner(Sprite baseBanner, TeamDef def)
         {
             if (banners.TryGetValue(def.Id, out var cached) && cached != null) return cached;
-            const int size = 256;
-            Color fill = Vfx.Hex(def.Banner), edge = Color.Lerp(fill, Color.black, 0.45f);
-            var px = new Color32[size * size];
-            for (int y = 0; y < size; y++)
-                for (int x = 0; x < size; x++)
-                {
-                    float dx = (x + 0.5f) / size * 2f - 1f, dy = (y + 0.5f) / size * 2f - 1f, d = Mathf.Sqrt(dx * dx + dy * dy);
-                    Color c = d > 0.86f ? edge : Color.Lerp(fill, fill * 0.8f, (dy + 1f) / 2f);
-                    c.a = Mathf.Clamp01((1f - d) / 0.03f);   // soft rim, transparent outside
-                    px[y * size + x] = c;
-                }
-            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset, wrapMode = TextureWrapMode.Clamp };
-            tex.SetPixels32(px);
-            tex.Apply();
-            float ppu = baseBanner != null ? size / (0.72f * Mathf.Max(baseBanner.bounds.size.x, baseBanner.bounds.size.y)) : 100f;
-            var sprite = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), ppu);
+            var path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(Plugin).Assembly.Location), "emblems", def.Id + ".png");
+            if (!System.IO.File.Exists(path)) { Plugin.Log.LogWarning("No emblem " + path); return baseBanner; }
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset, wrapMode = TextureWrapMode.Clamp };
+            tex.LoadImage(System.IO.File.ReadAllBytes(path));
+            float fit = baseBanner != null ? Mathf.Max(tex.width / baseBanner.bounds.size.x, tex.height / baseBanner.bounds.size.y) : 100f;
+            var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), fit);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
             sprite.name = def.Name + " emblem";
             banners[def.Id] = sprite;
@@ -116,31 +114,22 @@ namespace HangtimeOvertime.Engine
 
         public static void LabelBanner(SpriteRenderer banner)
         {
-            if (banner == null) return;
-            var old = banner.transform.Find("Overtime team name");
-            if (old != null) Object.Destroy(old.gameObject);
-            if (Current == null || banner.sprite == null) return;
+            if (banner == null || Current == null) return;
             var team = GameManager.Instance.opponentTeam;
             if (team != null && team.banner != null && banner.sprite != team.banner) banner.sprite = team.banner;
-            Plugin.Trace($"banner '{banner.name}' sprite={banner.sprite.name} parent={banner.transform.parent?.name} siblings=[{string.Join(", ", banner.transform.parent != null ? banner.transform.parent.GetComponentsInChildren<SpriteRenderer>(true).Select(s => s.name + ":" + (s.sprite ? s.sprite.name : "-")) : new string[0])}]");
-            var font = Object.FindObjectsByType<TextMeshPro>(FindObjectsInactive.Include, FindObjectsSortMode.None)
-                .Select(t => t.font).FirstOrDefault(f => f != null);
-            var go = new GameObject("Overtime team name");
-            go.transform.SetParent(banner.transform, false);
-            var tmp = go.AddComponent<TextMeshPro>();
-            if (font != null) tmp.font = font;
-            var bounds = banner.sprite.bounds;
-            go.transform.localPosition = bounds.center + new Vector3(0f, bounds.size.y * 0.08f, -0.01f);
-            tmp.rectTransform.sizeDelta = new Vector2(bounds.size.x * 0.8f, bounds.size.y * 0.55f);
-            tmp.text = Current.Name.ToUpperInvariant().Replace(" ", "\n");
-            tmp.alignment = TextAlignmentOptions.Center;
-            tmp.enableAutoSizing = true;
-            tmp.fontSizeMin = 0.1f;
-            tmp.fontSizeMax = 40f;
-            tmp.color = Color.white;
-            var mr = go.GetComponent<MeshRenderer>();
-            mr.sortingLayerID = banner.sortingLayerID;
-            mr.sortingOrder = banner.sortingOrder + 1;
+            // the emblem hangs on a cloth sprite: give the cloth the team's banner color
+            var cloth = banner.transform.parent != null ? banner.transform.parent.GetComponent<SpriteRenderer>() : null;
+            if (cloth != null)
+            {
+                // a darkened team color keeps the light emblem readable under the gym lighting, like the game's own banners
+                var c = Color.Lerp(Vfx.Hex(Current.Banner), Color.black, 0.42f);
+                cloth.color = new Color(c.r, c.g, c.b, cloth.color.a);
+                // fit the emblem inside the cloth (the emblem is sized to the old emblem first)
+                float fit = Mathf.Min(0.78f * cloth.bounds.size.x / Mathf.Max(0.01f, banner.bounds.size.x),
+                                      0.62f * cloth.bounds.size.y / Mathf.Max(0.01f, banner.bounds.size.y));
+                if (fit < 1f) banner.transform.localScale *= fit;
+            }
+            Plugin.Trace($"banner emblem {banner.sprite?.name} on {cloth?.name}");
         }
 
         // ------------------------------------------------------------ opponent perks

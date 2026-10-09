@@ -56,7 +56,39 @@ namespace HangtimeOvertime.Debugging
             var dir = Path.Combine(Path.GetDirectoryName(typeof(Plugin).Assembly.Location), "sim_data");
             Directory.CreateDirectory(dir);
             File.WriteAllText(Path.Combine(dir, "game_data.json"), sb.ToString());
+
+            // reference images of the game's team emblems (for drawing new ones in the same style; never shipped)
+            var emb = Path.Combine(dir, "emblems");
+            Directory.CreateDirectory(emb);
+            foreach (var kv in teams)
+            {
+                var ot = kv.Value.GetComponent<OpponentTeam>();
+                if (ot != null && ot.banner != null) SavePng(ot.banner, Path.Combine(emb, kv.Key + ".png"));
+            }
+            foreach (var sr in Object.FindObjectsByType<SpriteRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (sr.sprite != null && (sr.name.Contains("Banner") || sr.name.Contains("banner") || sr.sprite.name.ToLower().Contains("banner")))
+                    SavePng(sr.sprite, Path.Combine(emb, "scene_" + sr.name.Replace(" ", "_") + "_" + sr.sprite.name.Replace(" ", "_") + ".png"));
             Plugin.Log.LogInfo("Sim data written to " + dir);
+        }
+
+        private static void SavePng(Sprite s, string path)
+        {
+            try
+            {
+                var r = s.textureRect;
+                var rt = RenderTexture.GetTemporary(s.texture.width, s.texture.height, 0, RenderTextureFormat.ARGB32);
+                Graphics.Blit(s.texture, rt);
+                var prev = RenderTexture.active;
+                RenderTexture.active = rt;
+                var tex = new Texture2D((int)r.width, (int)r.height, TextureFormat.RGBA32, false);
+                tex.ReadPixels(new Rect(r.x, r.y, r.width, r.height), 0, 0);
+                tex.Apply();
+                RenderTexture.active = prev;
+                RenderTexture.ReleaseTemporary(rt);
+                File.WriteAllBytes(path, tex.EncodeToPNG());
+                Object.Destroy(tex);
+            }
+            catch (System.Exception e) { Plugin.Log.LogWarning($"emblem export {s.name}: {e.Message}"); }
         }
 
         private static string F(float f) => float.IsNaN(f) || float.IsInfinity(f) ? "0" : f.ToString("0.####", System.Globalization.CultureInfo.InvariantCulture);

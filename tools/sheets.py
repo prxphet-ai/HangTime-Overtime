@@ -283,6 +283,14 @@ def preflight():
                 errors.append(f"teams.{tid}.signature: '{sgn}' not in perks sheet")
             elif perks[sgn]["opponent_ok"] != "yes":
                 errors.append(f"teams.{tid}.signature: '{sgn}' is not opponent_ok")
+        em = t.get("emblem", {})
+        mascots = re.findall(r'"(\w+)": \w+', (read(os.path.join(ROOT, "tools", "emblems.py")) or "").split("MASCOTS = {", 1)[-1].split("}", 1)[0])
+        if em.get("mascot") not in mascots:
+            errors.append(f"teams.{tid}.emblem: mascot '{em.get('mascot')}' not drawn by tools/emblems.py")
+        if em.get("layout") not in ("top", "stacked", "split") or em.get("font") not in ("marker", "bangers"):
+            errors.append(f"teams.{tid}.emblem: layout top|stacked|split, font marker|bangers")
+        if not os.path.exists(os.path.join(ROOT, "assets", "emblems", tid + ".png")):
+            errors.append(f"teams.{tid}.emblem: assets/emblems/{tid}.png missing (run tools/emblems.py)")
     for slot, cls in S["teams"]["slots"].items():
         if slot != "about" and cls not in ("regular", "combo", "boss"):
             errors.append(f"teams.slots.{slot}: '{cls}'")

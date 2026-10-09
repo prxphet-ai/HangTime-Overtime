@@ -105,3 +105,20 @@ Modes:
   (`run --no-stop`): r1 75%, r3 64%, r5 68%, r6 58%, r8 54%, r10 46%, r12 34%, r15 34% — a gradual slide, no walls
   (before: runs died at round 2-3; round-3 boss 47%).
 - Checked in game: round-1 Infinite opponent logged 1.2 points, stats x0.92, move x0.95, no perks; game/sim parity 0 mismatches.
+
+### Step 1 — team banner emblems
+- Studied the game's own emblems (exported from your install for reference only, never shipped): one flat light color,
+  chunky hand-drawn silhouettes, a mascot (kiwi, crab, elephant, fox, heron, ship...) and the name in bold hand lettering.
+- New `tools/emblems.py` draws every new team's emblem in that style from code (marker-wobble shapes, per-letter jitter):
+  Kagaribi Flame — bonfire basket with a three-tongued flame and sparks; Hyoga Frost — penguin in a scarf with snowflakes;
+  Raijin Tech — lightning bolt inside a ring of thunder drums; Fujin Wings — swallow riding gusts; Kaien Marine — whale
+  tail over waves with spray; Iwao Stoneworks — rocky peaks with a pickaxe; Yomi Nocturne — bat across a crescent moon;
+  Amaterasu Royals — rayed sun wearing a crown. Each uses one accent in the team's color. Spec per team in the new
+  `emblem` column of `sheets/teams.json` (mascot, layout top/stacked/split, font, accent); output `assets/emblems/<id>.png`
+  plus `assets/emblems/preview.png` (large and 64 px views).
+- In game: the emblem replaces the old color disc, the banner cloth takes the team's color (darkened 42% so the light
+  emblem reads under the gym lighting, like the vanilla banners), and the emblem is fitted inside the cloth. Checked all
+  eight in game (dev key F3 forces the next opponent).
+- Fonts for lettering: Permanent Marker (Apache 2.0) and Bangers (SIL OFL 1.1), in `tools/fonts` with their licenses;
+  only the rendered emblems ship.
+- Decision: vanilla teams keep their own emblems (those are the designs you like).

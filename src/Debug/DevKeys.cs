@@ -8,7 +8,7 @@ namespace HangtimeOvertime.Debugging
 {
     // Test shortcuts, only when DevKeys is enabled in the config (off for players).
     //  F1 fire the lab perk's effects now (Shift: as the opponent)   F2 lab: next perk (Shift: previous), given alone from the next match
-    //  F4 player 1 serves now   F5 rally point to player (Shift: opponent) via the game's own scoring
+    //  F3 force the next opponent (cycles new teams, then random)   F4 player 1 serves now   F5 rally point to player (Shift: opponent) via the game's own scoring
     //  F6 win this match   F7 lose this match   F8 next win leads to the final match   F9 log state
     //  F10 give every Overtime perk   F11 perk screens show only Overtime perks   F12 next infinite match one tier harder
     internal class DevKeys : MonoBehaviour
@@ -36,6 +36,13 @@ namespace HangtimeOvertime.Debugging
                 int side = shift ? 1 : 0;
                 Engine.Engine.DebugFire(perks[lab], side);
                 Plugin.Log.LogInfo($"Dev lab: fired {perks[lab].Def.Title} as side {side}");
+            }
+            if (kb.f3Key.wasPressedThisFrame)
+            {
+                var ids = Generated.Teams.All.Select(t => t.Id).ToList();
+                int i = TeamRoster.DevForce == null ? 0 : (ids.IndexOf(TeamRoster.DevForce) + 1) % (ids.Count + 1);
+                TeamRoster.DevForce = i < ids.Count ? ids[i] : null;
+                Plugin.Log.LogInfo($"Dev: next opponent forced to {TeamRoster.DevForce ?? "random"}");
             }
             if (kb.f4Key.wasPressedThisFrame && !gm.done)
             {

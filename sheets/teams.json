@@ -21,7 +21,8 @@
     "comment": "what your team says after beating them",
     "signature": "perks this team always has (perks.json ids)",
     "verified": "how it was seen in game, or 'no'",
-    "points_offset": "extra opponent level-up points for this team at every round (team-specific tuning; negative = weaker)"
+    "points_offset": "extra opponent level-up points for this team at every round (team-specific tuning; negative = weaker)",
+    "emblem": "banner emblem drawn by tools/emblems.py: mascot (a function there), layout (top | stacked | split), font (marker | bangers), accent (hex) -> assets/emblems/<id>.png"
   },
   "vanilla_teams": {
     "about": "Vanilla team prefabs logged in game (2026-10-08), by slot class.",
@@ -93,7 +94,13 @@
         "blaze_spike"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.6
+      "points_offset": -0.6,
+      "emblem": {
+        "mascot": "brazier",
+        "layout": "split",
+        "font": "marker",
+        "accent": "FF8A2A"
+      }
     },
     {
       "id": "hyoga",
@@ -134,7 +141,13 @@
         "frost_serve"
       ],
       "verified": "no",
-      "points_offset": -3.6
+      "points_offset": -3.6,
+      "emblem": {
+        "mascot": "penguin",
+        "layout": "top",
+        "font": "bangers",
+        "accent": "7FD0FF"
+      }
     },
     {
       "id": "raijin",
@@ -175,7 +188,13 @@
         "zigzag_spike"
       ],
       "verified": "no",
-      "points_offset": -1.9
+      "points_offset": -1.9,
+      "emblem": {
+        "mascot": "thunder",
+        "layout": "stacked",
+        "font": "bangers",
+        "accent": "FFE14A"
+      }
     },
     {
       "id": "fujin",
@@ -216,7 +235,13 @@
         "gale_serve"
       ],
       "verified": "no",
-      "points_offset": 3.6
+      "points_offset": 3.6,
+      "emblem": {
+        "mascot": "swallow",
+        "layout": "split",
+        "font": "marker",
+        "accent": "8EF0B8"
+      }
     },
     {
       "id": "kaien",
@@ -257,7 +282,13 @@
         "tidal_arc"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -1.5
+      "points_offset": -1.5,
+      "emblem": {
+        "mascot": "whale",
+        "layout": "top",
+        "font": "marker",
+        "accent": "5AD0FF"
+      }
     },
     {
       "id": "iwao",
@@ -299,7 +330,13 @@
         "quake_spike"
       ],
       "verified": "no",
-      "points_offset": -0.3
+      "points_offset": -0.3,
+      "emblem": {
+        "mascot": "mountain",
+        "layout": "stacked",
+        "font": "bangers",
+        "accent": "D8A060"
+      }
     },
     {
       "id": "yomi",
@@ -341,7 +378,13 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.7
+      "points_offset": 0.7,
+      "emblem": {
+        "mascot": "bat_moon",
+        "layout": "split",
+        "font": "marker",
+        "accent": "B48CFF"
+      }
     },
     {
       "id": "amaterasu",
@@ -383,7 +426,13 @@
         "holy_lance"
       ],
       "verified": "no",
-      "points_offset": -4.2
+      "points_offset": -4.2,
+      "emblem": {
+        "mascot": "sun_crown",
+        "layout": "stacked",
+        "font": "bangers",
+        "accent": "FFD24A"
+      }
     }
   ],
   "vanilla_profiles": {
