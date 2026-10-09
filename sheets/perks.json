@@ -4590,7 +4590,7 @@
           "fx": "buff",
           "stat": "spike",
           "mult": 1.3,
-          "dur": 10,
+          "dur": 18,
           "on": "enemy_streak"
         },
         {
@@ -4598,13 +4598,13 @@
           "fx": "buff",
           "stat": "move",
           "mult": 1.2,
-          "dur": 10,
+          "dur": 18,
           "on": "enemy_streak"
         },
         {
           "when": "now",
           "fx": "aura",
-          "dur": 8,
+          "dur": 18,
           "color": "FF3A3A",
           "on": "enemy_streak"
         }
@@ -5886,6 +5886,537 @@
       "description": "Block jumps with the strength of the Hercules beetle: a strong block comes off faster and knocks their whole team off balance.",
       "flavour": "Lift with the horn.",
       "art_from": "AbsoluteBlock",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "momentum",
+      "title": "Momentum",
+      "rarity": "common",
+      "element": "none",
+      "origin": "new",
+      "triggers": [
+        "win_streak"
+      ],
+      "conds": {
+        "n": 1
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.1,
+          "dur": 20,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.05,
+          "dur": 20,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 20,
+          "color": "FFFFFF",
+          "on": "win_streak"
+        }
+      ],
+      "description": "Win a rally to start a run and you ride the momentum: stronger spikes and quicker feet for a while (once per winning run).",
+      "flavour": "Keep it rolling.",
+      "art_from": "MomentumSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tailwind_rush",
+      "title": "Tailwind Rush",
+      "rarity": "common",
+      "element": "wind",
+      "origin": "new",
+      "triggers": [
+        "win_streak"
+      ],
+      "conds": {
+        "n": 1
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.12,
+          "dur": 20,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 1.04,
+          "dur": 20,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": 20,
+          "color": "A8FFC8",
+          "on": "win_streak"
+        }
+      ],
+      "description": "Win a rally to start a run and the wind is at your back: faster feet and a little more air for a while (once per winning run).",
+      "flavour": "Wheee.",
+      "art_from": "Speedster",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "avalanche",
+      "title": "Avalanche",
+      "rarity": "rare",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "win_streak"
+      ],
+      "conds": {
+        "n": 2
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.75,
+          "dur": 30,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "block",
+          "mult": 1.1,
+          "dur": 30,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.3,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.4,
+          "color": "C0B090",
+          "at": "enemy",
+          "on": "win_streak"
+        }
+      ],
+      "description": "Win two rallies in a row and it snowballs: their team is buried and slowed for a while, and your blocks get heavier.",
+      "flavour": "It only grows.",
+      "art_from": "MomentumSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "firestorm",
+      "title": "Firestorm",
+      "rarity": "epic",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "win_streak"
+      ],
+      "conds": {
+        "n": 2
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.25,
+          "dur": 35,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.85,
+          "dur": 35,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 35,
+          "color": "FF5A1A",
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.3,
+          "dur": 0.3,
+          "color": "FF6A2A",
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "FIRESTORM!",
+          "on": "win_streak"
+        }
+      ],
+      "description": "Win two rallies in a row and the court catches fire: much stronger spikes, and their team wilts in the heat.",
+      "flavour": "Feed the flames.",
+      "art_from": "MomentumSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "kings_roar",
+      "title": "King's Roar",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "win_streak"
+      ],
+      "conds": {
+        "n": 2
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.18,
+          "dur": 30,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "block",
+          "mult": 1.15,
+          "dur": 30,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.08,
+          "dur": 30,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.6,
+          "target": "all",
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.35,
+          "on": "win_streak"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 2.0,
+          "color": "FFD24A",
+          "at": "owner",
+          "on": "win_streak"
+        }
+      ],
+      "description": "Win two rallies in a row and you roar: their team freezes, and you get stronger and quicker for a while.",
+      "flavour": "Bow down.",
+      "art_from": "ComeBack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "boar_rush",
+      "title": "Boar Rush",
+      "rarity": "rare",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "jump"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0,
+        "run": 10
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "jump_bonus",
+          "add": 8,
+          "run": 10,
+          "on": "jump"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.15,
+          "dur": 1.5,
+          "on": "jump"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.9,
+          "color": "C0B090",
+          "at": "owner",
+          "on": "jump"
+        }
+      ],
+      "description": "Charge in from a run: a stronger jump, and your spike carries the charge.",
+      "flavour": "Straight through.",
+      "art_from": "Pipe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tusk_serve",
+      "title": "Tusk Serve",
+      "rarity": "common",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.06,
+          "on": "serve"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "deflect",
+          "rand": 2,
+          "back": 6,
+          "ymult": 0.85,
+          "on": "serve"
+        },
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 0.9,
+          "dur": 0.5,
+          "color": "C0B090",
+          "on": "serve"
+        }
+      ],
+      "description": "Serves that gore the receiver: a bit faster, and their first touch gets knocked backward.",
+      "flavour": "Gored.",
+      "art_from": "LineCreep",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "rebirth_flame",
+      "title": "Rebirth Flame",
+      "rarity": "epic",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "enemy_streak"
+      ],
+      "conds": {
+        "n": 3
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.25,
+          "dur": 35,
+          "on": "enemy_streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 1.12,
+          "dur": 35,
+          "on": "enemy_streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.12,
+          "dur": 35,
+          "on": "enemy_streak"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 35,
+          "color": "FF8A2A",
+          "on": "enemy_streak"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.35,
+          "dur": 0.35,
+          "color": "FF8A2A",
+          "on": "enemy_streak"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "REBIRTH!",
+          "on": "enemy_streak"
+        }
+      ],
+      "description": "After they win three rallies in a row you rise from the ashes: stronger, higher and faster for a while.",
+      "flavour": "From the ashes.",
+      "art_from": "LastStand",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "shock_tip",
+      "title": "Shock Tip",
+      "rarity": "rare",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "enemy_touch",
+          "fx": "stun",
+          "dur": 1.4,
+          "target": "hitter",
+          "on": "tip"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "bolt",
+          "color": "FFE14A",
+          "at": "ball",
+          "on": "tip"
+        },
+        {
+          "when": "now",
+          "fx": "tint",
+          "dur": 0.5,
+          "color": "FFE14A",
+          "on": "tip"
+        }
+      ],
+      "description": "Your tips carry a charge: whoever digs one gets a shock and freezes for a moment.",
+      "flavour": "Bzzt.",
+      "art_from": "LowTip",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "voltage",
+      "title": "Voltage",
+      "rarity": "common",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "streak"
+      ],
+      "conds": {
+        "n": 4,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.12,
+          "dur": 4,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.05,
+          "dur": 4,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "bolt",
+          "color": "FFE14A",
+          "at": "owner",
+          "on": "streak"
+        }
+      ],
+      "description": "Four clean touches in a row build up a charge: quicker feet and a little more power for a few seconds.",
+      "flavour": "Charging...",
+      "art_from": "SpeedStrike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tidal_pull",
+      "title": "Tidal Pull",
+      "rarity": "common",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "enemy_spike"
+      ],
+      "conds": {
+        "chance": 0.5,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "slow",
+          "mult": 0.6,
+          "dur": 0.25,
+          "on": "enemy_spike"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 1.0,
+          "color": "4AA8FF",
+          "at": "ball",
+          "on": "enemy_spike"
+        }
+      ],
+      "description": "Sometimes the tide pulls at their spike, dragging it back for a moment before it reaches you.",
+      "flavour": "Pulled under.",
+      "art_from": "CounterBump",
       "opponent_ok": "yes",
       "verified": "no"
     }

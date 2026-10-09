@@ -529,6 +529,59 @@
       },
       "blurb": "All attack. Defense? Never heard of it.",
       "verified": "no"
+    },
+    {
+      "id": "stamina",
+      "title": "Stamina",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Recovery": 1,
+        "Speed": 0.3
+      },
+      "blurb": "Still fresh in the last rally.",
+      "verified": "no"
+    },
+    {
+      "id": "big_blocker",
+      "title": "Big Blocker",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Block": 3,
+        "Jump": 0.75,
+        "Serve": -0.75
+      },
+      "blurb": "Owns the net. Serves are an afterthought.",
+      "verified": "no"
+    },
+    {
+      "id": "jet_setter",
+      "title": "Jet Setter",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Set": 2,
+        "Recovery": 1,
+        "Block": -0.75
+      },
+      "blurb": "The fastest offense in the league, thin at the net.",
+      "verified": "no"
+    },
+    {
+      "id": "overload",
+      "title": "Overload",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Spike": 1.0,
+        "Serve": 1.75,
+        "Speed": 0.5,
+        "Recovery": -1.5,
+        "Block": -1
+      },
+      "blurb": "Hits and serves like a cannon, then needs a breather.",
+      "verified": "no"
     }
   ]
 }

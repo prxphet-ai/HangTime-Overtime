@@ -175,6 +175,18 @@
       "verified": "no"
     },
     {
+      "id": "win_streak",
+      "source": "rally_end",
+      "meaning": "the owner team wins n rallies in a row (fires once, on the n-th)",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "n"
+      ],
+      "verified": "no"
+    },
+    {
       "id": "match_point_against",
       "source": "rally_end",
       "meaning": "a rally starts with the other team one point from winning the match",

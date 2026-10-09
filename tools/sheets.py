@@ -178,7 +178,7 @@ def preflight():
                 errors.append(f"perks.{pid}.conds.{k}: not a condition of its triggers")
             if not is_num(v):
                 errors.append(f"perks.{pid}.conds.{k}: not a number")
-        if ("streak" in p["triggers"] or "enemy_streak" in p["triggers"]) and not p["conds"].get("n"):
+        if any(t in p["triggers"] for t in ("streak", "enemy_streak", "win_streak")) and not p["conds"].get("n"):
             errors.append(f"perks.{pid}.conds.n: streak triggers need n")
         triggered = set()
         for j, f in enumerate(p["fx"]):

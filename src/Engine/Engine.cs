@@ -240,6 +240,9 @@ namespace HangtimeOvertime.Engine
             foreach (var perk in PerksOf(loser).ToList())
                 if (perk.Listens("enemy_streak") && perk.Def.Cond.N > 0f && Sides[loser].RalliesLost == (int)perk.Def.Cond.N)
                     FirePerk(perk, "enemy_streak", MainPlayer(loser), null);
+            foreach (var perk in PerksOf(winner).ToList())
+                if (perk.Listens("win_streak") && perk.Def.Cond.N > 0f && Sides[winner].RallyWins == (int)perk.Def.Cond.N)
+                    FirePerk(perk, "win_streak", MainPlayer(winner), null);
             var gm = GameManager.Instance;
             for (int s = 0; s < 2; s++)
             {

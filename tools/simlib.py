@@ -409,6 +409,8 @@ class Match:
                 continue
             if trig == "enemy_streak" and rt.rallies_lost != int(perk["conds"].get("n", 0)):
                 continue
+            if trig == "win_streak" and rt.rally_wins != int(perk["conds"].get("n", 0)):
+                continue
             if not self.passes(i, perk, trig):
                 continue
             c = perk.get("conds", {})
@@ -740,6 +742,7 @@ class Match:
         self.rt[loser].rallies_lost += 1
         self.rt[loser].touch_streak = 0
         self.fire(loser, "enemy_streak", {})
+        self.fire(winner, "win_streak", {})
         L = self.D.match_length
         for i in (0, 1):
             own, enemy = self.score[i], self.score[1 - i]

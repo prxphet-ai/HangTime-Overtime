@@ -8,8 +8,8 @@ of **Log**. **Summary** at the top is kept up to date.
 
 - **Everything that exists**: `CATALOG.md` (generated from the sheets by `python tools/catalog.py`) lists every team
   (class, element, base, signature perks, emblem), every perk (rarity, element, trigger, description, gameplay effects,
-  visuals) and every stat card. Current totals: 26 new teams (+ the game's 10), 128 perks (118 new, 3 reworked, 7 kept),
-  41 stat cards. No perk changes the score (enforced by the preflight).
+  visuals) and every stat card. Current totals: 30 new teams (+ the game's 10), 139 perks (129 new, 3 reworked, 7 kept),
+  45 stat cards. No perk changes the score (enforced by the preflight).
 - **Simulator**: `python tools/sim.py <mode>` (match, teams, scaling, perk, perks, run, tune). Results in `sim_results/`
   (one JSON per run plus `index.csv`). See *Simulator* below.
 - **Opponent scaling**: every number lives in `sheets/scaling.json` (the one place to tune; `python tools/set_scaling.py
@@ -23,7 +23,7 @@ of **Log**. **Summary** at the top is kept up to date.
   boss slots), the team's own perks first (signatures / vanilla built-ins), then themed random draws (4x weight for the
   team's element); rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
 - **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~46%
-  (round 10), ~40% (round 15), ~25% (round 20). Teams 48%..52% vs the field at equal rounds (36 teams in the Infinite pools: the game's 10 + 26 new).
+  (round 10), ~40% (round 15), ~25% (round 20). Teams 47%..52% vs the field at equal rounds (40 teams in the Infinite pools: the game's 10 + 30 new).
 - **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
 - **Open questions for you**: see the end of this file.
 
@@ -177,7 +177,7 @@ Modes:
    in real play will be higher than 70% — want the early rounds harder for that?
 3. **Classic mode** still uses the game's own difficulty and opponents (new perks/cards do appear on its upgrade screens).
    Should new teams and the scaling system come to Classic too?
-4. **All In** is a deliberately strong epic trade-off (~+16% in the sim). Keep it that way?
+4. **All In** was the strongest stat card (~+16%); trimmed to +13% (top of the epic band). Want it stronger again?
 5. **Very late Infinite (round 25+)**: opponents stop getting stronger in stats (x1.5 cap) and only add perks (up to 9).
    If you reach those rounds in real play and it feels easy, I can add a late ramp that isn't raw spike speed (e.g. more
    block/receive, faster setters) — tell me.
@@ -274,3 +274,25 @@ Modes:
   (comebacks only fire when behind). Many rares/epics flag LOW only at round 8, where every delta shrinks (base win rate
   ~23%); at round 5 they are in band.
 - Curves unchanged: fresh build r1 69%; typical build r1 70%, r5 66%, r10 53%, r15 39%, r20 ~27%.
+
+### Step 10 — content batch 6 + a new trigger
+- **New trigger `win_streak`** (n): fires once when your team wins its n-th rally in a row — the snowball mirror of
+  `enemy_streak`. Added to the engine (`Engine.OnRallyEnd`), the simulator, the preflight and `sheets/triggers.json`.
+  Seen firing in game ("P Momentum <- win_streak" on the first rally won).
+- **11 new perks**: snowball — Momentum, Tailwind Rush (commons, n=1: once per winning run), Avalanche, King's Roar
+  (rares, n=2), Firestorm (epic, n=2); comeback — Rebirth Flame (epic, after three lost rallies); others — Boar Rush (run-up
+  jump that charges your spike), Tusk Serve, Shock Tip (tip that freezes whoever digs it), Voltage (4-touch streak), Tidal
+  Pull (drags their spike back for a moment). All fired through the dev lab as both sides, 0 errors.
+- **4 new stat cards**: Stamina (common), Big Blocker, Jet Setter (rare playstyle), Overload (epic trade-off).
+- **4 new teams** with new emblems: Shishi Lions (power regular, lion in its mane), Inoshishi Boars (earth regular,
+  charging boar), Hinotori Phoenix (fire combo, phoenix), Unagi Eels (lightning combo, electric eel). Shishi Lions checked
+  in game. Hinotori is built on the Aomori prefab, which needs a big points offset like every Aomori-based team (+7.2).
+- **Design lesson from the simulator**: a rally plus the pause after it is ~10 s, so 8–10 s buffs from rally-end triggers
+  last about one rally and did nothing (first numbers ~0%). Rally-end buffs now last 18–35 s (2–3 rallies). Underdog
+  re-tuned with this (+4.3%).
+- **Balance** (round 5, before -> after where changed): Momentum +2.9%, Tailwind Rush +5.1%, Avalanche +9.0%,
+  King's Roar +4.6%, Firestorm +9.7%, Rebirth Flame +3.5% (comeback: fires only when behind), Boar Rush +4.3%, Tusk Serve
+  +2.6%, Shock Tip +1.8% (tip perk, see the tip note), Voltage +2.0%, Tidal Pull +2.5%; cards Stamina +6.6%, Big Blocker
+  +5.3%, Jet Setter +4.6%, Overload +15.1% -> +11.2%.
+- Teams 46.9%..52.1% vs the field; fresh build r1 70%; typical build r1 72%, r5 68%, r10 51%, r15 43%; best random
+  5-perk build at round 8 65% (Avalanche + Guiding Light + Halo Dig + Iron Serve + Spirit Serve), wind x3 64%.

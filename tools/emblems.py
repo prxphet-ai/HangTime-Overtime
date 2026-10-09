@@ -545,7 +545,78 @@ def beetle(p, cx, cy, s, accent):
     p.stroke(P([(-14, -60), (0, -74), (14, -60)]), 9 * s)
 
 
-MASCOTS = {"fox": fox, "crow": crow, "wolf": wolf, "beetle": beetle, "owl": owl, "octopus": octopus, "tiger": tiger, "golem": golem, "star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
+def lion(p, cx, cy, s, accent):
+    """Shishi: a lion's head in a spiky mane."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    mane = []
+    for k in range(18):
+        a = math.radians(k * 20 - 90)
+        r = 108 if k % 2 == 0 else 82
+        mane.append((math.cos(a) * r, -6 + math.sin(a) * r * 0.95))
+    p.poly(P(mane), amp=2.0)
+    p.ellipse(cx, cy - 2 * s, 62 * s, 68 * s, fill=CLEAR, amp=1.0)
+    for side in (-1, 1):
+        p.ellipse(cx + side * 40 * s, cy - 52 * s, 15 * s, 14 * s, amp=0.6)
+    p.ellipse(cx, cy, 54 * s, 60 * s, amp=1.5)
+    for side in (-1, 1):
+        p.poly(P([(side * 12, -18), (side * 40, -26), (side * 34, -8)]), fill=CLEAR, amp=0.4)
+        p.ellipse(cx + side * 25 * s, cy - 16 * s, 5 * s, 5 * s, fill=accent, amp=0.3)
+    p.poly(P([(-14, 12), (14, 12), (0, 28)]), fill=accent, amp=0.4)
+    for side in (-1, 1):
+        p.curve((cx, cy + 30 * s), (cx + side * 10 * s, cy + 42 * s), (cx + side * 24 * s, cy + 36 * s), 5 * s, fill=CLEAR)
+
+
+def boar(p, cx, cy, s, accent):
+    """Inoshishi: a charging boar with tusks and speed lines."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    p.poly(P([(-60, -40), (-40, -62), (-24, -52), (-6, -72), (12, -56), (30, -74), (46, -56), (66, -68), (80, -46), (104, -30), (112, 10), (96, 44),
+              (40, 58), (-30, 56), (-70, 40), (-118, 30), (-140, 10), (-136, -6), (-104, -20)]), amp=2.0)
+    p.poly(P([(-62, -40), (-52, -78), (-36, -44)]), amp=0.8)
+    p.poly(P([(-96, -10), (-80, -18), (-82, -4)]), fill=CLEAR, amp=0.3)
+    p.curve((cx - 116 * s, cy + 24 * s), (cx - 128 * s, cy + 2 * s), (cx - 110 * s, cy - 14 * s), 8 * s, fill=accent)
+    p.ellipse(cx - 138 * s, cy + 4 * s, 5 * s, 6 * s, fill=CLEAR, amp=0.3)
+    for x in (-48, -18, 44, 76):
+        p.stroke(P([(x, 50), (x - 8, 92)]), 16 * s)
+    p.curve((cx + 108 * s, cy - 12 * s), (cx + 132 * s, cy - 30 * s), (cx + 120 * s, cy - 44 * s), 6 * s)
+    for y, L in ((-30, 34), (0, 46), (30, 30)):
+        p.stroke(P([(126, y), (126 + L * 0.6, y)]), 7 * s, fill=accent)
+
+
+def phoenix(p, cx, cy, s, accent):
+    """Hinotori: a phoenix with flame wings and a long burning tail."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    for side in (-1, 1):
+        p.poly(P([(side * 20, -20), (side * 60, -60), (side * 74, -104), (side * 92, -70), (side * 118, -108), (side * 124, -62), (side * 146, -80),
+                  (side * 136, -30), (side * 96, 0), (side * 30, 16)]), amp=1.8)
+    p.ellipse(cx, cy, 30 * s, 44 * s)
+    p.ellipse(cx, cy - 52 * s, 22 * s, 22 * s)
+    p.poly(P([(-8, -50), (8, -50), (0, -32)]), fill=accent, amp=0.3)
+    p.ellipse(cx + 8 * s, cy - 58 * s, 4 * s, 4 * s, fill=CLEAR, amp=0.2)
+    for dx, h in ((-10, 24), (0, 32), (10, 24)):
+        p.poly(P([(dx - 6, -70), (dx, -70 - h), (dx + 6, -70)]), amp=0.5)
+    for dx, bend in ((-26, -40), (0, 0), (26, 40)):
+        p.curve((cx + dx * 0.4 * s, cy + 36 * s), (cx + (dx + bend * 0.3) * s, cy + 74 * s), (cx + (dx + bend) * s, cy + 100 * s), 12 * s)
+        p.ellipse(cx + (dx + bend) * s, cy + 100 * s, 10 * s, 10 * s, fill=accent, amp=0.4)
+
+
+def eel(p, cx, cy, s, accent):
+    """Unagi: an electric eel coiling through lightning bolts."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    path = [(-136 + 26 * k, 34 * math.sin(k * 0.62) + 20 - 4 * k) for k in range(11)]
+    p.stroke(P(path), 34 * s, amp=1.0)
+    hx, hy = path[-1]
+    p.ellipse(cx + (hx + 8) * s, cy + hy * s, 30 * s, 22 * s, amp=1.0)
+    p.ellipse(cx + (hx + 14) * s, cy + (hy - 6) * s, 5 * s, 5 * s, fill=CLEAR, amp=0.3)
+    p.stroke(P([(hx + 22, hy + 8), (hx + 36, hy + 6)]), 4 * s, fill=CLEAR)
+    for k in range(1, 9, 2):
+        x, y = path[k]
+        p.poly(P([(x - 6, y - 12), (x + 4, y - 2), (x - 2, y), (x + 6, y + 12), (x - 4, y + 2), (x + 2, y)]), fill=accent, amp=0.3)
+    for bx, by, sc in ((-90, -70, 1.0), (60, -96, 0.8), (90, 70, 0.9)):
+        q = lambda x, y: (bx + x * sc, by + y * sc)
+        p.poly(P([q(4, -30), q(-12, 2), q(0, 2), q(-6, 30), q(14, -6), q(2, -6), q(10, -30)]), fill=accent, amp=0.4)
+
+
+MASCOTS = {"lion": lion, "boar": boar, "phoenix": phoenix, "eel": eel, "fox": fox, "crow": crow, "wolf": wolf, "beetle": beetle, "owl": owl, "octopus": octopus, "tiger": tiger, "golem": golem, "star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
            "sea_dragon": sea_dragon, "ghost": ghost, "brazier": brazier, "penguin": penguin, "thunder": thunder, "swallow": swallow, "whale": whale,
            "mountain": mountain, "bat_moon": bat_moon, "sun_crown": sun_crown}
 

@@ -94,7 +94,7 @@
         "blaze_spike"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.6,
+      "points_offset": -0.7,
       "emblem": {
         "mascot": "brazier",
         "layout": "split",
@@ -141,7 +141,7 @@
         "frost_serve"
       ],
       "verified": "no",
-      "points_offset": -2.2,
+      "points_offset": -2.3,
       "emblem": {
         "mascot": "penguin",
         "layout": "top",
@@ -188,7 +188,7 @@
         "zigzag_spike"
       ],
       "verified": "no",
-      "points_offset": -4.4,
+      "points_offset": -4.7,
       "emblem": {
         "mascot": "thunder",
         "layout": "stacked",
@@ -282,7 +282,7 @@
         "tidal_arc"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.6,
+      "points_offset": -0.7,
       "emblem": {
         "mascot": "whale",
         "layout": "top",
@@ -330,7 +330,7 @@
         "quake_spike"
       ],
       "verified": "no",
-      "points_offset": -0.8,
+      "points_offset": -0.9,
       "emblem": {
         "mascot": "mountain",
         "layout": "stacked",
@@ -426,7 +426,7 @@
         "holy_lance"
       ],
       "verified": "no",
-      "points_offset": -2.7,
+      "points_offset": -2.5,
       "emblem": {
         "mascot": "sun_crown",
         "layout": "stacked",
@@ -474,7 +474,7 @@
         "swerve_tip"
       ],
       "verified": "no",
-      "points_offset": -1.6,
+      "points_offset": -1.5,
       "emblem": {
         "mascot": "blossom",
         "layout": "split",
@@ -522,7 +522,7 @@
         "storm_serve"
       ],
       "verified": "no",
-      "points_offset": -3.9,
+      "points_offset": -4.3,
       "emblem": {
         "mascot": "bullet_train",
         "layout": "top",
@@ -570,7 +570,7 @@
         "flame_serve"
       ],
       "verified": "no",
-      "points_offset": -1.7,
+      "points_offset": -1.8,
       "emblem": {
         "mascot": "rooster",
         "layout": "split",
@@ -618,7 +618,7 @@
         "ice_wall"
       ],
       "verified": "no",
-      "points_offset": 5.5,
+      "points_offset": 5.8,
       "emblem": {
         "mascot": "snow_cat",
         "layout": "stacked",
@@ -667,7 +667,7 @@
         "undertow"
       ],
       "verified": "no",
-      "points_offset": 0.5,
+      "points_offset": 0.4,
       "emblem": {
         "mascot": "sea_dragon",
         "layout": "top",
@@ -716,7 +716,7 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.3,
+      "points_offset": 0.2,
       "emblem": {
         "mascot": "ghost",
         "layout": "split",
@@ -764,7 +764,7 @@
         "starfall"
       ],
       "verified": "no",
-      "points_offset": 5.5,
+      "points_offset": 5.4,
       "emblem": {
         "mascot": "star",
         "layout": "top",
@@ -813,7 +813,7 @@
         "blaze_spike"
       ],
       "verified": "no",
-      "points_offset": -1.7,
+      "points_offset": -1.9,
       "emblem": {
         "mascot": "oni",
         "layout": "split",
@@ -957,7 +957,7 @@
         "sunburst_serve"
       ],
       "verified": "no",
-      "points_offset": 2.9,
+      "points_offset": 3.3,
       "emblem": {
         "mascot": "owl",
         "layout": "top",
@@ -1005,7 +1005,7 @@
         "undertow"
       ],
       "verified": "no",
-      "points_offset": 4.6,
+      "points_offset": 5.5,
       "emblem": {
         "mascot": "octopus",
         "layout": "split",
@@ -1103,7 +1103,7 @@
         "earthquake_serve"
       ],
       "verified": "no",
-      "points_offset": 0.1,
+      "points_offset": 0.2,
       "emblem": {
         "mascot": "golem",
         "layout": "stacked",
@@ -1152,7 +1152,7 @@
         "nine_tails"
       ],
       "verified": "no",
-      "points_offset": -0.9,
+      "points_offset": -1.1,
       "emblem": {
         "mascot": "fox",
         "layout": "stacked",
@@ -1201,7 +1201,7 @@
         "cyclone_spike"
       ],
       "verified": "no",
-      "points_offset": 0.6,
+      "points_offset": 0.3,
       "emblem": {
         "mascot": "crow",
         "layout": "top",
@@ -1250,7 +1250,7 @@
         "ice_skates"
       ],
       "verified": "no",
-      "points_offset": -3.0,
+      "points_offset": -3.8,
       "emblem": {
         "mascot": "wolf",
         "layout": "stacked",
@@ -1299,12 +1299,208 @@
         "iron_curtain"
       ],
       "verified": "no",
-      "points_offset": -0.3,
+      "points_offset": -1.7,
       "emblem": {
         "mascot": "beetle",
         "layout": "split",
         "font": "bangers",
         "accent": "FFB04A"
+      }
+    },
+    {
+      "id": "shishi",
+      "name": "Shishi Lions",
+      "base": "Rensho",
+      "slot": "regular",
+      "element": "power",
+      "jersey": "E8B83A",
+      "shorts": "6A3A1A",
+      "hair": [
+        "8A4A1A",
+        "E8B83A"
+      ],
+      "banner": "8A5A1A",
+      "pitch": 0.85,
+      "weights": {
+        "Spike": 4,
+        "Jump": 3,
+        "Block": 3,
+        "Bump": 2,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 1
+      },
+      "intro": "Kneel before the pride.",
+      "win": "The king wins.",
+      "lose": "...the pride falls.",
+      "got_point": [
+        "Roar!",
+        "Ours."
+      ],
+      "lost_point": [
+        "A scratch.",
+        "We hunt on."
+      ],
+      "comment": "Once they got a run going, there was no stopping them.",
+      "signature": [
+        "kings_roar",
+        "momentum",
+        "overdrive"
+      ],
+      "verified": "no",
+      "points_offset": -0.0,
+      "emblem": {
+        "mascot": "lion",
+        "layout": "top",
+        "font": "bangers",
+        "accent": "FF8A2A"
+      }
+    },
+    {
+      "id": "inoshishi",
+      "name": "Inoshishi Boars",
+      "base": "Daigan Tech",
+      "slot": "regular",
+      "element": "earth",
+      "jersey": "7A5A3A",
+      "shorts": "3A2A1A",
+      "hair": [
+        "3A2A1A",
+        "A07A4A"
+      ],
+      "banner": "5A4A2A",
+      "pitch": 0.9,
+      "weights": {
+        "Spike": 3,
+        "Jump": 4,
+        "Block": 2,
+        "Bump": 3,
+        "SpinServe": 3,
+        "ServeJump": 2,
+        "FloatServe": 1
+      },
+      "intro": "No brakes!",
+      "win": "Trampled!",
+      "lose": "...ran out of steam.",
+      "got_point": [
+        "Charge!",
+        "Oink!"
+      ],
+      "lost_point": [
+        "Ow.",
+        "Again!"
+      ],
+      "comment": "They just ran straight at us every time.",
+      "signature": [
+        "boar_rush",
+        "tusk_serve",
+        "avalanche"
+      ],
+      "verified": "no",
+      "points_offset": -4.2,
+      "emblem": {
+        "mascot": "boar",
+        "layout": "stacked",
+        "font": "marker",
+        "accent": "FFE6B0"
+      }
+    },
+    {
+      "id": "hinotori",
+      "name": "Hinotori Phoenix",
+      "base": "Aomori",
+      "slot": "combo",
+      "element": "fire",
+      "jersey": "E84A2A",
+      "shorts": "6A1A1A",
+      "hair": [
+        "FFD24A",
+        "E84A2A"
+      ],
+      "banner": "A82A1A",
+      "pitch": 1.1,
+      "weights": {
+        "Spike": 3,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 3,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "We always rise again.",
+      "win": "Reborn!",
+      "lose": "...embers.",
+      "got_point": [
+        "Burn!",
+        "Rising!"
+      ],
+      "lost_point": [
+        "Smoulder.",
+        "We'll rise."
+      ],
+      "comment": "Every time we got ahead, they came back hotter.",
+      "signature": [
+        "rebirth_flame",
+        "phoenix_dive",
+        "firestorm"
+      ],
+      "verified": "no",
+      "points_offset": 7.2,
+      "emblem": {
+        "mascot": "phoenix",
+        "layout": "split",
+        "font": "bangers",
+        "accent": "FFD24A"
+      }
+    },
+    {
+      "id": "unagi",
+      "name": "Unagi Eels",
+      "base": "Ten-Roku",
+      "slot": "combo",
+      "element": "lightning",
+      "jersey": "2A6A6A",
+      "shorts": "1A2A2A",
+      "hair": [
+        "1A3A3A",
+        "6AE8D8"
+      ],
+      "banner": "1A4A4A",
+      "pitch": 1.0,
+      "weights": {
+        "Spike": 2,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 4,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "Slippery and shocking.",
+      "win": "Zapped!",
+      "lose": "...short circuit.",
+      "got_point": [
+        "Zzt!",
+        "Slip!"
+      ],
+      "lost_point": [
+        "Fizzle.",
+        "Recharge."
+      ],
+      "comment": "Every dig gave us a shock.",
+      "signature": [
+        "shock_tip",
+        "voltage",
+        "lightning_reflex"
+      ],
+      "verified": "no",
+      "points_offset": 0.0,
+      "emblem": {
+        "mascot": "eel",
+        "layout": "split",
+        "font": "marker",
+        "accent": "FFE14A"
       }
     }
   ],
@@ -1312,11 +1508,11 @@
     "about": "Theme element and strength offset for each vanilla team: scaling draws random perks from the element first (built-in perks always come first) and adds points_offset to the team's level-up points. Optional 'weights' replace the team's stat weights in Infinite/Loop (used where the game's weights leave a team unable to grow).",
     "Rensho": {
       "element": "power",
-      "points_offset": -0.8
+      "points_offset": -0.7
     },
     "Hinami Kai": {
       "element": "wind",
-      "points_offset": -0.8
+      "points_offset": -0.7
     },
     "Daigan Tech": {
       "element": "earth",
@@ -1324,15 +1520,15 @@
     },
     "Namasito Academy": {
       "element": "water",
-      "points_offset": 2.1
+      "points_offset": 2.2
     },
     "Kozuki Dan": {
       "element": "lightning",
-      "points_offset": -2.7
+      "points_offset": -2.8
     },
     "Aomori": {
       "element": "wind",
-      "points_offset": 4.0
+      "points_offset": 4.1
     },
     "Ten-Roku": {
       "element": "earth",
@@ -1340,7 +1536,7 @@
     },
     "Tenzio": {
       "element": "shadow",
-      "points_offset": 1.5,
+      "points_offset": 1.3,
       "weights": {
         "Spike": 2,
         "Jump": 3,
@@ -1353,7 +1549,7 @@
     },
     "Sunaumi High": {
       "element": "water",
-      "points_offset": 0.3
+      "points_offset": -0.0
     },
     "Shirogane": {
       "element": "ice",
