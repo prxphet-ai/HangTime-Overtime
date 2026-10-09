@@ -26,6 +26,7 @@ namespace HangtimeOvertime.Patches
         private static void Accepted(PlayerController pc, BallMovement ball)
         {
             int side = Engine.Engine.SideOf(pc);
+            Plugin.Trace($"touch: {pc.name} (side {side}{(pc.setter ? ", setter" : "")})");
             BallFx.EnemyTouched(side, ball);
             BallFx.NewFlight(side, ball);
             Engine.Engine.OnAcceptedTouch(side);

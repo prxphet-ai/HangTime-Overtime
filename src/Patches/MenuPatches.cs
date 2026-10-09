@@ -103,6 +103,7 @@ namespace HangtimeOvertime.Patches
             group.buttons.Insert(at, controller);
             ContinueMenu.Label(classic.gameObject, clone);
             CreatorMenu.AddTitleButton(classic.gameObject);
+            VersusMenu.AddTitleButton(classic.gameObject);
         }
 
         [HarmonyPatch(typeof(TitleButton), "Click")]
@@ -111,6 +112,7 @@ namespace HangtimeOvertime.Patches
             [HarmonyPrefix]
             private static bool Prefix(TitleButton __instance)
             {
+                if (RunState.Mode == RunMode.Versus) VersusState.Leave();   // nothing of a Versus match carries into a run
                 bool infinite = ContinueMenu.IsInfinite(__instance);
                 if (!ContinueMenu.Bypass && ContinueMenu.Players(__instance) == 1 && RunSaves.Has(infinite))
                 {
@@ -160,6 +162,12 @@ namespace HangtimeOvertime.Patches
         [HarmonyPatch(typeof(RestartButton), "Click")]
         private static class Restart
         {
+            [HarmonyPrefix]
+            private static void Prefix()
+            {
+                if (RunState.Mode == RunMode.Versus) VersusState.Leave();   // quitting a Versus match from the pause menu
+            }
+
             [HarmonyPostfix]
             private static void Postfix(RestartButton __instance)
             {

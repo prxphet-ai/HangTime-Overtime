@@ -45,6 +45,7 @@ namespace HangtimeOvertime.Core
                 {
                     VanillaCards.Add(c);
                     if (TechniqueOf(c) != null && !string.IsNullOrEmpty(c.title)) KnownTitles[TechniqueOf(c).GetType().Name] = c.title;
+                    if (TechniqueOf(c) != null && !string.IsNullOrEmpty(c.description)) KnownDescriptions[TechniqueOf(c).GetType().Name] = c.description;
                 }
         }
 
@@ -56,6 +57,7 @@ namespace HangtimeOvertime.Core
 
         // card titles of the game's own techniques, remembered across sessions (saved runs show them before any upgrade screen)
         public static readonly Dictionary<string, string> KnownTitles = new Dictionary<string, string>();
+        public static readonly Dictionary<string, string> KnownDescriptions = new Dictionary<string, string>();
 
         public static string VanillaTitle(Technique t) =>
             VanillaCards.FirstOrDefault(v => TechniqueOf(v) == t)?.title

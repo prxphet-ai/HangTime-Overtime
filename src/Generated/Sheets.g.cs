@@ -1024,6 +1024,12 @@ namespace HangtimeOvertime.Generated
             new HookDef("serve_flight", "BallMovement", "Serve", "postfix", "TouchPatches"),
             new HookDef("serve_flight_float", "BallMovement", "FloatServe", "postfix", "TouchPatches"),
             new HookDef("stat_chart_cards", "StatChart", "SetPoints", "postfix", "UpgradePatches"),
+            new HookDef("versus_round_end", "GameManager", "EndGame", "prefix", "VersusPatches"),
+            new HookDef("versus_no_game_move", "LocalInputManager", "OnMoveP1", "prefix", "VersusPatches"),
+            new HookDef("versus_no_game_up", "LocalInputManager", "OnUpP1", "prefix", "VersusPatches"),
+            new HookDef("versus_no_game_down", "LocalInputManager", "OnDownP1", "prefix", "VersusPatches"),
+            new HookDef("versus_scene", "UnityEngine.SceneManagement.SceneManager", "sceneLoaded", "event", "VersusPatches"),
+            new HookDef("restart_leave_versus", "RestartButton", "Click", "prefix", "MenuPatches"),
         };
     }
 
@@ -1039,6 +1045,17 @@ namespace HangtimeOvertime.Generated
         public static readonly ModeDef Normal = new ModeDef("Normal", "{bracket}", "-", false);
         public static readonly ModeDef Infinite = new ModeDef("Infinite", "Infinite - Match {n}", "bestInfiniteWins", true);
         public static readonly ModeDef Loop = new ModeDef("Loop", "Loop {loop} - {bracket}", "bestLoop", false);
+        public static readonly ModeDef Versus = new ModeDef("Versus", "Versus - Round {n}", "-", true);
+    }
+
+    // VERSUS RULES (sheets/modes.json "versus"): the one place to change round/match targets.
+    public static class VersusRules
+    {
+        public const int PointsPerRound = 5;   // points to win a round
+        public const int RoundsToWin = 5;   // round wins to win the match
+        public const int ContinueRounds = 5;   // CONTINUE raises the target by this many round wins
+        public const int OfferSize = 3;   // choices on the loser's pick screen
+        public const float StatCardShare = 0.34f;   // chance each choice is a stat card instead of a perk
     }
 
     // OPPONENT SCALING CONFIG (sheets/scaling.json): one constant per row.

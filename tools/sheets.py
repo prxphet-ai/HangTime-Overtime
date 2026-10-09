@@ -354,8 +354,12 @@ def preflight():
                 errors.append(f"hooks.{h['id']}: no prefixes on {score_m} (could change the score)")
 
     # 7. modes, scaling, ui, saves
-    if {m["id"] for m in S["modes"]["rows"]} != {"Normal", "Infinite", "Loop"}:
-        errors.append("modes: ids should be Normal, Infinite, Loop")
+    if {m["id"] for m in S["modes"]["rows"]} != {"Normal", "Infinite", "Loop", "Versus"}:
+        errors.append("modes: ids should be Normal, Infinite, Loop, Versus")
+    vr = S["modes"].get("versus", {})
+    for k in ("points_per_round", "rounds_to_win", "continue_rounds", "offer_size", "stat_card_share"):
+        if not isinstance(vr.get(k), (int, float)):
+            errors.append(f"modes.versus.{k}: missing number")
     save_ids = {s["id"] for s in S["saves"]["rows"]}
     for m in S["modes"]["rows"]:
         if m["achievements"] not in ("allow", "block"):
@@ -572,6 +576,16 @@ def generate(S):
     for m in S["modes"]["rows"]:
         L.append(f"        public static readonly ModeDef {m['id']} = new ModeDef({cs(m['id'])}, {cs(m['banner'])}, {cs(m['best_key'])}, {'true' if m['achievements'] == 'block' else 'false'});")
     L += ["    }", ""]
+
+    vr = S["modes"]["versus"]
+    L += ["    // VERSUS RULES (sheets/modes.json \"versus\"): the one place to change round/match targets.",
+          "    public static class VersusRules", "    {",
+          f"        public const int PointsPerRound = {int(vr['points_per_round'])};   // points to win a round",
+          f"        public const int RoundsToWin = {int(vr['rounds_to_win'])};   // round wins to win the match",
+          f"        public const int ContinueRounds = {int(vr['continue_rounds'])};   // CONTINUE raises the target by this many round wins",
+          f"        public const int OfferSize = {int(vr['offer_size'])};   // choices on the loser's pick screen",
+          f"        public const float StatCardShare = {fl(vr['stat_card_share'])};   // chance each choice is a stat card instead of a perk",
+          "    }", ""]
 
     L += ["    // OPPONENT SCALING CONFIG (sheets/scaling.json): one constant per row.",
           "    public static class Scaling", "    {"]

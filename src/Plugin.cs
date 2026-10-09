@@ -37,6 +37,7 @@ namespace HangtimeOvertime
             RunSaves.Load();
             Engine.Look.Load();
             LookPatches.Init();
+            VersusPatches.Init();
             GameManager.OnPlayerLose += RunSaves.ClearCurrent;   // a lost match ends the run (the lose screen is not a scene)
             RunPatches.Init();
             MenuPatches.Init();

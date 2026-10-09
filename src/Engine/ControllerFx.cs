@@ -62,7 +62,7 @@ namespace HangtimeOvertime.Engine
             yield return null;   // technique OnStart right after it
             Side = Engine.SideOf(Pc);
             baseSpike = fSpike(Pc); baseJump = fJump(Pc); baseBlock = fBlock(Pc); baseMove = Pc.moveSpeed;
-            if (Side == 0) StatCards.ApplyTo(this);
+            StatCards.ApplyTo(this);   // the right team only has card points in Versus
             foreach (var (stat, mult) in Engine.Sides[Side].MatchBuffs) AddBuff(stat, mult, -1f);
             var anime = transform.Find("Anime sprite");
             parts = (anime != null ? anime : transform).GetComponentsInChildren<SpriteRenderer>(true);

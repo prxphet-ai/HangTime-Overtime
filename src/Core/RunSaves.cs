@@ -41,6 +41,8 @@ namespace HangtimeOvertime.Core
         public string classic = "";
         public string[] titleClasses = new string[0];      // the game's card titles, see PerkRegistry.KnownTitles
         public string[] titleNames = new string[0];
+        public string[] descClasses = new string[0];       // and their card descriptions (Versus offers show them)
+        public string[] descTexts = new string[0];
     }
 
     internal class RunSlots
@@ -89,6 +91,8 @@ namespace HangtimeOvertime.Core
             // version 1 is the first format; later versions convert old slots here before reading them
             for (int i = 0; f.titleClasses != null && f.titleNames != null && i < f.titleClasses.Length && i < f.titleNames.Length; i++)
                 PerkRegistry.KnownTitles[f.titleClasses[i]] = f.titleNames[i];
+            for (int i = 0; f.descClasses != null && f.descTexts != null && i < f.descClasses.Length && i < f.descTexts.Length; i++)
+                PerkRegistry.KnownDescriptions[f.descClasses[i]] = f.descTexts[i];
             RunSnapshot Read(string json) => string.IsNullOrEmpty(json) ? new RunSnapshot() : JsonUtility.FromJson<RunSnapshot>(json) ?? new RunSnapshot();
             return new RunSlots { infinite = Read(f.infinite), classic = Read(f.classic) };
         }
@@ -104,6 +108,8 @@ namespace HangtimeOvertime.Core
                     classic = file.classic.has ? JsonUtility.ToJson(file.classic) : "",
                     titleClasses = PerkRegistry.KnownTitles.Keys.ToArray(),
                     titleNames = PerkRegistry.KnownTitles.Values.ToArray(),
+                    descClasses = PerkRegistry.KnownDescriptions.Keys.ToArray(),
+                    descTexts = PerkRegistry.KnownDescriptions.Values.ToArray(),
                 };
                 File.WriteAllText(tmp, JsonUtility.ToJson(onDisk, true));
                 if (File.Exists(PathOf)) File.Delete(PathOf);
@@ -116,7 +122,7 @@ namespace HangtimeOvertime.Core
 
         // runs worth saving: one player, past the tutorial
         private static bool Saving =>
-            GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 1 && !TutorialManager.onTutorial && !TitleController.onTitle;
+            RunState.Mode != RunMode.Versus && GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 1 && !TutorialManager.onTutorial && !TitleController.onTitle;
 
         public static void Clear(bool infinite)
         {
@@ -125,7 +131,7 @@ namespace HangtimeOvertime.Core
             Plugin.Log.LogInfo($"Saved {(infinite ? "Infinite" : "Classic")} run cleared");
         }
 
-        public static void ClearCurrent() { if (GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 1) Clear(InfiniteSlot); }
+        public static void ClearCurrent() { if (RunState.Mode != RunMode.Versus && GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 1) Clear(InfiniteSlot); }
 
         // ------------------------------------------------------------ capture
 

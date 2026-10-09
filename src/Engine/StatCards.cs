@@ -14,10 +14,12 @@ namespace HangtimeOvertime.Engine
         private static readonly Dictionary<string, StatCardDef> byId = Generated.StatCards.All.ToDictionary(c => c.Id);
         private static readonly Dictionary<string, StatDef> stats = Generated.Stats.All.ToDictionary(s => s.Id);
 
-        // card points per stat this run (player team)
+        // card points per stat this run (player team), and the right team's in Versus
         public static readonly Dictionary<string, float> Points = new Dictionary<string, float>();
+        public static readonly Dictionary<string, float> Side1Points = new Dictionary<string, float>();
+        public static Dictionary<string, float> PointsFor(int side) => side == 0 ? Points : Side1Points;
 
-        public static void ResetRun() => Points.Clear();
+        public static void ResetRun() { Points.Clear(); Side1Points.Clear(); }
 
         public static StatCardDef CardOf(UpgradePair pair) =>
             pair?.upgrades != null && pair.upgrades.Count == 1 && pair.upgrades[0].StartsWith(Marker) && byId.TryGetValue(pair.upgrades[0].Substring(Marker.Length), out var c) ? c : null;
@@ -61,21 +63,27 @@ namespace HangtimeOvertime.Engine
         public static Color RarityColor(string rarity) =>
             rarity == "epic" ? new Color(1f, 0.78f, 0.29f) : rarity == "rare" ? new Color(0.5f, 0.85f, 1f) : Color.white;
 
-        public static void Take(StatCardDef c)
+        public static StatCardDef Get(string id) => byId.TryGetValue(id, out var c) ? c : null;
+        public static IEnumerable<StatCardDef> All => byId.Values;
+        public static string Label(string statId) => stats.TryGetValue(statId, out var s) ? s.Label : statId;
+
+        public static void Take(StatCardDef c, int side = 0)
         {
+            var points = PointsFor(side);
             for (int i = 0; i < c.Stats.Length; i++)
             {
                 var s = stats[c.Stats[i]];
-                Points.TryGetValue(s.Id, out var have);
-                Points[s.Id] = Mathf.Clamp(have + c.Points[i], s.MinSteps, s.MaxSteps);
+                points.TryGetValue(s.Id, out var have);
+                points[s.Id] = Mathf.Clamp(have + c.Points[i], s.MinSteps, s.MaxSteps);
             }
-            Plugin.Log.LogInfo($"Stat card '{c.Title}': " + string.Join(", ", Points.Select(kv => $"{kv.Key} {kv.Value:0.##}")));
+            Plugin.Log.LogInfo($"Stat card '{c.Title}' (side {side}): " + string.Join(", ", points.Select(kv => $"{kv.Key} {kv.Value:0.##}")));
         }
 
-        // Turn the run's card points into game units for one player of the player's team.
+        // Turn the card points of a player's team into game units for that player.
         public static void ApplyTo(ControllerFx p)
         {
-            foreach (var kv in Points)
+            var points = PointsFor(p.Side);
+            foreach (var kv in points)
             {
                 if (!stats.TryGetValue(kv.Key, out var s) || kv.Value == 0f) continue;
                 foreach (var field in s.Fields)
@@ -92,7 +100,7 @@ namespace HangtimeOvertime.Engine
                     }
                 }
             }
-            if (Points.Count > 0) Plugin.Trace($"{p.name}: stat cards applied ({string.Join(", ", Points.Select(kv => $"{kv.Key} {kv.Value:0.##}"))})");
+            if (points.Count > 0) Plugin.Trace($"{p.name}: stat cards applied ({string.Join(", ", points.Select(kv => $"{kv.Key} {kv.Value:0.##}"))})");
         }
     }
 }

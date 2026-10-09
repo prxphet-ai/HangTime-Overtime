@@ -186,8 +186,9 @@ namespace HangtimeOvertime.Patches
             t.rectTransform.pivot = new Vector2(pivotLeft ? 0f : 0.5f, 0.5f);
             t.transform.localPosition = new Vector3(at.x, at.y, -0.2f);
             t.text = s;
+            t.margin = Vector4.zero;
             t.alignment = align;
-            t.enableWordWrapping = false;
+            t.textWrappingMode = TextWrappingModes.NoWrap;
             t.enableAutoSizing = false;
             t.fontSize = fontSource.fontSize * size;
             t.rectTransform.sizeDelta = new Vector2(width / ls.x, 3f / ls.y);

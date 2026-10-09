@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace HangtimeOvertime.Core
 {
-    public enum RunMode { Normal, Infinite, Loop }
+    public enum RunMode { Normal, Infinite, Loop, Versus }
 
     // Which mode the run is in, its counters, per-match perk state, and the mod's own save file.
     internal static class RunState
@@ -20,7 +20,7 @@ namespace HangtimeOvertime.Core
         private static string SavePath => Path.Combine(Application.persistentDataPath, "HangtimeOvertime.json");
 
         public static ModeDef ModeDef =>
-            Mode == RunMode.Infinite ? Modes.Infinite : Mode == RunMode.Loop ? Modes.Loop : Modes.Normal;
+            Mode == RunMode.Infinite ? Modes.Infinite : Mode == RunMode.Loop ? Modes.Loop : Mode == RunMode.Versus ? Modes.Versus : Modes.Normal;
 
         // How many times the bracket has been cleared this run (drives the scaling sheet).
         public static int Tier =>

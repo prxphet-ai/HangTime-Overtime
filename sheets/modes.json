@@ -2,7 +2,7 @@
   "sheet": "modes",
   "about": "One row per run mode. Each row generates one ModeDef. 'tier' is how many times the bracket has been cleared (0 in a fresh run); scaling applies per tier on top of the game's own opponent stats.",
   "columns": {
-    "id": "Normal | Infinite | Loop",
+    "id": "Normal | Infinite | Loop | Versus",
     "entry": "how the player gets into this mode",
     "slot_rule": "how the game's bracket slot (gameNumber 1-8) is chosen",
     "tier_rule": "how tier is derived",
@@ -49,6 +49,26 @@
       "best_key": "bestLoop",
       "banner": "Loop {loop} - {bracket}",
       "verified": "in game 2026-10-09: Win screen button -> 'Loop 2 started', round 9 scaling, random opponent from the slot pool"
+    },
+    {
+      "id": "Versus",
+      "entry": "new VERSUS button on the title screen: join screen (each player presses a button), team picks, START",
+      "slot_rule": "fixed slot 1 (a regular gym, no difficulty hitbox changes)",
+      "tier_rule": "0",
+      "card_rule": "after each round the loser picks one perk or stat card (offer of offer_size, no duplicates); the winner gets nothing",
+      "final_win": "first to rounds_to_win round wins: build summary with CONTINUE / REMATCH / MENU",
+      "achievements": "block",
+      "best_key": "-",
+      "banner": "Versus - Round {n}",
+      "verified": "no"
     }
-  ]
+  ],
+  "versus": {
+    "about": "Versus (ROUNDS-style): rounds to points_per_round, first to rounds_to_win round wins takes the match; the loser of each round picks one upgrade.",
+    "points_per_round": 5,
+    "rounds_to_win": 5,
+    "continue_rounds": 5,
+    "offer_size": 3,
+    "stat_card_share": 0.34
+  }
 }

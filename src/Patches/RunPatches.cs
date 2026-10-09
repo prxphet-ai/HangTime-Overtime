@@ -93,7 +93,8 @@ namespace HangtimeOvertime.Patches
                 int slot = GameManager.gameNumber;
                 if (TeamRoster.Current != null) TeamRoster.Dress(team, TeamRoster.Current, slot);
                 OpponentScaling.LastGiven.Clear();
-                if (RunState.Mode != RunMode.Normal) OpponentScaling.Apply(team, TeamRoster.Current, slot);
+                if (RunState.Mode == RunMode.Versus) VersusPatches.SetupMatch(__instance, team);
+                else if (RunState.Mode != RunMode.Normal) OpponentScaling.Apply(team, TeamRoster.Current, slot);
                 RunSaves.SaveMatchStart(team, TeamRoster.CurrentKey ?? team.name.Replace("(Clone)", "").Trim(), OpponentScaling.LastGiven);
                 Engine.Engine.FirePassives();
                 Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} round={OpponentScaling.Round} " +
@@ -152,7 +153,7 @@ namespace HangtimeOvertime.Patches
                 if (RunState.Mode == RunMode.Normal || TutorialManager.onTutorial) return true;
                 int g = Mathf.Clamp(GameManager.gameNumber, 0, __instance.MatchTitles.Count - 1);
                 string text = RunState.ModeDef.Banner
-                    .Replace("{n}", RunState.InfiniteMatch.ToString())
+                    .Replace("{n}", (RunState.Mode == RunMode.Versus ? VersusState.Round : RunState.InfiniteMatch).ToString())
                     .Replace("{loop}", RunState.Loop.ToString())
                     .Replace("{bracket}", __instance.MatchTitles[g]);
                 __instance.TextSlide(text);

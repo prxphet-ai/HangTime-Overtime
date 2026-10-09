@@ -471,6 +471,66 @@
       "purpose": "Adds Overtime stat card points to the upgrade screen stats chart",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "versus_round_end",
+      "target_type": "GameManager",
+      "target_method": "EndGame",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: a round's end is counted by the mod (round score, loser's pick) instead of the game's upgrade/lose screens; points themselves are untouched",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_game_move",
+      "target_type": "LocalInputManager",
+      "target_method": "OnMoveP1",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: the game's single-player input stops driving player 1 (each player drives their own player)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_game_up",
+      "target_type": "LocalInputManager",
+      "target_method": "OnUpP1",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: same, for jump/hit",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_game_down",
+      "target_type": "LocalInputManager",
+      "target_method": "OnDownP1",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: same, for receive",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_scene",
+      "target_type": "UnityEngine.SceneManagement.SceneManager",
+      "target_method": "sceneLoaded",
+      "kind": "event",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus rounds: regular gym slot and player 2's team for the right side",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "restart_leave_versus",
+      "target_type": "RestartButton",
+      "target_method": "Click",
+      "kind": "prefix",
+      "patch_class": "MenuPatches",
+      "purpose": "Leaving a Versus match from the pause menu clears its builds",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

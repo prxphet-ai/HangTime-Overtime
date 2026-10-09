@@ -61,7 +61,8 @@ namespace HangtimeOvertime.Patches
             t.transform.position = near.transform.position + new Vector3(0f, 1.7f, 0f);
             t.text = text.ToUpperInvariant();
             t.color = new Color(1f, 0.85f, 0.4f);
-            t.enableWordWrapping = true;
+            t.autoSizeTextContainer = false;
+                t.textWrappingMode = TextWrappingModes.Normal;
             t.rectTransform.sizeDelta = new Vector2(t.rectTransform.sizeDelta.x * 3f, t.rectTransform.sizeDelta.y * 2f);
             UnityEngine.Object.Destroy(t.gameObject, 8f);
         }
@@ -139,8 +140,9 @@ namespace HangtimeOvertime.Patches
                 t.transform.localScale = ls;
                 t.transform.position = new Vector3(center.x, panelTop - headerH / 2f, z - 0.02f);
                 t.text = header;
+                t.margin = Vector4.zero;
                 t.alignment = TextAlignmentOptions.Center;
-                t.enableWordWrapping = true;
+                t.textWrappingMode = TextWrappingModes.Normal;
                 t.rectTransform.sizeDelta = new Vector2((panelW - 2f) / ls.x, (headerH - 1f) / ls.y);
                 t.enableAutoSizing = true;
                 t.fontSizeMin = label.fontSize * 0.3f;

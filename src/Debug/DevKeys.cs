@@ -16,6 +16,7 @@ namespace HangtimeOvertime.Debugging
     {
         public static bool OnlyOvertimeCards;
         private static int lab = -1;
+        private static Gamepad testPad;
 
         private void Update()
         {
@@ -47,7 +48,24 @@ namespace HangtimeOvertime.Debugging
                 TeamRoster.DevForce = i < ids.Count ? ids[i] : null;
                 Plugin.Log.LogInfo($"Dev: next opponent forced to {TeamRoster.DevForce ?? "random"}");
             }
-            if (kb.f4Key.wasPressedThisFrame && inMatch)
+            if (kb.f4Key.wasPressedThisFrame && VersusState.Active && shift)
+            {
+                // a virtual gamepad for player 2 (tests the gamepad path and disconnects without hardware)
+                if (testPad == null) testPad = InputSystem.AddDevice<Gamepad>("Overtime test pad");
+                VersusState.Setup.Human(1).Input = new SlotInput { Kind = InputKind.Gamepad, DeviceId = testPad.deviceId, Label = "TEST GAMEPAD" };
+                Plugin.Log.LogInfo($"Dev: P2 on a virtual gamepad (id {testPad.deviceId})");
+            }
+            else if (kb.f4Key.wasPressedThisFrame && VersusState.Active && kb.ctrlKey.isPressed && testPad != null)
+            {
+                if (testPad.added) { InputSystem.RemoveDevice(testPad); Plugin.Log.LogInfo("Dev: virtual gamepad unplugged"); }
+                else { InputSystem.AddDevice(testPad); Plugin.Log.LogInfo("Dev: virtual gamepad plugged back in"); }
+            }
+            else if (kb.f4Key.wasPressedThisFrame && inMatch && VersusState.Active && Patches.VersusDriver.Current != null)
+            {
+                Patches.VersusDriver.Autopilot = !Patches.VersusDriver.Autopilot;
+                Plugin.Log.LogInfo($"Dev: Versus autopilot {(Patches.VersusDriver.Autopilot ? "on" : "off")} (both players driven through the Versus input path)");
+            }
+            else if (kb.f4Key.wasPressedThisFrame && inMatch)
             {
                 var server = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
                     .FirstOrDefault(p => p.attackDirection > 0f && !p.setter && p.name == "Player");
