@@ -34,10 +34,21 @@ namespace HangtimeOvertime.Engine
 
         // Picks the opponent for this slot; returns the prefab the game should spawn.
         public static string DevForce;   // development: next opponent (new-team id)
+        public static string ResumeKey;  // a resumed run: the saved opponent (new-team id or the game's prefab name), used once
+        public static string CurrentKey => currentKey;
 
         public static GameObject Choose(int slot)
         {
             if (prefabs.Count == 0) CollectPrefabs();
+            if (ResumeKey != null)
+            {
+                string key = ResumeKey;
+                ResumeKey = null;
+                var saved = Generated.Teams.All.FirstOrDefault(t => t.Id == key);
+                if (saved != null && prefabs.ContainsKey(saved.Base)) { Current = saved; currentKey = saved.Id; return prefabs[saved.Base]; }
+                if (prefabs.ContainsKey(key)) { Current = null; currentKey = key; return prefabs[key]; }
+                Plugin.Log.LogWarning("Saved opponent " + key + " not found; picking a new one");
+            }
             if (DevForce != null)
             {
                 var forced = Generated.Teams.All.FirstOrDefault(t => t.Id == DevForce);
@@ -56,6 +67,13 @@ namespace HangtimeOvertime.Engine
             currentKey = pick.key;
             Plugin.Log.LogInfo($"Opponent for slot {slot} ({cls}): {(pick.def != null ? pick.def.Name + " (new, on " + pick.def.Base + ")" : pick.key)} from {pool.Count} teams");
             return prefabs[pick.def != null ? pick.def.Base : pick.key];
+        }
+
+        // a resumed upgrade screen: which new team (if any) was just beaten, for its comment line
+        public static void RestoreCurrent(string key)
+        {
+            Current = Generated.Teams.All.FirstOrDefault(t => t.Id == key);
+            currentKey = key;
         }
 
         public static void ClearChoice() { ForcedPrefab = null; Current = null; currentKey = null; }

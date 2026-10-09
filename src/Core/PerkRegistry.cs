@@ -42,7 +42,10 @@ namespace HangtimeOvertime.Core
         {
             foreach (var c in cards)
                 if (!(TechniqueOf(c) is DataPerk) && !VanillaCards.Any(v => TechniqueOf(v) == TechniqueOf(c)))
+                {
                     VanillaCards.Add(c);
+                    if (TechniqueOf(c) != null && !string.IsNullOrEmpty(c.title)) KnownTitles[TechniqueOf(c).GetType().Name] = c.title;
+                }
         }
 
         public static Technique FindVanilla(string className)
@@ -51,8 +54,12 @@ namespace HangtimeOvertime.Core
             return hit != null ? hit : Resources.FindObjectsOfTypeAll<Technique>().FirstOrDefault(t => t.GetType().Name == className);
         }
 
+        // card titles of the game's own techniques, remembered across sessions (saved runs show them before any upgrade screen)
+        public static readonly Dictionary<string, string> KnownTitles = new Dictionary<string, string>();
+
         public static string VanillaTitle(Technique t) =>
-            VanillaCards.FirstOrDefault(v => TechniqueOf(v) == t)?.title ?? t.GetType().Name;
+            VanillaCards.FirstOrDefault(v => TechniqueOf(v) == t)?.title
+            ?? (KnownTitles.TryGetValue(t.GetType().Name, out var known) ? known : t.GetType().Name);
 
         public static Logo_technique MakeCard(DataPerk perk)
         {

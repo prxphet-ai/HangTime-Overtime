@@ -364,3 +364,26 @@ Modes:
   under HangTime!. Found why the buttons never moved down: the game has more than one object called "Button group", and I
   was moving the wrong one. The title menu is now found through its CLASSIC button, the same way as the INFINITE button.
 - Third round: buttons moved down only 0.45 units, so CLASSIC sits just under the credit line.
+
+### Step 16 — auto-save and Continue (Infinite and Classic)
+- **What is saved** (`<persistent data>/HangtimeOvertime_runs.json`, separate from the game's own `save.json`; code in
+  `src/Core/RunSaves.cs`): mode, bracket slot / Infinite round / loop, wins, the Classic line-up, run timer, every stat
+  level, every ability (Overtime perks by id, the game's own by class), Overtime stat card points, limit breaks, and the
+  opponent of the match about to be played with the perks it drew. Two slots — Infinite and Classic (Loops count as
+  Classic) — so one never overwrites the other. Co-op runs and the tutorial are not saved.
+- **When**: at the start of every match, when the upgrade screen opens after a win, right after a perk/stat card pick,
+  and again when the game closes or the window loses focus. **Decision: closing mid-match resumes at the start of that
+  match** (same opponent, same opponent perks, your abilities and stats as they were), not mid-rally.
+- **Cleared** when the run ends: a lost match, or winning the Classic final (LOOP 2 starts saving again at its first match).
+- **Title screen**: a mode with a saved run shows "CONTINUE · ROUND 7" (or "MATCH 3") under its name. Clicking it opens a
+  panel: the saved run (round, opponent, abilities, stat boosts, time) with CONTINUE / NEW RUN / BACK; NEW RUN asks
+  "START A NEW ... RUN? THIS DELETES YOUR SAVED RUN" before overwriting.
+- **Versioned**: the file has a version number and each slot is read through a migration step; a save that can't be
+  read (corrupt, or from a newer mod version) is kept aside as `.bad`, the player gets a notice on the title screen, and
+  the game starts fresh instead of crashing.
+- **Tested in game**: Infinite — saved at round 1, upgrade, pick and round 2; killed the game mid-match; relaunched, CONTINUE
+  put me back at round 2 vs the same team with the same perk. Killed it on the upgrade screen; CONTINUE reopened that
+  screen (with the beaten team's comment), the pick went through and round 3 started with both perks. At round 12 the
+  opponent came back with exactly the same two perks. Classic — practice -> stat card -> match 1 vs Kozuki, killed,
+  CONTINUE restored match 1 vs Kozuki with the stat card. Losing a resumed run cleared its save. NEW RUN -> confirm -> NO
+  and BACK both return cleanly.

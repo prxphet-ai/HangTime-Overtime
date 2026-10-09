@@ -15,6 +15,9 @@ namespace HangtimeOvertime.Engine
             RunState.Mode == RunMode.Infinite ? RunState.InfiniteMatch :
             RunState.Mode == RunMode.Loop ? 8 * (RunState.Loop - 1) + GameManager.gameNumber : 0;
 
+        public static List<Technique> ResumePerks;   // a resumed run: the perks this opponent had when it was saved, used once
+        public static List<Technique> LastGiven = new List<Technique>();
+
         public static string ClassOf(int slot) => slot >= 1 && slot <= 8 ? Generated.Teams.SlotClass[slot] : "regular";
 
         // perks + Overtime card points / 2 + the game's own stat levels
@@ -98,6 +101,7 @@ namespace HangtimeOvertime.Engine
                 .Select(p => (tech: (Technique)p, el: p.Def.Element))
                 .Concat(Scaling.OpponentTechniques.Select(PerkRegistry.FindVanilla).Where(t => t != null && !given.Contains(t) && allowed.Contains(Rarity(t))).Select(t => (tech: t, el: "none")))
                 .ToList();
+            if (ResumePerks != null) { given = ResumePerks; pool.Clear(); ResumePerks = null; }
             while (given.Count < count && pool.Count > 0)
             {
                 float total = pool.Sum(p => p.el == element && element != "none" ? Scaling.ThemeWeight : 1f);
@@ -112,6 +116,7 @@ namespace HangtimeOvertime.Engine
                 pool.RemoveAt(pick);
             }
             stats.techniques.AddRange(given);
+            LastGiven = given.ToList();
             Plugin.Log.LogInfo($"Scaling round {round} ({cls}): {points:F1} points, stats x{sm:F2}, move x{mm:F2}, player power {power:F1}, " +
                                $"perks [{string.Join(", ", given.Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t)))}]");
             // the speech bubble stays readable: four names at most, then "+N more"

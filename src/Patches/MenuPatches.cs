@@ -17,7 +17,7 @@ namespace HangtimeOvertime.Patches
     // switching on the game's own buttons.
     internal static class MenuPatches
     {
-        public static void Init() => SceneManager.sceneLoaded += (scene, _) => { if (scene.name == "Game") { InjectInfiniteButton(); AddTitleLogo(); } };
+        public static void Init() => SceneManager.sceneLoaded += (scene, _) => { if (scene.name == "Game") { InjectInfiniteButton(); AddTitleLogo(); if (!TitleController.onTitle) ContinueMenu.DropStandIn(); } };
 
         // "OVERTIME" under the game's own HangTime! logo, then the credit line (art: tools/title_logo.py, shipped in the
         // plugin's title folder). Children of the logo sprite, so they follow its intro animation.
@@ -73,7 +73,7 @@ namespace HangtimeOvertime.Patches
             .Replace("{best}", RunState.Save.bestInfiniteWins.ToString())
             .Replace("{loop}", RunState.Loop.ToString());
 
-        private static void SetLabels(GameObject button, string text, string subtext)
+        public static void SetButtonLabels(GameObject button, string text, string subtext)
         {
             var labels = button.GetComponentsInChildren<TextMeshPro>(true).OrderBy(l => l.name).ToArray();
             if (labels.Length > 0) labels[0].text = text;
@@ -87,12 +87,13 @@ namespace HangtimeOvertime.Patches
             var group = classic != null ? classic.GetComponentInParent<ButtonGroup>(true) : null;
             if (group == null) { Plugin.Log.LogWarning("Title menu not found; no Infinite button"); return; }
             if (group.buttons.Any(b => b != null && b.GetComponent<InfiniteButtonMarker>())) return;
+            if (!TitleController.onTitle) return;
 
             var clone = Object.Instantiate(classic.gameObject, classic.transform.parent);
             clone.name = "Infinite Button";
             clone.AddComponent<InfiniteButtonMarker>();
             clone.transform.position = classic.transform.position + new Vector3(0f, Ui.TitleInfiniteButton.OffsetY, 0f);
-            SetLabels(clone, Ui.TitleInfiniteButton.Text, Fill(Ui.TitleInfiniteButton.Subtext));
+            SetButtonLabels(clone, Ui.TitleInfiniteButton.Text, Fill(Ui.TitleInfiniteButton.Subtext));
 
             int at = group.buttons.FindIndex(b => b != null && b.GetComponent<QuitButton>());
             if (at < 0) at = group.buttons.Count;
@@ -100,17 +101,34 @@ namespace HangtimeOvertime.Patches
             var controller = clone.GetComponent<ButtonController>();
             controller.group = group;
             group.buttons.Insert(at, controller);
+            ContinueMenu.Label(classic.gameObject, clone);
         }
 
         [HarmonyPatch(typeof(TitleButton), "Click")]
         private static class TitleMenu
         {
             [HarmonyPrefix]
-            private static void Prefix(TitleButton __instance)
+            private static bool Prefix(TitleButton __instance)
             {
-                if (__instance.GetComponent<InfiniteButtonMarker>()) RunState.StartInfinite();
+                bool infinite = ContinueMenu.IsInfinite(__instance);
+                if (!ContinueMenu.Bypass && ContinueMenu.Players(__instance) == 1 && RunSaves.Has(infinite))
+                {
+                    ContinueMenu.Show(__instance, infinite);     // CONTINUE / NEW RUN / BACK
+                    return false;
+                }
+                ContinueMenu.Bypass = false;
+                if (infinite) RunState.StartInfinite();
                 else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); }
+                return true;
             }
+        }
+
+        // a perk or stat card was picked: the run is saved before the next match loads
+        [HarmonyPatch(typeof(UpgradeManager), "LoadGame")]
+        private static class PickSaved
+        {
+            [HarmonyPrefix]
+            private static void Prefix() => RunSaves.SaveAfterPick();
         }
 
         [HarmonyPatch(typeof(RestartButton), "Click")]
@@ -163,7 +181,7 @@ namespace HangtimeOvertime.Patches
                 clone.name = "Keep Going Button";
                 clone.AddComponent<LoopContinueMarker>();
                 clone.transform.position = restart.transform.position + new Vector3(0f, Ui.WinContinueButton.OffsetY, 0f);
-                SetLabels(clone, Ui.WinContinueButton.Text.Replace("2", (RunState.Loop + 1).ToString()), Ui.WinContinueButton.Subtext);
+                SetButtonLabels(clone, Ui.WinContinueButton.Text.Replace("2", (RunState.Loop + 1).ToString()), Ui.WinContinueButton.Subtext);
                 var group = restart.GetComponentInParent<ButtonGroup>(true);
                 var controller = clone.GetComponent<ButtonController>();
                 if (group != null && controller != null)

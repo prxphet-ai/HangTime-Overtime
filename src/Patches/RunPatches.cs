@@ -19,6 +19,9 @@ namespace HangtimeOvertime.Patches
         // game reads gameNumber (gym, fans, opponent team, hitboxes).
         private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            if (scene.name == "Upgrade") RunSaves.SaveUpgradeScreen();
+            else if (scene.name == "Lose") RunSaves.ClearCurrent();
+            else if (scene.name == "Win" && RunState.Mode == RunMode.Normal) RunSaves.ClearCurrent();   // LOOP 2 saves again at its first match
             if (scene.name != "Game" || TitleController.onTitle) return;
             if (RunState.Mode == RunMode.Infinite)
             {
@@ -43,7 +46,8 @@ namespace HangtimeOvertime.Patches
                 __state = (__instance.midBoss1, __instance.midBoss2, __instance.finalBoss, __instance.comboTeams);
                 TeamRoster.ClearChoice();
                 int slot = GameManager.gameNumber;
-                if (TitleController.onTitle || RunState.Mode == RunMode.Normal || slot < 1 || slot > 8) return;
+                if (TitleController.onTitle || slot < 1 || slot > 8) return;
+                if (RunState.Mode == RunMode.Normal && TeamRoster.ResumeKey == null) return;   // Classic: the game's own bracket
                 var prefab = TeamRoster.Choose(slot);
                 switch (slot)
                 {
@@ -88,7 +92,9 @@ namespace HangtimeOvertime.Patches
                 if (team == null) return;
                 int slot = GameManager.gameNumber;
                 if (TeamRoster.Current != null) TeamRoster.Dress(team, TeamRoster.Current, slot);
+                OpponentScaling.LastGiven.Clear();
                 if (RunState.Mode != RunMode.Normal) OpponentScaling.Apply(team, TeamRoster.Current, slot);
+                RunSaves.SaveMatchStart(team, TeamRoster.CurrentKey ?? team.name.Replace("(Clone)", "").Trim(), OpponentScaling.LastGiven);
                 Engine.Engine.FirePassives();
                 Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} round={OpponentScaling.Round} " +
                                    $"infiniteMatch={RunState.InfiniteMatch} loop={RunState.Loop} vs {__instance.opponentTeam?.teamName}");

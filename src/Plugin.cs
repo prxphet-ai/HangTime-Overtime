@@ -34,6 +34,8 @@ namespace HangtimeOvertime
             PerkRegistry.Build();
             Engine.Vfx.Init();
             RunState.LoadSave();
+            RunSaves.Load();
+            GameManager.OnPlayerLose += RunSaves.ClearCurrent;   // a lost match ends the run (the lose screen is not a scene)
             RunPatches.Init();
             MenuPatches.Init();
             if (DumpScenes.Value) Debugging.SceneDumper.Hook();
@@ -41,5 +43,9 @@ namespace HangtimeOvertime
             new Harmony(Guid).PatchAll(typeof(Plugin).Assembly);
             Log.LogInfo($"{Name} {Version} loaded");
         }
+
+        // the saved run is already written at every safe point; these make sure the file is on disk when the game goes away
+        private void OnApplicationQuit() => RunSaves.Flush();
+        private void OnApplicationFocus(bool focused) { if (!focused) RunSaves.Flush(); }
     }
 }
