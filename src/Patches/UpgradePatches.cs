@@ -39,7 +39,7 @@ namespace HangtimeOvertime.Patches
                 var vanilla = cards.Where(c => !(PerkRegistry.TechniqueOf(c) is DataPerk)).Distinct().ToList();
                 cards.Clear();
                 if (!Debugging.DevKeys.OnlyOvertimeCards)
-                    foreach (var c in vanilla) for (int i = 0; i < PerkRegistry.VanillaWeight; i++) cards.Add(c);
+                    foreach (var c in vanilla) for (int i = 0; i < PerkRegistry.VanillaWeight(PerkRegistry.TechniqueOf(c)); i++) cards.Add(c);
                 foreach (var perk in PerkRegistry.All)
                 {
                     var card = PerkRegistry.MakeCard(perk);

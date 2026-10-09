@@ -227,7 +227,7 @@ def offered_perks(D, owned, rng, k=2):
             pool += [p["id"]] * {"common": 3, "rare": 2, "epic": 1}[p["rarity"]]
     for v in D.vanilla:
         if v not in owned and v != "LimitBreak":
-            pool += [v] * 2
+            pool += [v] * {"common": 3, "rare": 2, "epic": 1}[D.perk_row(v)["rarity"]]
     picks = []
     while len(picks) < k and pool:
         c = rng.choice(pool)

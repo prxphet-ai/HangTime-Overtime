@@ -70,7 +70,12 @@ namespace HangtimeOvertime.Core
         }
 
         public static int Weight(DataPerk perk) => perk.Def.Rarity == "epic" ? 1 : perk.Def.Rarity == "rare" ? 2 : 3;
-        public const int VanillaWeight = 2;
+        // vanilla cards weigh by their rarity too (sheets/scaling.json vanilla_rarity): common 3, rare 2, epic 1
+        public static int VanillaWeight(Technique t)
+        {
+            var r = t == null ? "rare" : Generated.Scaling.VanillaRarity(t.GetType().Name);
+            return r == "epic" ? 1 : r == "rare" ? 2 : 3;
+        }
 
         public static Color ElementColor(DataPerk perk) =>
             Vfx.Hex(Generated.Elements.All.FirstOrDefault(e => e.Id == perk.Def.Element).Color ?? "FFD27A");

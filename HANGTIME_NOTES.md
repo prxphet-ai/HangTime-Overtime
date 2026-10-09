@@ -6,12 +6,26 @@ of **Log**. **Summary** at the top is kept up to date.
 
 ## Summary (kept current)
 
-- **Simulator**: `python tools/sim.py <mode>` (modes: match, teams, scaling, perk, perks, run).
-  Results go to `sim_results/` (one JSON per run plus `index.csv`). See *Simulator* below.
-- **Opponent scaling**: every number lives in `sheets/scaling.json` (the one place to tune). The game
-  (`src/Engine/OpponentScaling.cs`) and the simulator (`tools/simlib.py`) read the same rows;
-  `python tools/sim_check.py` proves they compute identical values.
-- **Build**: `python tools/build.py [--deploy]` (preflight + generate + build).
+- **Everything that exists**: `CATALOG.md` (generated from the sheets by `python tools/catalog.py`) lists every team
+  (class, element, base, signature perks, emblem), every perk (rarity, element, trigger, description, gameplay effects,
+  visuals) and every stat card. Current totals: 14 new teams (+ the game's 10), 80 perks (70 new, 3 reworked, 7 kept),
+  29 stat cards. No perk changes the score (enforced by the preflight).
+- **Simulator**: `python tools/sim.py <mode>` (match, teams, scaling, perk, perks, run, tune). Results in `sim_results/`
+  (one JSON per run plus `index.csv`). See *Simulator* below.
+- **Opponent scaling**: every number lives in `sheets/scaling.json` (the one place to tune; `python tools/set_scaling.py
+  key=value` edits it). The game (`src/Engine/OpponentScaling.cs`) and the simulator read the same rows;
+  `python tools/sim_check.py` proves they compute identical values. Per-team strength: `points_offset` in
+  `sheets/teams.json` (auto-tuned with `python tools/sim.py tune`).
+- **How scaling works**: round = Infinite match number (or 8 x (loop-1) + slot in Loops). Opponents get
+  `points_base + points_per_round x (round-1)` level-ups (+ boss/combo bonus + team offset), spent by the team's own stat
+  weights (cap level 3), times the player-power factor (0.7..1.4 ratio, weight 0.3). Stats start at 92% (speed 95%) and
+  ramp to 100% over 8 rounds, then grow +3%/round past the cap from round 7 (max x1.5). Perks: 0.22 per round (+0.3 in
+  boss slots), the team's own perks first (signatures / vanilla built-ins), then themed random draws (4x weight for the
+  team's element); rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
+- **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~46%
+  (round 10), ~40% (round 15), ~25% (round 20). Teams 44%..53% vs the field at equal rounds.
+- **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
+- **Open questions for you**: see the end of this file.
 
 ## What I found in the codebase (before changing anything)
 
@@ -152,3 +166,15 @@ Modes:
 - **Curves after batch 2**: fresh build r1 70% (target 60-75%); typical drafted build per round r1 70%, r5 67%, r8 53%,
   r10 46%, r12 38%, r15 44%, r20 25% — gradual, no walls; fair chance at round 15.
 - Checked in game: all 19 new perks fired through the dev lab with 0 errors; Ryujin Tide spawned with its emblem.
+
+
+## Open questions
+
+1. **Simulator calibration**: the model's weights were set so the game's own six stat cards are roughly equally useful
+   and the point mix looks like a real match. If you have a feel for how strong Block/Jump/Serve are in real play
+   compared with Receive/Speed, tell me and I'll recalibrate (`sheets/sim.json`).
+2. **Player skill**: the simulator plays your side like the game's AI. If you're stronger than the AI, round-1 win rates
+   in real play will be higher than 70% — want the early rounds harder for that?
+3. **Classic mode** still uses the game's own difficulty and opponents (new perks/cards do appear on its upgrade screens).
+   Should new teams and the scaling system come to Classic too?
+4. **All In** is a deliberately strong epic trade-off (~+16% in the sim). Keep it that way?
