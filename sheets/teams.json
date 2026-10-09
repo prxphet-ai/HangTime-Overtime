@@ -94,7 +94,7 @@
         "blaze_spike"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.6,
+      "points_offset": -0.7,
       "emblem": {
         "mascot": "brazier",
         "layout": "split",
@@ -141,7 +141,7 @@
         "frost_serve"
       ],
       "verified": "no",
-      "points_offset": -3.6,
+      "points_offset": -2.3,
       "emblem": {
         "mascot": "penguin",
         "layout": "top",
@@ -188,7 +188,7 @@
         "zigzag_spike"
       ],
       "verified": "no",
-      "points_offset": -1.9,
+      "points_offset": -3.3,
       "emblem": {
         "mascot": "thunder",
         "layout": "stacked",
@@ -235,7 +235,7 @@
         "gale_serve"
       ],
       "verified": "no",
-      "points_offset": 3.6,
+      "points_offset": 4.4,
       "emblem": {
         "mascot": "swallow",
         "layout": "split",
@@ -282,7 +282,7 @@
         "tidal_arc"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -1.5,
+      "points_offset": -0.6,
       "emblem": {
         "mascot": "whale",
         "layout": "top",
@@ -330,7 +330,7 @@
         "quake_spike"
       ],
       "verified": "no",
-      "points_offset": -0.3,
+      "points_offset": -0.4,
       "emblem": {
         "mascot": "mountain",
         "layout": "stacked",
@@ -378,7 +378,7 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.7,
+      "points_offset": 0.8,
       "emblem": {
         "mascot": "bat_moon",
         "layout": "split",
@@ -426,12 +426,302 @@
         "holy_lance"
       ],
       "verified": "no",
-      "points_offset": -4.2,
+      "points_offset": -3.3,
       "emblem": {
         "mascot": "sun_crown",
         "layout": "stacked",
         "font": "bangers",
         "accent": "FFD24A"
+      }
+    },
+    {
+      "id": "sakuradai",
+      "name": "Sakuradai Petals",
+      "base": "Hinami Kai",
+      "slot": "regular",
+      "element": "wind",
+      "jersey": "FFB7D5",
+      "shorts": "C84A7A",
+      "hair": [
+        "5A2A1A",
+        "FF8AB8"
+      ],
+      "banner": "E87AA8",
+      "pitch": 1.25,
+      "weights": {
+        "Spike": 1,
+        "Jump": 3,
+        "Block": 1,
+        "Bump": 3,
+        "SpinServe": 0,
+        "ServeJump": 3,
+        "FloatServe": 4
+      },
+      "intro": "Petals fall where we play.",
+      "win": "Blossomed!",
+      "lose": "Wilted...",
+      "got_point": [
+        "Pretty, right?",
+        "In full bloom!"
+      ],
+      "lost_point": [
+        "A cold wind.",
+        "We'll bloom again."
+      ],
+      "comment": "Their serves floated like petals.",
+      "signature": [
+        "jump_float",
+        "swerve_tip"
+      ],
+      "verified": "no",
+      "points_offset": -0.8,
+      "emblem": {
+        "mascot": "blossom",
+        "layout": "split",
+        "font": "marker",
+        "accent": "FFB7D5"
+      }
+    },
+    {
+      "id": "kaminari",
+      "name": "Kaminari Express",
+      "base": "Daigan Tech",
+      "slot": "regular",
+      "element": "lightning",
+      "jersey": "2A3A8A",
+      "shorts": "FFD21A",
+      "hair": [
+        "111111",
+        "FFE14A"
+      ],
+      "banner": "2A4AC8",
+      "pitch": 1.15,
+      "weights": {
+        "Spike": 3,
+        "Jump": 4,
+        "Block": 1,
+        "Bump": 1,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 0
+      },
+      "intro": "Next stop: your defeat.",
+      "win": "Right on schedule.",
+      "lose": "Derailed...",
+      "got_point": [
+        "Full speed!",
+        "Express delivery!"
+      ],
+      "lost_point": [
+        "Delay.",
+        "Back on track."
+      ],
+      "comment": "Fastest sets I've ever seen.",
+      "signature": [
+        "quick_set",
+        "storm_serve"
+      ],
+      "verified": "no",
+      "points_offset": -2.4,
+      "emblem": {
+        "mascot": "bullet_train",
+        "layout": "top",
+        "font": "bangers",
+        "accent": "FFE14A"
+      }
+    },
+    {
+      "id": "hinode",
+      "name": "Hinode Sparks",
+      "base": "Rensho",
+      "slot": "regular",
+      "element": "fire",
+      "jersey": "FF8A1A",
+      "shorts": "8A2A0A",
+      "hair": [
+        "2A1A0A",
+        "FFC04A"
+      ],
+      "banner": "E8601A",
+      "pitch": 1.0,
+      "weights": {
+        "Spike": 4,
+        "Jump": 3,
+        "Block": 1,
+        "Bump": 1,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 0
+      },
+      "intro": "Rise and shine!",
+      "win": "Cock-a-doodle-done!",
+      "lose": "Sunset already?",
+      "got_point": [
+        "Bright and early!",
+        "Spark!"
+      ],
+      "lost_point": [
+        "Cloudy.",
+        "We'll rise."
+      ],
+      "comment": "Loud, bright, and fiery. Exhausting.",
+      "signature": [
+        "ember_tip",
+        "flame_serve"
+      ],
+      "verified": "no",
+      "points_offset": -0.9,
+      "emblem": {
+        "mascot": "rooster",
+        "layout": "split",
+        "font": "marker",
+        "accent": "FFC04A"
+      }
+    },
+    {
+      "id": "yukimura",
+      "name": "Yukimura Snowcats",
+      "base": "Aomori",
+      "slot": "combo",
+      "element": "ice",
+      "jersey": "E8F4FF",
+      "shorts": "6A8AB8",
+      "hair": [
+        "FFFFFF",
+        "AFC8E8"
+      ],
+      "banner": "8AB0D8",
+      "pitch": 1.2,
+      "weights": {
+        "Spike": 1,
+        "Jump": 2,
+        "Block": 3,
+        "Bump": 4,
+        "SpinServe": 1,
+        "ServeJump": 2,
+        "FloatServe": 3
+      },
+      "intro": "Three cats, zero mercy.",
+      "win": "Purr-fect.",
+      "lose": "Cold paws...",
+      "got_point": [
+        "Nya!",
+        "Pounce!"
+      ],
+      "lost_point": [
+        "Hiss.",
+        "Nine lives."
+      ],
+      "comment": "Like digging against a snowdrift.",
+      "signature": [
+        "permafrost",
+        "ice_wall"
+      ],
+      "verified": "no",
+      "points_offset": 3.2,
+      "emblem": {
+        "mascot": "snow_cat",
+        "layout": "stacked",
+        "font": "bangers",
+        "accent": "AFE0FF"
+      }
+    },
+    {
+      "id": "ryujin",
+      "name": "Ryujin Tide",
+      "base": "Sunaumi High",
+      "slot": "boss",
+      "element": "water",
+      "jersey": "0E5A8A",
+      "shorts": "0A2A4A",
+      "hair": [
+        "0A2A4A",
+        "4AE0D8"
+      ],
+      "banner": "1A6AA8",
+      "pitch": 0.65,
+      "weights": {
+        "Spike": 3,
+        "Jump": 2,
+        "Block": 2,
+        "Bump": 4,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "The sea dragon wakes.",
+      "win": "Swallowed by the deep.",
+      "lose": "The tide... turns.",
+      "got_point": [
+        "Drown!",
+        "Waves rise."
+      ],
+      "lost_point": [
+        "A ripple.",
+        "The sea returns."
+      ],
+      "comment": "Every spike felt like a wave crashing.",
+      "signature": [
+        "tidal_wall",
+        "tsunami_spike",
+        "undertow"
+      ],
+      "verified": "no",
+      "points_offset": 0.4,
+      "emblem": {
+        "mascot": "sea_dragon",
+        "layout": "top",
+        "font": "marker",
+        "accent": "4AE0D8"
+      }
+    },
+    {
+      "id": "mugen",
+      "name": "Mugen Phantoms",
+      "base": "Tenzio",
+      "slot": "boss",
+      "element": "shadow",
+      "jersey": "4A3A6A",
+      "shorts": "1A1028",
+      "hair": [
+        "E8E8FF",
+        "8A5CFF"
+      ],
+      "banner": "3A2A5A",
+      "pitch": 0.55,
+      "weights": {
+        "Spike": 3,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 2,
+        "SpinServe": 2,
+        "ServeJump": 3,
+        "FloatServe": 2
+      },
+      "intro": "Are we even here?",
+      "win": "Faded away.",
+      "lose": "...we'll haunt you.",
+      "got_point": [
+        "Boo.",
+        "Over here..."
+      ],
+      "lost_point": [
+        "You saw that?",
+        "We fade back."
+      ],
+      "comment": "I swear there were two balls.",
+      "signature": [
+        "shadow_step",
+        "mirror_image",
+        "eclipse"
+      ],
+      "verified": "no",
+      "points_offset": 0.4,
+      "emblem": {
+        "mascot": "ghost",
+        "layout": "split",
+        "font": "bangers",
+        "accent": "B48CFF"
       }
     }
   ],
@@ -443,31 +733,31 @@
     },
     "Hinami Kai": {
       "element": "wind",
-      "points_offset": -0.3
+      "points_offset": -0.5
     },
     "Daigan Tech": {
       "element": "earth",
-      "points_offset": -1.6
+      "points_offset": -3.0
     },
     "Namasito Academy": {
       "element": "water",
-      "points_offset": 1.8
+      "points_offset": 2.0
     },
     "Kozuki Dan": {
       "element": "lightning",
-      "points_offset": -4.3
+      "points_offset": -3.4
     },
     "Aomori": {
       "element": "wind",
-      "points_offset": 4.8
+      "points_offset": 4.2
     },
     "Ten-Roku": {
       "element": "earth",
-      "points_offset": 2.5
+      "points_offset": 1.0
     },
     "Tenzio": {
       "element": "shadow",
-      "points_offset": 0.6,
+      "points_offset": 1.5,
       "weights": {
         "Spike": 2,
         "Jump": 3,
@@ -480,11 +770,11 @@
     },
     "Sunaumi High": {
       "element": "water",
-      "points_offset": 3.4
+      "points_offset": 0.8
     },
     "Shirogane": {
       "element": "ice",
-      "points_offset": -6.4
+      "points_offset": -4.4
     },
     "Club Sumi": {
       "element": "none",

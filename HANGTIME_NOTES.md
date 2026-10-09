@@ -122,3 +122,33 @@ Modes:
 - Fonts for lettering: Permanent Marker (Apache 2.0) and Bangers (SIL OFL 1.1), in `tools/fonts` with their licenses;
   only the rendered emblems ship.
 - Decision: vanilla teams keep their own emblems (those are the designs you like).
+
+### Step 2 — scaling verified in game
+- Infinite round 10 in game: Kaien Marine got 6.2 level-up points (round curve, its -1.5 offset, low player power),
+  stats x1.09 and move x1.07 (growth past the cap from round 7), and one perk — its signature Tidal Arc. Matches the
+  config and the simulator (parity check: 0 mismatches over 180 rows).
+
+### Step 3 — content batch 2 (+ simulator timing fix, balance pass 2)
+- **New trigger `enemy_spike`** (defensive reactions when the other team spikes), in game and simulator.
+- **19 new perks**: defensive/libero — Libero Dive, Read the Play, Guardian Wall (epic), Shadow Step, Tidal Wall,
+  Radiant Guard, Iron Curtain, Ice Wall; setter — Quick Set, Back Set, Tempo Master (epic), Tornado Set; serve/offense/
+  elements — Jump Float, Meteor Serve (epic), Line Shot, Thunder Serve, Wildfire (epic), Earthquake Serve (epic), Aftershock.
+- **7 new stat cards**: Quick Feet, Server's Wrist, Rookie Grit (common); Spike Specialist, Block Party, Setter Duo
+  (rare playstyle); Second Gear (epic trade-off).
+- **6 new teams** with emblems: Sakuradai Petals (wind, cherry blossom), Kaminari Express (lightning, bullet train),
+  Hinode Sparks (fire, rooster at sunrise), Yukimura Snowcats (ice combo, snow cat), Ryujin Tide (water boss, sea
+  dragon), Mugen Phantoms (shadow boss, ghost). Offsets auto-tuned: all 20 teams 44%..53% vs the field.
+- **Simulator fix**: effects that happen when the ball crosses the net now happen at the crossing, and short slows/stuns/
+  buffs count if they overlap a player's last half-second moving to the ball (Earthquake Serve read +0.7%, now +4.5%).
+- **Balance pass 2** (sweeps r3+r8): nerfed Second Gear (+20.4% -> ~+12), Tectonic Slam (+15.6 -> lower), Featherstep
+  (+14.3 -> +11.2), Quick Hands (+13.1 -> +10.5), Libero's Instinct, All-Rounder, Radiant Guard, Afterburner, Cyclone,
+  Shadow Ball, Anchor, several commons. Buffed the weak epics (Time Stop +12% spike, Spirit Serve, Tsunami, Wildfire 5
+  touches, Meteor Smash, Earthquake Serve, Inferno 3 touches, Holy Lance, Guardian Wall, Monster Block now also +7 block
+  jump) and gave weak perks a small themed second effect (Black Ice faster spikes, Boulder Serve faster serves, Scorched
+  Earth +0.1 power, Phoenix Dive counter-spike boost, Undertow wave, Zone Focus spike boost, Aftershock slow, Ice Wall
+  block jump). Items outside their rarity band: 30 -> 15.
+- **Known outliers, left on purpose**: All In stays strong (~+16%, epic trade-off; its landing-recovery drawback is small
+  in the model). Situational commons (Showboat, Rival Spirit, Hot Streak, Quake Spike) and Collector read weak alone.
+- **Curves after batch 2**: fresh build r1 70% (target 60-75%); typical drafted build per round r1 70%, r5 67%, r8 53%,
+  r10 46%, r12 38%, r15 44%, r20 25% — gradual, no walls; fair chance at round 15.
+- Checked in game: all 19 new perks fired through the dev lab with 0 errors; Ryujin Tide spawned with its emblem.

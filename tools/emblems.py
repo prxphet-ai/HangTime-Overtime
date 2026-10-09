@@ -234,7 +234,116 @@ def sun_crown(p, cx, cy, s, accent):
         p.ellipse(cx + x * s, cy + (-96 if x else -110) * s, 8 * s, 8 * s)
 
 
-MASCOTS = {"brazier": brazier, "penguin": penguin, "thunder": thunder, "swallow": swallow, "whale": whale,
+def blossom(p, cx, cy, s, accent):
+    """Sakuradai: a five-petal cherry blossom with falling petals."""
+    for i in range(5):
+        a = math.radians(-90 + i * 72)
+        px, py = cx + 46 * s * math.cos(a), cy + 46 * s * math.sin(a)
+        tip = (cx + 92 * s * math.cos(a), cy + 92 * s * math.sin(a))
+        side = math.radians(90)
+        p.poly([(cx + 10 * s * math.cos(a), cy + 10 * s * math.sin(a)),
+                (px + 34 * s * math.cos(a - side), py + 34 * s * math.sin(a - side)),
+                (tip[0] + 14 * s * math.cos(a - side), tip[1] + 14 * s * math.sin(a - side)),
+                (tip[0] - 6 * s * math.cos(a), tip[1] - 6 * s * math.sin(a)),                 # notch at the petal tip
+                (tip[0] + 14 * s * math.cos(a + side), tip[1] + 14 * s * math.sin(a + side)),
+                (px + 34 * s * math.cos(a + side), py + 34 * s * math.sin(a + side))], amp=2)
+    p.ellipse(cx, cy, 24 * s, 24 * s, fill=accent)
+    for i in range(5):
+        a = math.radians(-90 + i * 72 + 36)
+        p.ellipse(cx + 18 * s * math.cos(a), cy + 18 * s * math.sin(a), 5 * s, 5 * s, fill=CLEAR, amp=0.3)
+    for x, y, r, rot in ((-124, -50, 14, 20), (118, 40, 12, -30), (-96, 76, 10, 50), (128, -86, 9, 10)):
+        p.ellipse(cx + x * s, cy + y * s, r * s, r * 0.6 * s, fill=accent)
+
+
+def bullet_train(p, cx, cy, s, accent):
+    """Kaminari: a bullet train racing out of a lightning streak."""
+    nose = [(cx - 140 * s, cy + 40 * s), (cx + 40 * s, cy + 40 * s), (cx + 120 * s, cy + 22 * s), (cx + 150 * s, cy + 6 * s),
+            (cx + 120 * s, cy - 18 * s), (cx + 50 * s, cy - 38 * s), (cx - 140 * s, cy - 38 * s)]
+    p.poly(nose, amp=2)
+    p.poly([(cx + 52 * s, cy - 28 * s), (cx + 108 * s, cy - 12 * s), (cx + 96 * s, cy - 2 * s), (cx + 46 * s, cy - 6 * s)], fill=CLEAR, amp=1)
+    for x in (-110, -70, -30, 10):
+        p.poly([(cx + x * s, cy - 24 * s), (cx + (x + 28) * s, cy - 24 * s), (cx + (x + 28) * s, cy - 6 * s), (cx + x * s, cy - 6 * s)], fill=CLEAR, amp=0.6)
+    p.stroke([(cx - 140 * s, cy + 14 * s), (cx + 128 * s, cy + 14 * s)], 9 * s, fill=accent)
+    p.stroke([(cx - 150 * s, cy + 62 * s), (cx + 150 * s, cy + 62 * s)], 10 * s)
+    for y, x0 in ((-62, -60), (-88, -20), (88, -100)):
+        p.stroke([(cx + x0 * s, cy + y * s), (cx + (x0 - 70) * s, cy + y * s)], 9 * s, fill=accent)
+    p.poly([(cx + 4 * s, cy - 120 * s), (cx - 30 * s, cy - 68 * s), (cx - 6 * s, cy - 68 * s), (cx - 24 * s, cy - 40 * s),
+            (cx + 26 * s, cy - 84 * s), (cx + 2 * s, cy - 84 * s), (cx + 20 * s, cy - 120 * s)], fill=accent, amp=1)
+
+
+def rooster(p, cx, cy, s, accent):
+    """Hinode: a crowing rooster in front of a rising sun."""
+    for i in range(7):
+        a = math.radians(190 + i * 26.6)
+        p.stroke([(cx + 96 * s * math.cos(a), cy + 70 * s + 96 * s * math.sin(a)), (cx + 136 * s * math.cos(a), cy + 70 * s + 136 * s * math.sin(a))], 11 * s, fill=accent)
+    body = [(cx - 70 * s, cy + 60 * s), (cx - 96 * s, cy - 10 * s), (cx - 70 * s, cy - 70 * s), (cx - 40 * s, cy - 40 * s),
+            (cx - 50 * s, cy + 4 * s), (cx - 10 * s, cy - 10 * s), (cx + 10 * s, cy - 60 * s), (cx + 26 * s, cy - 92 * s),
+            (cx + 52 * s, cy - 84 * s), (cx + 78 * s, cy - 92 * s), (cx + 58 * s, cy - 70 * s), (cx + 50 * s, cy - 40 * s),
+            (cx + 62 * s, cy + 6 * s), (cx + 40 * s, cy + 50 * s)]
+    p.poly(body, amp=2.5)
+    p.poly([(cx + 26 * s, cy - 94 * s), (cx + 34 * s, cy - 120 * s), (cx + 44 * s, cy - 100 * s), (cx + 56 * s, cy - 124 * s),
+            (cx + 60 * s, cy - 92 * s)], fill=accent, amp=1)
+    p.poly([(cx + 76 * s, cy - 88 * s), (cx + 100 * s, cy - 82 * s), (cx + 76 * s, cy - 76 * s)], fill=accent, amp=0.5)
+    p.ellipse(cx + 48 * s, cy - 76 * s, 5 * s, 5 * s, fill=CLEAR, amp=0.3)
+    for dx in (-30, 10):
+        p.stroke([(cx + dx * s, cy + 50 * s), (cx + dx * s, cy + 90 * s), (cx + (dx + 14) * s, cy + 96 * s)], 10 * s)
+    p.stroke([(cx - 150 * s, cy + 70 * s), (cx + 150 * s, cy + 70 * s)], 10 * s, fill=accent)
+
+
+def snow_cat(p, cx, cy, s, accent):
+    """Yukimura: a snow-leopard cat face with a snowflake on its brow."""
+    head = [(cx - 92 * s, cy + 30 * s), (cx - 100 * s, cy - 40 * s), (cx - 84 * s, cy - 112 * s), (cx - 40 * s, cy - 70 * s),
+            (cx + 40 * s, cy - 70 * s), (cx + 84 * s, cy - 112 * s), (cx + 100 * s, cy - 40 * s), (cx + 92 * s, cy + 30 * s),
+            (cx + 50 * s, cy + 76 * s), (cx - 50 * s, cy + 76 * s)]
+    p.poly(head, amp=2.5)
+    p.poly([(cx - 78 * s, cy - 90 * s), (cx - 50 * s, cy - 68 * s), (cx - 82 * s, cy - 60 * s)], fill=accent, amp=0.6)
+    p.poly([(cx + 78 * s, cy - 90 * s), (cx + 50 * s, cy - 68 * s), (cx + 82 * s, cy - 60 * s)], fill=accent, amp=0.6)
+    for dx in (-38, 38):
+        p.poly([(cx + (dx - 22) * s, cy - 6 * s), (cx + dx * s, cy - 22 * s), (cx + (dx + 22) * s, cy - 6 * s), (cx + dx * s, cy + 8 * s)], fill=CLEAR, amp=0.6)
+        p.ellipse(cx + dx * s, cy - 7 * s, 4 * s, 9 * s, fill=accent, amp=0.3)
+    p.poly([(cx - 12 * s, cy + 20 * s), (cx + 12 * s, cy + 20 * s), (cx, cy + 32 * s)], fill=CLEAR, amp=0.5)
+    for side in (-1, 1):
+        for dy in (-4, 12):
+            p.stroke([(cx + side * 30 * s, cy + (30 + dy * 0.3) * s), (cx + side * 120 * s, cy + (20 + dy) * s)], 6 * s)
+    flake(p, cx, cy - 46 * s, 14 * s)
+
+
+def sea_dragon(p, cx, cy, s, accent):
+    """Ryujin: a coiling sea dragon rising from waves."""
+    coil = [(cx - 120 * s + i * 12 * s, cy + 20 * s + 34 * s * math.sin(i * 0.55)) for i in range(18)]
+    p.stroke(coil, 30 * s)
+    for i in range(1, 17, 2):
+        x, y = coil[i]
+        p.poly([(x - 8 * s, y - 12 * s), (x, y - 30 * s), (x + 8 * s, y - 12 * s)], fill=accent, amp=0.6)
+    hx, hy = coil[-1][0] + 18 * s, coil[-1][1] - 30 * s
+    head = [(hx - 30 * s, hy + 30 * s), (hx - 34 * s, hy - 10 * s), (hx - 10 * s, hy - 34 * s), (hx + 30 * s, hy - 30 * s),
+            (hx + 62 * s, hy - 12 * s), (hx + 36 * s, hy), (hx + 60 * s, hy + 12 * s), (hx + 20 * s, hy + 22 * s)]
+    p.poly(head, amp=2)
+    p.ellipse(hx + 6 * s, hy - 14 * s, 5 * s, 5 * s, fill=CLEAR, amp=0.3)
+    p.curve((hx - 10 * s, hy - 34 * s), (hx - 30 * s, hy - 70 * s), (hx - 60 * s, hy - 72 * s), 8 * s, fill=accent)
+    p.curve((hx + 6 * s, hy - 32 * s), (hx + 10 * s, hy - 74 * s), (hx - 16 * s, hy - 92 * s), 8 * s, fill=accent)
+    wave = [(cx - 150 * s + i * 7 * s, cy + 84 * s + 9 * s * math.sin(i * 0.7)) for i in range(44)]
+    p.stroke(wave, 11 * s, fill=accent)
+
+
+def ghost(p, cx, cy, s, accent):
+    """Mugen: a yurei ghost with wisps of spirit fire."""
+    body = [(cx - 62 * s, cy + 70 * s), (cx - 70 * s, cy - 20 * s), (cx - 50 * s, cy - 84 * s), (cx, cy - 104 * s),
+            (cx + 50 * s, cy - 84 * s), (cx + 70 * s, cy - 20 * s), (cx + 76 * s, cy + 60 * s), (cx + 50 * s, cy + 40 * s),
+            (cx + 30 * s, cy + 80 * s), (cx + 6 * s, cy + 44 * s), (cx - 18 * s, cy + 86 * s), (cx - 38 * s, cy + 44 * s)]
+    p.poly(body, amp=3)
+    p.ellipse(cx - 24 * s, cy - 36 * s, 12 * s, 16 * s, fill=CLEAR, amp=0.6)
+    p.ellipse(cx + 24 * s, cy - 36 * s, 12 * s, 16 * s, fill=CLEAR, amp=0.6)
+    p.ellipse(cx, cy + 6 * s, 14 * s, 9 * s, fill=CLEAR, amp=0.6)
+    p.poly([(cx - 64 * s, cy - 6 * s), (cx - 120 * s, cy + 20 * s), (cx - 66 * s, cy + 20 * s)], amp=1.5)
+    p.poly([(cx + 66 * s, cy - 6 * s), (cx + 122 * s, cy + 6 * s), (cx + 70 * s, cy + 22 * s)], amp=1.5)
+    for x, y, r in ((-112, -70, 20), (114, -84, 16), (118, 64, 13)):
+        p.poly([(cx + (x - r * 0.7) * s, cy + y * s), (cx + x * s, cy + (y - r * 1.9) * s), (cx + (x + r * 0.7) * s, cy + y * s),
+                (cx + x * s, cy + (y + r * 0.7) * s)], fill=accent, amp=1)
+
+
+MASCOTS = {"blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
+           "sea_dragon": sea_dragon, "ghost": ghost, "brazier": brazier, "penguin": penguin, "thunder": thunder, "swallow": swallow, "whale": whale,
            "mountain": mountain, "bat_moon": bat_moon, "sun_crown": sun_crown}
 
 

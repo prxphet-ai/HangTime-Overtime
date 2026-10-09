@@ -23,7 +23,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Spike": 1
+        "Spike": 0.85
       },
       "blurb": "Hours at the spike line. Hit harder.",
       "verified": "no"
@@ -34,7 +34,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Jump": 1.5
+        "Jump": 1.25
       },
       "blurb": "Box jumps until your legs give up. Jump higher.",
       "verified": "no"
@@ -56,7 +56,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Bump": 1
+        "Bump": 0.9
       },
       "blurb": "Cleaner receives off hard hits.",
       "verified": "no"
@@ -78,7 +78,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Speed": 1
+        "Speed": 0.9
       },
       "blurb": "Faster across the court.",
       "verified": "no"
@@ -111,11 +111,11 @@
       "rarity": "rare",
       "style": "boost",
       "deltas": {
-        "Spike": 0.4,
-        "Jump": 0.4,
-        "Block": 0.4,
-        "Bump": 0.4,
-        "Serve": 0.4
+        "Spike": 0.3,
+        "Jump": 0.3,
+        "Block": 0.3,
+        "Bump": 0.3,
+        "Serve": 0.3
       },
       "blurb": "A bit better at everything.",
       "verified": "no"
@@ -126,8 +126,8 @@
       "rarity": "rare",
       "style": "boost",
       "deltas": {
-        "Speed": 1,
-        "Recovery": 1.5
+        "Speed": 0.75,
+        "Recovery": 1
       },
       "blurb": "Fast feet, faster recovery.",
       "verified": "no"
@@ -151,8 +151,8 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Speed": 1.25,
-        "Jump": 1.5,
+        "Speed": 0.9,
+        "Jump": 1,
         "Block": -1
       },
       "blurb": "Light on your feet, light at the net.",
@@ -201,7 +201,7 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Bump": 1.5,
+        "Bump": 1.25,
         "Recovery": 1.5,
         "Jump": -1
       },
@@ -227,7 +227,7 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Bump": 3,
+        "Bump": 2.25,
         "Spike": -0.5
       },
       "blurb": "Dig everything. Hit softer.",
@@ -278,11 +278,99 @@
       "rarity": "epic",
       "style": "tradeoff",
       "deltas": {
-        "Jump": 2.5,
-        "Spike": 2.5,
+        "Jump": 1.75,
+        "Spike": 1.75,
         "Recovery": -2
       },
       "blurb": "Go big every swing. Slow to recover after landing.",
+      "verified": "no"
+    },
+    {
+      "id": "quick_feet",
+      "title": "Quick Feet",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Speed": 0.6,
+        "Recovery": 0.6
+      },
+      "blurb": "Light, quick steps everywhere.",
+      "verified": "no"
+    },
+    {
+      "id": "servers_wrist",
+      "title": "Server's Wrist",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Serve": 2
+      },
+      "blurb": "Snappier serves.",
+      "verified": "no"
+    },
+    {
+      "id": "rookie_grit",
+      "title": "Rookie Grit",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Bump": 0.35,
+        "Spike": 0.35
+      },
+      "blurb": "A bit better at the basics.",
+      "verified": "no"
+    },
+    {
+      "id": "spike_specialist",
+      "title": "Spike Specialist",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Spike": 2,
+        "Bump": -0.5
+      },
+      "blurb": "All offense. Receiving slips.",
+      "verified": "no"
+    },
+    {
+      "id": "block_party",
+      "title": "Block Party",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Block": 2,
+        "Jump": 1,
+        "Bump": -0.5
+      },
+      "blurb": "Own the net, give up some defense.",
+      "verified": "no"
+    },
+    {
+      "id": "setter_duo",
+      "title": "Setter Duo",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Set": 3,
+        "Speed": 0.75,
+        "Spike": -0.25
+      },
+      "blurb": "You and your setter in sync; your swing softens.",
+      "verified": "no"
+    },
+    {
+      "id": "second_gear",
+      "title": "Second Gear",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Speed": 1.25,
+        "Jump": 1,
+        "Spike": 0.75,
+        "Block": -1.5,
+        "Bump": -1
+      },
+      "blurb": "Everything faster and higher. Defense pays for it.",
       "verified": "no"
     }
   ]

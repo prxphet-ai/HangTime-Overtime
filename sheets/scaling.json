@@ -12,151 +12,151 @@
       "id": "points_base",
       "value": 2.0,
       "meaning": "opponent level-up points at round 1 (the game spends them by the team's stat weights; each stat caps at level 3)",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "points_per_round",
       "value": 0.7,
       "meaning": "extra level-up points per round",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "points_boss_bonus",
       "value": 1.0,
       "meaning": "extra points in boss slots (3, 6, 8 of every 8)",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "points_combo_bonus",
       "value": 0.5,
       "meaning": "extra points in the combo slot (7)",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "over_start",
       "value": 7.0,
       "meaning": "round after which stats grow past the level cap",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "base_stat_mult",
       "value": 0.92,
       "meaning": "round-1 'base version' stat multiplier (opponents start a bit below their table values)",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "base_move_mult",
       "value": 0.95,
       "meaning": "round-1 move-speed multiplier",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "base_ramp_rounds",
       "value": 8.0,
       "meaning": "rounds over which the base multipliers rise to 1",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "over_per_round",
       "value": 0.03,
       "meaning": "stat multiplier gained per round after over_start",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "over_max",
       "value": 1.5,
       "meaning": "highest stat multiplier",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "move_per_round",
       "value": 0.008,
       "meaning": "opponent move-speed multiplier gained per round after round 1",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "move_max",
       "value": 1.2,
       "meaning": "highest move-speed multiplier",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "perks_base",
       "value": 0.0,
       "meaning": "opponent perks at round 1 (signature and built-in perks included)",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "perks_per_round",
       "value": 0.22,
       "meaning": "opponent perks gained per round",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "perks_boss_bonus",
       "value": 0.3,
       "meaning": "extra perks in boss slots",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "perks_max",
       "value": 7.0,
       "meaning": "most perks an opponent can have",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "rare_from",
       "value": 5.0,
       "meaning": "round from which rare perks can be drawn",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "epic_from",
       "value": 10.0,
       "meaning": "round from which epic perks can be drawn",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "theme_weight",
       "value": 4.0,
       "meaning": "draw weight of perks in the team's element (others weigh 1): a fire team keeps getting fire perks",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "signature_first",
       "value": 1.0,
       "meaning": "perks are given signature-first: the team's own perks (new teams' signatures, vanilla teams' built-ins) fill the count before random draws",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "player_power_weight",
       "value": 0.3,
       "meaning": "how much opponent points follow the player's power (0 = round only); points times 1 + weight x (ratio - 1), ratio clamped",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "player_power_ratio_min",
       "value": 0.7,
       "meaning": "lowest player power / expected power ratio used",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "player_power_ratio_max",
       "value": 1.4,
       "meaning": "highest ratio used",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "expected_power_base",
       "value": 0.0,
       "meaning": "expected player power at round 1 (power = perks + stat-card points / 2 + game stat levels)",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },
     {
       "id": "expected_power_per_round",
       "value": 1.0,
       "meaning": "expected player power gained per round",
-      "verified": "no"
+      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     }
   ],
   "slot_classes": {

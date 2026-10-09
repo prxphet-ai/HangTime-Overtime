@@ -183,6 +183,19 @@
       ],
       "conds": [],
       "verified": "no"
+    },
+    {
+      "id": "enemy_spike",
+      "source": "touch_spike",
+      "meaning": "the other team makes an accepted spike (defensive reactions; ball effects act on their incoming spike)",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "chance",
+        "cooldown"
+      ],
+      "verified": "no"
     }
   ]
 }

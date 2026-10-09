@@ -340,16 +340,19 @@ class PerkRuntime:
         return f
 
     def stat_mult(self, stat, clock):
+        """Buffs that overlap the approach window before this moment count."""
         m = 1.0
+        aw = self.D.k["approach_window"]
         for (s, mult, until) in self.buffs:
-            if s == stat and (until in (-1.0, -2.0) or clock < until):
+            if s == stat and (until in (-1.0, -2.0) or clock - aw < until):
                 m *= mult
         return m
 
     def move_mult(self, clock):
         m = 1.0
+        aw = self.D.k["approach_window"]
         for (mult, until) in self.slows:
-            if clock < until:
+            if clock - aw < until:
                 m *= mult
         return m
 
@@ -367,6 +370,7 @@ class Match:
         self.score = [0, 0]
         self.flight = None          # {"owner": i, "cross": [(fx, m)], "enemy": [(fx, m)]}
         self.touches = 0
+        self.toff = 0.0             # time offset for effects that happen before the current moment (net crossings)
 
     # ------------------------------------------------ perk firing
 
@@ -425,7 +429,7 @@ class Match:
         """Apply one effect (the model's version of the engine's Run)."""
         k, D, rt, en = fx["fx"], self.D, self.rt[i], self.rt[1 - i]
         fm = D.fxm
-        t = self.clock
+        t = self.clock + self.toff
         if k in VISUAL:
             return
         if k == "power":
@@ -531,7 +535,7 @@ class Match:
              + (K["defensive_structure"] if side.ai.get("defensiveStructure") else 0.0) + 0.08 * side.recovery + extra)
         if side.is_player:
             x += K["player_skill"]
-        if self.clock < rt.stun_all_until:
+        if self.clock - self.D.k["approach_window"] < rt.stun_all_until:
             x -= self.D.fxm["stun_all"]
         gs = max(self.rt[0].game_speed, self.rt[1].game_speed)
         x -= self.D.fxm["game_speed"] * (gs - 1.0)
@@ -565,14 +569,16 @@ class Match:
         pen = ctx.get("pen", 0.0)
         if "hybridServe" in S.abilities or "skyServe" in S.abilities:
             pen += 0.15
+        self.tick("t_receive")
         cctx = {}
+        self.toff = -K["t_cross_serve"]
         self.cross(cctx)
+        self.toff = 0.0
         speed *= cctx.get("speed", 1.0)
         pen += cctx.get("pen", 0.0)
         if flt:
             pen += K["float_penalty"] * max(0.0, S.stats["FloatServe"] - 100.0) / 50.0
             speed = 70.0
-        self.tick("t_receive")
         x = K["receive_base"] - K["receive_speed"] * (speed - 70.0) / 30.0 - pen + self.receive_logit(r)
         if rng.random() > sigmoid(x):
             return self.ev("ace", s)
@@ -642,8 +648,14 @@ class Match:
                         return self.ev("spike_error", d)
                 self.accepted(t)
                 pen = actx.get("pen", 0.0)
-            # --- block (spikes only)
+            # --- defensive reactions: the other team's enemy_spike perks act on the incoming spike
             dside, drt = self.sides[d], self.rt[d]
+            help_dig = 0.0
+            if kind == "spike":
+                dfx = {}
+                self.fire(d, "enemy_spike", dfx)
+                help_dig = dfx.get("pen", 0.0)        # slows/hovers on their spike help the defenders
+            # --- block (spikes only)
             soft = False
             if kind == "spike":
                 bc = dside.block_chance
@@ -676,11 +688,13 @@ class Match:
                         soft = True
                         speed *= 0.6
             # --- defense
+            self.tick("t_dig" if kind == "spike" else "t_receive")
             cctx = {}
+            self.toff = -(K["t_cross_spike"] if kind == "spike" else K["t_cross_serve"])
             self.cross(cctx)
+            self.toff = 0.0
             speed *= cctx.get("speed", 1.0)
             pen += cctx.get("pen", 0.0)
-            self.tick("t_dig" if kind == "spike" else "t_receive")
             if kind == "free":
                 x = K["free_ball_dig"] + self.receive_logit(d)
             elif kind == "tip":
@@ -688,7 +702,7 @@ class Match:
                 x = K["tip_dig_base"] + K["tip_move_weight"] * (move - 1.5) / 0.3 - pen + self.receive_logit(d, -K["move_weight"] * (move - 1.5) / 0.3)
             else:
                 atk_jump = T.stats["Jump"] * rt.stat_mult("jump", self.clock) + actx.get("jump", 0.0)
-                x = (K["dig_base"] - K["dig_speed"] * (speed - 80.0) / 30.0 - K["dig_set_quality"] * sq - pen
+                x = (K["dig_base"] - K["dig_speed"] * (speed - 80.0) / 30.0 - K["dig_set_quality"] * sq - pen + help_dig
                      - K["dig_attack_height"] * (atk_jump - 61.0) / 5.0
                      + self.receive_logit(d) + (K["soft_block_dig_bonus"] if soft else 0.0))
             if rng.random() > sigmoid(x):

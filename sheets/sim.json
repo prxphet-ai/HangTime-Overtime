@@ -213,6 +213,24 @@
       "verified": "no"
     },
     {
+      "id": "t_cross_serve",
+      "value": 0.45,
+      "meaning": "seconds before the receive that a serve or tip crosses the net (when 'cross' effects happen)",
+      "verified": "no"
+    },
+    {
+      "id": "t_cross_spike",
+      "value": 0.2,
+      "meaning": "seconds before the dig that a spike crosses the net",
+      "verified": "no"
+    },
+    {
+      "id": "approach_window",
+      "value": 0.5,
+      "meaning": "a player's last half-second moving to the ball: slows, stuns and buffs that overlap it count for that touch",
+      "verified": "no"
+    },
+    {
       "id": "spike_height_min",
       "value": 3.0,
       "meaning": "lowest spiker height at contact with base Jump (game world units; for min_height conditions)",

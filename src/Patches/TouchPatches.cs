@@ -48,6 +48,12 @@ namespace HangtimeOvertime.Patches
                 var ball = ballOf(__instance);
                 if (ok) Accepted(__instance, ball);
                 Engine.Engine.CommitSpike(__instance, ball, ok);
+                if (ok)
+                {
+                    // defensive perks of the other team react to the spike coming at them
+                    int defender = Engine.Engine.Other(Engine.Engine.SideOf(__instance));
+                    Engine.Engine.FireAll("enemy_spike", defender, Engine.Engine.MainPlayer(defender), ball);
+                }
             }
         }
 
