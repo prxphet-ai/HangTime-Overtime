@@ -127,6 +127,9 @@ namespace HangtimeOvertime.Patches
             if (player != null)
             {
                 titleRig = Look.RigOf(player);
+                // copy the player as the game draws it (not wearing the saved look), so "Original" means the game's look
+                Look.Apply(titleRig, new PlayerLook());
+                titleRig.GetComponent<LookKeeper>()?.SnapBuild();
                 var copy = Instantiate(titleRig.gameObject, transform);
                 foreach (var lk in copy.GetComponentsInChildren<LookKeeper>(true)) DestroyImmediate(lk);
                 preview = copy.transform;

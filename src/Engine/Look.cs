@@ -257,14 +257,31 @@ namespace HangtimeOvertime.Engine
             if (tintable.ContainsValue(src)) return src;
             if (tintable.TryGetValue(src, out var done) && done != null) return done;
             var r = src.textureRect;
-            var rt = RenderTexture.GetTemporary(src.texture.width, src.texture.height, 0, RenderTextureFormat.ARGB32);
+            int tw = src.texture.width, th = src.texture.height;
+            // copy the whole (unreadable) texture through a render texture, then cut the sprite's area out of it in
+            // texture coordinates (origin bottom-left, like textureRect) - no manual y-flip that can pick the wrong strip
+            var rt = RenderTexture.GetTemporary(tw, th, 0, RenderTextureFormat.ARGB32, RenderTextureReadWrite.sRGB);
             Graphics.Blit(src.texture, rt);
             var prev = RenderTexture.active;
             RenderTexture.active = rt;
-            var tex = new Texture2D((int)r.width, (int)r.height, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset, wrapMode = TextureWrapMode.Clamp };
-            tex.ReadPixels(new Rect(r.x, src.texture.height - r.y - r.height, r.width, r.height), 0, 0);
+            var full = new Texture2D(tw, th, TextureFormat.RGBA32, false);
+            full.ReadPixels(new Rect(0, 0, tw, th), 0, 0);
+            full.Apply();
             RenderTexture.active = prev;
             RenderTexture.ReleaseTemporary(rt);
+            int rx = Mathf.RoundToInt(r.x), ry = Mathf.RoundToInt(r.y), rw = Mathf.RoundToInt(r.width), rh = Mathf.RoundToInt(r.height);
+            var tex = new Texture2D(rw, rh, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset, wrapMode = TextureWrapMode.Clamp };
+            tex.SetPixels(full.GetPixels(rx, ry, rw, rh));
+            tex.Apply();
+            if (Plugin.DumpScenes.Value)
+            {
+                Plugin.Log.LogInfo($"Tintable {src.name}: texture {src.texture.name} {tw}x{th}, textureRect {r}, rect {src.rect}, packed {src.packed}, pivot {src.pivot}, ppu {src.pixelsPerUnit}");
+                var dir = System.IO.Path.Combine(Application.persistentDataPath, "overtime_debug");
+                System.IO.Directory.CreateDirectory(dir);
+                System.IO.File.WriteAllBytes(System.IO.Path.Combine(dir, "full.png"), full.EncodeToPNG());
+                System.IO.File.WriteAllBytes(System.IO.Path.Combine(dir, "cut.png"), tex.EncodeToPNG());
+            }
+            UnityEngine.Object.Destroy(full);
             var px = tex.GetPixels();
             float max = 0.01f;
             foreach (var p in px) if (p.a > 0.5f) max = Mathf.Max(max, p.grayscale);
@@ -276,8 +293,8 @@ namespace HangtimeOvertime.Engine
             }
             tex.SetPixels(px);
             tex.Apply();
-            var pivot = new Vector2(src.pivot.x / r.width, src.pivot.y / r.height);
-            var copy = Sprite.Create(tex, new Rect(0, 0, r.width, r.height), pivot, src.pixelsPerUnit);
+            var pivot = new Vector2(src.pivot.x / src.rect.width, src.pivot.y / src.rect.height);
+            var copy = Sprite.Create(tex, new Rect(0, 0, rw, rh), pivot, src.pixelsPerUnit);
             copy.hideFlags = HideFlags.DontUnloadUnusedAsset;
             copy.name = src.name + " (tintable)";
             tintable[src] = copy;
@@ -348,6 +365,14 @@ namespace HangtimeOvertime.Engine
         public void Apply()
         {
             GetComponentInParent<ControllerFx>()?.RefreshColors();
+            LateUpdate();
+        }
+
+        // put the body scale back to what the animation set (before copying the rig)
+        public void SnapBuild()
+        {
+            if (core == null) return;
+            Build = Vector2.one;
             LateUpdate();
         }
 
