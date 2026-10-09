@@ -25,6 +25,19 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Title menu (Game scene): Title/…/Button group (ButtonGroup) → "1 Player Button" (TitleButton, 1P),
   "2 Player button", "QUIT" (QuitButton); spacing 3.3 world units.
 - Window capture: ffmpeg gfxcapture `window_title=Hangtime` (window_exe with "!" never matches).
+- Input (1P): `LocalInputManager` sends MoveP1/UpP1/DownP1 (and MoveP3/UpP3/DownP3) to player 1 from every keyboard set
+  and gamepad; co-op uses P2 actions + `ManualInputRouter` (arrows vs WASD). Every player, human or AI, is driven only
+  through `PlayerController.SetXInput / UpInputPressed / DownInputPressed`.
+- AI: right team = `SpikerInput` (also sets `BallMovement.opponent`, the right side's server, in its Start) + `SetterInput`
+  (chases the ball on its side and sets). Left bot setter is `MultiplayerController.botSetter` in 1P. Nothing else
+  references `SpikerInput`, so a human can replace it.
+- Serve: `UpInputPressed` while serving needs |x| > COURT_SIZE (step back), jump, then Up (spin) / Down (float) in the
+  air once the "Serve Jump" animation plays.
+- Match end: `GameManager.Update` -> `EndGame(nextScene)` (IEnumerator, "Upgrade"/"Win"/"Lose"); a loss is not a scene
+  (event `GameManager.OnPlayerLose` + in-scene lose menu).
+- TMP labels copied from the title buttons carry negative side margins and auto-size their container: set `margin = 0`,
+  `autoSizeTextContainer = false` and `textWrappingMode` (Unity 6 TMP) before relying on wrapping.
+- The player's own hair sprite (`Hair_0`) sits in a 2000x2000 atlas "Hair" at rect (730,1216,292,235).
 
 ## Build
 `python tools/sheets.py gen` (preflight + generate) → `dotnet build src -c Release -p:Deploy=true`.
@@ -44,3 +57,10 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Preflight clean (45 hooks, 61 perks, 22 cards, 8 teams), build OK, all 61 perks fired live via dev lab (F1/F2) without errors.
 - Next: watch triggers in normal play (dig, block, setter_set, streak, enemy_streak, match_point_against), stat cards,
   loop button, tier scaling; then switch DevKeys/DumpScenes off for release.
+
+## Versus (1v1)
+- Title VERSUS -> join screen (per-device join, team pick, ready) -> rounds to 5 points, first to 5 rounds; the loser of
+  each round picks one of 3 upgrades. Code: `src/Core/Versus.cs` (setup slots, state, offers),
+  `src/Patches/VersusInput.cs` (devices, driver, disconnects), `src/Patches/VersusPatches.cs` (round-end hook, match
+  setup), `src/Patches/VersusUI.cs` (overlays, round flow), `src/Patches/VersusMenu.cs` (join screen).
+  Rules: `sheets/modes.json` -> `versus`.

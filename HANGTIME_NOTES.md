@@ -418,3 +418,63 @@ Modes:
   Bump, Spike, Jump, Block, and Serve on both serve axes. Speed, Set and Recovery have no axis on the game's chart.
   Checked in game: Iron Body (Block +1.5, Receive +1) stretched the Block and Bump points, Block 1.5x as far.
 - Dev key F11 (Overtime-only cards) now also limits the stat card screens to the Overtime cards, for testing.
+
+### Step 19 — bug fix: spiky hair lost its top when recoloured
+- **Cause**: the Spiky style is the player's own hair, which the game draws in colour, so the creator makes a recolourable
+  copy at runtime. The copy was cut out of the game's texture with a hand-made y-flip, but that sprite lives in a
+  2000x2000 atlas (at y=1216); the flip read y=549 instead — a different strip of the sheet — so only part of the hair
+  came out. The other styles use the game's own white hair sprites and never had the problem.
+- **Fix** (`Look.Tintable`): copy the whole texture through a render texture and cut the sprite's rect out in texture
+  coordinates. Also fixed: the creator's preview copied the title-screen player while it already wore the saved look, so
+  "Original"/RESET showed the saved colours; it now copies the player as the game draws it.
+- Checked in game: Spiky in all 15 colours; Round/Big/Flame/Swoop/Long in black, white and blue; saved -> restarted ->
+  title screen, a practice match and Versus all show the full spiky hair.
+
+### Step 20 — Versus mode (1v1)
+- **Where**: VERSUS button on the title screen (left column, above CUSTOMIZE).
+- **Join screen**: each player presses a button on their own input to join — any of W A S D (or Space) = the WASD set,
+  any arrow key (or Enter) = the arrow keys, A or Start on a gamepad = that gamepad. Two keyboard sets, keyboard + pad, or
+  two pads all work. Left/right picks a team, jump = ready; the match starts when both are ready (or START). Esc = back.
+  Player 1 plays the left side as Hoshiyumi in their creator look, or in a new team's colours; player 2 picks any team
+  (the game's or a new one) for the right side.
+- **Controls in a match**: move left/right, jump/hit/spin-serve = W / Up / A (or right trigger), receive/float-serve =
+  S / Down / X (or left trigger). Serving works like the game: step behind your back line, jump, then hit.
+- **Who is who**: player 1 is the game's own player with the game's bot setter; player 2 takes over the right team's
+  spiker (its `SpikerInput` AI switched off, and the ball's right-side server set to it), with that team's AI setter.
+  Both humans are driven through the same calls the game's input and AI use (`SetXInput`/`UpInputPressed`/
+  `DownInputPressed`), from `VersusDriver`; the game's single-player input is blocked in Versus so a key can only ever
+  move its own player.
+- **Fair start**: the right team uses the player's own stat tables at level 0, the same move speeds, no built-in
+  abilities — team choice is cosmetic; builds come only from the picks.
+- **Format (ROUNDS-style)**: a round is a normal match to 5 points; first to 5 round wins takes the match. After each
+  round the **loser** picks one of 3 upgrades (perks — Overtime and the game's own opponent-safe ones — and stat cards,
+  about 1 in 3 a card; no duplicates of owned perks; stat cards stack). Only the loser's input works on that screen.
+  Between rounds: round score and both builds. Picks carry over. Perks fire for both sides (e.g. P1 Counter Attack on
+  P2's spikes, P2 Spring Heels on jumps); P2's stat cards apply only to P2 (seen: spike 1.05 -> 1.75).
+- **Match end**: both final builds and CONTINUE / REMATCH / MENU. **Decision: CONTINUE keeps both builds and raises the
+  target in 5-round chunks** (first to 10, then 15...); loser-picks stays on. REMATCH starts fresh; MENU goes to the title.
+- **Config, one place**: `sheets/modes.json` -> `versus` (points_per_round 5, rounds_to_win 5, continue_rounds 5,
+  offer_size 3, stat_card_share 0.34), generated into `Generated.VersusRules`.
+- **Run saves untouched**: Versus never saves or clears the Infinite/Classic slots (checked: the save file was
+  byte-identical before and after a long Versus session), and leaving Versus by any path (MENU, pause -> MENU, starting
+  another mode) clears both builds — a CO-OP match started right after had no perks or cards.
+- **Disconnects**: if a player's gamepad goes away the match pauses with a notice; reconnecting it resumes, or pressing A
+  on any other free gamepad hands that player's slot to it.
+- **Built for later**: a match is a `VersusSetup` — a list of slots (side, role hitter/setter, Human/AI/Remote, input).
+  - **1v2** (one player + AI teammate vs 2 friends) and **2v2**: add a second Human slot on a side. The left side already
+    has the game's co-op player-2 object (`MultiplayerController.player2Object`, shown instead of the bot setter); on the
+    right, a second human needs the right setter's `SetterInput` switched off and driven like the spiker. The join screen
+    needs 3-4 columns and the pick screen needs a rule for which loser picks (both, in turn, is the natural ROUNDS choice).
+  - **Online**: add `SlotControl.Remote`, whose `PadState` arrives from the network instead of a device (the game ships
+    Steamworks.NET, so Steam P2P is available); the host runs the match. The driver, rounds and pick screens stay as they are.
+- **Tested in game** (2026-10-09): joining on WASD + arrows; team picks; real-key serves for both sides; long rallies where
+  each AI setter sets for its own human and both humans receive and spike (driven by a dev-only autopilot, F4 with
+  DevKeys on, through the same input path); rounds to 5 counted by the mod; pick screens for both players (the other
+  player's keys do nothing); perks and stat cards on both sides; match end 5-1; CONTINUE (first to 10, builds kept);
+  REMATCH (fresh); MENU; pause, resume, pause -> MENU; a second Versus match starting fresh; a virtual gamepad unplugged
+  and replugged mid-match; CO-OP afterwards clean; 0 errors in the log.
+- **Known issues / not done**: no real gamepad was available, so pads were tested with a virtual device (joining and
+  playing with a physical pad is untested). The left banner stays Hoshiyumi even when player 1 picks a new team. The
+  game's own limit-break effects only show on the left side (the game hard-codes them to x<0). The AI-vs-AI simulator
+  does not model Versus yet (a build-vs-build mode would be the way to balance the draft); the last line of your brief
+  about the simulator was cut off.
