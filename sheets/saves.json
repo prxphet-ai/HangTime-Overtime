@@ -1,0 +1,34 @@
+{
+  "sheet": "saves",
+  "about": "One row per field in the mod's own save file (Application.persistentDataPath/HangtimeOvertime.json, next to the game's save.json, which the mod never writes). Each row generates one field of OvertimeSave.",
+  "columns": {
+    "id": "field name",
+    "type": "int",
+    "default": "value for a new save",
+    "written_when": "event that updates it",
+    "verified": "how it was seen in the written file, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "bestInfiniteWins",
+      "type": "int",
+      "default": 0,
+      "written_when": "an infinite run ends (lost a match): max(best, wins this run)",
+      "verified": "HangtimeOvertime.json showed bestInfiniteWins 1 after a 1-win run"
+    },
+    {
+      "id": "infiniteRuns",
+      "type": "int",
+      "default": 0,
+      "written_when": "an infinite run starts",
+      "verified": "HangtimeOvertime.json counted runs (3)"
+    },
+    {
+      "id": "bestLoop",
+      "type": "int",
+      "default": 1,
+      "written_when": "a new loop starts: max(best, loop)",
+      "verified": "no"
+    }
+  ]
+}

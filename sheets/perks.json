@@ -1,0 +1,2838 @@
+{
+  "sheet": "perks",
+  "about": "One row per Overtime perk. Each row generates one PerkDef (with its FxDef list) in src/Generated/Sheets.g.cs, run by the generic perk engine (src/Engine). No perk changes the score. Card art reuses the player's own Hangtime! card sprites; the card tint is the element color.",
+  "columns": {
+    "id": "stable key",
+    "title": "card title",
+    "rarity": "common | rare | epic (card weight 3 / 2 / 1; vanilla cards weigh 2)",
+    "element": "elements.json id",
+    "origin": "new | reworked | kept (from v0.1)",
+    "triggers": "triggers.json ids this perk listens to",
+    "conds": "condition values (keys from the trigger's conds; chance 1 and cooldown 0 mean always)",
+    "fx": "effects: each has on (trigger), when (stage), fx (effects.json id) and that effect's params",
+    "description": "card rules text",
+    "flavour": "card flavour line",
+    "art_from": "vanilla Technique class whose card sprite is reused",
+    "opponent_ok": "yes if opponent teams may be given it",
+    "verified": "how it was seen working in the running game, or 'no'"
+  },
+  "vanilla_cards_seen": {
+    "about": "Technique classes on the game's upgrade-screen card list (logged in game, 2026-10-08). art_from must be one of these.",
+    "classes": [
+      "BlockBoost",
+      "PerfectBump",
+      "Pipe",
+      "SneakAttack",
+      "Speedster",
+      "SpeedStrike",
+      "StrongQuick",
+      "TopSpinTip",
+      "FallingSpike",
+      "AbsoluteBlock",
+      "LastStand",
+      "SkyServe",
+      "RiskySet",
+      "ComeBack",
+      "DeadSet",
+      "TrickShot",
+      "CounterBump",
+      "ToolTip",
+      "LineCreep",
+      "MomentumSpike",
+      "LowTip",
+      "SpinSpike"
+    ]
+  },
+  "rows": [
+    {
+      "id": "blaze_spike",
+      "title": "Blaze Spike",
+      "rarity": "common",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "power",
+          "add": 0.15,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "FF6A2A",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 0.8,
+          "clip": "spike",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.4,
+          "dur": 0.8,
+          "color": "FF6A2A",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "tint",
+          "dur": 0.8,
+          "color": "FF8A3A",
+          "on": "spike"
+        }
+      ],
+      "description": "Spikes burst into flame: a little extra power and a fire trail.",
+      "flavour": "Bring the heat.",
+      "art_from": "MomentumSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "afterburner",
+      "title": "Afterburner",
+      "rarity": "rare",
+      "element": "fire",
+      "origin": "reworked",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "accel",
+          "rate": 0.9,
+          "dur": 0.35,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.8,
+          "dur": 1.0,
+          "color": "FF4A1A",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 1.2,
+          "color": "FF6A2A",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "sound",
+          "vol": 0.25,
+          "pitch": 1.3,
+          "clip": "spinServe",
+          "on": "spike"
+        }
+      ],
+      "description": "After your spike crosses the net it keeps speeding up, trailing fire.",
+      "flavour": "Light the fuse.",
+      "art_from": "FallingSpike",
+      "opponent_ok": "yes",
+      "verified": "partial: triggered in the user's own play under v0.1 (same behavior); engine rewrite not yet replayed"
+    },
+    {
+      "id": "scorched_earth",
+      "title": "Scorched Earth",
+      "rarity": "rare",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.2,
+          "dur": 0.6,
+          "color": "FF6A2A",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "zone",
+          "width": 7,
+          "mult": 0.6,
+          "dur": 3,
+          "color": "FF5A1A",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "burst",
+          "size": 1.2,
+          "color": "FF6A2A",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "Where they dig your spike, the court burns: receivers in the flames slow down.",
+      "flavour": "The floor is lava.",
+      "art_from": "SpinSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "flame_serve",
+      "title": "Flame Serve",
+      "rarity": "common",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "speed",
+          "mult": 1.08,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.2,
+          "dur": 0.8,
+          "color": "FF6A2A",
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 0.8,
+          "color": "FF8A3A",
+          "at": "ball",
+          "on": "serve"
+        }
+      ],
+      "description": "Serves catch fire as they cross the net and speed up.",
+      "flavour": "Hot off the hand.",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "ember_tip",
+      "title": "Ember Tip",
+      "rarity": "common",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 0.9,
+          "dur": 0.6,
+          "color": "FF8A3A",
+          "on": "tip"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "zone",
+          "width": 5,
+          "mult": 0.7,
+          "dur": 2.5,
+          "color": "FF7A2A",
+          "on": "tip"
+        }
+      ],
+      "description": "Tips drop embers: whoever digs one is slowed by the flames.",
+      "flavour": "Mind the sparks.",
+      "art_from": "ToolTip",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "phoenix_dive",
+      "title": "Phoenix Dive",
+      "rarity": "rare",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "lift",
+          "vy": 7,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.4,
+          "color": "FF6A2A",
+          "at": "owner",
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.25,
+          "pitch": 1.2,
+          "clip": "perfectBump",
+          "on": "dig"
+        }
+      ],
+      "description": "Your digs rise like a phoenix: extra height to set up the counter.",
+      "flavour": "From the ashes.",
+      "art_from": "PerfectBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "inferno_aura",
+      "title": "Inferno",
+      "rarity": "epic",
+      "element": "fire",
+      "origin": "new",
+      "triggers": [
+        "streak"
+      ],
+      "conds": {
+        "n": 5,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 5,
+          "color": "FF5A1A",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.3,
+          "dur": 5,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "INFERNO!",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.25,
+          "dur": 0.25,
+          "color": "FF6A2A",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 1.0,
+          "clip": "limitBreak",
+          "on": "streak"
+        }
+      ],
+      "description": "After 5 good touches in a row you ignite: much stronger spikes for 5 seconds.",
+      "flavour": "Burn bright.",
+      "art_from": "ComeBack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "frost_serve",
+      "title": "Frost Serve",
+      "rarity": "common",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "slow",
+          "mult": 0.65,
+          "dur": 0.3,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.2,
+          "dur": 0.8,
+          "color": "9FE8FF",
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 0.9,
+          "color": "BFF4FF",
+          "at": "ball",
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 1.4,
+          "clip": "floatServe",
+          "on": "serve"
+        }
+      ],
+      "description": "Serves freeze for a split second after the net, then rush on.",
+      "flavour": "Brain freeze.",
+      "art_from": "LineCreep",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "slippery_ice",
+      "title": "Black Ice",
+      "rarity": "rare",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.0,
+          "dur": 0.6,
+          "color": "9FE8FF",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "deflect",
+          "rand": 14,
+          "back": 0,
+          "ymult": 0.75,
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "DFFAFF",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 1.6,
+          "clip": "net",
+          "on": "spike"
+        }
+      ],
+      "description": "Your spikes come in iced: the first bump against them skids off at an odd angle.",
+      "flavour": "Watch your step.",
+      "art_from": "SpeedStrike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "permafrost",
+      "title": "Permafrost",
+      "rarity": "rare",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "enemy_touch",
+          "fx": "zone",
+          "width": 8,
+          "mult": 0.7,
+          "dur": 4,
+          "color": "9FE8FF",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "burst",
+          "size": 1.2,
+          "color": "BFF4FF",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "Frost spreads where they dig your spikes: receivers on the ice move slower.",
+      "flavour": "It never thaws.",
+      "art_from": "StrongQuick",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "frozen_block",
+      "title": "Frozen Wall",
+      "rarity": "common",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "block"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.6,
+          "dur": 1.6,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.4,
+          "color": "9FE8FF",
+          "at": "ball",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "tint",
+          "dur": 0.6,
+          "color": "9FE8FF",
+          "on": "block"
+        }
+      ],
+      "description": "A strong block freezes the other team's footwork for a moment.",
+      "flavour": "Cold shoulder.",
+      "art_from": "BlockBoost",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "cold_snap",
+      "title": "Cold Snap",
+      "rarity": "epic",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.35,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "hover",
+          "dur": 0.3,
+          "then": 1.25,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "slowmo",
+          "scale": 0.4,
+          "dur": 0.25,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "flash",
+          "alpha": 0.3,
+          "dur": 0.25,
+          "color": "BFF4FF",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 1.6,
+          "color": "DFFAFF",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "cutin",
+          "text": "COLD SNAP!",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes your spike freezes solid in mid-air, then shatters forward faster.",
+      "flavour": "Time stands still.",
+      "art_from": "Pipe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "zigzag_spike",
+      "title": "Zig-Zag Spike",
+      "rarity": "rare",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "wobble",
+          "amp": 16,
+          "period": 0.1,
+          "dur": 0.35,
+          "mode": "zigzag",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "bolt",
+          "color": "FFE14A",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.2,
+          "dur": 0.6,
+          "color": "FFE14A",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 2.0,
+          "clip": "net",
+          "on": "spike"
+        }
+      ],
+      "description": "Your spikes zig-zag like lightning after the net.",
+      "flavour": "Can't catch lightning.",
+      "art_from": "StrongQuick",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "thunderclap",
+      "title": "Thunderclap",
+      "rarity": "rare",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.35,
+        "cooldown": 3
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.6,
+          "target": "blocker",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "bolt",
+          "color": "FFE14A",
+          "at": "enemy",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.35,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.2,
+          "pitch": 1.5,
+          "clip": "windowSmash",
+          "on": "spike"
+        }
+      ],
+      "description": "Your spike can strike their blocker with lightning, stunning them for a moment.",
+      "flavour": "Stay grounded.",
+      "art_from": "SpeedStrike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "lightning_reflex",
+      "title": "Lightning Reflex",
+      "rarity": "common",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.35,
+          "dur": 1.2,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.8,
+          "color": "FFE14A",
+          "at": "owner",
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": 1.2,
+          "color": "FFE14A",
+          "on": "dig"
+        }
+      ],
+      "description": "After a dig you're charged up: a burst of speed to get under the set.",
+      "flavour": "Quick as a flash.",
+      "art_from": "CounterBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "storm_serve",
+      "title": "Storm Serve",
+      "rarity": "common",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 0.6,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "wobble",
+          "amp": 8,
+          "period": 0.12,
+          "dur": 0.25,
+          "mode": "zigzag",
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "bolt",
+          "color": "FFE14A",
+          "at": "ball",
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.0,
+          "dur": 0.6,
+          "color": "FFE14A",
+          "on": "serve"
+        }
+      ],
+      "description": "Serves often crackle and jitter right after the net.",
+      "flavour": "Static in the air.",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "thunder_god",
+      "title": "Thunder God",
+      "rarity": "epic",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "streak"
+      ],
+      "conds": {
+        "n": 6,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.5,
+          "target": "all",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "bolt",
+          "color": "FFE14A",
+          "at": "enemy",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.35,
+          "dur": 0.3,
+          "color": "FFF080",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "THUNDER GOD!",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.5,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 1.3,
+          "clip": "limitBreak",
+          "on": "streak"
+        }
+      ],
+      "description": "After 6 good touches in a row, lightning stuns the whole other team.",
+      "flavour": "Fear the sky.",
+      "art_from": "TrickShot",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "moon_set",
+      "title": "Moon Set",
+      "rarity": "common",
+      "element": "wind",
+      "origin": "kept",
+      "triggers": [
+        "set"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "gravity",
+          "add": -3,
+          "dur": 1.1,
+          "on": "set"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.6,
+          "color": "A8FFC8",
+          "at": "ball",
+          "on": "set"
+        }
+      ],
+      "description": "After your team's set or bump, the ball floats like it's on the moon.",
+      "flavour": "One small set for man...",
+      "art_from": "DeadSet",
+      "opponent_ok": "yes",
+      "verified": "partial: triggered in the user's own play under v0.1 (same behavior); engine rewrite not yet replayed"
+    },
+    {
+      "id": "swerve_tip",
+      "title": "Swerve Tip",
+      "rarity": "common",
+      "element": "wind",
+      "origin": "kept",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "curve",
+          "ax": 60,
+          "dur": 0.45,
+          "on": "tip"
+        },
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 0.8,
+          "dur": 0.5,
+          "color": "A8FFC8",
+          "on": "tip"
+        }
+      ],
+      "description": "Your tips start short, then swerve deep into the court.",
+      "flavour": "Wait, where's it going?",
+      "art_from": "TopSpinTip",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "dipping_serve",
+      "title": "Dipping Serve",
+      "rarity": "rare",
+      "element": "wind",
+      "origin": "kept",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 30,
+          "xmult": 0.85,
+          "delay": 0.05,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 0.9,
+          "dur": 0.6,
+          "color": "A8FFC8",
+          "on": "serve"
+        }
+      ],
+      "description": "Your serves dive down sharply once they cross the net.",
+      "flavour": "Now you see it.",
+      "art_from": "LineCreep",
+      "opponent_ok": "yes",
+      "verified": "partial: triggered in the user's own play under v0.1 (same behavior); engine rewrite not yet replayed"
+    },
+    {
+      "id": "gale_serve",
+      "title": "Gale Serve",
+      "rarity": "common",
+      "element": "wind",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "gust",
+          "min": -9,
+          "max": 9,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "ring",
+          "size": 1.2,
+          "color": "A8FFC8",
+          "at": "ball",
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "sound",
+          "vol": 0.25,
+          "pitch": 0.8,
+          "clip": "floatServe",
+          "on": "serve"
+        }
+      ],
+      "description": "A gust hits your serve at the net, knocking it up or down.",
+      "flavour": "Which way is the wind?",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tailwind",
+      "title": "Tailwind",
+      "rarity": "common",
+      "element": "wind",
+      "origin": "new",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.1,
+          "dur": -1,
+          "on": "passive"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": -1,
+          "color": "A8FFC8",
+          "on": "passive"
+        }
+      ],
+      "description": "A constant tailwind: you run 10% faster.",
+      "flavour": "Wind at your back.",
+      "art_from": "Speedster",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "cyclone_spike",
+      "title": "Cyclone Spike",
+      "rarity": "rare",
+      "element": "wind",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "lift",
+          "vy": 9,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 35,
+          "xmult": 0.8,
+          "delay": 0.2,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "ring",
+          "size": 1.4,
+          "color": "A8FFC8",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "Your spike hops up over their arms, then dives.",
+      "flavour": "Up, up and down.",
+      "art_from": "SpinSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tidal_arc",
+      "title": "Tidal Arc",
+      "rarity": "common",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "wobble",
+          "amp": 7,
+          "period": 0.3,
+          "dur": 0.6,
+          "mode": "wave",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.3,
+          "dur": 0.8,
+          "color": "4AA8FF",
+          "on": "spike"
+        }
+      ],
+      "description": "Spikes ride a wave after the net: a rolling arc that's hard to read.",
+      "flavour": "Go with the flow.",
+      "art_from": "Pipe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "mirror_image",
+      "title": "Mirror Image",
+      "rarity": "rare",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.5,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "decoy",
+          "offset": 7,
+          "dur": 0.5,
+          "fake": 1,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 0.9,
+          "color": "8FD0FF",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "Your spike often splits into a watery afterimage. The other team may chase the fake.",
+      "flavour": "Which one is real?",
+      "art_from": "TrickShot",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "undertow",
+      "title": "Undertow",
+      "rarity": "rare",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "enemy_touch",
+          "fx": "deflect",
+          "rand": 0,
+          "back": 12,
+          "ymult": 0.9,
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "4AA8FF",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 0.7,
+          "clip": "net",
+          "on": "spike"
+        }
+      ],
+      "description": "Digs against your spikes get dragged toward their back line.",
+      "flavour": "Pulled under.",
+      "art_from": "MomentumSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "mist_veil",
+      "title": "Mist Veil",
+      "rarity": "common",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "invisible",
+          "alpha": 0.45,
+          "dur": 0.35,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "CFE8FF",
+          "at": "ball",
+          "on": "serve"
+        }
+      ],
+      "description": "Your serve vanishes into mist for a moment after the net.",
+      "flavour": "Lost in the fog.",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tsunami_spike",
+      "title": "Tsunami",
+      "rarity": "epic",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.4,
+        "cooldown": 5,
+        "min_height": 9
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "power",
+          "add": 0.25,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "slow_enemies",
+          "mult": 0.7,
+          "dur": 1.5,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "wobble",
+          "amp": 6,
+          "period": 0.35,
+          "dur": 0.5,
+          "mode": "wave",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "cutin",
+          "text": "TSUNAMI!",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "shake",
+          "amount": 0.4,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 1.8,
+          "color": "4AA8FF",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "A high spike can become a tidal wave: big power, and it swamps their footwork.",
+      "flavour": "Here comes the wave.",
+      "art_from": "FallingSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "quake_spike",
+      "title": "Quake Spike",
+      "rarity": "common",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "enemy_touch",
+          "fx": "slow_enemies",
+          "mult": 0.75,
+          "dur": 0.8,
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "shake",
+          "amount": 0.3,
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "burst",
+          "size": 1.2,
+          "color": "C08A4A",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "Spikes land like a quake: digging one rattles the whole team.",
+      "flavour": "Feel the ground shake.",
+      "art_from": "MomentumSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "bedrock_block",
+      "title": "Bedrock Block",
+      "rarity": "common",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "block"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.15,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.3,
+          "color": "C08A4A",
+          "at": "ball",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.25,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 0.7,
+          "clip": "block",
+          "on": "block"
+        }
+      ],
+      "description": "Rock-solid blocks: the ball rebounds off you faster.",
+      "flavour": "Immovable.",
+      "art_from": "AbsoluteBlock",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "boulder_serve",
+      "title": "Boulder Serve",
+      "rarity": "rare",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.4,
+          "dur": 0.7,
+          "color": "9A7040",
+          "on": "serve"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "deflect",
+          "rand": 4,
+          "back": 0,
+          "ymult": 0.7,
+          "on": "serve"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "shake",
+          "amount": 0.25,
+          "on": "serve"
+        }
+      ],
+      "description": "Heavy serves: the first bump against them comes up short.",
+      "flavour": "Like catching a rock.",
+      "art_from": "LineCreep",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tectonic_slam",
+      "title": "Tectonic Slam",
+      "rarity": "epic",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.25,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.4,
+          "target": "all",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 3.0,
+          "color": "C08A4A",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.6,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "TECTONIC SLAM!",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.25,
+          "pitch": 0.6,
+          "clip": "windowSmash",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes your spike splits the court and knocks the other team off balance.",
+      "flavour": "The earth answers.",
+      "art_from": "SpinSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "mud_trap",
+      "title": "Mud Trap",
+      "rarity": "common",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "enemy_touch",
+          "fx": "zone",
+          "width": 6,
+          "mult": 0.65,
+          "dur": 2.5,
+          "color": "7A5530",
+          "on": "tip"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "burst",
+          "size": 0.8,
+          "color": "C08A4A",
+          "at": "ball",
+          "on": "tip"
+        }
+      ],
+      "description": "Tips land in mud: whoever digs one gets bogged down.",
+      "flavour": "Stuck in the mud.",
+      "art_from": "LowTip",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "shadow_ball",
+      "title": "Shadow Ball",
+      "rarity": "rare",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "invisible",
+          "alpha": 0.12,
+          "dur": 0.3,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "trail",
+          "width": 1.0,
+          "dur": 0.4,
+          "color": "4A2A8A",
+          "on": "spike"
+        }
+      ],
+      "description": "Your spike fades into shadow for a moment after the net.",
+      "flavour": "Now you don't.",
+      "art_from": "SneakAttack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "night_serve",
+      "title": "Night Serve",
+      "rarity": "common",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "invisible",
+          "alpha": 0.3,
+          "dur": 0.25,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "tint",
+          "dur": 0.6,
+          "color": "8A5CFF",
+          "on": "serve"
+        }
+      ],
+      "description": "Serves slip into darkness just past the net.",
+      "flavour": "Lights out.",
+      "art_from": "LineCreep",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "eclipse",
+      "title": "Eclipse",
+      "rarity": "epic",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.3,
+        "cooldown": 5
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "invisible",
+          "alpha": 0.05,
+          "dur": 0.45,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "decoy",
+          "offset": 9,
+          "dur": 0.45,
+          "fake": 1,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "flash",
+          "alpha": 0.35,
+          "dur": 0.3,
+          "color": "000000",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "cutin",
+          "text": "ECLIPSE!",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes the lights go out on your spike: it vanishes and a decoy flies the other way.",
+      "flavour": "Darkness falls.",
+      "art_from": "SneakAttack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "solar_flare",
+      "title": "Solar Flare",
+      "rarity": "rare",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.55,
+          "dur": 0.2,
+          "color": "FFFFFF",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.6,
+          "dur": 0.5,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.4,
+          "color": "FFF3B0",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "Your spikes flash like the sun, blinding the other team for a split second.",
+      "flavour": "Don't look directly at it.",
+      "art_from": "StrongQuick",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "radiant_set",
+      "title": "Radiant Set",
+      "rarity": "common",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "setter_set"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 1.2,
+          "dur": 1.0,
+          "color": "FFE680",
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "tint",
+          "dur": 1.0,
+          "color": "FFF3B0",
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.1,
+          "dur": 1.2,
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.7,
+          "color": "FFF3B0",
+          "at": "ball",
+          "on": "setter_set"
+        }
+      ],
+      "description": "Your setter's sets glow gold; spike them in time for extra power.",
+      "flavour": "Follow the light.",
+      "art_from": "RiskySet",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "holy_lance",
+      "title": "Holy Lance",
+      "rarity": "epic",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.5,
+        "cooldown": 4,
+        "min_height": 10
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.22,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.45,
+          "dur": 0.25,
+          "color": "FFF8D0",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "bolt",
+          "color": "FFF3B0",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "HOLY LANCE!",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.25,
+          "pitch": 1.5,
+          "clip": "limitBreak",
+          "on": "spike"
+        }
+      ],
+      "description": "A spike from high up can become a lance of light: much faster.",
+      "flavour": "Judgement.",
+      "art_from": "Pipe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "halo_dig",
+      "title": "Halo Dig",
+      "rarity": "common",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "set",
+          "mult": 1.3,
+          "dur": 1.5,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 1.2,
+          "color": "FFF3B0",
+          "at": "owner",
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "tint",
+          "dur": 1.0,
+          "color": "FFF3B0",
+          "on": "dig"
+        }
+      ],
+      "description": "When you dig, a halo guides your setter: they rush to the ball faster.",
+      "flavour": "Guardian angel.",
+      "art_from": "PerfectBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "aura_burst",
+      "title": "Aura Burst",
+      "rarity": "epic",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "streak"
+      ],
+      "conds": {
+        "n": 4,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 6,
+          "color": "FFD24A",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.15,
+          "dur": 6,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 1.08,
+          "dur": 6,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.15,
+          "dur": 6,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "AURA BURST!",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.25,
+          "dur": 0.2,
+          "color": "FFE680",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 1.1,
+          "clip": "limitBreak",
+          "on": "streak"
+        }
+      ],
+      "description": "After 4 good touches in a row, a golden aura boosts spike, jump and speed for 6 seconds.",
+      "flavour": "This isn't even my final form.",
+      "art_from": "LastStand",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "afterimage",
+      "title": "Afterimage",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "passive",
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.3,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "on": "passive",
+          "stat": "move",
+          "mult": 1.08,
+          "dur": -1
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "on": "passive",
+          "dur": -1,
+          "color": "FFFFFF"
+        },
+        {
+          "when": "cross",
+          "fx": "decoy",
+          "on": "spike",
+          "offset": 6,
+          "dur": 0.35,
+          "fake": 1
+        }
+      ],
+      "description": "You leave afterimages as you run, move a bit faster, and sometimes your spike fakes out the defense.",
+      "flavour": "Too fast to see.",
+      "art_from": "Speedster",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "time_stop_set",
+      "title": "Time Stop Set",
+      "rarity": "epic",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "setter_set"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 6
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "slowmo",
+          "scale": 0.3,
+          "dur": 0.7,
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.3,
+          "dur": 0.3,
+          "color": "7FB8FF",
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "TIME STOP!",
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 0.5,
+          "clip": "perfectBump",
+          "on": "setter_set"
+        }
+      ],
+      "description": "Your setter's set can freeze time: everything slows so you can line up the spike.",
+      "flavour": "The world stops.",
+      "art_from": "DeadSet",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "cut_in_spike",
+      "title": "Cut-In Spike",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 3,
+        "min_air": 0.45
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "power",
+          "add": 0.25,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "slowmo",
+          "scale": 0.35,
+          "dur": 0.25,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "zoom",
+          "amount": -3,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.3,
+          "dur": 0.15,
+          "color": "FFFFFF",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "CUT-IN SPIKE!",
+          "on": "spike"
+        }
+      ],
+      "description": "Hang in the air long enough and your spike gets a dramatic close-up and extra power.",
+      "flavour": "Freeze frame.",
+      "art_from": "SpeedStrike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "phantom_serve",
+      "title": "Phantom Serve",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "decoy",
+          "offset": 8,
+          "dur": 0.6,
+          "fake": 1,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "D0C0FF",
+          "at": "ball",
+          "on": "serve"
+        }
+      ],
+      "description": "Your serve splits into a decoy and the real ball.",
+      "flavour": "Double vision.",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "gravity_drop",
+      "title": "Gravity Drop",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.35,
+        "cooldown": 3
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 48,
+          "xmult": 0.35,
+          "delay": 0.12,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "ring",
+          "size": 1.3,
+          "color": "B07AFF",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 0.6,
+          "clip": "spinServe",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes your spike stops dead past the net and plunges straight down.",
+      "flavour": "What goes up...",
+      "art_from": "FallingSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "overdrive",
+      "title": "Overdrive",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "next_power",
+          "add": 0.3,
+          "window": 3,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.8,
+          "color": "FF4FA0",
+          "at": "owner",
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 3,
+          "color": "FF4FA0",
+          "on": "dig"
+        }
+      ],
+      "description": "A dig powers you up: your next spike within 3 seconds hits much harder.",
+      "flavour": "Gear up.",
+      "art_from": "CounterBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "monster_block",
+      "title": "Monster Block",
+      "rarity": "epic",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "block"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.9,
+          "target": "hitter",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 2.5,
+          "color": "FF4FA0",
+          "at": "ball",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.5,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "MONSTER BLOCK!",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.4,
+          "pitch": 0.6,
+          "clip": "block",
+          "on": "block"
+        }
+      ],
+      "description": "A strong block sends out a shockwave that stuns the hitter.",
+      "flavour": "Denied.",
+      "art_from": "AbsoluteBlock",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "second_wind",
+      "title": "Second Wind",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "reworked",
+      "triggers": [
+        "match_point_against"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.25,
+          "dur": -2,
+          "on": "match_point_against"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 1.1,
+          "dur": -2,
+          "on": "match_point_against"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": -2,
+          "color": "FF3A3A",
+          "on": "match_point_against"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.25,
+          "dur": 0.25,
+          "color": "FF3A3A",
+          "on": "match_point_against"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "SECOND WIND!",
+          "on": "match_point_against"
+        }
+      ],
+      "description": "When the other team is one point from winning, you get a burst of speed and jump.",
+      "flavour": "Not today.",
+      "art_from": "LastStand",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "showboat",
+      "title": "Showboat",
+      "rarity": "common",
+      "element": "power",
+      "origin": "reworked",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "next_power",
+          "add": 0.25,
+          "window": 4,
+          "on": "tip"
+        },
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 0.9,
+          "dur": 0.6,
+          "color": "FFB0D0",
+          "on": "tip"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.7,
+          "color": "FFB0D0",
+          "at": "owner",
+          "on": "tip"
+        }
+      ],
+      "description": "Every tip pumps you up: your next spike within 4 seconds gets extra power.",
+      "flavour": "Did you see that?",
+      "art_from": "SneakAttack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "iron_will",
+      "title": "Iron Will",
+      "rarity": "common",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "block_jump"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "block_jump",
+          "add": 4,
+          "on": "block_jump"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.7,
+          "color": "D8D8E8",
+          "at": "owner",
+          "on": "block_jump"
+        }
+      ],
+      "description": "Your block jumps go higher.",
+      "flavour": "Hold the line.",
+      "art_from": "BlockBoost",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "kaiju_leap",
+      "title": "Kaiju Leap",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "jump"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0,
+        "run": 12
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "jump_bonus",
+          "add": 6,
+          "run": 12,
+          "on": "jump"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "C0B090",
+          "at": "owner",
+          "on": "jump"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.15,
+          "on": "jump"
+        }
+      ],
+      "description": "Jump from a full run for a monster leap.",
+      "flavour": "Stomp.",
+      "art_from": "Speedster",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "meteor_smash",
+      "title": "Meteor Smash",
+      "rarity": "epic",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.5,
+        "cooldown": 4,
+        "min_height": 11
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 2.0,
+          "dur": 0.8,
+          "color": "FF7A2A",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "METEOR SMASH!",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.5,
+          "color": "FFB04A",
+          "at": "ball",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 30,
+          "xmult": 0.9,
+          "delay": 0,
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "deflect",
+          "rand": 6,
+          "back": 0,
+          "ymult": 0.6,
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "shake",
+          "amount": 0.5,
+          "on": "spike"
+        }
+      ],
+      "description": "A spike from way up comes down like a meteor; digging it barely gets the ball up.",
+      "flavour": "Impact!",
+      "art_from": "FallingSpike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "rival_spirit",
+      "title": "Rival Spirit",
+      "rarity": "common",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "enemy_streak"
+      ],
+      "conds": {
+        "n": 2
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "next_power",
+          "add": 0.2,
+          "window": 8,
+          "on": "enemy_streak"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 3,
+          "color": "FF3A3A",
+          "on": "enemy_streak"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.8,
+          "color": "FF3A3A",
+          "at": "owner",
+          "on": "enemy_streak"
+        }
+      ],
+      "description": "When they win two rallies in a row, your next spike hits back harder.",
+      "flavour": "You'll pay for that.",
+      "art_from": "ComeBack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "zone_focus",
+      "title": "Zone Focus",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 0.4,
+        "cooldown": 5
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "slowmo",
+          "scale": 0.45,
+          "dur": 0.4,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.2,
+          "dur": 0.25,
+          "color": "7FB8FF",
+          "on": "dig"
+        }
+      ],
+      "description": "In the zone: sometimes a dig slows time so you can react.",
+      "flavour": "Everything is slow.",
+      "art_from": "PerfectBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "spirit_serve",
+      "title": "Spirit Serve",
+      "rarity": "epic",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0,
+        "hold": 1.5
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.25,
+          "on": "serve"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 1,
+          "color": "FFFFFF",
+          "on": "serve"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "SPIRIT SERVE!",
+          "on": "serve"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.3,
+          "dur": 0.2,
+          "color": "FFFFFF",
+          "on": "serve"
+        },
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 1.6,
+          "dur": 1.0,
+          "color": "FFFFFF",
+          "on": "serve"
+        }
+      ],
+      "description": "Hold the ball for a moment before serving to charge a much faster spirit serve.",
+      "flavour": "Focus...",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "echo_tip",
+      "title": "Echo Tip",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "decoy",
+          "offset": 5,
+          "dur": 0.5,
+          "fake": 1,
+          "on": "tip"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.6,
+          "color": "E0D0FF",
+          "at": "ball",
+          "on": "tip"
+        }
+      ],
+      "description": "Your tip leaves an echo that fakes out the defense.",
+      "flavour": "Over here. No, here.",
+      "art_from": "ToolTip",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "hot_streak",
+      "title": "Hot Streak",
+      "rarity": "common",
+      "element": "none",
+      "origin": "kept",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "power_streak",
+          "per": 0.07,
+          "max": 0.35,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.6,
+          "color": "FF9F6B",
+          "at": "owner",
+          "on": "spike"
+        }
+      ],
+      "description": "Each point you win in a row makes your spikes stronger.",
+      "flavour": "Don't touch, it's hot.",
+      "art_from": "MomentumSpike",
+      "opponent_ok": "yes",
+      "verified": "partial: triggered in the user's own play under v0.1 (same behavior); engine rewrite not yet replayed"
+    },
+    {
+      "id": "bank_shot",
+      "title": "Bank Shot",
+      "rarity": "common",
+      "element": "none",
+      "origin": "kept",
+      "triggers": [
+        "set",
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "bank",
+          "on": "set",
+          "add": 0.1,
+          "max": 0.4
+        },
+        {
+          "when": "now",
+          "fx": "cash_bank",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "on": "spike",
+          "size": 0.7,
+          "color": "FFD98A",
+          "at": "ball"
+        }
+      ],
+      "description": "Every bump and set banks power. Your next spike cashes it all in.",
+      "flavour": "Compound interest.",
+      "art_from": "PerfectBump",
+      "opponent_ok": "yes",
+      "verified": "partial: triggered in the user's own play under v0.1 (same behavior); engine rewrite not yet replayed"
+    },
+    {
+      "id": "collector",
+      "title": "Collector",
+      "rarity": "rare",
+      "element": "none",
+      "origin": "kept",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "power_perks",
+          "per": 0.04,
+          "max": 0.48,
+          "on": "spike"
+        }
+      ],
+      "description": "Your spikes get stronger for every ability you own.",
+      "flavour": "Gotta spike 'em all.",
+      "art_from": "ToolTip",
+      "opponent_ok": "yes",
+      "verified": "partial: triggered in the user's own play under v0.1 (same behavior); engine rewrite not yet replayed"
+    },
+    {
+      "id": "overclock",
+      "title": "Overclock",
+      "rarity": "rare",
+      "element": "none",
+      "origin": "kept",
+      "triggers": [
+        "passive",
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "game_speed",
+          "on": "passive",
+          "mult": 1.18
+        },
+        {
+          "when": "now",
+          "fx": "power",
+          "on": "spike",
+          "add": 0.3
+        }
+      ],
+      "description": "Stronger spikes, but the whole game runs faster.",
+      "flavour": "Caffeine was a mistake.",
+      "art_from": "Speedster",
+      "opponent_ok": "yes",
+      "verified": "partial: triggered in the user's own play under v0.1 (same behavior); engine rewrite not yet replayed"
+    }
+  ]
+}

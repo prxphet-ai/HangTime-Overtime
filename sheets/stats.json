@@ -1,0 +1,111 @@
+{
+  "sheet": "stats",
+  "about": "One row per stat a stat card can change. Each row generates one StatDef. 'step' is one card point in the stat's own units, about one of the game's own level-ups for the player (from the player's level tables logged in game). Recovery and Set are mod stats: Hangtime! has no stamina, and the player never sets (the bot or co-op partner does).",
+  "columns": {
+    "id": "stat key used in statcards.json",
+    "fields": "what it changes: game stat names, 'move' (moveSpeed), 'setter_move' (your setter's moveSpeed), 'recovery' (landing recovery)",
+    "step": "units per card point (Serve uses serve_steps)",
+    "min_steps": "lowest total from cards",
+    "max_steps": "highest total from cards",
+    "label": "word on the card",
+    "verified": "how it was seen, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "Spike",
+      "fields": [
+        "Spike"
+      ],
+      "step": 0.35,
+      "min_steps": -2,
+      "max_steps": 5,
+      "label": "Spike",
+      "verified": "no"
+    },
+    {
+      "id": "Jump",
+      "fields": [
+        "Jump"
+      ],
+      "step": 4.3,
+      "min_steps": -2,
+      "max_steps": 5,
+      "label": "Jump",
+      "verified": "no"
+    },
+    {
+      "id": "Block",
+      "fields": [
+        "Block"
+      ],
+      "step": 3.7,
+      "min_steps": -2,
+      "max_steps": 5,
+      "label": "Block",
+      "verified": "no"
+    },
+    {
+      "id": "Bump",
+      "fields": [
+        "Bump"
+      ],
+      "step": 2.1,
+      "min_steps": -2,
+      "max_steps": 5,
+      "label": "Receive",
+      "verified": "no"
+    },
+    {
+      "id": "Serve",
+      "fields": [
+        "SpinServe",
+        "ServeJump",
+        "FloatServe"
+      ],
+      "step": 0,
+      "min_steps": -2,
+      "max_steps": 5,
+      "label": "Serve",
+      "verified": "no"
+    },
+    {
+      "id": "Speed",
+      "fields": [
+        "move"
+      ],
+      "step": 0.12,
+      "min_steps": -2,
+      "max_steps": 5,
+      "label": "Speed",
+      "verified": "no"
+    },
+    {
+      "id": "Set",
+      "fields": [
+        "setter_move"
+      ],
+      "step": 0.15,
+      "min_steps": -2,
+      "max_steps": 5,
+      "label": "Set",
+      "verified": "no"
+    },
+    {
+      "id": "Recovery",
+      "fields": [
+        "recovery"
+      ],
+      "step": 0.08,
+      "min_steps": -3,
+      "max_steps": 4,
+      "label": "Recovery",
+      "verified": "no"
+    }
+  ],
+  "serve_steps": {
+    "about": "Serve changes three game stats by one step each.",
+    "SpinServe": 6.7,
+    "ServeJump": 6.3,
+    "FloatServe": 21.7
+  }
+}

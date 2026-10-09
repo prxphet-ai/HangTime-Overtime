@@ -1,0 +1,54 @@
+{
+  "sheet": "modes",
+  "about": "One row per run mode. Each row generates one ModeDef. 'tier' is how many times the bracket has been cleared (0 in a fresh run); scaling applies per tier on top of the game's own opponent stats.",
+  "columns": {
+    "id": "Normal | Infinite | Loop",
+    "entry": "how the player gets into this mode",
+    "slot_rule": "how the game's bracket slot (gameNumber 1-8) is chosen",
+    "tier_rule": "how tier is derived",
+    "card_rule": "which reward cards are offered after a win",
+    "final_win": "what beating slot 8 (final boss) does",
+    "achievements": "allow | block",
+    "best_key": "save field updated by this mode, or '-'",
+    "banner": "title-card text format at match start ({n} match number, {loop}, {bracket} game's bracket name)",
+    "verified": "how it was seen working, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "Normal",
+      "entry": "Classic / Co-op buttons (unchanged game)",
+      "slot_rule": "game default",
+      "tier_rule": "0",
+      "card_rule": "game default",
+      "final_win": "game's Win screen, plus a 'Keep going' button that enters Loop 2",
+      "achievements": "allow",
+      "best_key": "-",
+      "banner": "{bracket}",
+      "verified": "no"
+    },
+    {
+      "id": "Infinite",
+      "entry": "new INFINITE button on the title screen",
+      "slot_rule": "((n-1) mod 8)+1 picks the slot class (teams.json slots); the opponent is random from that class's pool of vanilla and new teams, never one of the last 3",
+      "tier_rule": "(n-1) div 8",
+      "card_rule": "perk on 2 of every 3 wins, stats on the 3rd; Limit Break once at the game's limit-break match; stats when fewer than 2 perks remain",
+      "final_win": "upgrade screen, then the bracket repeats one tier harder",
+      "achievements": "block",
+      "best_key": "bestInfiniteWins",
+      "banner": "Infinite - Match {n}",
+      "verified": "partial: start, slots 1-2, banner, rewards, lose/save, restart seen; random teams, tier 1+ and slot 8 not yet"
+    },
+    {
+      "id": "Loop",
+      "entry": "'Keep going' button on the Win screen",
+      "slot_rule": "game default 1-8, wrapping 9 to 1; opponents random from the slot class's pool like Infinite",
+      "tier_rule": "loop-1",
+      "card_rule": "game default; a Limit Break card already owned becomes a perk pick",
+      "final_win": "upgrade screen, then Loop {loop}+1",
+      "achievements": "allow",
+      "best_key": "bestLoop",
+      "banner": "Loop {loop} - {bracket}",
+      "verified": "no"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# build output
+src/bin/
+src/obj/
+dist/
+# facts extracted from the player's own Hangtime! install (regenerate with the mod's DumpScenes option)
+sim_data/
+# python
+__pycache__/
+*.pyc

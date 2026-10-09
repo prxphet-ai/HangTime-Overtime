@@ -1,0 +1,94 @@
+{
+  "sheet": "elements",
+  "about": "One row per element. Each row generates one ElementDef. Owning 2 perks of one element multiplies that element's 'scales' params by syn2, 3 or more by syn3 (an optional bonus); the first time it applies in a match the callout plays.",
+  "columns": {
+    "id": "element key",
+    "color": "hex",
+    "syn2": "multiplier with 2 perks",
+    "syn3": "multiplier with 3+ perks",
+    "callout": "cut-in text when synergy is active ('-' none)",
+    "verified": "how it was seen, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "fire",
+      "color": "FF6A2A",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "FIRE SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "ice",
+      "color": "9FE8FF",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "ICE SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "lightning",
+      "color": "FFE14A",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "LIGHTNING SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "wind",
+      "color": "A8FFC8",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "WIND SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "water",
+      "color": "4AA8FF",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "WATER SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "earth",
+      "color": "C08A4A",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "EARTH SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "shadow",
+      "color": "8A5CFF",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "SHADOW SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "light",
+      "color": "FFF3B0",
+      "syn2": 1.25,
+      "syn3": 1.5,
+      "callout": "LIGHT SYNERGY!",
+      "verified": "no"
+    },
+    {
+      "id": "power",
+      "color": "FF4FA0",
+      "syn2": 1.0,
+      "syn3": 1.0,
+      "callout": "-",
+      "verified": "no"
+    },
+    {
+      "id": "none",
+      "color": "FFD27A",
+      "syn2": 1.0,
+      "syn3": 1.0,
+      "callout": "-",
+      "verified": "no"
+    }
+  ]
+}

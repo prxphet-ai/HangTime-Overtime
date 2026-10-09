@@ -1,0 +1,71 @@
+{
+  "sheet": "scaling",
+  "about": "One row per opponent property that grows with tier (see modes.json). Each row generates one ScaleDef. Opponent stat levels are capped at 3 by the game, so later tiers multiply the opponent team's own stat values instead. Opponent perks are set in teams.json (opponent_perks).",
+  "columns": {
+    "id": "stable key",
+    "target": "stat:<statName> | move_speed | techniques",
+    "per_tier": "added per tier (multiplier fraction for stat/move_speed, count for techniques)",
+    "max_tiers": "tier at which growth stops",
+    "verified": "how it was seen working, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "opp_spike",
+      "target": "stat:Spike",
+      "per_tier": 0.06,
+      "max_tiers": 6,
+      "verified": "no"
+    },
+    {
+      "id": "opp_block",
+      "target": "stat:Block",
+      "per_tier": 0.03,
+      "max_tiers": 6,
+      "verified": "no"
+    },
+    {
+      "id": "opp_bump",
+      "target": "stat:Bump",
+      "per_tier": 0.04,
+      "max_tiers": 6,
+      "verified": "no"
+    },
+    {
+      "id": "opp_spin_serve",
+      "target": "stat:SpinServe",
+      "per_tier": 0.05,
+      "max_tiers": 6,
+      "verified": "no"
+    },
+    {
+      "id": "opp_float_serve",
+      "target": "stat:FloatServe",
+      "per_tier": 0.04,
+      "max_tiers": 6,
+      "verified": "no"
+    },
+    {
+      "id": "opp_jump",
+      "target": "stat:Jump",
+      "per_tier": 0.02,
+      "max_tiers": 6,
+      "verified": "no"
+    },
+    {
+      "id": "opp_move",
+      "target": "move_speed",
+      "per_tier": 0.05,
+      "max_tiers": 6,
+      "verified": "no"
+    }
+  ],
+  "opponent_techniques": {
+    "about": "Vanilla Techniques that may join an opponent's random perks alongside Overtime perks marked opponent_ok. Preflight rejects any that use the shared 'timer' field or player-only global state.",
+    "allowed": [
+      "Speedster",
+      "MomentumSpike",
+      "LastStand",
+      "ComeBack"
+    ]
+  }
+}

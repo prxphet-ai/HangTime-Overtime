@@ -1,0 +1,537 @@
+{
+  "sheet": "effects",
+  "about": "One row per effect a perk can use. Each row generates one FxKind; 'impl' names the C# method that runs it. Params are filled per use in perks.json. 'scales' says which param an element synergy strengthens. No effect here can change the score.",
+  "columns": {
+    "id": "effect key",
+    "kind": "ball | player | game | visual",
+    "params": "number params in slot order",
+    "text_params": "text params (colors, stat names, targets, sounds)",
+    "scales": "param a synergy multiplies ('-' none; 'excess:p' scales how far p is from 1)",
+    "impl": "C# method",
+    "meaning": "what it does",
+    "verified": "how it was seen in the running game, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "power",
+      "kind": "player",
+      "params": [
+        "add"
+      ],
+      "text_params": [],
+      "scales": "add",
+      "impl": "Engine.PrepareSpike",
+      "meaning": "extra spike power for this spike (spike trigger, stage now)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "next_power",
+      "kind": "player",
+      "params": [
+        "add",
+        "window"
+      ],
+      "text_params": [],
+      "scales": "add",
+      "impl": "Engine.Run",
+      "meaning": "store extra power for the owner's next accepted spike within window seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "bank",
+      "kind": "player",
+      "params": [
+        "add",
+        "max"
+      ],
+      "text_params": [],
+      "scales": "add",
+      "impl": "Engine.Run",
+      "meaning": "add to the owner team's banked spike power (capped at max)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "cash_bank",
+      "kind": "player",
+      "params": [],
+      "text_params": [],
+      "scales": "-",
+      "impl": "Engine.PrepareSpike",
+      "meaning": "this spike spends all banked power (spike trigger, now)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "power_streak",
+      "kind": "player",
+      "params": [
+        "per",
+        "max"
+      ],
+      "text_params": [],
+      "scales": "per",
+      "impl": "Engine.PrepareSpike",
+      "meaning": "spike power per rally the owner team has won in a row (spike trigger, now)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "power_perks",
+      "kind": "player",
+      "params": [
+        "per",
+        "max"
+      ],
+      "text_params": [],
+      "scales": "per",
+      "impl": "Engine.PrepareSpike",
+      "meaning": "spike power per ability the owner team has (spike trigger, now)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "buff",
+      "kind": "player",
+      "params": [
+        "mult",
+        "dur"
+      ],
+      "text_params": [
+        "stat"
+      ],
+      "scales": "excess:mult",
+      "impl": "Engine.Buff",
+      "meaning": "multiply an owner stat (spike, jump, block, move, set) for dur seconds; -1 whole match, -2 until the rally ends",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "stun",
+      "kind": "player",
+      "params": [
+        "dur"
+      ],
+      "text_params": [
+        "target"
+      ],
+      "scales": "dur",
+      "impl": "Engine.Stun",
+      "meaning": "freeze an enemy (blocker, spiker, hitter or all) for dur seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "slow_enemies",
+      "kind": "player",
+      "params": [
+        "mult",
+        "dur"
+      ],
+      "text_params": [],
+      "scales": "excess:mult",
+      "impl": "Engine.Run",
+      "meaning": "enemy move speed times mult for dur seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "zone",
+      "kind": "player",
+      "params": [
+        "width",
+        "mult",
+        "dur"
+      ],
+      "text_params": [
+        "color"
+      ],
+      "scales": "excess:mult",
+      "impl": "Engine.Zone",
+      "meaning": "a ground zone under the ball on the enemy side; enemies standing in it move at mult",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "game_speed",
+      "kind": "game",
+      "params": [
+        "mult"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "Engine.Run",
+      "meaning": "rallies run at mult speed (passive)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "jump_bonus",
+      "kind": "player",
+      "params": [
+        "add",
+        "run"
+      ],
+      "text_params": [],
+      "scales": "add",
+      "impl": "Engine.Run",
+      "meaning": "extra jump speed when running faster than run (jump trigger)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "block_jump",
+      "kind": "player",
+      "params": [
+        "add"
+      ],
+      "text_params": [],
+      "scales": "add",
+      "impl": "Engine.Run",
+      "meaning": "extra block jump speed (block_jump trigger)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "speed",
+      "kind": "ball",
+      "params": [
+        "mult"
+      ],
+      "text_params": [],
+      "scales": "excess:mult",
+      "impl": "BallFx.Speed",
+      "meaning": "ball velocity times mult",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "accel",
+      "kind": "ball",
+      "params": [
+        "rate",
+        "dur"
+      ],
+      "text_params": [],
+      "scales": "rate",
+      "impl": "BallFx.Accel",
+      "meaning": "the ball keeps speeding up by rate per second for dur seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "gravity",
+      "kind": "ball",
+      "params": [
+        "add",
+        "dur"
+      ],
+      "text_params": [],
+      "scales": "add",
+      "impl": "BallFx.Gravity",
+      "meaning": "add to the ball's gravity for dur seconds (negative floats)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "plunge",
+      "kind": "ball",
+      "params": [
+        "vy",
+        "xmult",
+        "delay"
+      ],
+      "text_params": [],
+      "scales": "vy",
+      "impl": "BallFx.Plunge",
+      "meaning": "after delay seconds the ball dives at vy with its sideways speed times xmult",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "curve",
+      "kind": "ball",
+      "params": [
+        "ax",
+        "dur"
+      ],
+      "text_params": [],
+      "scales": "ax",
+      "impl": "BallFx.Curve",
+      "meaning": "push the ball toward the enemy back line by ax per second for dur seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "wobble",
+      "kind": "ball",
+      "params": [
+        "amp",
+        "period",
+        "dur"
+      ],
+      "text_params": [
+        "mode"
+      ],
+      "scales": "amp",
+      "impl": "BallFx.Wobble",
+      "meaning": "vertical zig-zag or wave on the ball's path",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "hover",
+      "kind": "ball",
+      "params": [
+        "dur",
+        "then"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "BallFx.Hover",
+      "meaning": "the ball freezes in the air for dur seconds, then goes on at then times its speed",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "slow",
+      "kind": "ball",
+      "params": [
+        "mult",
+        "dur"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "BallFx.Slow",
+      "meaning": "the ball slows to mult for dur seconds, then gets its speed back",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "gust",
+      "kind": "ball",
+      "params": [
+        "min",
+        "max"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "BallFx.Gust",
+      "meaning": "random vertical push between min and max",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "lift",
+      "kind": "ball",
+      "params": [
+        "vy"
+      ],
+      "text_params": [],
+      "scales": "vy",
+      "impl": "BallFx.Lift",
+      "meaning": "add upward speed to the ball",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "deflect",
+      "kind": "ball",
+      "params": [
+        "rand",
+        "back",
+        "ymult"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "BallFx.Deflect",
+      "meaning": "after the enemy touch: random sideways kick, push toward their back line, height times ymult",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "invisible",
+      "kind": "ball",
+      "params": [
+        "alpha",
+        "dur"
+      ],
+      "text_params": [],
+      "scales": "dur",
+      "impl": "BallFx.Invisible",
+      "meaning": "the ball fades to alpha for dur seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "decoy",
+      "kind": "ball",
+      "params": [
+        "offset",
+        "dur",
+        "fake"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "BallFx.Decoy",
+      "meaning": "a fake ball splits off; with fake 1 the enemy AI misreads the landing spot by offset for dur seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "trail",
+      "kind": "visual",
+      "params": [
+        "width",
+        "dur"
+      ],
+      "text_params": [
+        "color"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Trail",
+      "meaning": "recolor and widen the ball trail",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "tint",
+      "kind": "visual",
+      "params": [
+        "dur"
+      ],
+      "text_params": [
+        "color"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Tint",
+      "meaning": "tint the ball",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "burst",
+      "kind": "visual",
+      "params": [
+        "size"
+      ],
+      "text_params": [
+        "color",
+        "at"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Burst",
+      "meaning": "particle burst (the game's hit effect, recolored) at ball, owner or enemy",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "flash",
+      "kind": "visual",
+      "params": [
+        "alpha",
+        "dur"
+      ],
+      "text_params": [
+        "color"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Flash",
+      "meaning": "full-screen color flash",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "slowmo",
+      "kind": "game",
+      "params": [
+        "scale",
+        "dur"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "Vfx.Slowmo",
+      "meaning": "slow motion at scale for dur real seconds",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "shake",
+      "kind": "visual",
+      "params": [
+        "amount"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "Vfx.Shake",
+      "meaning": "camera shake (the game's own)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "zoom",
+      "kind": "visual",
+      "params": [
+        "amount"
+      ],
+      "text_params": [],
+      "scales": "-",
+      "impl": "Vfx.Zoom",
+      "meaning": "camera punch zoom (negative zooms in)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "cutin",
+      "kind": "visual",
+      "params": [],
+      "text_params": [
+        "text"
+      ],
+      "scales": "-",
+      "impl": "Vfx.CutIn",
+      "meaning": "the game's title-card slide with a callout",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "sound",
+      "kind": "visual",
+      "params": [
+        "vol",
+        "pitch"
+      ],
+      "text_params": [
+        "clip"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Sound",
+      "meaning": "one of the game's own sounds (SoundLibrary field)",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "aura",
+      "kind": "visual",
+      "params": [
+        "dur"
+      ],
+      "text_params": [
+        "color"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Aura",
+      "meaning": "glowing aura behind the owner's spiker",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "afterimages",
+      "kind": "visual",
+      "params": [
+        "dur"
+      ],
+      "text_params": [
+        "color"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Afterimages",
+      "meaning": "the owner's spiker leaves fading copies while moving fast",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "bolt",
+      "kind": "visual",
+      "params": [],
+      "text_params": [
+        "color",
+        "at"
+      ],
+      "scales": "-",
+      "impl": "Vfx.Bolt",
+      "meaning": "lightning bolt from above onto ball or enemy",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    },
+    {
+      "id": "ring",
+      "kind": "visual",
+      "params": [
+        "size"
+      ],
+      "text_params": [
+        "color",
+        "at"
+      ],
+      "scales": "-",
+      "impl": "Vfx.RingFx",
+      "meaning": "expanding shockwave ring",
+      "verified": "partial: ran in a live match via the dev lab on 2026-10-08 (all 61 perks fired, no errors, trace logged); not yet watched in normal play"
+    }
+  ]
+}

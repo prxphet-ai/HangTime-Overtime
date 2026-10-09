@@ -1,0 +1,188 @@
+{
+  "sheet": "triggers",
+  "about": "One row per moment a perk can react to. Each row generates one TriggerDef; 'source' names the hooks.json row that detects it. Every trigger works for either team (perks can belong to the player or to an opponent team).",
+  "columns": {
+    "id": "trigger key used in perks.json",
+    "source": "hooks.json row that raises it",
+    "meaning": "what has to happen",
+    "stages": "effect stages allowed after this trigger: now; cross = when the ball crosses the net; enemy_touch = first touch by the other team after it crossed",
+    "conds": "condition keys that make sense here",
+    "verified": "how it was seen firing in the running game, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "spike",
+      "source": "touch_spike",
+      "meaning": "a spike by the owner team that the game accepted",
+      "stages": [
+        "now",
+        "cross",
+        "enemy_touch"
+      ],
+      "conds": [
+        "chance",
+        "cooldown",
+        "min_air",
+        "min_height"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "serve",
+      "source": "technique_onserve",
+      "meaning": "a spin or float serve by the owner team",
+      "stages": [
+        "now",
+        "cross",
+        "enemy_touch"
+      ],
+      "conds": [
+        "chance",
+        "cooldown",
+        "hold"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "tip",
+      "source": "touch_tip",
+      "meaning": "a tip by the owner team that the game accepted",
+      "stages": [
+        "now",
+        "cross",
+        "enemy_touch"
+      ],
+      "conds": [
+        "chance",
+        "cooldown"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "set",
+      "source": "touch_set",
+      "meaning": "any accepted set or bump by the owner team",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "chance",
+        "cooldown"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "setter_set",
+      "source": "touch_set",
+      "meaning": "an accepted set by the owner team's setter",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "chance",
+        "cooldown"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "dig",
+      "source": "touch_set",
+      "meaning": "an accepted bump of an incoming ball faster than 60 (receiving an attack)",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "chance",
+        "cooldown"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "block",
+      "source": "touch_block",
+      "meaning": "a strong block by the owner team (the game's big-block branch)",
+      "stages": [
+        "now",
+        "cross",
+        "enemy_touch"
+      ],
+      "conds": [
+        "chance",
+        "cooldown"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "jump",
+      "source": "technique_onjump",
+      "meaning": "a normal jump by the owner team",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "chance",
+        "cooldown",
+        "run"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "block_jump",
+      "source": "technique_onblockjump",
+      "meaning": "a block jump by the owner team",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "chance",
+        "cooldown"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "passive",
+      "source": "match_start",
+      "meaning": "the start of every match (effects last the whole match)",
+      "stages": [
+        "now"
+      ],
+      "conds": [],
+      "verified": "no"
+    },
+    {
+      "id": "streak",
+      "source": "touch_set",
+      "meaning": "the owner team reaches n accepted touches in a row without losing a rally (the count restarts after firing)",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "n",
+        "cooldown"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "enemy_streak",
+      "source": "rally_end",
+      "meaning": "the other team wins n rallies in a row",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "n"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "match_point_against",
+      "source": "rally_end",
+      "meaning": "a rally starts with the other team one point from winning the match",
+      "stages": [
+        "now"
+      ],
+      "conds": [],
+      "verified": "no"
+    }
+  ]
+}

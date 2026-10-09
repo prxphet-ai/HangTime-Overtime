@@ -1,0 +1,289 @@
+{
+  "sheet": "statcards",
+  "about": "One row per Overtime stat card on the upgrade screen. Each row generates one StatCardDef. deltas are card points per stat (stats.json gives the units). Vanilla stat cards raise 2-3 stats one level each (about 2-3 points) and cap at level 3; Overtime points stack up to each stat's min/max.",
+  "columns": {
+    "id": "stable key",
+    "title": "card title",
+    "rarity": "common | rare | epic",
+    "style": "boost | playstyle | tradeoff",
+    "deltas": "stats.json id -> points (negative is a drawback)",
+    "blurb": "long text shown when the card is zoomed",
+    "verified": "how it was seen working, or 'no'"
+  },
+  "rarity_odds": {
+    "about": "chance each card is in a given upgrade screen's pool (vanilla cards always are)",
+    "common": 0.7,
+    "rare": 0.45,
+    "epic": 0.2
+  },
+  "rows": [
+    {
+      "id": "power_drills",
+      "title": "Power Drills",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Spike": 1.5
+      },
+      "blurb": "Hours at the spike line. Hit harder.",
+      "verified": "no"
+    },
+    {
+      "id": "plyometrics",
+      "title": "Plyometrics",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Jump": 1.5
+      },
+      "blurb": "Box jumps until your legs give up. Jump higher.",
+      "verified": "no"
+    },
+    {
+      "id": "wall_practice",
+      "title": "Wall Practice",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Block": 1.5
+      },
+      "blurb": "Bigger, better blocks.",
+      "verified": "no"
+    },
+    {
+      "id": "platform_drills",
+      "title": "Platform Drills",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Bump": 1.5
+      },
+      "blurb": "Cleaner receives off hard hits.",
+      "verified": "no"
+    },
+    {
+      "id": "toss_practice",
+      "title": "Toss Practice",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Serve": 1.5
+      },
+      "blurb": "Stronger spin and float serves.",
+      "verified": "no"
+    },
+    {
+      "id": "sprint_training",
+      "title": "Sprint Training",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Speed": 1.5
+      },
+      "blurb": "Faster across the court.",
+      "verified": "no"
+    },
+    {
+      "id": "setter_sync",
+      "title": "Setter Sync",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Set": 2
+      },
+      "blurb": "Your setter gets to the ball faster.",
+      "verified": "no"
+    },
+    {
+      "id": "marathon",
+      "title": "Marathon",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Recovery": 2
+      },
+      "blurb": "Quicker first step after every landing.",
+      "verified": "no"
+    },
+    {
+      "id": "all_rounder",
+      "title": "All-Rounder",
+      "rarity": "rare",
+      "style": "boost",
+      "deltas": {
+        "Spike": 0.75,
+        "Jump": 0.75,
+        "Block": 0.75,
+        "Bump": 0.75,
+        "Serve": 0.75
+      },
+      "blurb": "A bit better at everything.",
+      "verified": "no"
+    },
+    {
+      "id": "quick_hands",
+      "title": "Quick Hands",
+      "rarity": "rare",
+      "style": "boost",
+      "deltas": {
+        "Speed": 1.5,
+        "Recovery": 1.5
+      },
+      "blurb": "Fast feet, faster recovery.",
+      "verified": "no"
+    },
+    {
+      "id": "iron_wall",
+      "title": "Iron Wall",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Block": 2,
+        "Bump": 1.5,
+        "Spike": -1
+      },
+      "blurb": "Defense first. Your attacks soften.",
+      "verified": "no"
+    },
+    {
+      "id": "featherstep",
+      "title": "Featherstep",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Speed": 2,
+        "Jump": 1.5,
+        "Block": -1
+      },
+      "blurb": "Light on your feet, light at the net.",
+      "verified": "no"
+    },
+    {
+      "id": "setters_eye",
+      "title": "Setter's Eye",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Set": 2,
+        "Bump": 1.5,
+        "Serve": -1
+      },
+      "blurb": "Build every play. Serves suffer.",
+      "verified": "no"
+    },
+    {
+      "id": "cannon_arm",
+      "title": "Cannon Arm",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Serve": 3,
+        "Speed": -1
+      },
+      "blurb": "Thunderous serves, heavy feet.",
+      "verified": "no"
+    },
+    {
+      "id": "sky_walker",
+      "title": "Sky Walker",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Jump": 3,
+        "Bump": -1
+      },
+      "blurb": "Live in the air. Receiving isn't your thing.",
+      "verified": "no"
+    },
+    {
+      "id": "anchor",
+      "title": "Anchor",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Bump": 2,
+        "Recovery": 2,
+        "Jump": -1
+      },
+      "blurb": "Rooted and steady. Lower jumps.",
+      "verified": "no"
+    },
+    {
+      "id": "ace_hunter",
+      "title": "Ace Hunter",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Serve": 1.5,
+        "Spike": 1.5,
+        "Set": -1
+      },
+      "blurb": "Points from the line and the net. Your setter lags.",
+      "verified": "no"
+    },
+    {
+      "id": "liberos_instinct",
+      "title": "Libero's Instinct",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Bump": 3,
+        "Spike": -1
+      },
+      "blurb": "Dig everything. Hit softer.",
+      "verified": "no"
+    },
+    {
+      "id": "heavy_hitter",
+      "title": "Heavy Hitter",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Spike": 2.5,
+        "Speed": -1
+      },
+      "blurb": "Massive spikes, slower feet.",
+      "verified": "no"
+    },
+    {
+      "id": "tower",
+      "title": "Tower",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Block": 2.5,
+        "Jump": 1,
+        "Speed": -1
+      },
+      "blurb": "A wall at the net. Slow to move.",
+      "verified": "no"
+    },
+    {
+      "id": "glass_cannon",
+      "title": "Glass Cannon",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Serve": 2.5,
+        "Spike": 2.5,
+        "Block": -1.5,
+        "Bump": -1.5
+      },
+      "blurb": "Huge serves and spikes. Fragile defense.",
+      "verified": "no"
+    },
+    {
+      "id": "all_in",
+      "title": "All In",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Jump": 2.5,
+        "Spike": 2.5,
+        "Recovery": -2
+      },
+      "blurb": "Go big every swing. Slow to recover after landing.",
+      "verified": "no"
+    }
+  ]
+}

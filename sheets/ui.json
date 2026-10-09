@@ -1,0 +1,51 @@
+{
+  "sheet": "ui",
+  "about": "One row per piece of UI the mod adds or changes. Each row generates one UiDef. clone_of names an object the mod copies from the game's own scene (found by component, from the scene dump).",
+  "columns": {
+    "id": "stable key",
+    "scene": "game scene name",
+    "clone_of": "game object/component cloned, or '-'",
+    "text": "label text ({best} etc. filled at runtime)",
+    "subtext": "second line, or '-'",
+    "offset_y": "world units relative to the cloned object (negative is down)",
+    "verified": "how it was seen in the running game, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "title_infinite_button",
+      "scene": "Game",
+      "clone_of": "TitleButton '1 Player Button' (index 0 in the title ButtonGroup)",
+      "text": "INFINITE",
+      "subtext": "BEST: {bestInfiniteWins} WINS",
+      "offset_y": -6.6,
+      "verified": "in game screenshot 2026-10-08"
+    },
+    {
+      "id": "title_quit_shift",
+      "scene": "Game",
+      "clone_of": "-",
+      "text": "-",
+      "subtext": "-",
+      "offset_y": -3.3,
+      "verified": "in game screenshot 2026-10-08"
+    },
+    {
+      "id": "win_continue_button",
+      "scene": "Win",
+      "clone_of": "first RestartButton in the scene",
+      "text": "KEEP GOING: LOOP 2",
+      "subtext": "-",
+      "offset_y": -3.3,
+      "verified": "no"
+    },
+    {
+      "id": "lose_result_line",
+      "scene": "Lose",
+      "clone_of": "-",
+      "text": "Infinite wins: {wins} (best {best})",
+      "subtext": "Loop {loop} (best loop {bestLoop})",
+      "offset_y": 0,
+      "verified": "partial: line shown in game; reworded text not yet seen"
+    }
+  ]
+}

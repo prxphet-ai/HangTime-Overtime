@@ -1,0 +1,387 @@
+{
+  "sheet": "teams",
+  "about": "One row per new opponent team. Each row generates one TeamDef. A new team is a vanilla team (base) re-dressed when it spawns: new name, colors, stats, lines, a generated banner and signature perks. In Infinite and Loop runs the opponent is drawn at random from the slot's pool (vanilla + new), never repeating the last 3.",
+  "columns": {
+    "id": "stable key",
+    "name": "team name",
+    "base": "vanilla team prefab it re-dresses (must be in vanilla_teams)",
+    "slot": "regular | combo | boss",
+    "element": "elements.json id (theme)",
+    "jersey": "hex jersey color",
+    "shorts": "hex shorts color",
+    "hair": "hex hair colors (setter, spiker)",
+    "banner": "hex color of the team emblem disc on the gym banner (the name is written on it)",
+    "pitch": "voice pitch",
+    "weights": "stat weights for the team's level-ups (the game's StatWeight)",
+    "intro": "match intro line",
+    "win": "line when they win",
+    "lose": "line when they lose",
+    "got_point": "lines on scoring",
+    "lost_point": "lines on conceding",
+    "comment": "what your team says after beating them",
+    "signature": "perks this team always has (perks.json ids)",
+    "verified": "how it was seen in game, or 'no'"
+  },
+  "vanilla_teams": {
+    "about": "Vanilla team prefabs logged in game (2026-10-08), by slot class.",
+    "regular": [
+      "Rensho",
+      "Hinami Kai",
+      "Daigan Tech",
+      "Namasito Academy",
+      "Kozuki Dan"
+    ],
+    "combo": [
+      "Aomori",
+      "Ten-Roku"
+    ],
+    "boss": [
+      "Tenzio",
+      "Sunaumi High",
+      "Shirogane"
+    ]
+  },
+  "slots": {
+    "about": "Bracket slot (gameNumber) -> pool class. Gym/background still follows the slot.",
+    "1": "regular",
+    "2": "regular",
+    "3": "boss",
+    "4": "regular",
+    "5": "regular",
+    "6": "boss",
+    "7": "combo",
+    "8": "boss"
+  },
+  "opponent_perks": {
+    "about": "How many random perks an opponent gets (signature perks count toward it). n = infinite match number, loop = loop number.",
+    "infinite_per_matches": 4,
+    "loop_per_loop": 1,
+    "boss_bonus": 1,
+    "max": 4
+  },
+  "rows": [
+    {
+      "id": "kagaribi",
+      "name": "Kagaribi Flame",
+      "base": "Rensho",
+      "slot": "regular",
+      "element": "fire",
+      "jersey": "E8452A",
+      "shorts": "7A1E10",
+      "hair": [
+        "FFB000",
+        "FF5A1A"
+      ],
+      "banner": "C8321E",
+      "pitch": 0.9,
+      "weights": {
+        "Spike": 5,
+        "Jump": 3,
+        "Block": 0,
+        "Bump": 1,
+        "SpinServe": 3,
+        "ServeJump": 3,
+        "FloatServe": 0
+      },
+      "intro": "Hope you can take the heat!",
+      "win": "Burned to a crisp!",
+      "lose": "We... fizzled out.",
+      "got_point": [
+        "Too hot for you?",
+        "Feel that burn!"
+      ],
+      "lost_point": [
+        "Just a spark.",
+        "We'll flare up."
+      ],
+      "comment": "Their spikes were on fire. Literally.",
+      "signature": [
+        "blaze_spike"
+      ],
+      "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played"
+    },
+    {
+      "id": "hyoga",
+      "name": "Hyoga Frost",
+      "base": "Hinami Kai",
+      "slot": "regular",
+      "element": "ice",
+      "jersey": "BFEFFF",
+      "shorts": "4A7FA8",
+      "hair": [
+        "E8F8FF",
+        "7FB8FF"
+      ],
+      "banner": "6FB8E8",
+      "pitch": 1.2,
+      "weights": {
+        "Spike": 1,
+        "Jump": 2,
+        "Block": 3,
+        "Bump": 5,
+        "SpinServe": 0,
+        "ServeJump": 2,
+        "FloatServe": 4
+      },
+      "intro": "Stay cool. This won't take long.",
+      "win": "Frozen out.",
+      "lose": "We melted...",
+      "got_point": [
+        "Chilly, right?",
+        "Ice cold."
+      ],
+      "lost_point": [
+        "Cold snap.",
+        "Brr."
+      ],
+      "comment": "My fingers are still numb.",
+      "signature": [
+        "frost_serve"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "raijin",
+      "name": "Raijin Tech",
+      "base": "Daigan Tech",
+      "slot": "regular",
+      "element": "lightning",
+      "jersey": "FFD21A",
+      "shorts": "2A2A2A",
+      "hair": [
+        "FFF27A",
+        "2A2A2A"
+      ],
+      "banner": "E8B800",
+      "pitch": 1.1,
+      "weights": {
+        "Spike": 4,
+        "Jump": 5,
+        "Block": 1,
+        "Bump": 0,
+        "SpinServe": 2,
+        "ServeJump": 3,
+        "FloatServe": 0
+      },
+      "intro": "Hope you're fast. We are.",
+      "win": "Struck you down!",
+      "lose": "Short circuit...",
+      "got_point": [
+        "Zap!",
+        "Too slow!"
+      ],
+      "lost_point": [
+        "Static.",
+        "Grr, recharge."
+      ],
+      "comment": "I swear that ball zig-zagged.",
+      "signature": [
+        "zigzag_spike"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "fujin",
+      "name": "Fujin Wings",
+      "base": "Namasito Academy",
+      "slot": "regular",
+      "element": "wind",
+      "jersey": "8EF0B8",
+      "shorts": "2E7A55",
+      "hair": [
+        "FFFFFF",
+        "6FD8A0"
+      ],
+      "banner": "4FC88A",
+      "pitch": 1.3,
+      "weights": {
+        "Spike": 1,
+        "Jump": 3,
+        "Block": 1,
+        "Bump": 3,
+        "SpinServe": 0,
+        "ServeJump": 2,
+        "FloatServe": 5
+      },
+      "intro": "Let the wind decide.",
+      "win": "Blown away!",
+      "lose": "The wind turned...",
+      "got_point": [
+        "Whoosh!",
+        "Breezy."
+      ],
+      "lost_point": [
+        "Headwind.",
+        "Just a gust."
+      ],
+      "comment": "Their serves wouldn't stop moving.",
+      "signature": [
+        "gale_serve"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "kaien",
+      "name": "Kaien Marine",
+      "base": "Kozuki Dan",
+      "slot": "regular",
+      "element": "water",
+      "jersey": "2A6FE8",
+      "shorts": "0E2A6A",
+      "hair": [
+        "0E2A6A",
+        "5AD0FF"
+      ],
+      "banner": "1E5AC8",
+      "pitch": 1.0,
+      "weights": {
+        "Spike": 3,
+        "Jump": 2,
+        "Block": 2,
+        "Bump": 3,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "Ready to get swept away?",
+      "win": "Washed out!",
+      "lose": "Ebb tide...",
+      "got_point": [
+        "Splash!",
+        "Make waves."
+      ],
+      "lost_point": [
+        "Choppy.",
+        "We'll flow back."
+      ],
+      "comment": "I kept chasing the wrong ball.",
+      "signature": [
+        "tidal_arc"
+      ],
+      "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played"
+    },
+    {
+      "id": "iwao",
+      "name": "Iwao Stoneworks",
+      "base": "Ten-Roku",
+      "slot": "combo",
+      "element": "earth",
+      "jersey": "8A5A2E",
+      "shorts": "3A2412",
+      "hair": [
+        "3A2412",
+        "C08A4A"
+      ],
+      "banner": "6A4422",
+      "pitch": 0.7,
+      "weights": {
+        "Spike": 3,
+        "Jump": 2,
+        "Block": 5,
+        "Bump": 2,
+        "SpinServe": 1,
+        "ServeJump": 2,
+        "FloatServe": 0
+      },
+      "intro": "Three of us. One mountain.",
+      "win": "Crushed.",
+      "lose": "Erosion...",
+      "got_point": [
+        "Solid.",
+        "Rock and roll!"
+      ],
+      "lost_point": [
+        "A crack.",
+        "We hold."
+      ],
+      "comment": "Like spiking into a cliff face.",
+      "signature": [
+        "bedrock_block",
+        "quake_spike"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "yomi",
+      "name": "Yomi Nocturne",
+      "base": "Tenzio",
+      "slot": "boss",
+      "element": "shadow",
+      "jersey": "3A2A5A",
+      "shorts": "120A22",
+      "hair": [
+        "1A1028",
+        "8A5CFF"
+      ],
+      "banner": "2A1A4A",
+      "pitch": 0.6,
+      "weights": {
+        "Spike": 4,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 2,
+        "SpinServe": 2,
+        "ServeJump": 3,
+        "FloatServe": 1
+      },
+      "intro": "Can you hit what you can't see?",
+      "win": "Swallowed by the dark.",
+      "lose": "...the dawn.",
+      "got_point": [
+        "Lights out.",
+        "Where'd it go?"
+      ],
+      "lost_point": [
+        "A flicker.",
+        "Shadows return."
+      ],
+      "comment": "Half their spikes just vanished.",
+      "signature": [
+        "shadow_ball",
+        "eclipse"
+      ],
+      "verified": "no"
+    },
+    {
+      "id": "amaterasu",
+      "name": "Amaterasu Royals",
+      "base": "Shirogane",
+      "slot": "boss",
+      "element": "light",
+      "jersey": "FFF6D8",
+      "shorts": "C8A030",
+      "hair": [
+        "FFE680",
+        "FFFFFF"
+      ],
+      "banner": "E8C040",
+      "pitch": 0.8,
+      "weights": {
+        "Spike": 4,
+        "Jump": 3,
+        "Block": 3,
+        "Bump": 3,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 1
+      },
+      "intro": "Kneel before the sun.",
+      "win": "Radiant victory.",
+      "lose": "Eclipsed...",
+      "got_point": [
+        "Blinding!",
+        "Bask in it."
+      ],
+      "lost_point": [
+        "A cloud.",
+        "We still shine."
+      ],
+      "comment": "I can still see spots.",
+      "signature": [
+        "solar_flare",
+        "holy_lance"
+      ],
+      "verified": "no"
+    }
+  ]
+}

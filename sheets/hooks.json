@@ -1,0 +1,466 @@
+{
+  "sheet": "hooks",
+  "about": "One row per place the mod plugs into Hangtime!'s code. Each row generates one HookDef; preflight checks that target_type.target_method exists in the player's Assembly-CSharp.dll. 'native' means the game already calls our Technique (no Harmony patch).",
+  "columns": {
+    "id": "stable key",
+    "target_type": "game class (or UnityEngine type for events)",
+    "target_method": "game method, or comma-separated fields for kind 'field'",
+    "kind": "native (the game calls our Technique) | prefix | postfix | event (Unity event we subscribe to) | field (game fields the mod reads/writes)",
+    "patch_class": "C# class holding it (src/Patches) or '-' for native",
+    "purpose": "what the mod does there",
+    "changes_score": "must be 'no': no hook may change points",
+    "verified": "how it was seen working in the running game, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "technique_onspike",
+      "target_type": "PlayerController",
+      "target_method": "DoSpike",
+      "kind": "native",
+      "patch_class": "-",
+      "purpose": "The game adds Technique.OnSpike's return to spike power (power effects)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "technique_onserve",
+      "target_type": "PlayerController",
+      "target_method": "UpInputPressed",
+      "kind": "native",
+      "patch_class": "-",
+      "purpose": "The game calls Technique.OnServe after a serve (serve trigger)",
+      "changes_score": "no",
+      "verified": "in game: 'Dipping Serve armed' on spin serve"
+    },
+    {
+      "id": "technique_onjump",
+      "target_type": "PlayerController",
+      "target_method": "UpInputPressed",
+      "kind": "native",
+      "patch_class": "-",
+      "purpose": "The game adds Technique.OnJump's return to jump speed (jump trigger)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "technique_onblockjump",
+      "target_type": "PlayerController",
+      "target_method": "UpInputPressed",
+      "kind": "native",
+      "patch_class": "-",
+      "purpose": "The game adds Technique.OnBlockJump's return to block jumps (block_jump trigger)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "touch_spike",
+      "target_type": "PlayerController",
+      "target_method": "DoSpike",
+      "kind": "postfix",
+      "patch_class": "TouchPatches",
+      "purpose": "Accepted spikes (ball velocity changed): spike trigger, streak count, new ball flight",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "touch_spike_pre",
+      "target_type": "PlayerController",
+      "target_method": "DoSpike",
+      "kind": "prefix",
+      "patch_class": "TouchPatches",
+      "purpose": "Decide which spike perks fire (conditions) before the game asks OnSpike for power",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "touch_tip",
+      "target_type": "PlayerController",
+      "target_method": "DoTip",
+      "kind": "postfix",
+      "patch_class": "TouchPatches",
+      "purpose": "Accepted tips: tip trigger, streak count, new ball flight",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "touch_set",
+      "target_type": "PlayerController",
+      "target_method": "DoSet",
+      "kind": "postfix",
+      "patch_class": "TouchPatches",
+      "purpose": "Accepted sets/bumps: set, setter_set, dig and streak triggers, enemy_touch stage, new ball flight",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "touch_block",
+      "target_type": "BallMovement",
+      "target_method": "Block",
+      "kind": "postfix",
+      "patch_class": "TouchPatches",
+      "purpose": "Strong blocks: block trigger, enemy_touch stage, new ball flight",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "serve_hold",
+      "target_type": "PlayerController",
+      "target_method": "StartServe",
+      "kind": "postfix",
+      "patch_class": "TouchPatches",
+      "purpose": "Remember when a player started holding the ball (serve 'hold' condition)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "rally_end",
+      "target_type": "GameManager",
+      "target_method": "PlayerGotPoint",
+      "kind": "postfix",
+      "patch_class": "RallyPatches",
+      "purpose": "After a rally (score untouched): streak resets, enemy_streak, match_point_against, '-2' buffs end",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "rally_end_opp",
+      "target_type": "GameManager",
+      "target_method": "OpponentGotPoint",
+      "kind": "postfix",
+      "patch_class": "RallyPatches",
+      "purpose": "Same, for rallies the right-hand team wins",
+      "changes_score": "no",
+      "verified": "in game: streak reset path ran (no errors); see hot_streak"
+    },
+    {
+      "id": "ball_watch",
+      "target_type": "BallMovement",
+      "target_method": "FixedUpdate",
+      "kind": "postfix",
+      "patch_class": "BallPatches",
+      "purpose": "Each physics step: net-cross stage, flight effects (accel, gravity, plunge, curve, wobble, hover, slow, invisibility, decoys)",
+      "changes_score": "no",
+      "verified": "partial: dip watch ticks seen; dip/afterburner/swerve effects not yet seen"
+    },
+    {
+      "id": "controller_fx",
+      "target_type": "PlayerController",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "ControllerPatches",
+      "purpose": "Attach ControllerFx to every player: stat cards, buffs, stuns, zones, recovery, auras",
+      "changes_score": "no",
+      "verified": "in game 2026-10-08: random new teams spawned dressed; banner emblem shown; ControllerFx ready logs for both sides"
+    },
+    {
+      "id": "stun_move",
+      "target_type": "PlayerController",
+      "target_method": "SetXInput",
+      "kind": "prefix",
+      "patch_class": "ControllerPatches",
+      "purpose": "Stunned players can't move",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "stun_up",
+      "target_type": "PlayerController",
+      "target_method": "UpInputPressed",
+      "kind": "prefix",
+      "patch_class": "ControllerPatches",
+      "purpose": "Stunned players can't jump/spike/serve; landing lag blocks jumps",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "stun_down",
+      "target_type": "PlayerController",
+      "target_method": "DownInputPressed",
+      "kind": "prefix",
+      "patch_class": "ControllerPatches",
+      "purpose": "Stunned players can't tip",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "player_fields",
+      "target_type": "PlayerController",
+      "target_method": "spike,jump,block,bump,spinServe,serveJump,floatServe,moveSpeed",
+      "kind": "field",
+      "patch_class": "ControllerPatches",
+      "purpose": "ControllerFx writes the player's stat fields (base from the game + stat cards, times buffs and zones)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "ai_fakeout",
+      "target_type": "BallMovement",
+      "target_method": "predictedPosition,precisePredictedPosition",
+      "kind": "field",
+      "patch_class": "BallPatches",
+      "purpose": "Decoys shift the AI's predicted landing spot for a moment (written in LateUpdate after the game's own update)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "ball_visual_fields",
+      "target_type": "BallMovement",
+      "target_method": "myTrail,ballSprite,squashSprite,hitEffect,opponentDialogue",
+      "kind": "field",
+      "patch_class": "BallPatches",
+      "purpose": "Read for trails, tints, invisibility, particle bursts and opponent callouts",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "time_scale",
+      "target_type": "CameraController",
+      "target_method": "Update",
+      "kind": "postfix",
+      "patch_class": "TimePatches",
+      "purpose": "game_speed and slow-motion on top of the game's own time handling (never during pause)",
+      "changes_score": "no",
+      "verified": "in game: Overclock timeScale 1.18"
+    },
+    {
+      "id": "match_start",
+      "target_type": "GameManager",
+      "target_method": "OnStart",
+      "kind": "postfix",
+      "patch_class": "RunPatches",
+      "purpose": "Reset per-match state, dress new teams, give opponents perks, passive perks, scaling",
+      "changes_score": "no",
+      "verified": "in game 2026-10-08: random new teams spawned dressed; banner emblem shown; ControllerFx ready logs for both sides"
+    },
+    {
+      "id": "team_select",
+      "target_type": "GameManager",
+      "target_method": "OnStart",
+      "kind": "prefix",
+      "patch_class": "RunPatches",
+      "purpose": "Infinite/Loop: random opponent for the slot's pool (vanilla + new teams)",
+      "changes_score": "no",
+      "verified": "in game 2026-10-08: random new teams spawned dressed; banner emblem shown; ControllerFx ready logs for both sides"
+    },
+    {
+      "id": "team_lineup",
+      "target_type": "TournamentLineUps",
+      "target_method": "GetTeam",
+      "kind": "prefix",
+      "patch_class": "RunPatches",
+      "purpose": "Regular slots return the randomly chosen team instead of the fixed line-up",
+      "changes_score": "no",
+      "verified": "in game 2026-10-08: random new teams spawned dressed; banner emblem shown; ControllerFx ready logs for both sides"
+    },
+    {
+      "id": "team_banner",
+      "target_type": "OpponentBanner",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "RunPatches",
+      "purpose": "New teams show a generated banner with their name",
+      "changes_score": "no",
+      "verified": "in game 2026-10-08: random new teams spawned dressed; banner emblem shown; ControllerFx ready logs for both sides"
+    },
+    {
+      "id": "team_comment",
+      "target_type": "DialogueList",
+      "target_method": "GetDialogue",
+      "kind": "postfix",
+      "patch_class": "RunPatches",
+      "purpose": "Your team's post-match line after beating a new team",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "match_setup",
+      "target_type": "UnityEngine.SceneManagement.SceneManager",
+      "target_method": "sceneLoaded",
+      "kind": "event",
+      "patch_class": "RunPatches",
+      "purpose": "Game scene load (before any Start reads gameNumber): infinite slot, loop wrap",
+      "changes_score": "no",
+      "verified": "in game: infinite matches 1,2 used slots 1,2 (gym/opponent correct, no errors)"
+    },
+    {
+      "id": "end_match",
+      "target_type": "GameManager",
+      "target_method": "EndGame",
+      "kind": "prefix",
+      "patch_class": "RunPatches",
+      "purpose": "Count wins, record best scores, send infinite/loop final-boss wins to the upgrade screen",
+      "changes_score": "no",
+      "verified": "in game: wins counted (infiniteMatch 2), Lose -> 'Infinite run over: 1 wins', best saved"
+    },
+    {
+      "id": "match_title",
+      "target_type": "TitleCard",
+      "target_method": "MatchTitle",
+      "kind": "prefix",
+      "patch_class": "RunPatches",
+      "purpose": "Banner 'Infinite - Match N' / 'Loop N - <bracket>'",
+      "changes_score": "no",
+      "verified": "in game burst: 'INFINITE - MATCH 2' banner"
+    },
+    {
+      "id": "perk_pool",
+      "target_type": "UpgradeManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "UpgradePatches",
+      "purpose": "Weighted Overtime perk cards and stat cards in the pools (Capacity trimmed: the game uses it as the count); reward kind in infinite/loop",
+      "changes_score": "no",
+      "verified": "in game: 12 Overtime cards in pool (dump), Capacity trimmed, cards offered and taken"
+    },
+    {
+      "id": "upgrade_leave",
+      "target_type": "UpgradeManager",
+      "target_method": "LoadGame",
+      "kind": "prefix",
+      "patch_class": "UpgradePatches",
+      "purpose": "Restore the real match number before the game advances it",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "perk_card_style",
+      "target_type": "TechniqueButton",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "UpgradePatches",
+      "purpose": "Element tint, rarity-colored title, rarity/element line on perk cards",
+      "changes_score": "no",
+      "verified": "in game screenshot: All In / Bank Shot icons tinted"
+    },
+    {
+      "id": "statcard_text",
+      "target_type": "UpgradeButton",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "UpgradePatches",
+      "purpose": "Rarity color and full text on Overtime stat cards",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "statcard_click",
+      "target_type": "UpgradeButton",
+      "target_method": "Click",
+      "kind": "prefix",
+      "patch_class": "UpgradePatches",
+      "purpose": "Picking an Overtime stat card adds its points (the game's own cards run unchanged)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "title_menu",
+      "target_type": "TitleButton",
+      "target_method": "Click",
+      "kind": "prefix",
+      "patch_class": "MenuPatches",
+      "purpose": "The Infinite button starts an infinite run; the others a normal run",
+      "changes_score": "no",
+      "verified": "in game: INFINITE click -> 'Infinite run started'"
+    },
+    {
+      "id": "title_inject",
+      "target_type": "UnityEngine.SceneManagement.SceneManager",
+      "target_method": "sceneLoaded",
+      "kind": "event",
+      "patch_class": "MenuPatches",
+      "purpose": "Clone the Classic button into INFINITE and move Quit down",
+      "changes_score": "no",
+      "verified": "in game screenshot: INFINITE button between Co-op and Quit"
+    },
+    {
+      "id": "restart",
+      "target_type": "RestartButton",
+      "target_method": "Click",
+      "kind": "postfix",
+      "patch_class": "MenuPatches",
+      "purpose": "Restart keeps infinite mode; Menu returns to normal mode",
+      "changes_score": "no",
+      "verified": "in game: Try Again -> new infinite run at match 1"
+    },
+    {
+      "id": "loop_continue",
+      "target_type": "RestartButton",
+      "target_method": "Click",
+      "kind": "prefix",
+      "patch_class": "MenuPatches",
+      "purpose": "The Win screen's 'Keep going' button enters the next loop",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "win_screen",
+      "target_type": "WinManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "MenuPatches",
+      "purpose": "Add the 'Keep going: Loop 2' button",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "lose_screen",
+      "target_type": "LoseController",
+      "target_method": "HandleLoss",
+      "kind": "postfix",
+      "patch_class": "MenuPatches",
+      "purpose": "Infinite/loop result and best on the lose screen",
+      "changes_score": "no",
+      "verified": "in game screenshot: result line under Bracket"
+    },
+    {
+      "id": "achievements",
+      "target_type": "AchievementManager",
+      "target_method": "Unlock",
+      "kind": "prefix",
+      "patch_class": "MenuPatches",
+      "purpose": "No Steam achievements from Infinite mode",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "touch_tip_pre",
+      "target_type": "PlayerController",
+      "target_method": "DoTip",
+      "kind": "prefix",
+      "patch_class": "TouchPatches",
+      "purpose": "Ball velocity before the tip (to tell accepted tips from rejected ones)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "touch_set_pre",
+      "target_type": "PlayerController",
+      "target_method": "DoSet",
+      "kind": "prefix",
+      "patch_class": "TouchPatches",
+      "purpose": "Ball velocity before the set (accepted check; incoming speed for the dig trigger)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "serve_flight",
+      "target_type": "BallMovement",
+      "target_method": "Serve",
+      "kind": "postfix",
+      "patch_class": "TouchPatches",
+      "purpose": "A spin serve starts a new ball flight for the server's team (before OnServe perks queue effects)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "serve_flight_float",
+      "target_type": "BallMovement",
+      "target_method": "FloatServe",
+      "kind": "postfix",
+      "patch_class": "TouchPatches",
+      "purpose": "Same for float serves",
+      "changes_score": "no",
+      "verified": "no"
+    }
+  ]
+}
