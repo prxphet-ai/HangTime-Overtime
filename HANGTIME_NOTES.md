@@ -221,3 +221,11 @@ Modes:
 - Balance after tuning (round 5 sweep): Chain Lightning +12.9%, Last Breath +9.6%, Gravity Well +9.5%, Frost Nova +7.5%,
   Feint Tip +6.9%, Track Star +9.6%, Tank +11.2%, Clutch Training +6.7%; situational ones (Underdog, Clutch Gene) lower.
 - Checked in game: all 15 new perks fired through the dev lab, 0 errors; Byakko Tigers spawned with its emblem.
+
+### Step 7 — late-round check in game
+- Played Infinite to round 18 (dev keys): Kumo Weavers got 12.6 level-ups, stats x1.33, speed x1.14 and three perks
+  (its signatures Mud Trap and Shadow Step, then a random rare, Halo Dig). The announcement types out in full and stays
+  readable; the list now starts on its own line ("Our abilities:" / "Mud Trap, Shadow Step, Halo Dig!").
+- Fixed a dev-key bug (players never see it): F5/F6/F7 also worked on the upgrade screen, because the game's
+  GameManager carries over between scenes, and loaded that screen a second time, which froze its buttons. Those keys now
+  only work during a match.

@@ -141,7 +141,7 @@ namespace HangtimeOvertime.Engine
             var ball = GameManager.Instance.ball != null ? GameManager.Instance.ball.GetComponent<BallMovement>() : null;
             var dlg = ball != null ? fDialogue(ball) : null;
             var ot = team.GetComponent<OpponentTeam>();
-            if (dlg != null && ot != null) dlg.StartCoroutine(dlg.DelayedDialogue("Our abilities: " + names + "!", 3.2f, ot.talkPitch));
+            if (dlg != null && ot != null) dlg.StartCoroutine(dlg.DelayedDialogue("Our abilities:\n" + names + "!", 3.2f, ot.talkPitch));
         }
     }
 }

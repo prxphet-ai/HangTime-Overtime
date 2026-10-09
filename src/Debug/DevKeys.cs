@@ -3,6 +3,7 @@ using HangtimeOvertime.Core;
 using HangtimeOvertime.Engine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 namespace HangtimeOvertime.Debugging
 {
@@ -22,6 +23,8 @@ namespace HangtimeOvertime.Debugging
             var gm = GameManager.Instance;
             if (kb == null || gm == null) return;
             bool shift = kb.shiftKey.isPressed;
+            // GameManager survives into the upgrade screen: scoring keys there would load it a second time and break its UI
+            bool inMatch = SceneManager.GetActiveScene().name == "Game" && !gm.done;
             var perks = PerkRegistry.All.ToList();
 
             if (kb.f2Key.wasPressedThisFrame)
@@ -44,19 +47,19 @@ namespace HangtimeOvertime.Debugging
                 TeamRoster.DevForce = i < ids.Count ? ids[i] : null;
                 Plugin.Log.LogInfo($"Dev: next opponent forced to {TeamRoster.DevForce ?? "random"}");
             }
-            if (kb.f4Key.wasPressedThisFrame && !gm.done)
+            if (kb.f4Key.wasPressedThisFrame && inMatch)
             {
                 var server = FindObjectsByType<PlayerController>(FindObjectsSortMode.None)
                     .FirstOrDefault(p => p.attackDirection > 0f && !p.setter && p.name == "Player");
                 if (server != null && !server.IsServing()) { server.StartServe(); Plugin.Log.LogInfo("Dev: player 1 serves"); }
             }
-            if (kb.f5Key.wasPressedThisFrame && !gm.done)
+            if (kb.f5Key.wasPressedThisFrame && inMatch)
             {
                 bool over = shift ? gm.OpponentGotPoint() : gm.PlayerGotPoint();
                 Plugin.Log.LogInfo($"Dev: rally to {(shift ? "opponent" : "player")} -> {gm.playerPoints}-{gm.opponentPoints} over={over}");
             }
-            if (kb.f6Key.wasPressedThisFrame && !gm.done) gm.playerPoints = gm.matchLength;
-            if (kb.f7Key.wasPressedThisFrame && !gm.done) gm.opponentPoints = gm.matchLength;
+            if (kb.f6Key.wasPressedThisFrame && inMatch) gm.playerPoints = gm.matchLength;
+            if (kb.f7Key.wasPressedThisFrame && inMatch) gm.opponentPoints = gm.matchLength;
             if (kb.f8Key.wasPressedThisFrame)
             {
                 if (RunState.Mode == RunMode.Infinite) RunState.InfiniteMatch = 7; else GameManager.gameNumber = 7;
