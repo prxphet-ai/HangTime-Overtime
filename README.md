@@ -10,9 +10,7 @@ dozens of new abilities and teams, a character creator and run saves — all bui
 - **Infinite mode** — an endless run from the title screen. Opponents are picked at random and get stronger every round
   (better stats, then their own abilities), with a difficulty setting if you want it harder.
 - **Loops** — beat the Classic final and keep going with LOOP 2, 3, ...
-- **144 new abilities** — elemental and anime-style perks (fire, ice, lightning, wind, water, earth, shadow, light, power)
-  with their own visuals: blazing spikes, freezing blocks, shadow clones, lightning chains and more. None of them touch
-  the score; they change the ball, the players and the match.
+- **144 new abilities** — elemental and supernatural style perks with their own visuals: blazing spikes, freezing blocks, shadow clones, lightning chains and more.
 - **47 stat cards** — boosts, playstyle cards and big-risk trade-offs.
 - **34 new teams** — each with its own colours, hand-drawn banner emblem, voice lines, play style and signature abilities.
   Opponents announce their abilities at the start of a match.
