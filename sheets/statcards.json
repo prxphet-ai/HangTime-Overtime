@@ -278,8 +278,8 @@
       "rarity": "epic",
       "style": "tradeoff",
       "deltas": {
-        "Jump": 1.75,
-        "Spike": 1.75,
+        "Jump": 1.4,
+        "Spike": 1.4,
         "Recovery": -2
       },
       "blurb": "Go big every swing. Slow to recover after landing.",
@@ -326,7 +326,7 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Spike": 2,
+        "Spike": 1.6,
         "Bump": -0.5
       },
       "blurb": "All offense. Receiving slips.",

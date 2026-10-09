@@ -85,12 +85,12 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Solar Flare** | rare | light | spike | Your spikes flash like the sun, blinding the other team for a split second. | slow_enemies(mult 0.8, dur 0.5) | burst, flash |
 | **Spirit Bond** | rare | light | setter_set | You and your setter move as one after every set. | buff(stat set, mult 1.5, dur 2); buff(stat move, mult 1.25, dur 2) | ring |
 | **Sunburst Serve** | rare | light | serve | Serves flare like the sun at the net, dazzling the receivers. | after the net: slow_enemies(mult 0.65, dur 0.5) | flash |
-| **Lightning Reflex** | common | lightning | dig | After a dig you're charged up: a burst of speed to get under the set. | buff(stat move, mult 1.5, dur 1.8) | afterimages, burst |
+| **Lightning Reflex** | common | lightning | dig | After a dig you're charged up: quicker feet for the rest of the play. | buff(stat move, mult 1.3, dur 4.0) | afterimages, burst |
 | **Quick Set** | common | lightning | setter_set | Fast-tempo sets: your next spike hits a little harder. | next_power(add 0.15, window 1.8) | trail |
-| **Storm Serve** | common | lightning | serve | Serves often crackle and jitter right after the net. | after the net: wobble(amp 9, period 0.12, dur 0.25, mode zigzag) | bolt, trail |
+| **Storm Serve** | common | lightning | serve | Serves often crackle and jitter right after the net. | after the net: wobble(amp 12, period 0.12, dur 0.35, mode zigzag) | bolt, trail |
 | **Chain Lightning** | epic | lightning | spike (chance 0.3, cooldown 4) | Sometimes your spike arcs through the whole team, and the lightning lingers on their hitter. | stun(dur 0.35, target all); on their touch: stun(dur 0.6, target spiker) | bolt, cutin |
 | **Thunder God** | epic | lightning | streak (n 6) | After 6 good touches in a row, lightning stuns the whole other team. | stun(dur 0.5, target all) | bolt, cutin, flash, shake, sound |
-| **Lightning Rod** | rare | lightning | enemy_spike (chance 0.7, cooldown 3) | Sometimes, when they spike, lightning strikes their setter: frozen for 2.5 seconds, no block against your counter. | stun(dur 2.5, target blocker) | bolt |
+| **Lightning Rod** | rare | lightning | enemy_spike (cooldown 2) | When they spike, lightning strikes back: their whole team flinches and their setter is frozen for 2.5 seconds (no block on your counter). | stun(dur 0.3, target all); stun(dur 2.5, target blocker) | bolt |
 | **Lightning Step** | rare | lightning | jump (run 8) | Jump off a run and lightning carries you: higher, and quicker on the landing. | jump_bonus(add 10, run 8); buff(stat move, mult 1.15, dur 1.0) | afterimages |
 | **Thunder Serve** | rare | lightning | serve (chance 0.8) | Serves can strike their receiver with lightning as they cross the net. | after the net: stun(dur 0.7, target spiker) | bolt |
 | **Thunderclap** | rare | lightning | spike (chance 0.35, cooldown 3) | Your spike can strike their blocker with lightning, stunning them for a moment. | stun(dur 0.6, target blocker) | bolt, shake, sound |
@@ -98,12 +98,12 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Dink Master** | common | none | tip | Your tips drop like stones just past the net. | after the net: plunge(vy 24, xmult 0.9, delay 0) | trail |
 | **Libero Dive** | common | none | dig | Diving digs pop the ball up and you spring back to your feet faster. | lift(vy 6); buff(stat move, mult 1.25, dur 1.5) | ring |
 | **Line Shot** | common | none | spike (chance 0.7) | Half your spikes bend toward their back line. | after the net: curve(ax 55, dur 0.3) | trail |
-| **Sharpshooter** | common | none | spike (chance 0.5) | Some of your spikes bend toward the corners. | after the net: curve(ax 50, dur 0.25) | trail |
-| **Underdog** | common | none | enemy_streak (n 3) | After they win three rallies in a row, you get angry: stronger spikes and quicker feet for a while. | buff(stat spike, mult 1.25, dur 8); buff(stat move, mult 1.15, dur 8) | aura |
+| **Sharpshooter** | common | none | spike (chance 0.7) | Some of your spikes bend toward the corners. | after the net: curve(ax 60, dur 0.25) | trail |
+| **Underdog** | common | none | enemy_streak (n 2) | After they win two rallies in a row, you get angry: stronger spikes and quicker feet for a while. | buff(stat spike, mult 1.3, dur 10); buff(stat move, mult 1.2, dur 10) | aura |
 | **Flow State** | epic | none | streak (n 6) | Six clean touches in a row and everything clicks: stronger spikes, higher jumps and quicker feet for a while. | buff(stat spike, mult 1.15, dur 8); buff(stat jump, mult 1.1, dur 8); buff(stat move, mult 1.1, dur 8) | aura, cutin |
 | **Cannonball Serve** | rare | none | serve (hold 1.0) | Hold the ball for a moment, then fire a cannonball serve. | speed(mult 1.28) | shake, trail |
 | **Iron Will** | common | power | block_jump | Your block jumps go higher. | block_jump(add 7) | burst |
-| **Rival Spirit** | common | power | enemy_streak (n 2) | When they win two rallies in a row, your next spike hits back harder. | next_power(add 0.3, window 10) | aura, burst |
+| **Rival Spirit** | common | power | enemy_streak (n 2) | When they win two rallies in a row, your next spike hits back harder. | next_power(add 0.5, window 20) | aura, burst |
 | **Aura Burst** | epic | power | streak (n 4) | After 4 good touches in a row, a golden aura boosts spike, jump and speed for 6 seconds. | buff(stat spike, mult 1.15, dur 6); buff(stat jump, mult 1.08, dur 6); buff(stat move, mult 1.15, dur 6) | aura, cutin, flash, sound |
 | **Gravity Well** | epic | power | enemy_spike (chance 0.55, cooldown 4) | Often their spike gets caught in a gravity well: it stalls and loses half its power. | hover(dur 0.2, then 0.5) | cutin, ring |
 | **Hercules Block** | epic | power | block_jump+block (cooldown 4) | Block jumps with the strength of the Hercules beetle: a strong block comes off faster and knocks their whole team off balance. | block_jump(add 4); stun(dur 0.7, target all); slow_enemies(mult 0.7, dur 1.5); speed(mult 1.15) | cutin, ring, shake |
@@ -117,7 +117,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Afterimage** | rare | power | passive+spike (chance 0.3) | You leave afterimages as you run, move a bit faster, and sometimes your spike fakes out the defense. | buff(stat move, mult 1.08, dur -1); after the net: decoy(offset 6, dur 0.35, fake 1) | afterimages |
 | **Beetle Horn** | rare | power | block_jump+block | Your block jumps spring higher, and blocks come off like a beetle's horn toss: faster, and their dig goes astray. | block_jump(add 5); speed(mult 1.2); on their touch: deflect(rand 4, back 3, ymult 0.75) | shake |
 | **Clutch Gene** | rare | power | match_point_against | When they're one point from winning, your spikes and blocks get much stronger. | buff(stat spike, mult 1.3, dur -2); buff(stat block, mult 1.2, dur -2) | aura, cutin |
-| **Counter Attack** | rare | power | enemy_spike | When they spike, you get fired up: your next spike within 6 seconds hits harder. | next_power(add 0.5, window 6) | flash |
+| **Counter Attack** | rare | power | enemy_spike | When they spike, you get fired up: a quick step toward the ball, and your next spike within 6 seconds hits harder. | next_power(add 0.7, window 6); buff(stat move, mult 1.2, dur 1.0) | flash |
 | **Cut-In Spike** | rare | power | spike (cooldown 3, min_air 0.45) | Hang in the air long enough and your spike gets a dramatic close-up and extra power. | power(add 0.25); slowmo(scale 0.35, dur 0.25) | cutin, flash, zoom |
 | **Echo Tip** | rare | power | tip | Your tip leaves an echo that fakes out the defense. | decoy(offset 9, dur 0.5, fake 1) | burst |
 | **Gravity Drop** | rare | power | spike (chance 0.35, cooldown 3) | Sometimes your spike stops dead past the net and plunges straight down. | after the net: plunge(vy 48, xmult 0.35, delay 0.12) | ring, sound |
@@ -171,7 +171,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | Perk | Rarity | Element | Trigger | What it does | Gameplay effects | Visuals |
 |---|---|---|---|---|---|---|
 | **Bank Shot** | common | none | set+spike | Every bump and set banks power. Your next spike cashes it all in. | bank(add 0.09, max 0.4); cash_bank() | burst |
-| **Hot Streak** | common | none | spike | Each point you win in a row makes your spikes stronger. | power_streak(per 0.1, max 0.4) | burst |
+| **Hot Streak** | common | none | spike | Each point you win in a row makes your spikes stronger. | power_streak(per 0.2, max 0.6) | burst |
 | **Collector** | rare | none | spike | Your spikes get stronger for every ability you own. | power_perks(per 0.06, max 0.6) |  |
 | **Overclock** | rare | none | passive+spike | Stronger spikes, but the whole game runs faster. | game_speed(mult 1.18); power(add 0.3) |  |
 | **Moon Set** | common | wind | set | After your team's set or bump, the ball floats like it's on the moon. | gravity(add -2.5, dur 1.1) | burst |
@@ -214,10 +214,10 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Setter Duo** | rare | playstyle | Set +3, Speed +0.75, Spike -0.25 |
 | **Setter's Eye** | rare | playstyle | Set +2, Receive +1.5, Serve -1 |
 | **Sky Walker** | rare | playstyle | Jump +3, Receive -1 |
-| **Spike Specialist** | rare | playstyle | Spike +2, Receive -0.5 |
+| **Spike Specialist** | rare | playstyle | Spike +1.6, Receive -0.5 |
 | **Tower** | rare | playstyle | Block +3, Jump +1.5, Speed -0.5 |
 | **Track Star** | rare | playstyle | Speed +1, Recovery +0.75, Block -0.75 |
-| **All In** | epic | tradeoff | Jump +1.75, Spike +1.75, Recovery -2 |
+| **All In** | epic | tradeoff | Jump +1.4, Spike +1.4, Recovery -2 |
 | **Berserker** | epic | tradeoff | Spike +2.25, Speed +0.75, Receive -1.5, Block -1 |
 | **Daredevil** | epic | tradeoff | Spike +1.75, Jump +1.25, Speed +0.5, Receive -2, Recovery -1 |
 | **Glass Cannon** | epic | tradeoff | Serve +2.5, Spike +2.5, Block -1.5, Receive -1.5 |

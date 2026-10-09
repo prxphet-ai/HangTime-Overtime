@@ -772,8 +772,8 @@
           "when": "now",
           "fx": "buff",
           "stat": "move",
-          "mult": 1.5,
-          "dur": 1.8,
+          "mult": 1.3,
+          "dur": 4.0,
           "on": "dig"
         },
         {
@@ -792,7 +792,7 @@
           "on": "dig"
         }
       ],
-      "description": "After a dig you're charged up: a burst of speed to get under the set.",
+      "description": "After a dig you're charged up: quicker feet for the rest of the play.",
       "flavour": "Quick as a flash.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
@@ -815,9 +815,9 @@
         {
           "when": "cross",
           "fx": "wobble",
-          "amp": 9,
+          "amp": 12,
           "period": 0.12,
-          "dur": 0.25,
+          "dur": 0.35,
           "mode": "zigzag",
           "on": "serve"
         },
@@ -2609,8 +2609,8 @@
         {
           "when": "now",
           "fx": "next_power",
-          "add": 0.3,
-          "window": 10,
+          "add": 0.5,
+          "window": 20,
           "on": "enemy_streak"
         },
         {
@@ -2790,8 +2790,8 @@
         {
           "when": "now",
           "fx": "power_streak",
-          "per": 0.1,
-          "max": 0.4,
+          "per": 0.2,
+          "max": 0.6,
           "on": "spike"
         },
         {
@@ -3931,8 +3931,16 @@
         {
           "when": "now",
           "fx": "next_power",
-          "add": 0.5,
+          "add": 0.7,
           "window": 6,
+          "on": "enemy_spike"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.2,
+          "dur": 1.0,
           "on": "enemy_spike"
         },
         {
@@ -3944,7 +3952,7 @@
           "on": "enemy_spike"
         }
       ],
-      "description": "When they spike, you get fired up: your next spike within 6 seconds hits harder.",
+      "description": "When they spike, you get fired up: a quick step toward the ball, and your next spike within 6 seconds hits harder.",
       "flavour": "My turn.",
       "art_from": "SpeedStrike",
       "opponent_ok": "yes",
@@ -3960,10 +3968,17 @@
         "enemy_spike"
       ],
       "conds": {
-        "chance": 0.7,
-        "cooldown": 3
+        "chance": 1,
+        "cooldown": 2
       },
       "fx": [
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.3,
+          "target": "all",
+          "on": "enemy_spike"
+        },
         {
           "when": "now",
           "fx": "stun",
@@ -3979,7 +3994,7 @@
           "at": "enemy"
         }
       ],
-      "description": "Sometimes, when they spike, lightning strikes their setter: frozen for 2.5 seconds, no block against your counter.",
+      "description": "When they spike, lightning strikes back: their whole team flinches and their setter is frozen for 2.5 seconds (no block on your counter).",
       "flavour": "Grounded.",
       "art_from": "BlockBoost",
       "opponent_ok": "yes",
@@ -4074,14 +4089,14 @@
         "spike"
       ],
       "conds": {
-        "chance": 0.5,
+        "chance": 0.7,
         "cooldown": 0
       },
       "fx": [
         {
           "when": "cross",
           "fx": "curve",
-          "ax": 50,
+          "ax": 60,
           "dur": 0.25,
           "on": "spike"
         },
@@ -4567,23 +4582,23 @@
         "enemy_streak"
       ],
       "conds": {
-        "n": 3
+        "n": 2
       },
       "fx": [
         {
           "when": "now",
           "fx": "buff",
           "stat": "spike",
-          "mult": 1.25,
-          "dur": 8,
+          "mult": 1.3,
+          "dur": 10,
           "on": "enemy_streak"
         },
         {
           "when": "now",
           "fx": "buff",
           "stat": "move",
-          "mult": 1.15,
-          "dur": 8,
+          "mult": 1.2,
+          "dur": 10,
           "on": "enemy_streak"
         },
         {
@@ -4594,7 +4609,7 @@
           "on": "enemy_streak"
         }
       ],
-      "description": "After they win three rallies in a row, you get angry: stronger spikes and quicker feet for a while.",
+      "description": "After they win two rallies in a row, you get angry: stronger spikes and quicker feet for a while.",
       "flavour": "Count me out? Never.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",

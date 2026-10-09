@@ -259,3 +259,18 @@ Modes:
   In practice this is unreachable: simulated full runs end at median round 3, 2% pass round 10, ~0% reach round 15
   (the AI plays your side; you will do better). Logged as open question 5.
 - Dev tool fix this round: none needed; all 17 new perks fired through the dev lab as both sides with 0 errors.
+
+### Step 9 — balance pass 6 (older outliers)
+- Combined sweep (rounds 5 + 8). Above band: **All In** (epic card) +16.9% -> **+13.0%** (Spike/Jump 1.75 -> 1.4 each);
+  **Spike Specialist** (rare card) +11.3% -> +9.6% (Spike 2 -> 1.6).
+- Near-zero perks buffed (round 5, before -> after): Lightning Rod +1.5% -> +5.8% (now also makes their whole team flinch
+  0.3 s; always fires, cooldown 2), Counter Attack +2.3% -> +8.0% (quick step toward the ball + next spike +0.7),
+  Storm Serve +0.8% -> +4.1% (bigger, longer jitter), Hot Streak -0.3% -> +3.1% (0.2 power per rally won in a row, max
+  0.6), Sharpshooter +0.7% -> +2.6% (70% of spikes, stronger bend), Lightning Reflex +1.8% -> +2.1% (+30% speed for the
+  rest of the play), Underdog -0.5% -> +1.5% (after two lost rallies; stronger, longer), Rival Spirit -0.2% -> ~+1%
+  (20 s window).
+- Still reading low on purpose: situational perks — Showboat and the tip perks (the simulated AI tips 1 attack in 5),
+  Collector (scales with how many abilities you own; the sweep tests each perk alone), Rival Spirit/Underdog/Clutch Gene
+  (comebacks only fire when behind). Many rares/epics flag LOW only at round 8, where every delta shrinks (base win rate
+  ~23%); at round 5 they are in band.
+- Curves unchanged: fresh build r1 69%; typical build r1 70%, r5 66%, r10 53%, r15 39%, r20 ~27%.
