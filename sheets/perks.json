@@ -100,7 +100,7 @@
       "flavour": "Bring the heat.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "afterburner",
@@ -204,7 +204,7 @@
       "flavour": "The floor is lava.",
       "art_from": "SpinSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "flame_serve",
@@ -247,7 +247,7 @@
       "flavour": "Hot off the hand.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "ember_tip",
@@ -292,7 +292,7 @@
       "flavour": "Mind the sparks.",
       "art_from": "ToolTip",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "phoenix_dive",
@@ -343,7 +343,7 @@
       "flavour": "From the ashes.",
       "art_from": "PerfectBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "inferno_aura",
@@ -401,7 +401,7 @@
       "flavour": "Burn bright.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "frost_serve",
@@ -453,7 +453,7 @@
       "flavour": "Brain freeze.",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "slippery_ice",
@@ -512,7 +512,7 @@
       "flavour": "Watch your step.",
       "art_from": "SpeedStrike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "permafrost",
@@ -550,7 +550,7 @@
       "flavour": "It never thaws.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "frozen_block",
@@ -593,7 +593,7 @@
       "flavour": "Cold shoulder.",
       "art_from": "BlockBoost",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "cold_snap",
@@ -650,7 +650,7 @@
       "flavour": "Time stands still.",
       "art_from": "Pipe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "zigzag_spike",
@@ -703,7 +703,7 @@
       "flavour": "Can't catch lightning.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "thunderclap",
@@ -752,7 +752,7 @@
       "flavour": "Stay grounded.",
       "art_from": "SpeedStrike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "lightning_reflex",
@@ -796,7 +796,7 @@
       "flavour": "Quick as a flash.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "storm_serve",
@@ -841,7 +841,7 @@
       "flavour": "Static in the air.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "thunder_god",
@@ -904,7 +904,7 @@
       "flavour": "Fear the sky.",
       "art_from": "TrickShot",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "moon_set",
@@ -976,7 +976,7 @@
       "flavour": "Wait, where's it going?",
       "art_from": "TopSpinTip",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "dipping_serve",
@@ -1057,7 +1057,7 @@
       "flavour": "Which way is the wind?",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tailwind",
@@ -1090,7 +1090,7 @@
       "flavour": "Wind at your back.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "cyclone_spike",
@@ -1133,7 +1133,7 @@
       "flavour": "Up, up and down.",
       "art_from": "SpinSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tidal_arc",
@@ -1171,7 +1171,7 @@
       "flavour": "Go with the flow.",
       "art_from": "Pipe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "mirror_image",
@@ -1208,7 +1208,7 @@
       "flavour": "Which one is real?",
       "art_from": "TrickShot",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "undertow",
@@ -1262,7 +1262,7 @@
       "flavour": "Pulled under.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "mist_veil",
@@ -1298,7 +1298,7 @@
       "flavour": "Lost in the fog.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tsunami_spike",
@@ -1362,7 +1362,7 @@
       "flavour": "Here comes the wave.",
       "art_from": "FallingSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "quake_spike",
@@ -1404,7 +1404,7 @@
       "flavour": "Feel the ground shake.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "bedrock_block",
@@ -1460,7 +1460,7 @@
       "flavour": "Immovable.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "boulder_serve",
@@ -1509,7 +1509,7 @@
       "flavour": "Like catching a rock.",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tectonic_slam",
@@ -1565,7 +1565,7 @@
       "flavour": "The earth answers.",
       "art_from": "SpinSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "mud_trap",
@@ -1610,7 +1610,7 @@
       "flavour": "Stuck in the mud.",
       "art_from": "LowTip",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "shadow_ball",
@@ -1646,7 +1646,7 @@
       "flavour": "Now you don't.",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "night_serve",
@@ -1681,7 +1681,7 @@
       "flavour": "Lights out.",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "eclipse",
@@ -1731,7 +1731,7 @@
       "flavour": "Darkness falls.",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "solar_flare",
@@ -1775,7 +1775,7 @@
       "flavour": "Don't look directly at it.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "radiant_set",
@@ -1827,7 +1827,7 @@
       "flavour": "Follow the light.",
       "art_from": "RiskySet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "holy_lance",
@@ -1884,7 +1884,7 @@
       "flavour": "Judgement.",
       "art_from": "Pipe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "halo_dig",
@@ -1928,7 +1928,7 @@
       "flavour": "Guardian angel.",
       "art_from": "PerfectBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "aura_burst",
@@ -2002,7 +2002,7 @@
       "flavour": "This isn't even my final form.",
       "art_from": "LastStand",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "afterimage",
@@ -2047,7 +2047,7 @@
       "flavour": "Too fast to see.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "time_stop_set",
@@ -2105,7 +2105,7 @@
       "flavour": "The world stops.",
       "art_from": "DeadSet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "cut_in_spike",
@@ -2160,7 +2160,7 @@
       "flavour": "Freeze frame.",
       "art_from": "SpeedStrike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "phantom_serve",
@@ -2197,7 +2197,7 @@
       "flavour": "Double vision.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "gravity_drop",
@@ -2242,7 +2242,7 @@
       "flavour": "What goes up...",
       "art_from": "FallingSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "overdrive",
@@ -2285,7 +2285,7 @@
       "flavour": "Gear up.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "monster_block",
@@ -2348,7 +2348,7 @@
       "flavour": "Denied.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "second_wind",
@@ -2403,7 +2403,7 @@
       "flavour": "Not today.",
       "art_from": "LastStand",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "showboat",
@@ -2447,7 +2447,7 @@
       "flavour": "Did you see that?",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "iron_will",
@@ -2482,7 +2482,7 @@
       "flavour": "Hold the line.",
       "art_from": "BlockBoost",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "kaiju_leap",
@@ -2525,7 +2525,7 @@
       "flavour": "Stomp.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "meteor_smash",
@@ -2591,7 +2591,7 @@
       "flavour": "Impact!",
       "art_from": "FallingSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "rival_spirit",
@@ -2633,7 +2633,7 @@
       "flavour": "You'll pay for that.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "zone_focus",
@@ -2677,7 +2677,7 @@
       "flavour": "Everything is slow.",
       "art_from": "PerfectBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "spirit_serve",
@@ -2734,7 +2734,7 @@
       "flavour": "Focus...",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "echo_tip",
@@ -2771,7 +2771,7 @@
       "flavour": "Over here. No, here.",
       "art_from": "ToolTip",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "hot_streak",
@@ -2954,7 +2954,7 @@
       "flavour": "Floor burns are a badge.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "read_the_play",
@@ -2999,7 +2999,7 @@
       "flavour": "Saw that coming.",
       "art_from": "PerfectBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "guardian_wall",
@@ -3049,7 +3049,7 @@
       "flavour": "You shall not pass.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "shadow_step",
@@ -3085,7 +3085,7 @@
       "flavour": "Gone in a blink.",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tidal_wall",
@@ -3129,7 +3129,7 @@
       "flavour": "Hold back the tide.",
       "art_from": "BlockBoost",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "radiant_guard",
@@ -3173,7 +3173,7 @@
       "flavour": "Shine bright.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "iron_curtain",
@@ -3214,7 +3214,7 @@
       "flavour": "Nothing gets through.",
       "art_from": "BlockBoost",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "ice_wall",
@@ -3264,7 +3264,7 @@
       "flavour": "Cold reception.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "quick_set",
@@ -3300,7 +3300,7 @@
       "flavour": "Blink and it's set.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "back_set",
@@ -3336,7 +3336,7 @@
       "flavour": "Wrong way!",
       "art_from": "RiskySet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tempo_master",
@@ -3386,7 +3386,7 @@
       "flavour": "On the beat.",
       "art_from": "DeadSet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tornado_set",
@@ -3430,7 +3430,7 @@
       "flavour": "Ride the wind.",
       "art_from": "DeadSet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "jump_float",
@@ -3468,7 +3468,7 @@
       "flavour": "No spin, all chaos.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "meteor_serve",
@@ -3526,7 +3526,7 @@
       "flavour": "Incoming!",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "line_shot",
@@ -3562,7 +3562,7 @@
       "flavour": "Paint the line.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "thunder_serve",
@@ -3597,7 +3597,7 @@
       "flavour": "Shocking.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "wildfire",
@@ -3647,7 +3647,7 @@
       "flavour": "Spread like wildfire.",
       "art_from": "TrickShot",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "earthquake_serve",
@@ -3695,7 +3695,7 @@
       "flavour": "The ground moves.",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "aftershock",
@@ -3744,7 +3744,7 @@
       "flavour": "Feel it later.",
       "art_from": "SpinSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "overheat",
@@ -3785,7 +3785,7 @@
       "flavour": "Too hot to handle.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "glacier_body",
@@ -3819,7 +3819,7 @@
       "flavour": "Slow and unbreakable.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "featherweight",
@@ -3860,7 +3860,7 @@
       "flavour": "Float like a feather.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "stone_skin",
@@ -3912,7 +3912,7 @@
       "flavour": "Hit me.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "counter_attack",
@@ -3956,7 +3956,7 @@
       "flavour": "My turn.",
       "art_from": "SpeedStrike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "lightning_rod",
@@ -3998,7 +3998,7 @@
       "flavour": "Grounded.",
       "art_from": "BlockBoost",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "spirit_bond",
@@ -4043,7 +4043,7 @@
       "flavour": "In sync.",
       "art_from": "RiskySet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "phantom_block",
@@ -4077,7 +4077,7 @@
       "flavour": "Which one is real?",
       "art_from": "BlockBoost",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "sharpshooter",
@@ -4113,7 +4113,7 @@
       "flavour": "Pick a spot.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "cannonball_serve",
@@ -4155,7 +4155,7 @@
       "flavour": "Boom.",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "rally_master",
@@ -4213,7 +4213,7 @@
       "flavour": "Not even close.",
       "art_from": "TrickShot",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "volcano_slam",
@@ -4276,7 +4276,7 @@
       "flavour": "It's erupting!",
       "art_from": "FallingSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "blizzard",
@@ -4326,7 +4326,7 @@
       "flavour": "Whiteout.",
       "art_from": "TrickShot",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "typhoon_serve",
@@ -4377,7 +4377,7 @@
       "flavour": "Batten down.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "abyss_spike",
@@ -4427,7 +4427,7 @@
       "flavour": "From the depths.",
       "art_from": "Pipe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "starfall",
@@ -4484,7 +4484,7 @@
       "flavour": "Make a wish.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "clutch_gene",
@@ -4531,7 +4531,7 @@
       "flavour": "Pressure makes diamonds.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "last_breath",
@@ -4570,7 +4570,7 @@
       "flavour": "Not yet.",
       "art_from": "LastStand",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "underdog",
@@ -4613,7 +4613,7 @@
       "flavour": "Count me out? Never.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "spring_heels",
@@ -4648,7 +4648,7 @@
       "flavour": "Boing.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "skyhook",
@@ -4685,7 +4685,7 @@
       "flavour": "Touch the sky.",
       "art_from": "Pipe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "feint_tip",
@@ -4721,7 +4721,7 @@
       "flavour": "Look over there.",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "dink_master",
@@ -4758,7 +4758,7 @@
       "flavour": "Plop.",
       "art_from": "LowTip",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "wind_tip",
@@ -4800,7 +4800,7 @@
       "flavour": "Carried away.",
       "art_from": "ToolTip",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "iron_serve",
@@ -4835,7 +4835,7 @@
       "flavour": "Like a cannonball.",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "ace_instinct",
@@ -4877,7 +4877,7 @@
       "flavour": "Ace.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "frost_nova",
@@ -4934,7 +4934,7 @@
       "flavour": "Absolute zero.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "chain_lightning",
@@ -4982,7 +4982,7 @@
       "flavour": "It jumps.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tidal_surge",
@@ -5026,7 +5026,7 @@
       "flavour": "Ride the swell.",
       "art_from": "DeadSet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "sunburst_serve",
@@ -5062,7 +5062,7 @@
       "flavour": "Shades on.",
       "art_from": "SkyServe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "gravity_well",
@@ -5104,7 +5104,7 @@
       "flavour": "Heavy.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "umbral_block",
@@ -5154,7 +5154,7 @@
       "flavour": "Where did it go?",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "shade_dig",
@@ -5197,7 +5197,7 @@
       "flavour": "Already gone.",
       "art_from": "PerfectBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "ice_skates",
@@ -5238,7 +5238,7 @@
       "flavour": "Smooth as ice.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "chill_touch",
@@ -5274,7 +5274,7 @@
       "flavour": "Brr.",
       "art_from": "DeadSet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "ripple_dig",
@@ -5318,7 +5318,7 @@
       "flavour": "Go with the flow.",
       "art_from": "PerfectBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "splash_block",
@@ -5369,7 +5369,7 @@
       "flavour": "Splash!",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "glint",
@@ -5405,7 +5405,7 @@
       "flavour": "Ting!",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "guiding_light",
@@ -5442,7 +5442,7 @@
       "flavour": "Follow the light.",
       "art_from": "RiskySet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tengu_gale",
@@ -5497,7 +5497,7 @@
       "flavour": "One sweep of the fan.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "flow_state",
@@ -5555,7 +5555,7 @@
       "flavour": "Everything slows down.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "frost_fang",
@@ -5598,7 +5598,7 @@
       "flavour": "Cold teeth.",
       "art_from": "StrongQuick",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "beetle_horn",
@@ -5646,7 +5646,7 @@
       "flavour": "Flipped.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "foxfire_feint",
@@ -5682,7 +5682,7 @@
       "flavour": "Kon kon.",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "grounded_receive",
@@ -5725,7 +5725,7 @@
       "flavour": "Feet planted.",
       "art_from": "PerfectBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "lightning_step",
@@ -5769,7 +5769,7 @@
       "flavour": "Flash step.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "nine_tails",
@@ -5819,7 +5819,7 @@
       "flavour": "Which one is real?",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "hercules_block",
@@ -5887,7 +5887,7 @@
       "flavour": "Lift with the horn.",
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "momentum",
@@ -5930,7 +5930,7 @@
       "flavour": "Keep it rolling.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tailwind_rush",
@@ -5973,7 +5973,7 @@
       "flavour": "Wheee.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "avalanche",
@@ -6022,7 +6022,7 @@
       "flavour": "It only grows.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "firestorm",
@@ -6078,7 +6078,7 @@
       "flavour": "Feed the flames.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "kings_roar",
@@ -6143,7 +6143,7 @@
       "flavour": "Bow down.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "boar_rush",
@@ -6188,7 +6188,7 @@
       "flavour": "Straight through.",
       "art_from": "Pipe",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tusk_serve",
@@ -6231,7 +6231,7 @@
       "flavour": "Gored.",
       "art_from": "LineCreep",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "rebirth_flame",
@@ -6296,7 +6296,7 @@
       "flavour": "From the ashes.",
       "art_from": "LastStand",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "shock_tip",
@@ -6338,7 +6338,7 @@
       "flavour": "Bzzt.",
       "art_from": "LowTip",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "voltage",
@@ -6382,7 +6382,7 @@
       "flavour": "Charging...",
       "art_from": "SpeedStrike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tidal_pull",
@@ -6418,7 +6418,7 @@
       "flavour": "Pulled under.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "second_breath",
@@ -6461,7 +6461,7 @@
       "flavour": "Not tired yet.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "winters_patience",
@@ -6496,7 +6496,7 @@
       "flavour": "Winter always wins.",
       "art_from": "DeadSet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "heat_haze",
@@ -6538,7 +6538,7 @@
       "flavour": "Feel the heat.",
       "art_from": "MomentumSpike",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "stamina_war",
@@ -6582,7 +6582,7 @@
       "flavour": "We can do this all day.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "tidal_rhythm",
@@ -6626,7 +6626,7 @@
       "flavour": "Ebb and flow.",
       "art_from": "DeadSet",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     },
     {
       "id": "starlight_finale",
@@ -6675,7 +6675,7 @@
       "flavour": "Save the best for last.",
       "art_from": "TrickShot",
       "opponent_ok": "yes",
-      "verified": "no"
+      "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
     }
   ]
 }
