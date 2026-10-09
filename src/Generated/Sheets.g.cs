@@ -45,14 +45,15 @@ namespace HangtimeOvertime.Generated
                 new FxDef("spike", "cross", "trail", 1.2f, 0.6f, 0.0f, 0.0f, "FF6A2A", ""),
                 new FxDef("spike", "enemy_touch", "zone", 11.0f, 0.4f, 4.0f, 0.0f, "FF5A1A", ""),
                 new FxDef("spike", "enemy_touch", "burst", 1.2f, 0.0f, 0.0f, 0.0f, "FF6A2A", "ball"),
-                new FxDef("spike", "now", "power", 0.1f, 0.0f, 0.0f, 0.0f, "", "") } },
+                new FxDef("spike", "now", "power", 0.15f, 0.0f, 0.0f, 0.0f, "", "") } },
             new PerkDef { Id = "flame_serve", Title = "Flame Serve", Rarity = "common", Element = "fire", Origin = "new", Description = "Serves catch fire as they cross the net and speed up.", Flavour = "Hot off the hand.", ArtFrom = "SkyServe", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("serve", "cross", "speed", 1.12f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("serve", "cross", "trail", 1.2f, 0.8f, 0.0f, 0.0f, "FF6A2A", ""),
                 new FxDef("serve", "cross", "burst", 0.8f, 0.0f, 0.0f, 0.0f, "FF8A3A", "ball") } },
-            new PerkDef { Id = "ember_tip", Title = "Ember Tip", Rarity = "common", Element = "fire", Origin = "new", Description = "Tips drop embers: whoever digs one is slowed by the flames.", Flavour = "Mind the sparks.", ArtFrom = "ToolTip", OpponentOk = true, Triggers = new[] { "tip" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+            new PerkDef { Id = "ember_tip", Title = "Ember Tip", Rarity = "common", Element = "fire", Origin = "new", Description = "Tips rain embers: defenders run on burning feet as the tip arrives, and the court smoulders.", Flavour = "Mind the sparks.", ArtFrom = "ToolTip", OpponentOk = true, Triggers = new[] { "tip" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("tip", "now", "trail", 0.9f, 0.6f, 0.0f, 0.0f, "FF8A3A", ""),
-                new FxDef("tip", "enemy_touch", "zone", 6.0f, 0.5f, 3.0f, 0.0f, "FF7A2A", "") } },
+                new FxDef("tip", "cross", "slow_enemies", 0.82f, 0.6f, 0.0f, 0.0f, "", ""),
+                new FxDef("tip", "enemy_touch", "zone", 6.0f, 0.45f, 3.0f, 0.0f, "FF7A2A", "") } },
             new PerkDef { Id = "phoenix_dive", Title = "Phoenix Dive", Rarity = "rare", Element = "fire", Origin = "new", Description = "Your digs rise like a phoenix: extra height, and your counter-spike burns hotter.", Flavour = "From the ashes.", ArtFrom = "PerfectBump", OpponentOk = true, Triggers = new[] { "dig" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("dig", "now", "lift", 13.0f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("dig", "now", "burst", 1.4f, 0.0f, 0.0f, 0.0f, "FF6A2A", "owner"),
@@ -60,7 +61,7 @@ namespace HangtimeOvertime.Generated
                 new FxDef("dig", "now", "buff", 1.1f, 2.0f, 0.0f, 0.0f, "spike", "") } },
             new PerkDef { Id = "inferno_aura", Title = "Inferno", Rarity = "epic", Element = "fire", Origin = "new", Description = "After 3 good touches in a row you ignite: much stronger spikes for 6 seconds.", Flavour = "Burn bright.", ArtFrom = "ComeBack", OpponentOk = true, Triggers = new[] { "streak" }, Cond = new CondDef(1.0f, 0.0f, 3.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("streak", "now", "aura", 6.0f, 0.0f, 0.0f, 0.0f, "FF5A1A", ""),
-                new FxDef("streak", "now", "buff", 1.4f, 6.0f, 0.0f, 0.0f, "spike", ""),
+                new FxDef("streak", "now", "buff", 1.45f, 6.0f, 0.0f, 0.0f, "spike", ""),
                 new FxDef("streak", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "INFERNO!", ""),
                 new FxDef("streak", "now", "flash", 0.25f, 0.25f, 0.0f, 0.0f, "FF6A2A", ""),
                 new FxDef("streak", "now", "sound", 0.3f, 1.0f, 0.0f, 0.0f, "limitBreak", "") } },
@@ -74,9 +75,9 @@ namespace HangtimeOvertime.Generated
                 new FxDef("spike", "enemy_touch", "deflect", 22.0f, 0.0f, 0.6f, 0.0f, "", ""),
                 new FxDef("spike", "enemy_touch", "burst", 1.0f, 0.0f, 0.0f, 0.0f, "DFFAFF", "ball"),
                 new FxDef("spike", "enemy_touch", "sound", 0.3f, 1.6f, 0.0f, 0.0f, "net", ""),
-                new FxDef("spike", "cross", "speed", 1.08f, 0.0f, 0.0f, 0.0f, "", "") } },
+                new FxDef("spike", "cross", "speed", 1.12f, 0.0f, 0.0f, 0.0f, "", "") } },
             new PerkDef { Id = "permafrost", Title = "Permafrost", Rarity = "rare", Element = "ice", Origin = "new", Description = "Frost spreads where they dig your spikes: receivers on the ice move slower.", Flavour = "It never thaws.", ArtFrom = "StrongQuick", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "enemy_touch", "zone", 9.0f, 0.6f, 5.0f, 0.0f, "9FE8FF", ""),
+                new FxDef("spike", "enemy_touch", "zone", 9.0f, 0.5f, 5.0f, 0.0f, "9FE8FF", ""),
                 new FxDef("spike", "enemy_touch", "burst", 1.2f, 0.0f, 0.0f, 0.0f, "BFF4FF", "ball") } },
             new PerkDef { Id = "frozen_block", Title = "Frozen Wall", Rarity = "common", Element = "ice", Origin = "new", Description = "A strong block freezes the other team's footwork for a moment.", Flavour = "Cold shoulder.", ArtFrom = "BlockBoost", OpponentOk = true, Triggers = new[] { "block" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("block", "now", "slow_enemies", 0.55f, 2.2f, 0.0f, 0.0f, "", ""),
@@ -89,7 +90,7 @@ namespace HangtimeOvertime.Generated
                 new FxDef("spike", "cross", "burst", 1.6f, 0.0f, 0.0f, 0.0f, "DFFAFF", "ball"),
                 new FxDef("spike", "cross", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "COLD SNAP!", "") } },
             new PerkDef { Id = "zigzag_spike", Title = "Zig-Zag Spike", Rarity = "rare", Element = "lightning", Origin = "new", Description = "Your spikes zig-zag like lightning after the net.", Flavour = "Can't catch lightning.", ArtFrom = "StrongQuick", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "cross", "wobble", 12.0f, 0.1f, 0.35f, 0.0f, "zigzag", ""),
+                new FxDef("spike", "cross", "wobble", 11.0f, 0.1f, 0.35f, 0.0f, "zigzag", ""),
                 new FxDef("spike", "cross", "bolt", 0.0f, 0.0f, 0.0f, 0.0f, "FFE14A", "ball"),
                 new FxDef("spike", "cross", "trail", 1.2f, 0.6f, 0.0f, 0.0f, "FFE14A", ""),
                 new FxDef("spike", "cross", "sound", 0.3f, 2.0f, 0.0f, 0.0f, "net", "") } },
@@ -147,18 +148,19 @@ namespace HangtimeOvertime.Generated
             new PerkDef { Id = "mist_veil", Title = "Mist Veil", Rarity = "common", Element = "water", Origin = "new", Description = "Your serve vanishes into mist for a moment after the net.", Flavour = "Lost in the fog.", ArtFrom = "SkyServe", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("serve", "cross", "invisible", 0.45f, 0.35f, 0.0f, 0.0f, "", ""),
                 new FxDef("serve", "cross", "burst", 1.0f, 0.0f, 0.0f, 0.0f, "CFE8FF", "ball") } },
-            new PerkDef { Id = "tsunami_spike", Title = "Tsunami", Rarity = "epic", Element = "water", Origin = "new", Description = "A high spike can become a tidal wave: big power, and it swamps their footwork.", Flavour = "Here comes the wave.", ArtFrom = "FallingSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(0.8f, 3.0f, 0.0f, 0.0f, 9.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "now", "power", 0.35f, 0.0f, 0.0f, 0.0f, "", ""),
+            new PerkDef { Id = "tsunami_spike", Title = "Tsunami", Rarity = "epic", Element = "water", Origin = "new", Description = "A high spike becomes a tidal wave: big power, and it swamps their footwork.", Flavour = "Here comes the wave.", ArtFrom = "FallingSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 3.0f, 0.0f, 0.0f, 9.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "now", "power", 0.45f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "cross", "slow_enemies", 0.7f, 1.5f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "cross", "wobble", 6.0f, 0.35f, 0.5f, 0.0f, "wave", ""),
                 new FxDef("spike", "cross", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "TSUNAMI!", ""),
                 new FxDef("spike", "cross", "shake", 0.4f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "cross", "burst", 1.8f, 0.0f, 0.0f, 0.0f, "4AA8FF", "ball") } },
-            new PerkDef { Id = "quake_spike", Title = "Quake Spike", Rarity = "common", Element = "earth", Origin = "new", Description = "Spikes land like a quake: digging one rattles the whole team.", Flavour = "Feel the ground shake.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "enemy_touch", "slow_enemies", 0.7f, 1.6f, 0.0f, 0.0f, "", ""),
+            new PerkDef { Id = "quake_spike", Title = "Quake Spike", Rarity = "common", Element = "earth", Origin = "new", Description = "Spikes land like a quake: the court shakes under the defenders as the ball comes in.", Flavour = "Feel the ground shake.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "cross", "slow_enemies", 0.86f, 0.6f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "enemy_touch", "shake", 0.3f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "enemy_touch", "burst", 1.2f, 0.0f, 0.0f, 0.0f, "C08A4A", "ball") } },
-            new PerkDef { Id = "bedrock_block", Title = "Bedrock Block", Rarity = "common", Element = "earth", Origin = "new", Description = "Rock-solid blocks: the ball rebounds off you faster.", Flavour = "Immovable.", ArtFrom = "AbsoluteBlock", OpponentOk = true, Triggers = new[] { "block" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+            new PerkDef { Id = "bedrock_block", Title = "Bedrock Block", Rarity = "common", Element = "earth", Origin = "new", Description = "Rock-solid blocks: you reach a bit higher, and the ball rebounds off you faster.", Flavour = "Immovable.", ArtFrom = "AbsoluteBlock", OpponentOk = true, Triggers = new[] { "block_jump", "block" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("block_jump", "now", "block_jump", 3.0f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("block", "now", "speed", 1.35f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("block", "now", "burst", 1.3f, 0.0f, 0.0f, 0.0f, "C08A4A", "ball"),
                 new FxDef("block", "now", "shake", 0.25f, 0.0f, 0.0f, 0.0f, "", ""),
@@ -174,11 +176,12 @@ namespace HangtimeOvertime.Generated
                 new FxDef("spike", "now", "shake", 0.6f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "TECTONIC SLAM!", ""),
                 new FxDef("spike", "now", "sound", 0.25f, 0.6f, 0.0f, 0.0f, "windowSmash", "") } },
-            new PerkDef { Id = "mud_trap", Title = "Mud Trap", Rarity = "common", Element = "earth", Origin = "new", Description = "Tips land in mud: whoever digs one gets bogged down.", Flavour = "Stuck in the mud.", ArtFrom = "LowTip", OpponentOk = true, Triggers = new[] { "tip" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("tip", "enemy_touch", "zone", 8.0f, 0.5f, 3.0f, 0.0f, "7A5530", ""),
-                new FxDef("tip", "enemy_touch", "burst", 0.8f, 0.0f, 0.0f, 0.0f, "C08A4A", "ball") } },
+            new PerkDef { Id = "mud_trap", Title = "Mud Trap", Rarity = "common", Element = "earth", Origin = "new", Description = "Tips land in mud: the defender gets stuck as the tip comes in, and the court stays muddy.", Flavour = "Stuck in the mud.", ArtFrom = "LowTip", OpponentOk = true, Triggers = new[] { "tip" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("tip", "cross", "stun", 0.35f, 0.0f, 0.0f, 0.0f, "spiker", ""),
+                new FxDef("tip", "enemy_touch", "zone", 8.0f, 0.45f, 3.0f, 0.0f, "7A5530", ""),
+                new FxDef("tip", "cross", "burst", 0.8f, 0.0f, 0.0f, 0.0f, "C08A4A", "enemy") } },
             new PerkDef { Id = "shadow_ball", Title = "Shadow Ball", Rarity = "rare", Element = "shadow", Origin = "new", Description = "Your spike fades into shadow for a moment after the net.", Flavour = "Now you don't.", ArtFrom = "SneakAttack", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "cross", "invisible", 0.25f, 0.3f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "cross", "invisible", 0.3f, 0.3f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "cross", "trail", 1.0f, 0.4f, 0.0f, 0.0f, "4A2A8A", "") } },
             new PerkDef { Id = "night_serve", Title = "Night Serve", Rarity = "common", Element = "shadow", Origin = "new", Description = "Serves slip into darkness just past the net.", Flavour = "Lights out.", ArtFrom = "LineCreep", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("serve", "cross", "invisible", 0.3f, 0.25f, 0.0f, 0.0f, "", ""),
@@ -197,8 +200,8 @@ namespace HangtimeOvertime.Generated
                 new FxDef("setter_set", "now", "tint", 1.0f, 0.0f, 0.0f, 0.0f, "FFF3B0", ""),
                 new FxDef("setter_set", "now", "buff", 1.12f, 1.5f, 0.0f, 0.0f, "spike", ""),
                 new FxDef("setter_set", "now", "burst", 0.7f, 0.0f, 0.0f, 0.0f, "FFF3B0", "ball") } },
-            new PerkDef { Id = "holy_lance", Title = "Holy Lance", Rarity = "epic", Element = "light", Origin = "new", Description = "A spike from high up can become a lance of light: much faster.", Flavour = "Judgement.", ArtFrom = "Pipe", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 3.0f, 0.0f, 0.0f, 8.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "now", "speed", 1.45f, 0.0f, 0.0f, 0.0f, "", ""),
+            new PerkDef { Id = "holy_lance", Title = "Holy Lance", Rarity = "epic", Element = "light", Origin = "new", Description = "A spike from high up can become a lance of light: much faster.", Flavour = "Judgement.", ArtFrom = "Pipe", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 3.0f, 0.0f, 0.0f, 7.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "now", "speed", 1.5f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "now", "flash", 0.45f, 0.25f, 0.0f, 0.0f, "FFF8D0", ""),
                 new FxDef("spike", "now", "bolt", 0.0f, 0.0f, 0.0f, 0.0f, "FFF3B0", "ball"),
                 new FxDef("spike", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "HOLY LANCE!", ""),
@@ -238,13 +241,13 @@ namespace HangtimeOvertime.Generated
                 new FxDef("spike", "cross", "plunge", 48.0f, 0.35f, 0.12f, 0.0f, "", ""),
                 new FxDef("spike", "cross", "ring", 1.3f, 0.0f, 0.0f, 0.0f, "B07AFF", "ball"),
                 new FxDef("spike", "cross", "sound", 0.3f, 0.6f, 0.0f, 0.0f, "spinServe", "") } },
-            new PerkDef { Id = "overdrive", Title = "Overdrive", Rarity = "rare", Element = "power", Origin = "new", Description = "A dig powers you up: your next spike within 5 seconds hits much harder.", Flavour = "Gear up.", ArtFrom = "CounterBump", OpponentOk = true, Triggers = new[] { "dig" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("dig", "now", "next_power", 0.4f, 5.0f, 0.0f, 0.0f, "", ""),
+            new PerkDef { Id = "overdrive", Title = "Overdrive", Rarity = "rare", Element = "power", Origin = "new", Description = "A dig powers you up: your next spike within 6 seconds hits much harder.", Flavour = "Gear up.", ArtFrom = "CounterBump", OpponentOk = true, Triggers = new[] { "dig" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("dig", "now", "next_power", 0.4f, 6.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("dig", "now", "burst", 0.8f, 0.0f, 0.0f, 0.0f, "FF4FA0", "owner"),
-                new FxDef("dig", "now", "aura", 5.0f, 0.0f, 0.0f, 0.0f, "FF4FA0", "") } },
+                new FxDef("dig", "now", "aura", 6.0f, 0.0f, 0.0f, 0.0f, "FF4FA0", "") } },
             new PerkDef { Id = "monster_block", Title = "Monster Block", Rarity = "epic", Element = "power", Origin = "new", Description = "Higher block jumps, and a strong block sends out a shockwave that stuns the hitter.", Flavour = "Denied.", ArtFrom = "AbsoluteBlock", OpponentOk = true, Triggers = new[] { "block_jump", "block" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("block_jump", "now", "block_jump", 7.0f, 0.0f, 0.0f, 0.0f, "", ""),
-                new FxDef("block", "now", "stun", 1.2f, 0.0f, 0.0f, 0.0f, "hitter", ""),
+                new FxDef("block", "now", "stun", 1.5f, 0.0f, 0.0f, 0.0f, "hitter", ""),
                 new FxDef("block", "now", "ring", 2.5f, 0.0f, 0.0f, 0.0f, "FF4FA0", "ball"),
                 new FxDef("block", "now", "shake", 0.5f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("block", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "MONSTER BLOCK!", ""),
@@ -256,11 +259,11 @@ namespace HangtimeOvertime.Generated
                 new FxDef("match_point_against", "now", "flash", 0.25f, 0.25f, 0.0f, 0.0f, "FF3A3A", ""),
                 new FxDef("match_point_against", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "SECOND WIND!", "") } },
             new PerkDef { Id = "showboat", Title = "Showboat", Rarity = "common", Element = "power", Origin = "reworked", Description = "Every tip pumps you up: your next spike within 9 seconds gets extra power.", Flavour = "Did you see that?", ArtFrom = "SneakAttack", OpponentOk = true, Triggers = new[] { "tip" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("tip", "now", "next_power", 0.3f, 9.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("tip", "now", "next_power", 0.45f, 9.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("tip", "now", "trail", 0.9f, 0.6f, 0.0f, 0.0f, "FFB0D0", ""),
                 new FxDef("tip", "now", "burst", 0.7f, 0.0f, 0.0f, 0.0f, "FFB0D0", "owner") } },
             new PerkDef { Id = "iron_will", Title = "Iron Will", Rarity = "common", Element = "power", Origin = "new", Description = "Your block jumps go higher.", Flavour = "Hold the line.", ArtFrom = "BlockBoost", OpponentOk = true, Triggers = new[] { "block_jump" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("block_jump", "now", "block_jump", 5.0f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("block_jump", "now", "block_jump", 7.0f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("block_jump", "now", "burst", 0.7f, 0.0f, 0.0f, 0.0f, "D8D8E8", "owner") } },
             new PerkDef { Id = "kaiju_leap", Title = "Kaiju Leap", Rarity = "rare", Element = "power", Origin = "new", Description = "Jump from a full run for a monster leap.", Flavour = "Stomp.", ArtFrom = "Speedster", OpponentOk = true, Triggers = new[] { "jump" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 12.0f), Fx = new[] {
                 new FxDef("jump", "now", "jump_bonus", 15.0f, 12.0f, 0.0f, 0.0f, "", ""),
@@ -270,14 +273,14 @@ namespace HangtimeOvertime.Generated
                 new FxDef("spike", "now", "trail", 2.0f, 0.8f, 0.0f, 0.0f, "FF7A2A", ""),
                 new FxDef("spike", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "METEOR SMASH!", ""),
                 new FxDef("spike", "now", "burst", 1.5f, 0.0f, 0.0f, 0.0f, "FFB04A", "ball"),
-                new FxDef("spike", "cross", "plunge", 40.0f, 0.9f, 0.0f, 0.0f, "", ""),
-                new FxDef("spike", "enemy_touch", "deflect", 6.0f, 0.0f, 0.5f, 0.0f, "", ""),
+                new FxDef("spike", "cross", "plunge", 45.0f, 0.9f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "enemy_touch", "deflect", 6.0f, 0.0f, 0.4f, 0.0f, "", ""),
                 new FxDef("spike", "enemy_touch", "shake", 0.5f, 0.0f, 0.0f, 0.0f, "", "") } },
             new PerkDef { Id = "rival_spirit", Title = "Rival Spirit", Rarity = "common", Element = "power", Origin = "new", Description = "When they win two rallies in a row, your next spike hits back harder.", Flavour = "You'll pay for that.", ArtFrom = "ComeBack", OpponentOk = true, Triggers = new[] { "enemy_streak" }, Cond = new CondDef(1.0f, 0.0f, 2.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("enemy_streak", "now", "next_power", 0.3f, 10.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("enemy_streak", "now", "aura", 3.0f, 0.0f, 0.0f, 0.0f, "FF3A3A", ""),
                 new FxDef("enemy_streak", "now", "burst", 0.8f, 0.0f, 0.0f, 0.0f, "FF3A3A", "owner") } },
-            new PerkDef { Id = "zone_focus", Title = "Zone Focus", Rarity = "rare", Element = "power", Origin = "new", Description = "In the zone: sometimes a dig slows time and sharpens your counter-spike.", Flavour = "Everything is slow.", ArtFrom = "PerfectBump", OpponentOk = true, Triggers = new[] { "dig" }, Cond = new CondDef(0.8f, 3.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+            new PerkDef { Id = "zone_focus", Title = "Zone Focus", Rarity = "rare", Element = "power", Origin = "new", Description = "In the zone: sometimes a dig slows time and sharpens your counter-spike.", Flavour = "Everything is slow.", ArtFrom = "PerfectBump", OpponentOk = true, Triggers = new[] { "dig" }, Cond = new CondDef(1.0f, 3.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("dig", "now", "slowmo", 0.4f, 0.5f, 0.0f, 0.0f, "", ""),
                 new FxDef("dig", "now", "flash", 0.2f, 0.25f, 0.0f, 0.0f, "7FB8FF", ""),
                 new FxDef("dig", "now", "buff", 1.12f, 1.6f, 0.0f, 0.0f, "spike", "") } },
@@ -288,13 +291,13 @@ namespace HangtimeOvertime.Generated
                 new FxDef("serve", "now", "flash", 0.3f, 0.2f, 0.0f, 0.0f, "FFFFFF", ""),
                 new FxDef("serve", "now", "trail", 1.6f, 1.0f, 0.0f, 0.0f, "FFFFFF", "") } },
             new PerkDef { Id = "echo_tip", Title = "Echo Tip", Rarity = "rare", Element = "power", Origin = "new", Description = "Your tip leaves an echo that fakes out the defense.", Flavour = "Over here. No, here.", ArtFrom = "ToolTip", OpponentOk = true, Triggers = new[] { "tip" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("tip", "now", "decoy", 6.0f, 0.5f, 1.0f, 0.0f, "", ""),
+                new FxDef("tip", "now", "decoy", 9.0f, 0.5f, 1.0f, 0.0f, "", ""),
                 new FxDef("tip", "now", "burst", 0.6f, 0.0f, 0.0f, 0.0f, "E0D0FF", "ball") } },
             new PerkDef { Id = "hot_streak", Title = "Hot Streak", Rarity = "common", Element = "none", Origin = "kept", Description = "Each point you win in a row makes your spikes stronger.", Flavour = "Don't touch, it's hot.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("spike", "now", "power_streak", 0.1f, 0.4f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "now", "burst", 0.6f, 0.0f, 0.0f, 0.0f, "FF9F6B", "owner") } },
             new PerkDef { Id = "bank_shot", Title = "Bank Shot", Rarity = "common", Element = "none", Origin = "kept", Description = "Every bump and set banks power. Your next spike cashes it all in.", Flavour = "Compound interest.", ArtFrom = "PerfectBump", OpponentOk = true, Triggers = new[] { "set", "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("set", "now", "bank", 0.1f, 0.4f, 0.0f, 0.0f, "", ""),
+                new FxDef("set", "now", "bank", 0.09f, 0.4f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "now", "cash_bank", 0.0f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "now", "burst", 0.7f, 0.0f, 0.0f, 0.0f, "FFD98A", "ball") } },
             new PerkDef { Id = "collector", Title = "Collector", Rarity = "rare", Element = "none", Origin = "kept", Description = "Your spikes get stronger for every ability you own.", Flavour = "Gotta spike 'em all.", ArtFrom = "ToolTip", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
@@ -303,15 +306,15 @@ namespace HangtimeOvertime.Generated
                 new FxDef("passive", "now", "game_speed", 1.18f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "now", "power", 0.3f, 0.0f, 0.0f, 0.0f, "", "") } },
             new PerkDef { Id = "libero_dive", Title = "Libero Dive", Rarity = "common", Element = "none", Origin = "new", Description = "Diving digs pop the ball up and you spring back to your feet faster.", Flavour = "Floor burns are a badge.", ArtFrom = "CounterBump", OpponentOk = true, Triggers = new[] { "dig" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("dig", "now", "lift", 4.0f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("dig", "now", "lift", 6.0f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("dig", "now", "buff", 1.25f, 1.5f, 0.0f, 0.0f, "move", ""),
                 new FxDef("dig", "now", "ring", 1.0f, 0.0f, 0.0f, 0.0f, "FFFFFF", "owner") } },
             new PerkDef { Id = "read_the_play", Title = "Read the Play", Rarity = "rare", Element = "light", Origin = "new", Description = "When they spike, you read it: a burst of speed to get to the ball.", Flavour = "Saw that coming.", ArtFrom = "PerfectBump", OpponentOk = true, Triggers = new[] { "enemy_spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("enemy_spike", "now", "buff", 1.3f, 0.8f, 0.0f, 0.0f, "move", ""),
                 new FxDef("enemy_spike", "now", "flash", 0.12f, 0.15f, 0.0f, 0.0f, "FFF3B0", ""),
                 new FxDef("enemy_spike", "now", "burst", 0.6f, 0.0f, 0.0f, 0.0f, "FFF3B0", "owner") } },
-            new PerkDef { Id = "guardian_wall", Title = "Guardian Wall", Rarity = "epic", Element = "light", Origin = "new", Description = "Often a golden wall slows their spike down so you can dig it.", Flavour = "You shall not pass.", ArtFrom = "AbsoluteBlock", OpponentOk = true, Triggers = new[] { "enemy_spike" }, Cond = new CondDef(0.65f, 4.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("enemy_spike", "now", "slow", 0.45f, 0.3f, 0.0f, 0.0f, "", ""),
+            new PerkDef { Id = "guardian_wall", Title = "Guardian Wall", Rarity = "epic", Element = "light", Origin = "new", Description = "Often a golden wall slows their spike down so you can dig it.", Flavour = "You shall not pass.", ArtFrom = "AbsoluteBlock", OpponentOk = true, Triggers = new[] { "enemy_spike" }, Cond = new CondDef(0.8f, 4.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("enemy_spike", "now", "slow", 0.4f, 0.3f, 0.0f, 0.0f, "", ""),
                 new FxDef("enemy_spike", "now", "flash", 0.3f, 0.2f, 0.0f, 0.0f, "FFE680", ""),
                 new FxDef("enemy_spike", "now", "ring", 2.0f, 0.0f, 0.0f, 0.0f, "FFE680", "ball"),
                 new FxDef("enemy_spike", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "GUARDIAN!", "") } },
@@ -359,27 +362,97 @@ namespace HangtimeOvertime.Generated
                 new FxDef("serve", "cross", "plunge", 25.0f, 0.9f, 0.0f, 0.0f, "", ""),
                 new FxDef("serve", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "METEOR SERVE!", ""),
                 new FxDef("serve", "now", "burst", 1.2f, 0.0f, 0.0f, 0.0f, "FF6A2A", "ball") } },
-            new PerkDef { Id = "line_shot", Title = "Line Shot", Rarity = "common", Element = "none", Origin = "new", Description = "Half your spikes bend toward their back line.", Flavour = "Paint the line.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(0.5f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "cross", "curve", 40.0f, 0.3f, 0.0f, 0.0f, "", ""),
+            new PerkDef { Id = "line_shot", Title = "Line Shot", Rarity = "common", Element = "none", Origin = "new", Description = "Half your spikes bend toward their back line.", Flavour = "Paint the line.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(0.7f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "cross", "curve", 55.0f, 0.3f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "cross", "trail", 1.0f, 0.5f, 0.0f, 0.0f, "FFFFFF", "") } },
             new PerkDef { Id = "thunder_serve", Title = "Thunder Serve", Rarity = "rare", Element = "lightning", Origin = "new", Description = "Serves can strike their receiver with lightning as they cross the net.", Flavour = "Shocking.", ArtFrom = "SkyServe", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(0.8f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("serve", "cross", "stun", 0.45f, 0.0f, 0.0f, 0.0f, "spiker", ""),
+                new FxDef("serve", "cross", "stun", 0.7f, 0.0f, 0.0f, 0.0f, "spiker", ""),
                 new FxDef("serve", "cross", "bolt", 0.0f, 0.0f, 0.0f, 0.0f, "FFE14A", "enemy") } },
             new PerkDef { Id = "wildfire", Title = "Wildfire", Rarity = "epic", Element = "fire", Origin = "new", Description = "After 5 good touches in a row, fire sweeps the other team's court and slows them.", Flavour = "Spread like wildfire.", ArtFrom = "TrickShot", OpponentOk = true, Triggers = new[] { "streak" }, Cond = new CondDef(1.0f, 0.0f, 5.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("streak", "now", "zone", 14.0f, 0.5f, 4.0f, 0.0f, "FF5A1A", ""),
                 new FxDef("streak", "now", "flash", 0.3f, 0.25f, 0.0f, 0.0f, "FF6A2A", ""),
                 new FxDef("streak", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "WILDFIRE!", ""),
                 new FxDef("streak", "now", "shake", 0.3f, 0.0f, 0.0f, 0.0f, "", "") } },
-            new PerkDef { Id = "earthquake_serve", Title = "Earthquake Serve", Rarity = "epic", Element = "earth", Origin = "new", Description = "Your serve often shakes the ground as it crosses, freezing the other team.", Flavour = "The ground moves.", ArtFrom = "LineCreep", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(0.55f, 4.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+            new PerkDef { Id = "earthquake_serve", Title = "Earthquake Serve", Rarity = "epic", Element = "earth", Origin = "new", Description = "Your serve often shakes the ground as it crosses, freezing the other team.", Flavour = "The ground moves.", ArtFrom = "LineCreep", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(0.65f, 4.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("serve", "cross", "stun", 0.4f, 0.0f, 0.0f, 0.0f, "all", ""),
                 new FxDef("serve", "cross", "shake", 0.6f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("serve", "cross", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "EARTHQUAKE!", ""),
                 new FxDef("serve", "cross", "ring", 2.5f, 0.0f, 0.0f, 0.0f, "C08A4A", "ball") } },
-            new PerkDef { Id = "aftershock", Title = "Aftershock", Rarity = "rare", Element = "earth", Origin = "new", Description = "Digging your spike leaves their hitter dazed for their counter.", Flavour = "Feel it later.", ArtFrom = "SpinSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
-                new FxDef("spike", "enemy_touch", "stun", 0.6f, 0.0f, 0.0f, 0.0f, "spiker", ""),
+            new PerkDef { Id = "aftershock", Title = "Aftershock", Rarity = "rare", Element = "earth", Origin = "new", Description = "Digging your spike leaves their hitter dazed for over a second, spoiling their counter.", Flavour = "Feel it later.", ArtFrom = "SpinSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "enemy_touch", "stun", 1.4f, 0.0f, 0.0f, 0.0f, "spiker", ""),
                 new FxDef("spike", "enemy_touch", "shake", 0.3f, 0.0f, 0.0f, 0.0f, "", ""),
                 new FxDef("spike", "enemy_touch", "burst", 1.0f, 0.0f, 0.0f, 0.0f, "C08A4A", "ball"),
                 new FxDef("spike", "enemy_touch", "slow_enemies", 0.8f, 1.5f, 0.0f, 0.0f, "", "") } },
+            new PerkDef { Id = "overheat", Title = "Overheat", Rarity = "rare", Element = "fire", Origin = "new", Description = "You run hot all match: +24% spike power, but 3% slower.", Flavour = "Too hot to handle.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "passive" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("passive", "now", "buff", 1.24f, -1.0f, 0.0f, 0.0f, "spike", ""),
+                new FxDef("passive", "now", "buff", 0.97f, -1.0f, 0.0f, 0.0f, "move", ""),
+                new FxDef("passive", "now", "afterimages", -1.0f, 0.0f, 0.0f, 0.0f, "FF6A2A", "") } },
+            new PerkDef { Id = "glacier_body", Title = "Glacier Body", Rarity = "rare", Element = "ice", Origin = "new", Description = "Solid as a glacier: +18% block, but 3% slower.", Flavour = "Slow and unbreakable.", ArtFrom = "AbsoluteBlock", OpponentOk = true, Triggers = new[] { "passive" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("passive", "now", "buff", 1.18f, -1.0f, 0.0f, 0.0f, "block", ""),
+                new FxDef("passive", "now", "buff", 0.97f, -1.0f, 0.0f, 0.0f, "move", "") } },
+            new PerkDef { Id = "featherweight", Title = "Featherweight", Rarity = "rare", Element = "wind", Origin = "new", Description = "Light as air: +10% jump, but weaker blocks.", Flavour = "Float like a feather.", ArtFrom = "Speedster", OpponentOk = true, Triggers = new[] { "passive" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("passive", "now", "buff", 1.1f, -1.0f, 0.0f, 0.0f, "jump", ""),
+                new FxDef("passive", "now", "buff", 0.94f, -1.0f, 0.0f, 0.0f, "block", ""),
+                new FxDef("passive", "now", "afterimages", -1.0f, 0.0f, 0.0f, 0.0f, "A8FFC8", "") } },
+            new PerkDef { Id = "stone_skin", Title = "Stone Skin", Rarity = "rare", Element = "earth", Origin = "new", Description = "Tough skin: better blocks and sturdier digs, slightly softer spikes.", Flavour = "Hit me.", ArtFrom = "CounterBump", OpponentOk = true, Triggers = new[] { "passive", "dig" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("passive", "now", "buff", 1.08f, -1.0f, 0.0f, 0.0f, "block", ""),
+                new FxDef("passive", "now", "buff", 0.97f, -1.0f, 0.0f, 0.0f, "spike", ""),
+                new FxDef("dig", "now", "lift", 7.0f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("dig", "now", "burst", 0.6f, 0.0f, 0.0f, 0.0f, "C08A4A", "owner") } },
+            new PerkDef { Id = "counter_attack", Title = "Counter Attack", Rarity = "rare", Element = "power", Origin = "new", Description = "When they spike, you get fired up: your next spike within 6 seconds hits harder.", Flavour = "My turn.", ArtFrom = "SpeedStrike", OpponentOk = true, Triggers = new[] { "enemy_spike" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("enemy_spike", "now", "next_power", 0.5f, 6.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("enemy_spike", "now", "flash", 0.12f, 0.12f, 0.0f, 0.0f, "FF3A3A", "") } },
+            new PerkDef { Id = "lightning_rod", Title = "Lightning Rod", Rarity = "rare", Element = "lightning", Origin = "new", Description = "Sometimes, when they spike, lightning strikes their setter: frozen for 2.5 seconds, no block against your counter.", Flavour = "Grounded.", ArtFrom = "BlockBoost", OpponentOk = true, Triggers = new[] { "enemy_spike" }, Cond = new CondDef(0.7f, 3.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("enemy_spike", "now", "stun", 2.5f, 0.0f, 0.0f, 0.0f, "blocker", ""),
+                new FxDef("enemy_spike", "now", "bolt", 0.0f, 0.0f, 0.0f, 0.0f, "FFE14A", "enemy") } },
+            new PerkDef { Id = "spirit_bond", Title = "Spirit Bond", Rarity = "rare", Element = "light", Origin = "new", Description = "You and your setter move as one after every set.", Flavour = "In sync.", ArtFrom = "RiskySet", OpponentOk = true, Triggers = new[] { "setter_set" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("setter_set", "now", "buff", 1.5f, 2.0f, 0.0f, 0.0f, "set", ""),
+                new FxDef("setter_set", "now", "buff", 1.25f, 2.0f, 0.0f, 0.0f, "move", ""),
+                new FxDef("setter_set", "now", "ring", 1.0f, 0.0f, 0.0f, 0.0f, "FFF3B0", "owner") } },
+            new PerkDef { Id = "phantom_block", Title = "Phantom Block", Rarity = "rare", Element = "shadow", Origin = "new", Description = "Your block jumps leave shadowy copies and reach higher.", Flavour = "Which one is real?", ArtFrom = "BlockBoost", OpponentOk = true, Triggers = new[] { "block_jump" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("block_jump", "now", "block_jump", 8.0f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("block_jump", "now", "afterimages", 0.6f, 0.0f, 0.0f, 0.0f, "8A5CFF", "") } },
+            new PerkDef { Id = "sharpshooter", Title = "Sharpshooter", Rarity = "common", Element = "none", Origin = "new", Description = "Some of your spikes bend toward the corners.", Flavour = "Pick a spot.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(0.5f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "cross", "curve", 50.0f, 0.25f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "cross", "trail", 1.0f, 0.5f, 0.0f, 0.0f, "FFFFFF", "") } },
+            new PerkDef { Id = "cannonball_serve", Title = "Cannonball Serve", Rarity = "rare", Element = "none", Origin = "new", Description = "Hold the ball for a moment, then fire a cannonball serve.", Flavour = "Boom.", ArtFrom = "LineCreep", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(1.0f, 0.0f, 0.0f, 0.0f, -99.0f, 1.0f, 0.0f), Fx = new[] {
+                new FxDef("serve", "now", "speed", 1.28f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("serve", "now", "shake", 0.25f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("serve", "now", "trail", 1.4f, 0.8f, 0.0f, 0.0f, "D8D8E8", "") } },
+            new PerkDef { Id = "rally_master", Title = "Rally Master", Rarity = "epic", Element = "power", Origin = "new", Description = "After 5 good touches in a row, you dominate the rest of the rally: spike, speed and block all up.", Flavour = "Not even close.", ArtFrom = "TrickShot", OpponentOk = true, Triggers = new[] { "streak" }, Cond = new CondDef(1.0f, 0.0f, 5.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("streak", "now", "buff", 1.15f, -2.0f, 0.0f, 0.0f, "spike", ""),
+                new FxDef("streak", "now", "buff", 1.15f, -2.0f, 0.0f, 0.0f, "move", ""),
+                new FxDef("streak", "now", "buff", 1.15f, -2.0f, 0.0f, 0.0f, "block", ""),
+                new FxDef("streak", "now", "aura", -2.0f, 0.0f, 0.0f, 0.0f, "FFD24A", ""),
+                new FxDef("streak", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "RALLY MASTER!", "") } },
+            new PerkDef { Id = "volcano_slam", Title = "Volcano Slam", Rarity = "epic", Element = "fire", Origin = "new", Description = "A high spike can erupt: much faster, and the court burns where they dig it.", Flavour = "It's erupting!", ArtFrom = "FallingSpike", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(0.75f, 4.0f, 0.0f, 0.0f, 8.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "now", "power", 0.2f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "now", "speed", 1.3f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "now", "shake", 0.5f, 0.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "VOLCANO!", ""),
+                new FxDef("spike", "now", "burst", 1.6f, 0.0f, 0.0f, 0.0f, "FF4A1A", "ball"),
+                new FxDef("spike", "enemy_touch", "zone", 8.0f, 0.5f, 3.0f, 0.0f, "FF4A1A", "") } },
+            new PerkDef { Id = "blizzard", Title = "Blizzard", Rarity = "epic", Element = "ice", Origin = "new", Description = "After 5 good touches in a row, a blizzard slows the other team for a few seconds.", Flavour = "Whiteout.", ArtFrom = "TrickShot", OpponentOk = true, Triggers = new[] { "streak" }, Cond = new CondDef(1.0f, 0.0f, 5.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("streak", "now", "slow_enemies", 0.6f, 2.5f, 0.0f, 0.0f, "", ""),
+                new FxDef("streak", "now", "flash", 0.35f, 0.3f, 0.0f, 0.0f, "FFFFFF", ""),
+                new FxDef("streak", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "BLIZZARD!", ""),
+                new FxDef("streak", "now", "burst", 1.6f, 0.0f, 0.0f, 0.0f, "DFFAFF", "enemy") } },
+            new PerkDef { Id = "typhoon_serve", Title = "Typhoon Serve", Rarity = "epic", Element = "wind", Origin = "new", Description = "Sometimes your serve becomes a typhoon, bending and rolling after the net.", Flavour = "Batten down.", ArtFrom = "SkyServe", OpponentOk = true, Triggers = new[] { "serve" }, Cond = new CondDef(0.75f, 4.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("serve", "cross", "curve", 100.0f, 0.4f, 0.0f, 0.0f, "", ""),
+                new FxDef("serve", "cross", "wobble", 8.0f, 0.3f, 0.4f, 0.0f, "wave", ""),
+                new FxDef("serve", "cross", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "TYPHOON!", ""),
+                new FxDef("serve", "cross", "ring", 2.0f, 0.0f, 0.0f, 0.0f, "A8FFC8", "ball") } },
+            new PerkDef { Id = "abyss_spike", Title = "Abyss Spike", Rarity = "epic", Element = "water", Origin = "new", Description = "Sometimes your spike sinks into the deep: it fades, then dives.", Flavour = "From the depths.", ArtFrom = "Pipe", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(0.35f, 4.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "cross", "invisible", 0.2f, 0.3f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "cross", "plunge", 30.0f, 0.6f, 0.1f, 0.0f, "", ""),
+                new FxDef("spike", "cross", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "ABYSS!", ""),
+                new FxDef("spike", "cross", "burst", 1.4f, 0.0f, 0.0f, 0.0f, "1A3AA8", "ball") } },
+            new PerkDef { Id = "starfall", Title = "Starfall", Rarity = "epic", Element = "light", Origin = "new", Description = "Sometimes your spike falls like a star: a blinding flash, then a steep dive.", Flavour = "Make a wish.", ArtFrom = "StrongQuick", OpponentOk = true, Triggers = new[] { "spike" }, Cond = new CondDef(0.45f, 4.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("spike", "now", "flash", 0.4f, 0.2f, 0.0f, 0.0f, "FFF8D0", ""),
+                new FxDef("spike", "now", "slow_enemies", 0.65f, 0.8f, 0.0f, 0.0f, "", ""),
+                new FxDef("spike", "cross", "plunge", 28.0f, 0.8f, 0.05f, 0.0f, "", ""),
+                new FxDef("spike", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "STARFALL!", ""),
+                new FxDef("spike", "now", "bolt", 0.0f, 0.0f, 0.0f, 0.0f, "FFF3B0", "ball") } },
         };
     }
 
@@ -497,35 +570,39 @@ namespace HangtimeOvertime.Generated
         public const float OddsCommon = 0.7f, OddsRare = 0.45f, OddsEpic = 0.2f;
         public static readonly StatCardDef[] All =
         {
-            new StatCardDef { Id = "power_drills", Title = "Power Drills", Rarity = "common", Style = "boost", Blurb = "Hours at the spike line. Hit harder.", Stats = new[] { "Spike" }, Points = new[] { 0.85f } },
+            new StatCardDef { Id = "power_drills", Title = "Power Drills", Rarity = "common", Style = "boost", Blurb = "Hours at the spike line. Hit harder.", Stats = new[] { "Spike" }, Points = new[] { 0.75f } },
             new StatCardDef { Id = "plyometrics", Title = "Plyometrics", Rarity = "common", Style = "boost", Blurb = "Box jumps until your legs give up. Jump higher.", Stats = new[] { "Jump" }, Points = new[] { 1.25f } },
             new StatCardDef { Id = "wall_practice", Title = "Wall Practice", Rarity = "common", Style = "boost", Blurb = "Bigger, better blocks.", Stats = new[] { "Block" }, Points = new[] { 2.5f } },
             new StatCardDef { Id = "platform_drills", Title = "Platform Drills", Rarity = "common", Style = "boost", Blurb = "Cleaner receives off hard hits.", Stats = new[] { "Bump" }, Points = new[] { 0.9f } },
             new StatCardDef { Id = "toss_practice", Title = "Toss Practice", Rarity = "common", Style = "boost", Blurb = "Stronger spin and float serves.", Stats = new[] { "Serve" }, Points = new[] { 1.5f } },
-            new StatCardDef { Id = "sprint_training", Title = "Sprint Training", Rarity = "common", Style = "boost", Blurb = "Faster across the court.", Stats = new[] { "Speed" }, Points = new[] { 0.9f } },
+            new StatCardDef { Id = "sprint_training", Title = "Sprint Training", Rarity = "common", Style = "boost", Blurb = "Faster across the court.", Stats = new[] { "Speed" }, Points = new[] { 0.85f } },
             new StatCardDef { Id = "setter_sync", Title = "Setter Sync", Rarity = "common", Style = "boost", Blurb = "Your setter gets to the ball faster.", Stats = new[] { "Set" }, Points = new[] { 2.0f } },
             new StatCardDef { Id = "marathon", Title = "Marathon", Rarity = "common", Style = "boost", Blurb = "Quicker first step after every landing.", Stats = new[] { "Recovery" }, Points = new[] { 1.5f } },
             new StatCardDef { Id = "all_rounder", Title = "All-Rounder", Rarity = "rare", Style = "boost", Blurb = "A bit better at everything.", Stats = new[] { "Spike", "Jump", "Block", "Bump", "Serve" }, Points = new[] { 0.3f, 0.3f, 0.3f, 0.3f, 0.3f } },
             new StatCardDef { Id = "quick_hands", Title = "Quick Hands", Rarity = "rare", Style = "boost", Blurb = "Fast feet, faster recovery.", Stats = new[] { "Speed", "Recovery" }, Points = new[] { 0.75f, 1.0f } },
             new StatCardDef { Id = "iron_wall", Title = "Iron Wall", Rarity = "rare", Style = "playstyle", Blurb = "Defense first. Your attacks soften.", Stats = new[] { "Block", "Bump", "Spike" }, Points = new[] { 2.5f, 1.5f, -0.5f } },
-            new StatCardDef { Id = "featherstep", Title = "Featherstep", Rarity = "rare", Style = "playstyle", Blurb = "Light on your feet, light at the net.", Stats = new[] { "Speed", "Jump", "Block" }, Points = new[] { 0.9f, 1.0f, -1.0f } },
+            new StatCardDef { Id = "featherstep", Title = "Featherstep", Rarity = "rare", Style = "playstyle", Blurb = "Light on your feet, light at the net.", Stats = new[] { "Speed", "Jump", "Block" }, Points = new[] { 0.9f, 0.8f, -1.0f } },
             new StatCardDef { Id = "setters_eye", Title = "Setter's Eye", Rarity = "rare", Style = "playstyle", Blurb = "Build every play. Serves suffer.", Stats = new[] { "Set", "Bump", "Serve" }, Points = new[] { 2.0f, 1.5f, -1.0f } },
             new StatCardDef { Id = "cannon_arm", Title = "Cannon Arm", Rarity = "rare", Style = "playstyle", Blurb = "Thunderous serves, heavy feet.", Stats = new[] { "Serve", "Speed" }, Points = new[] { 3.0f, -0.5f } },
             new StatCardDef { Id = "sky_walker", Title = "Sky Walker", Rarity = "rare", Style = "playstyle", Blurb = "Live in the air. Receiving isn't your thing.", Stats = new[] { "Jump", "Bump" }, Points = new[] { 3.0f, -1.0f } },
             new StatCardDef { Id = "anchor", Title = "Anchor", Rarity = "rare", Style = "playstyle", Blurb = "Rooted and steady. Lower jumps.", Stats = new[] { "Bump", "Recovery", "Jump" }, Points = new[] { 1.25f, 1.5f, -1.0f } },
             new StatCardDef { Id = "ace_hunter", Title = "Ace Hunter", Rarity = "rare", Style = "playstyle", Blurb = "Points from the line and the net. Your setter lags.", Stats = new[] { "Serve", "Spike", "Set" }, Points = new[] { 1.5f, 1.0f, -1.0f } },
             new StatCardDef { Id = "liberos_instinct", Title = "Libero's Instinct", Rarity = "rare", Style = "playstyle", Blurb = "Dig everything. Hit softer.", Stats = new[] { "Bump", "Spike" }, Points = new[] { 2.25f, -0.5f } },
-            new StatCardDef { Id = "heavy_hitter", Title = "Heavy Hitter", Rarity = "rare", Style = "playstyle", Blurb = "Massive spikes, slower feet.", Stats = new[] { "Spike", "Speed" }, Points = new[] { 2.5f, -0.5f } },
+            new StatCardDef { Id = "heavy_hitter", Title = "Heavy Hitter", Rarity = "rare", Style = "playstyle", Blurb = "Massive spikes, slower feet.", Stats = new[] { "Spike", "Speed" }, Points = new[] { 2.0f, -0.5f } },
             new StatCardDef { Id = "tower", Title = "Tower", Rarity = "rare", Style = "playstyle", Blurb = "A wall at the net. Slow to move.", Stats = new[] { "Block", "Jump", "Speed" }, Points = new[] { 3.0f, 1.5f, -0.5f } },
             new StatCardDef { Id = "glass_cannon", Title = "Glass Cannon", Rarity = "epic", Style = "tradeoff", Blurb = "Huge serves and spikes. Fragile defense.", Stats = new[] { "Serve", "Spike", "Block", "Bump" }, Points = new[] { 2.5f, 2.5f, -1.5f, -1.5f } },
             new StatCardDef { Id = "all_in", Title = "All In", Rarity = "epic", Style = "tradeoff", Blurb = "Go big every swing. Slow to recover after landing.", Stats = new[] { "Jump", "Spike", "Recovery" }, Points = new[] { 1.75f, 1.75f, -2.0f } },
-            new StatCardDef { Id = "quick_feet", Title = "Quick Feet", Rarity = "common", Style = "boost", Blurb = "Light, quick steps everywhere.", Stats = new[] { "Speed", "Recovery" }, Points = new[] { 0.6f, 0.6f } },
+            new StatCardDef { Id = "quick_feet", Title = "Quick Feet", Rarity = "common", Style = "boost", Blurb = "Light, quick steps everywhere.", Stats = new[] { "Speed", "Recovery" }, Points = new[] { 0.55f, 0.55f } },
             new StatCardDef { Id = "servers_wrist", Title = "Server's Wrist", Rarity = "common", Style = "boost", Blurb = "Snappier serves.", Stats = new[] { "Serve" }, Points = new[] { 2.0f } },
             new StatCardDef { Id = "rookie_grit", Title = "Rookie Grit", Rarity = "common", Style = "boost", Blurb = "A bit better at the basics.", Stats = new[] { "Bump", "Spike" }, Points = new[] { 0.35f, 0.35f } },
             new StatCardDef { Id = "spike_specialist", Title = "Spike Specialist", Rarity = "rare", Style = "playstyle", Blurb = "All offense. Receiving slips.", Stats = new[] { "Spike", "Bump" }, Points = new[] { 2.0f, -0.5f } },
             new StatCardDef { Id = "block_party", Title = "Block Party", Rarity = "rare", Style = "playstyle", Blurb = "Own the net, give up some defense.", Stats = new[] { "Block", "Jump", "Bump" }, Points = new[] { 2.0f, 1.0f, -0.5f } },
             new StatCardDef { Id = "setter_duo", Title = "Setter Duo", Rarity = "rare", Style = "playstyle", Blurb = "You and your setter in sync; your swing softens.", Stats = new[] { "Set", "Speed", "Spike" }, Points = new[] { 3.0f, 0.75f, -0.25f } },
             new StatCardDef { Id = "second_gear", Title = "Second Gear", Rarity = "epic", Style = "tradeoff", Blurb = "Everything faster and higher. Defense pays for it.", Stats = new[] { "Speed", "Jump", "Spike", "Block", "Bump" }, Points = new[] { 1.25f, 1.0f, 0.75f, -1.5f, -1.0f } },
+            new StatCardDef { Id = "net_rusher", Title = "Net Rusher", Rarity = "rare", Style = "playstyle", Blurb = "Live at the net. Back-court defense slips.", Stats = new[] { "Jump", "Block", "Bump" }, Points = new[] { 1.5f, 1.0f, -0.5f } },
+            new StatCardDef { Id = "float_master", Title = "Float Master", Rarity = "common", Style = "boost", Blurb = "Floaters that dance, and quick feet after.", Stats = new[] { "Serve", "Recovery" }, Points = new[] { 1.5f, 0.5f } },
+            new StatCardDef { Id = "deep_defender", Title = "Deep Defender", Rarity = "rare", Style = "playstyle", Blurb = "Cover the whole back court; leave the net to others.", Stats = new[] { "Bump", "Speed", "Jump" }, Points = new[] { 1.0f, 0.6f, -0.75f } },
+            new StatCardDef { Id = "berserker", Title = "Berserker", Rarity = "epic", Style = "tradeoff", Blurb = "All-out attack. Defense is somebody else's problem.", Stats = new[] { "Spike", "Speed", "Bump", "Block" }, Points = new[] { 2.25f, 0.75f, -1.5f, -1.0f } },
         };
     }
 
@@ -565,16 +642,16 @@ namespace HangtimeOvertime.Generated
         {
             switch (team)
             {
-                case "Rensho": return -0.8f;
-                case "Hinami Kai": return -0.5f;
-                case "Daigan Tech": return -3.0f;
-                case "Namasito Academy": return 2.0f;
-                case "Kozuki Dan": return -3.4f;
+                case "Rensho": return -0.7f;
+                case "Hinami Kai": return -0.8f;
+                case "Daigan Tech": return -3.2f;
+                case "Namasito Academy": return 2.1f;
+                case "Kozuki Dan": return -2.7f;
                 case "Aomori": return 4.2f;
-                case "Ten-Roku": return 1.0f;
-                case "Tenzio": return 1.5f;
-                case "Sunaumi High": return 0.8f;
-                case "Shirogane": return -4.4f;
+                case "Ten-Roku": return 0.4f;
+                case "Tenzio": return 1.4f;
+                case "Sunaumi High": return 0.3f;
+                case "Shirogane": return -4.1f;
                 case "Club Sumi": return 0.0f;
                 default: return 0f;
             }
@@ -589,20 +666,24 @@ namespace HangtimeOvertime.Generated
         }
         public static readonly TeamDef[] All =
         {
-            new TeamDef { Id = "kagaribi", Name = "Kagaribi Flame", Base = "Rensho", Slot = "regular", Element = "fire", Jersey = "E8452A", Shorts = "7A1E10", Banner = "C8321E", Intro = "Hope you can take the heat!", Win = "Burned to a crisp!", Lose = "We... fizzled out.", Comment = "Their spikes were on fire. Literally.", Pitch = 0.9f, PointsOffset = -0.7f, Hair = new[] { "FFB000", "FF5A1A" }, GotPoint = new[] { "Too hot for you?", "Feel that burn!" }, LostPoint = new[] { "Just a spark.", "We'll flare up." }, Signature = new[] { "blaze_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 5.0f, 3.0f, 0.0f, 1.0f, 3.0f, 3.0f, 0.0f } },
+            new TeamDef { Id = "kagaribi", Name = "Kagaribi Flame", Base = "Rensho", Slot = "regular", Element = "fire", Jersey = "E8452A", Shorts = "7A1E10", Banner = "C8321E", Intro = "Hope you can take the heat!", Win = "Burned to a crisp!", Lose = "We... fizzled out.", Comment = "Their spikes were on fire. Literally.", Pitch = 0.9f, PointsOffset = -0.8f, Hair = new[] { "FFB000", "FF5A1A" }, GotPoint = new[] { "Too hot for you?", "Feel that burn!" }, LostPoint = new[] { "Just a spark.", "We'll flare up." }, Signature = new[] { "blaze_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 5.0f, 3.0f, 0.0f, 1.0f, 3.0f, 3.0f, 0.0f } },
             new TeamDef { Id = "hyoga", Name = "Hyoga Frost", Base = "Hinami Kai", Slot = "regular", Element = "ice", Jersey = "BFEFFF", Shorts = "4A7FA8", Banner = "6FB8E8", Intro = "Stay cool. This won't take long.", Win = "Frozen out.", Lose = "We melted...", Comment = "My fingers are still numb.", Pitch = 1.2f, PointsOffset = -2.3f, Hair = new[] { "E8F8FF", "7FB8FF" }, GotPoint = new[] { "Chilly, right?", "Ice cold." }, LostPoint = new[] { "Cold snap.", "Brr." }, Signature = new[] { "frost_serve" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 1.0f, 2.0f, 3.0f, 5.0f, 0.0f, 2.0f, 4.0f } },
-            new TeamDef { Id = "raijin", Name = "Raijin Tech", Base = "Daigan Tech", Slot = "regular", Element = "lightning", Jersey = "FFD21A", Shorts = "2A2A2A", Banner = "E8B800", Intro = "Hope you're fast. We are.", Win = "Struck you down!", Lose = "Short circuit...", Comment = "I swear that ball zig-zagged.", Pitch = 1.1f, PointsOffset = -3.3f, Hair = new[] { "FFF27A", "2A2A2A" }, GotPoint = new[] { "Zap!", "Too slow!" }, LostPoint = new[] { "Static.", "Grr, recharge." }, Signature = new[] { "zigzag_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 5.0f, 1.0f, 0.0f, 2.0f, 3.0f, 0.0f } },
-            new TeamDef { Id = "fujin", Name = "Fujin Wings", Base = "Namasito Academy", Slot = "regular", Element = "wind", Jersey = "8EF0B8", Shorts = "2E7A55", Banner = "4FC88A", Intro = "Let the wind decide.", Win = "Blown away!", Lose = "The wind turned...", Comment = "Their serves wouldn't stop moving.", Pitch = 1.3f, PointsOffset = 4.4f, Hair = new[] { "FFFFFF", "6FD8A0" }, GotPoint = new[] { "Whoosh!", "Breezy." }, LostPoint = new[] { "Headwind.", "Just a gust." }, Signature = new[] { "gale_serve" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 1.0f, 3.0f, 1.0f, 3.0f, 0.0f, 2.0f, 5.0f } },
+            new TeamDef { Id = "raijin", Name = "Raijin Tech", Base = "Daigan Tech", Slot = "regular", Element = "lightning", Jersey = "FFD21A", Shorts = "2A2A2A", Banner = "E8B800", Intro = "Hope you're fast. We are.", Win = "Struck you down!", Lose = "Short circuit...", Comment = "I swear that ball zig-zagged.", Pitch = 1.1f, PointsOffset = -4.0f, Hair = new[] { "FFF27A", "2A2A2A" }, GotPoint = new[] { "Zap!", "Too slow!" }, LostPoint = new[] { "Static.", "Grr, recharge." }, Signature = new[] { "zigzag_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 5.0f, 1.0f, 0.0f, 2.0f, 3.0f, 0.0f } },
+            new TeamDef { Id = "fujin", Name = "Fujin Wings", Base = "Namasito Academy", Slot = "regular", Element = "wind", Jersey = "8EF0B8", Shorts = "2E7A55", Banner = "4FC88A", Intro = "Let the wind decide.", Win = "Blown away!", Lose = "The wind turned...", Comment = "Their serves wouldn't stop moving.", Pitch = 1.3f, PointsOffset = 4.6f, Hair = new[] { "FFFFFF", "6FD8A0" }, GotPoint = new[] { "Whoosh!", "Breezy." }, LostPoint = new[] { "Headwind.", "Just a gust." }, Signature = new[] { "gale_serve" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 1.0f, 3.0f, 1.0f, 3.0f, 0.0f, 2.0f, 5.0f } },
             new TeamDef { Id = "kaien", Name = "Kaien Marine", Base = "Kozuki Dan", Slot = "regular", Element = "water", Jersey = "2A6FE8", Shorts = "0E2A6A", Banner = "1E5AC8", Intro = "Ready to get swept away?", Win = "Washed out!", Lose = "Ebb tide...", Comment = "I kept chasing the wrong ball.", Pitch = 1.0f, PointsOffset = -0.6f, Hair = new[] { "0E2A6A", "5AD0FF" }, GotPoint = new[] { "Splash!", "Make waves." }, LostPoint = new[] { "Choppy.", "We'll flow back." }, Signature = new[] { "tidal_arc" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 2.0f, 2.0f, 3.0f, 2.0f, 2.0f, 2.0f } },
-            new TeamDef { Id = "iwao", Name = "Iwao Stoneworks", Base = "Ten-Roku", Slot = "combo", Element = "earth", Jersey = "8A5A2E", Shorts = "3A2412", Banner = "6A4422", Intro = "Three of us. One mountain.", Win = "Crushed.", Lose = "Erosion...", Comment = "Like spiking into a cliff face.", Pitch = 0.7f, PointsOffset = -0.4f, Hair = new[] { "3A2412", "C08A4A" }, GotPoint = new[] { "Solid.", "Rock and roll!" }, LostPoint = new[] { "A crack.", "We hold." }, Signature = new[] { "bedrock_block", "quake_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 2.0f, 5.0f, 2.0f, 1.0f, 2.0f, 0.0f } },
-            new TeamDef { Id = "yomi", Name = "Yomi Nocturne", Base = "Tenzio", Slot = "boss", Element = "shadow", Jersey = "3A2A5A", Shorts = "120A22", Banner = "2A1A4A", Intro = "Can you hit what you can't see?", Win = "Swallowed by the dark.", Lose = "...the dawn.", Comment = "Half their spikes just vanished.", Pitch = 0.6f, PointsOffset = 0.8f, Hair = new[] { "1A1028", "8A5CFF" }, GotPoint = new[] { "Lights out.", "Where'd it go?" }, LostPoint = new[] { "A flicker.", "Shadows return." }, Signature = new[] { "shadow_ball", "eclipse" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 3.0f, 2.0f, 2.0f, 2.0f, 3.0f, 1.0f } },
-            new TeamDef { Id = "amaterasu", Name = "Amaterasu Royals", Base = "Shirogane", Slot = "boss", Element = "light", Jersey = "FFF6D8", Shorts = "C8A030", Banner = "E8C040", Intro = "Kneel before the sun.", Win = "Radiant victory.", Lose = "Eclipsed...", Comment = "I can still see spots.", Pitch = 0.8f, PointsOffset = -3.3f, Hair = new[] { "FFE680", "FFFFFF" }, GotPoint = new[] { "Blinding!", "Bask in it." }, LostPoint = new[] { "A cloud.", "We still shine." }, Signature = new[] { "solar_flare", "holy_lance" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 3.0f, 3.0f, 3.0f, 2.0f, 2.0f, 1.0f } },
-            new TeamDef { Id = "sakuradai", Name = "Sakuradai Petals", Base = "Hinami Kai", Slot = "regular", Element = "wind", Jersey = "FFB7D5", Shorts = "C84A7A", Banner = "E87AA8", Intro = "Petals fall where we play.", Win = "Blossomed!", Lose = "Wilted...", Comment = "Their serves floated like petals.", Pitch = 1.25f, PointsOffset = -0.8f, Hair = new[] { "5A2A1A", "FF8AB8" }, GotPoint = new[] { "Pretty, right?", "In full bloom!" }, LostPoint = new[] { "A cold wind.", "We'll bloom again." }, Signature = new[] { "jump_float", "swerve_tip" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 1.0f, 3.0f, 1.0f, 3.0f, 0.0f, 3.0f, 4.0f } },
-            new TeamDef { Id = "kaminari", Name = "Kaminari Express", Base = "Daigan Tech", Slot = "regular", Element = "lightning", Jersey = "2A3A8A", Shorts = "FFD21A", Banner = "2A4AC8", Intro = "Next stop: your defeat.", Win = "Right on schedule.", Lose = "Derailed...", Comment = "Fastest sets I've ever seen.", Pitch = 1.15f, PointsOffset = -2.4f, Hair = new[] { "111111", "FFE14A" }, GotPoint = new[] { "Full speed!", "Express delivery!" }, LostPoint = new[] { "Delay.", "Back on track." }, Signature = new[] { "quick_set", "storm_serve" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 4.0f, 1.0f, 1.0f, 2.0f, 2.0f, 0.0f } },
-            new TeamDef { Id = "hinode", Name = "Hinode Sparks", Base = "Rensho", Slot = "regular", Element = "fire", Jersey = "FF8A1A", Shorts = "8A2A0A", Banner = "E8601A", Intro = "Rise and shine!", Win = "Cock-a-doodle-done!", Lose = "Sunset already?", Comment = "Loud, bright, and fiery. Exhausting.", Pitch = 1.0f, PointsOffset = -0.9f, Hair = new[] { "2A1A0A", "FFC04A" }, GotPoint = new[] { "Bright and early!", "Spark!" }, LostPoint = new[] { "Cloudy.", "We'll rise." }, Signature = new[] { "ember_tip", "flame_serve" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 3.0f, 1.0f, 1.0f, 2.0f, 2.0f, 0.0f } },
-            new TeamDef { Id = "yukimura", Name = "Yukimura Snowcats", Base = "Aomori", Slot = "combo", Element = "ice", Jersey = "E8F4FF", Shorts = "6A8AB8", Banner = "8AB0D8", Intro = "Three cats, zero mercy.", Win = "Purr-fect.", Lose = "Cold paws...", Comment = "Like digging against a snowdrift.", Pitch = 1.2f, PointsOffset = 3.2f, Hair = new[] { "FFFFFF", "AFC8E8" }, GotPoint = new[] { "Nya!", "Pounce!" }, LostPoint = new[] { "Hiss.", "Nine lives." }, Signature = new[] { "permafrost", "ice_wall" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f } },
+            new TeamDef { Id = "iwao", Name = "Iwao Stoneworks", Base = "Ten-Roku", Slot = "combo", Element = "earth", Jersey = "8A5A2E", Shorts = "3A2412", Banner = "6A4422", Intro = "Three of us. One mountain.", Win = "Crushed.", Lose = "Erosion...", Comment = "Like spiking into a cliff face.", Pitch = 0.7f, PointsOffset = -0.8f, Hair = new[] { "3A2412", "C08A4A" }, GotPoint = new[] { "Solid.", "Rock and roll!" }, LostPoint = new[] { "A crack.", "We hold." }, Signature = new[] { "bedrock_block", "quake_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 2.0f, 5.0f, 2.0f, 1.0f, 2.0f, 0.0f } },
+            new TeamDef { Id = "yomi", Name = "Yomi Nocturne", Base = "Tenzio", Slot = "boss", Element = "shadow", Jersey = "3A2A5A", Shorts = "120A22", Banner = "2A1A4A", Intro = "Can you hit what you can't see?", Win = "Swallowed by the dark.", Lose = "...the dawn.", Comment = "Half their spikes just vanished.", Pitch = 0.6f, PointsOffset = 0.6f, Hair = new[] { "1A1028", "8A5CFF" }, GotPoint = new[] { "Lights out.", "Where'd it go?" }, LostPoint = new[] { "A flicker.", "Shadows return." }, Signature = new[] { "shadow_ball", "eclipse" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 3.0f, 2.0f, 2.0f, 2.0f, 3.0f, 1.0f } },
+            new TeamDef { Id = "amaterasu", Name = "Amaterasu Royals", Base = "Shirogane", Slot = "boss", Element = "light", Jersey = "FFF6D8", Shorts = "C8A030", Banner = "E8C040", Intro = "Kneel before the sun.", Win = "Radiant victory.", Lose = "Eclipsed...", Comment = "I can still see spots.", Pitch = 0.8f, PointsOffset = -2.7f, Hair = new[] { "FFE680", "FFFFFF" }, GotPoint = new[] { "Blinding!", "Bask in it." }, LostPoint = new[] { "A cloud.", "We still shine." }, Signature = new[] { "solar_flare", "holy_lance" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 3.0f, 3.0f, 3.0f, 2.0f, 2.0f, 1.0f } },
+            new TeamDef { Id = "sakuradai", Name = "Sakuradai Petals", Base = "Hinami Kai", Slot = "regular", Element = "wind", Jersey = "FFB7D5", Shorts = "C84A7A", Banner = "E87AA8", Intro = "Petals fall where we play.", Win = "Blossomed!", Lose = "Wilted...", Comment = "Their serves floated like petals.", Pitch = 1.25f, PointsOffset = -1.0f, Hair = new[] { "5A2A1A", "FF8AB8" }, GotPoint = new[] { "Pretty, right?", "In full bloom!" }, LostPoint = new[] { "A cold wind.", "We'll bloom again." }, Signature = new[] { "jump_float", "swerve_tip" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 1.0f, 3.0f, 1.0f, 3.0f, 0.0f, 3.0f, 4.0f } },
+            new TeamDef { Id = "kaminari", Name = "Kaminari Express", Base = "Daigan Tech", Slot = "regular", Element = "lightning", Jersey = "2A3A8A", Shorts = "FFD21A", Banner = "2A4AC8", Intro = "Next stop: your defeat.", Win = "Right on schedule.", Lose = "Derailed...", Comment = "Fastest sets I've ever seen.", Pitch = 1.15f, PointsOffset = -3.2f, Hair = new[] { "111111", "FFE14A" }, GotPoint = new[] { "Full speed!", "Express delivery!" }, LostPoint = new[] { "Delay.", "Back on track." }, Signature = new[] { "quick_set", "storm_serve" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 4.0f, 1.0f, 1.0f, 2.0f, 2.0f, 0.0f } },
+            new TeamDef { Id = "hinode", Name = "Hinode Sparks", Base = "Rensho", Slot = "regular", Element = "fire", Jersey = "FF8A1A", Shorts = "8A2A0A", Banner = "E8601A", Intro = "Rise and shine!", Win = "Cock-a-doodle-done!", Lose = "Sunset already?", Comment = "Loud, bright, and fiery. Exhausting.", Pitch = 1.0f, PointsOffset = -1.0f, Hair = new[] { "2A1A0A", "FFC04A" }, GotPoint = new[] { "Bright and early!", "Spark!" }, LostPoint = new[] { "Cloudy.", "We'll rise." }, Signature = new[] { "ember_tip", "flame_serve" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 4.0f, 3.0f, 1.0f, 1.0f, 2.0f, 2.0f, 0.0f } },
+            new TeamDef { Id = "yukimura", Name = "Yukimura Snowcats", Base = "Aomori", Slot = "combo", Element = "ice", Jersey = "E8F4FF", Shorts = "6A8AB8", Banner = "8AB0D8", Intro = "Three cats, zero mercy.", Win = "Purr-fect.", Lose = "Cold paws...", Comment = "Like digging against a snowdrift.", Pitch = 1.2f, PointsOffset = 4.7f, Hair = new[] { "FFFFFF", "AFC8E8" }, GotPoint = new[] { "Nya!", "Pounce!" }, LostPoint = new[] { "Hiss.", "Nine lives." }, Signature = new[] { "permafrost", "ice_wall" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 1.0f, 2.0f, 3.0f, 4.0f, 1.0f, 2.0f, 3.0f } },
             new TeamDef { Id = "ryujin", Name = "Ryujin Tide", Base = "Sunaumi High", Slot = "boss", Element = "water", Jersey = "0E5A8A", Shorts = "0A2A4A", Banner = "1A6AA8", Intro = "The sea dragon wakes.", Win = "Swallowed by the deep.", Lose = "The tide... turns.", Comment = "Every spike felt like a wave crashing.", Pitch = 0.65f, PointsOffset = 0.4f, Hair = new[] { "0A2A4A", "4AE0D8" }, GotPoint = new[] { "Drown!", "Waves rise." }, LostPoint = new[] { "A ripple.", "The sea returns." }, Signature = new[] { "tidal_wall", "tsunami_spike", "undertow" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 2.0f, 2.0f, 4.0f, 2.0f, 2.0f, 2.0f } },
-            new TeamDef { Id = "mugen", Name = "Mugen Phantoms", Base = "Tenzio", Slot = "boss", Element = "shadow", Jersey = "4A3A6A", Shorts = "1A1028", Banner = "3A2A5A", Intro = "Are we even here?", Win = "Faded away.", Lose = "...we'll haunt you.", Comment = "I swear there were two balls.", Pitch = 0.55f, PointsOffset = 0.4f, Hair = new[] { "E8E8FF", "8A5CFF" }, GotPoint = new[] { "Boo.", "Over here..." }, LostPoint = new[] { "You saw that?", "We fade back." }, Signature = new[] { "shadow_step", "mirror_image", "eclipse" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 3.0f, 2.0f, 2.0f, 2.0f, 3.0f, 2.0f } },
+            new TeamDef { Id = "mugen", Name = "Mugen Phantoms", Base = "Tenzio", Slot = "boss", Element = "shadow", Jersey = "4A3A6A", Shorts = "1A1028", Banner = "3A2A5A", Intro = "Are we even here?", Win = "Faded away.", Lose = "...we'll haunt you.", Comment = "I swear there were two balls.", Pitch = 0.55f, PointsOffset = 0.3f, Hair = new[] { "E8E8FF", "8A5CFF" }, GotPoint = new[] { "Boo.", "Over here..." }, LostPoint = new[] { "You saw that?", "We fade back." }, Signature = new[] { "shadow_step", "mirror_image", "eclipse" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 3.0f, 3.0f, 2.0f, 2.0f, 2.0f, 3.0f, 2.0f } },
+            new TeamDef { Id = "hoshikuzu", Name = "Hoshikuzu Stargazers", Base = "Namasito Academy", Slot = "regular", Element = "light", Jersey = "1A2A5A", Shorts = "E8D890", Banner = "2A3A7A", Intro = "The stars are on our side.", Win = "Written in the stars.", Lose = "Clouds tonight...", Comment = "They kept blinding us with flashes.", Pitch = 1.1f, PointsOffset = 3.4f, Hair = new[] { "E8D890", "1A1A2A" }, GotPoint = new[] { "Shooting star!", "Twinkle." }, LostPoint = new[] { "A dim one.", "Stars return." }, Signature = new[] { "radiant_set", "starfall" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 2.0f, 3.0f, 2.0f, 3.0f, 1.0f, 2.0f, 2.0f } },
+            new TeamDef { Id = "oni", Name = "Oni Gakuen", Base = "Shirogane", Slot = "boss", Element = "fire", Jersey = "8A0A0A", Shorts = "1A0A0A", Banner = "6A0A0A", Intro = "Hope you brought an offering.", Win = "Devoured!", Lose = "...the oni retreats.", Comment = "Their spikes felt like getting hit by a demon.", Pitch = 0.45f, PointsOffset = -1.8f, Hair = new[] { "1A0A0A", "FF3A1A" }, GotPoint = new[] { "Grrraah!", "Burn!" }, LostPoint = new[] { "Hmph.", "Again!" }, Signature = new[] { "overheat", "volcano_slam", "blaze_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 5.0f, 3.0f, 2.0f, 2.0f, 2.0f, 2.0f, 0.0f } },
+            new TeamDef { Id = "kumo", Name = "Kumo Weavers", Base = "Kozuki Dan", Slot = "regular", Element = "shadow", Jersey = "2A2A2A", Shorts = "8A1A4A", Banner = "3A2A3A", Intro = "Welcome to our web.", Win = "Caught you.", Lose = "The web tore...", Comment = "Every tip felt like a trap.", Pitch = 1.0f, PointsOffset = 0.3f, Hair = new[] { "1A1A1A", "D04A8A" }, GotPoint = new[] { "Stuck!", "Tangled." }, LostPoint = new[] { "Snip.", "We'll spin again." }, Signature = new[] { "mud_trap", "shadow_step" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 2.0f, 3.0f, 3.0f, 2.0f, 1.0f, 2.0f, 2.0f } },
+            new TeamDef { Id = "tsunagi", Name = "Tsunagi Turtles", Base = "Ten-Roku", Slot = "combo", Element = "earth", Jersey = "4A7A3A", Shorts = "2A4A1A", Banner = "3A6A2A", Intro = "Slow and steady wins.", Win = "Slow and steady!", Lose = "Into the shell...", Comment = "Nothing got past their blocks.", Pitch = 0.85f, PointsOffset = -1.4f, Hair = new[] { "2A4A1A", "8AC04A" }, GotPoint = new[] { "Shell shock!", "Steady." }, LostPoint = new[] { "Ow.", "We hold." }, Signature = new[] { "stone_skin", "iron_curtain" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 2.0f, 2.0f, 4.0f, 4.0f, 1.0f, 2.0f, 1.0f } },
         };
     }
 

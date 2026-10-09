@@ -262,7 +262,7 @@
     }
   ],
   "fx_model": {
-    "about": "How each effect kind changes the next play in the model. 'dig_pen' values are logits taken off the defender's next receive or dig. Visual-only kinds (trail, tint, burst, flash, shake, zoom, cutin, sound, aura, afterimages, bolt, ring) change nothing.",
+    "about": "How each effect kind changes the next play in the model. 'dig_pen' values are logits taken off the defender's next receive or dig. Visual-only kinds (trail, tint, burst, flash, shake, zoom, cutin, sound, aura, afterimages, bolt, ring) change nothing. stun_one: logit off a team's receives/digs while one of its players is stunned (that player also can't attack while stunned).",
     "plunge": 0.9,
     "curve": 0.5,
     "wobble": 0.6,
@@ -276,11 +276,11 @@
     "float_set": 0.15,
     "deflect": 0.5,
     "stun_all": 1.2,
-    "stun_attack_free_ball": 1.0,
     "zone_coverage": 0.5,
     "slowmo_quality": 0.35,
     "game_speed": 1.5,
-    "heavy_gravity": 0.3
+    "heavy_gravity": 0.3,
+    "stun_one": 0.6
   },
   "player_ai": {
     "about": "AI settings used for the player's side (the game has no AI for it; values typical of the game's teams).",

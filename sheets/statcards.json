@@ -23,7 +23,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Spike": 0.85
+        "Spike": 0.75
       },
       "blurb": "Hours at the spike line. Hit harder.",
       "verified": "no"
@@ -78,7 +78,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Speed": 0.9
+        "Speed": 0.85
       },
       "blurb": "Faster across the court.",
       "verified": "no"
@@ -152,7 +152,7 @@
       "style": "playstyle",
       "deltas": {
         "Speed": 0.9,
-        "Jump": 1,
+        "Jump": 0.8,
         "Block": -1
       },
       "blurb": "Light on your feet, light at the net.",
@@ -239,7 +239,7 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Spike": 2.5,
+        "Spike": 2,
         "Speed": -0.5
       },
       "blurb": "Massive spikes, slower feet.",
@@ -291,8 +291,8 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Speed": 0.6,
-        "Recovery": 0.6
+        "Speed": 0.55,
+        "Recovery": 0.55
       },
       "blurb": "Light, quick steps everywhere.",
       "verified": "no"
@@ -371,6 +371,58 @@
         "Bump": -1
       },
       "blurb": "Everything faster and higher. Defense pays for it.",
+      "verified": "no"
+    },
+    {
+      "id": "net_rusher",
+      "title": "Net Rusher",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Jump": 1.5,
+        "Block": 1,
+        "Bump": -0.5
+      },
+      "blurb": "Live at the net. Back-court defense slips.",
+      "verified": "no"
+    },
+    {
+      "id": "float_master",
+      "title": "Float Master",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Serve": 1.5,
+        "Recovery": 0.5
+      },
+      "blurb": "Floaters that dance, and quick feet after.",
+      "verified": "no"
+    },
+    {
+      "id": "deep_defender",
+      "title": "Deep Defender",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Bump": 1,
+        "Speed": 0.6,
+        "Jump": -0.75
+      },
+      "blurb": "Cover the whole back court; leave the net to others.",
+      "verified": "no"
+    },
+    {
+      "id": "berserker",
+      "title": "Berserker",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Spike": 2.25,
+        "Speed": 0.75,
+        "Bump": -1.5,
+        "Block": -1
+      },
+      "blurb": "All-out attack. Defense is somebody else's problem.",
       "verified": "no"
     }
   ]

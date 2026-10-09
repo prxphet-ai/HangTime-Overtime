@@ -456,8 +456,7 @@ class Match:
             elif fx["target"] == "blocker":
                 en.stunned_block_until = t + fx["dur"] + D.k["t_dig"]
             else:
-                if self.rng.random() < min(1.0, fx["dur"] * fm["stun_attack_free_ball"]):
-                    en.stunned_attack_until = t + D.k["t_receive"] + D.k["t_set"] + D.k["t_attack"]
+                en.stunned_attack_until = max(en.stunned_attack_until, t + fx["dur"])   # spiker/hitter: frozen player
         elif k == "slow_enemies":
             en.slows.append((fx["mult"], t + fx["dur"]))
         elif k == "zone":
@@ -537,6 +536,8 @@ class Match:
             x += K["player_skill"]
         if self.clock - self.D.k["approach_window"] < rt.stun_all_until:
             x -= self.D.fxm["stun_all"]
+        elif self.clock - self.D.k["approach_window"] < rt.stunned_attack_until:
+            x -= self.D.fxm["stun_one"]
         gs = max(self.rt[0].game_speed, self.rt[1].game_speed)
         x -= self.D.fxm["game_speed"] * (gs - 1.0)
         return x

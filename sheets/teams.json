@@ -94,7 +94,7 @@
         "blaze_spike"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.7,
+      "points_offset": -0.8,
       "emblem": {
         "mascot": "brazier",
         "layout": "split",
@@ -188,7 +188,7 @@
         "zigzag_spike"
       ],
       "verified": "no",
-      "points_offset": -3.3,
+      "points_offset": -4.0,
       "emblem": {
         "mascot": "thunder",
         "layout": "stacked",
@@ -235,7 +235,7 @@
         "gale_serve"
       ],
       "verified": "no",
-      "points_offset": 4.4,
+      "points_offset": 4.6,
       "emblem": {
         "mascot": "swallow",
         "layout": "split",
@@ -330,7 +330,7 @@
         "quake_spike"
       ],
       "verified": "no",
-      "points_offset": -0.4,
+      "points_offset": -0.8,
       "emblem": {
         "mascot": "mountain",
         "layout": "stacked",
@@ -378,7 +378,7 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.8,
+      "points_offset": 0.6,
       "emblem": {
         "mascot": "bat_moon",
         "layout": "split",
@@ -426,7 +426,7 @@
         "holy_lance"
       ],
       "verified": "no",
-      "points_offset": -3.3,
+      "points_offset": -2.7,
       "emblem": {
         "mascot": "sun_crown",
         "layout": "stacked",
@@ -474,7 +474,7 @@
         "swerve_tip"
       ],
       "verified": "no",
-      "points_offset": -0.8,
+      "points_offset": -1.0,
       "emblem": {
         "mascot": "blossom",
         "layout": "split",
@@ -522,7 +522,7 @@
         "storm_serve"
       ],
       "verified": "no",
-      "points_offset": -2.4,
+      "points_offset": -3.2,
       "emblem": {
         "mascot": "bullet_train",
         "layout": "top",
@@ -570,7 +570,7 @@
         "flame_serve"
       ],
       "verified": "no",
-      "points_offset": -0.9,
+      "points_offset": -1.0,
       "emblem": {
         "mascot": "rooster",
         "layout": "split",
@@ -618,7 +618,7 @@
         "ice_wall"
       ],
       "verified": "no",
-      "points_offset": 3.2,
+      "points_offset": 4.7,
       "emblem": {
         "mascot": "snow_cat",
         "layout": "stacked",
@@ -716,12 +716,205 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.4,
+      "points_offset": 0.3,
       "emblem": {
         "mascot": "ghost",
         "layout": "split",
         "font": "bangers",
         "accent": "B48CFF"
+      }
+    },
+    {
+      "id": "hoshikuzu",
+      "name": "Hoshikuzu Stargazers",
+      "base": "Namasito Academy",
+      "slot": "regular",
+      "element": "light",
+      "jersey": "1A2A5A",
+      "shorts": "E8D890",
+      "hair": [
+        "E8D890",
+        "1A1A2A"
+      ],
+      "banner": "2A3A7A",
+      "pitch": 1.1,
+      "weights": {
+        "Spike": 2,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 3,
+        "SpinServe": 1,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "The stars are on our side.",
+      "win": "Written in the stars.",
+      "lose": "Clouds tonight...",
+      "got_point": [
+        "Shooting star!",
+        "Twinkle."
+      ],
+      "lost_point": [
+        "A dim one.",
+        "Stars return."
+      ],
+      "comment": "They kept blinding us with flashes.",
+      "signature": [
+        "radiant_set",
+        "starfall"
+      ],
+      "verified": "no",
+      "points_offset": 3.4,
+      "emblem": {
+        "mascot": "star",
+        "layout": "top",
+        "font": "bangers",
+        "accent": "FFE680"
+      }
+    },
+    {
+      "id": "oni",
+      "name": "Oni Gakuen",
+      "base": "Shirogane",
+      "slot": "boss",
+      "element": "fire",
+      "jersey": "8A0A0A",
+      "shorts": "1A0A0A",
+      "hair": [
+        "1A0A0A",
+        "FF3A1A"
+      ],
+      "banner": "6A0A0A",
+      "pitch": 0.45,
+      "weights": {
+        "Spike": 5,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 2,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 0
+      },
+      "intro": "Hope you brought an offering.",
+      "win": "Devoured!",
+      "lose": "...the oni retreats.",
+      "got_point": [
+        "Grrraah!",
+        "Burn!"
+      ],
+      "lost_point": [
+        "Hmph.",
+        "Again!"
+      ],
+      "comment": "Their spikes felt like getting hit by a demon.",
+      "signature": [
+        "overheat",
+        "volcano_slam",
+        "blaze_spike"
+      ],
+      "verified": "no",
+      "points_offset": -1.8,
+      "emblem": {
+        "mascot": "oni",
+        "layout": "split",
+        "font": "bangers",
+        "accent": "FF5A2A"
+      }
+    },
+    {
+      "id": "kumo",
+      "name": "Kumo Weavers",
+      "base": "Kozuki Dan",
+      "slot": "regular",
+      "element": "shadow",
+      "jersey": "2A2A2A",
+      "shorts": "8A1A4A",
+      "hair": [
+        "1A1A1A",
+        "D04A8A"
+      ],
+      "banner": "3A2A3A",
+      "pitch": 1.0,
+      "weights": {
+        "Spike": 2,
+        "Jump": 3,
+        "Block": 3,
+        "Bump": 2,
+        "SpinServe": 1,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "Welcome to our web.",
+      "win": "Caught you.",
+      "lose": "The web tore...",
+      "got_point": [
+        "Stuck!",
+        "Tangled."
+      ],
+      "lost_point": [
+        "Snip.",
+        "We'll spin again."
+      ],
+      "comment": "Every tip felt like a trap.",
+      "signature": [
+        "mud_trap",
+        "shadow_step"
+      ],
+      "verified": "no",
+      "points_offset": 0.3,
+      "emblem": {
+        "mascot": "spider",
+        "layout": "stacked",
+        "font": "marker",
+        "accent": "D04A8A"
+      }
+    },
+    {
+      "id": "tsunagi",
+      "name": "Tsunagi Turtles",
+      "base": "Ten-Roku",
+      "slot": "combo",
+      "element": "earth",
+      "jersey": "4A7A3A",
+      "shorts": "2A4A1A",
+      "hair": [
+        "2A4A1A",
+        "8AC04A"
+      ],
+      "banner": "3A6A2A",
+      "pitch": 0.85,
+      "weights": {
+        "Spike": 2,
+        "Jump": 2,
+        "Block": 4,
+        "Bump": 4,
+        "SpinServe": 1,
+        "ServeJump": 2,
+        "FloatServe": 1
+      },
+      "intro": "Slow and steady wins.",
+      "win": "Slow and steady!",
+      "lose": "Into the shell...",
+      "got_point": [
+        "Shell shock!",
+        "Steady."
+      ],
+      "lost_point": [
+        "Ow.",
+        "We hold."
+      ],
+      "comment": "Nothing got past their blocks.",
+      "signature": [
+        "stone_skin",
+        "iron_curtain"
+      ],
+      "verified": "no",
+      "points_offset": -1.4,
+      "emblem": {
+        "mascot": "turtle",
+        "layout": "top",
+        "font": "marker",
+        "accent": "8AC04A"
       }
     }
   ],
@@ -729,23 +922,23 @@
     "about": "Theme element and strength offset for each vanilla team: scaling draws random perks from the element first (built-in perks always come first) and adds points_offset to the team's level-up points. Optional 'weights' replace the team's stat weights in Infinite/Loop (used where the game's weights leave a team unable to grow).",
     "Rensho": {
       "element": "power",
-      "points_offset": -0.8
+      "points_offset": -0.7
     },
     "Hinami Kai": {
       "element": "wind",
-      "points_offset": -0.5
+      "points_offset": -0.8
     },
     "Daigan Tech": {
       "element": "earth",
-      "points_offset": -3.0
+      "points_offset": -3.2
     },
     "Namasito Academy": {
       "element": "water",
-      "points_offset": 2.0
+      "points_offset": 2.1
     },
     "Kozuki Dan": {
       "element": "lightning",
-      "points_offset": -3.4
+      "points_offset": -2.7
     },
     "Aomori": {
       "element": "wind",
@@ -753,11 +946,11 @@
     },
     "Ten-Roku": {
       "element": "earth",
-      "points_offset": 1.0
+      "points_offset": 0.4
     },
     "Tenzio": {
       "element": "shadow",
-      "points_offset": 1.5,
+      "points_offset": 1.4,
       "weights": {
         "Spike": 2,
         "Jump": 3,
@@ -770,11 +963,11 @@
     },
     "Sunaumi High": {
       "element": "water",
-      "points_offset": 0.8
+      "points_offset": 0.3
     },
     "Shirogane": {
       "element": "ice",
-      "points_offset": -4.4
+      "points_offset": -4.1
     },
     "Club Sumi": {
       "element": "none",

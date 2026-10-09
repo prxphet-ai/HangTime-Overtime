@@ -342,7 +342,76 @@ def ghost(p, cx, cy, s, accent):
                 (cx + x * s, cy + (y + r * 0.7) * s)], fill=accent, amp=1)
 
 
-MASCOTS = {"blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
+def star(p, cx, cy, s, accent):
+    """Hoshikuzu: a shooting star with a sparkling tail."""
+    pts = []
+    for i in range(10):
+        a = math.radians(-90 + i * 36)
+        r = (70 if i % 2 == 0 else 30) * s
+        pts.append((cx + 30 * s + r * math.cos(a), cy - 10 * s + r * math.sin(a)))
+    for k, (w, dy) in enumerate(((16, -14), (12, 8), (9, 26))):
+        p.stroke([(cx - 40 * s, cy + (dy - 4) * s), (cx - 140 * s, cy + (dy + 30) * s)], w * s, fill=accent if k == 1 else INK)
+    p.poly(pts, amp=1.5)
+    p.ellipse(cx + 30 * s, cy - 8 * s, 14 * s, 14 * s, fill=accent, amp=0.6)
+    for x, y, r in ((100, -90, 10), (120, 50, 8), (-60, -80, 9), (-130, 80, 7)):
+        p.sparkle(cx + x * s, cy + y * s, r * s)
+
+
+def oni(p, cx, cy, s, accent):
+    """Oni Gakuen: an oni mask with horns and fangs."""
+    face = [(cx - 76 * s, cy - 50 * s), (cx - 60 * s, cy - 84 * s), (cx, cy - 98 * s), (cx + 60 * s, cy - 84 * s), (cx + 76 * s, cy - 50 * s),
+            (cx + 80 * s, cy + 20 * s), (cx + 50 * s, cy + 80 * s), (cx, cy + 96 * s), (cx - 50 * s, cy + 80 * s), (cx - 80 * s, cy + 20 * s)]
+    p.poly(face, amp=2.5)
+    for side in (-1, 1):
+        p.poly([(cx + side * 40 * s, cy - 88 * s), (cx + side * 92 * s, cy - 140 * s), (cx + side * 70 * s, cy - 76 * s)], fill=accent, amp=1)
+        p.poly([(cx + side * 16 * s, cy - 30 * s), (cx + side * 56 * s, cy - 44 * s), (cx + side * 50 * s, cy - 16 * s),
+                (cx + side * 20 * s, cy - 14 * s)], fill=CLEAR, amp=0.8)
+        p.poly([(cx + side * 10 * s, cy - 56 * s), (cx + side * 60 * s, cy - 66 * s), (cx + side * 54 * s, cy - 56 * s)], fill=CLEAR, amp=0.6)
+    mouth = [(cx - 50 * s, cy + 30 * s), (cx + 50 * s, cy + 30 * s), (cx + 40 * s, cy + 62 * s), (cx - 40 * s, cy + 62 * s)]
+    p.poly(mouth, fill=CLEAR, amp=1)
+    for side in (-1, 1):
+        p.poly([(cx + side * 34 * s, cy + 30 * s), (cx + side * 22 * s, cy + 30 * s), (cx + side * 28 * s, cy + 54 * s)], amp=0.4)
+        p.poly([(cx + side * 16 * s, cy + 62 * s), (cx + side * 4 * s, cy + 62 * s), (cx + side * 10 * s, cy + 44 * s)], amp=0.4)
+    for x, y, r in ((-120, -40, 16), (124, 10, 13)):
+        p.poly([(cx + (x - r * 0.7) * s, cy + y * s), (cx + x * s, cy + (y - r * 1.9) * s), (cx + (x + r * 0.7) * s, cy + y * s),
+                (cx + x * s, cy + (y + r * 0.7) * s)], fill=accent, amp=1)
+
+
+def spider(p, cx, cy, s, accent):
+    """Kumo: a spider hanging in its web."""
+    for i in range(8):
+        a = math.radians(-90 + i * 45)
+        p.stroke([(cx, cy), (cx + 130 * s * math.cos(a), cy + 110 * s * math.sin(a))], 5 * s, fill=accent)
+    for r in (40, 80, 118):
+        ring = [(cx + r * s * math.cos(math.radians(-90 + i * 45)), cy + r * 0.85 * s * math.sin(math.radians(-90 + i * 45))) for i in range(9)]
+        p.stroke(ring, 5 * s, fill=accent)
+    for side in (-1, 1):
+        for k, (dx1, dy1, dx2, dy2) in enumerate(((30, -20, 64, -56), (34, -6, 76, -20), (34, 8, 76, 28), (30, 20, 62, 62))):
+            p.stroke([(cx + side * 14 * s, cy + (dy1 / 3) * s), (cx + side * dx1 * s, cy + dy1 * s), (cx + side * dx2 * s, cy + dy2 * s)], 9 * s)
+    p.ellipse(cx, cy + 14 * s, 26 * s, 32 * s)
+    p.ellipse(cx, cy - 24 * s, 18 * s, 16 * s)
+    p.ellipse(cx - 7 * s, cy - 26 * s, 4 * s, 4 * s, fill=CLEAR, amp=0.3)
+    p.ellipse(cx + 7 * s, cy - 26 * s, 4 * s, 4 * s, fill=CLEAR, amp=0.3)
+    p.poly([(cx - 8 * s, cy + 6 * s), (cx + 8 * s, cy + 6 * s), (cx + 12 * s, cy + 18 * s), (cx, cy + 30 * s), (cx - 12 * s, cy + 18 * s)], fill=accent, amp=0.5)
+    p.stroke([(cx, cy - 40 * s), (cx, cy - 110 * s)], 5 * s)
+
+
+def turtle(p, cx, cy, s, accent):
+    """Tsunagi: a sturdy turtle with a patterned shell."""
+    p.ellipse(cx, cy, 92 * s, 62 * s, a0=180, a1=360)
+    p.poly([(cx - 104 * s, cy + 2 * s), (cx + 104 * s, cy + 2 * s), (cx + 96 * s, cy + 16 * s), (cx - 96 * s, cy + 16 * s)], amp=1)
+    for (x, y) in ((-46, -24), (0, -40), (46, -24)):
+        hexp = [(cx + (x + 18 * math.cos(math.radians(a))) * s, cy + (y + 15 * math.sin(math.radians(a))) * s) for a in range(0, 360, 60)]
+        p.poly(hexp, fill=accent, amp=0.8)
+    p.ellipse(cx + 122 * s, cy - 18 * s, 26 * s, 22 * s)
+    p.ellipse(cx + 130 * s, cy - 24 * s, 4.5 * s, 4.5 * s, fill=CLEAR, amp=0.3)
+    for x in (-66, -20, 30, 74):
+        p.poly([(cx + (x - 14) * s, cy + 14 * s), (cx + (x + 14) * s, cy + 14 * s), (cx + (x + 12) * s, cy + 46 * s), (cx + (x - 12) * s, cy + 46 * s)], amp=1)
+    p.poly([(cx - 96 * s, cy + 6 * s), (cx - 128 * s, cy + 20 * s), (cx - 96 * s, cy + 18 * s)], amp=0.6)
+    p.stroke([(cx - 150 * s, cy + 62 * s), (cx + 150 * s, cy + 62 * s)], 10 * s, fill=accent)
+
+
+MASCOTS = {"star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
            "sea_dragon": sea_dragon, "ghost": ghost, "brazier": brazier, "penguin": penguin, "thunder": thunder, "swallow": swallow, "whale": whale,
            "mountain": mountain, "bat_moon": bat_moon, "sun_crown": sun_crown}
 
@@ -368,13 +437,14 @@ def draw(team):
     elif e["layout"] == "stacked":                 # first word over, second word under (Daigan "DAIGAN / TECH")
         p.text(words[0], W / 2, 76, 78, font, max_w=W - 50)
         mascot(p, W / 2, 236, 0.92, accent)
-        p.text(" ".join(words[1:]), W / 2, 408, 66, font, max_w=W - 80)
+        p.text(" ".join(words[1:]), W / 2, 380 if font == "marker" else 396, 62, font, max_w=W - 80)
     else:                                          # "split": mascot in the middle, words left and right (Hinami Kai)
         mascot(p, W / 2, 196, 1.3, accent)
-        p.text(words[0], W / 2, 400, 70, font, max_w=W - 40) if len(words) == 1 else None
+        base = 378 if font == "marker" else 395
+        p.text(words[0], W / 2, base + 5, 70, font, max_w=W - 40) if len(words) == 1 else None
         if len(words) > 1:
-            p.text(words[0], W * 0.27, 395, 62, font, max_w=W * 0.48)
-            p.text(" ".join(words[1:]), W * 0.73, 395, 62, font, max_w=W * 0.48)
+            p.text(words[0], W * 0.27, base, 62, font, max_w=W * 0.48)
+            p.text(" ".join(words[1:]), W * 0.73, base, 62, font, max_w=W * 0.48)
     return p.result()
 
 
@@ -384,6 +454,9 @@ def main():
     tiles = []
     for t in teams:
         img = draw(t)
+        box = img.split()[3].getbbox()
+        if box and (box[0] <= 1 or box[1] <= 1 or box[2] >= W - 1 or box[3] >= H - 1):
+            print(f"WARNING {t['id']}: emblem touches the edge {box}")
         img.save(os.path.join(OUT, t["id"] + ".png"))
         tiles.append((t, img))
         print("wrote assets/emblems/" + t["id"] + ".png")

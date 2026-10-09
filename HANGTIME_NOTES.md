@@ -8,8 +8,8 @@ of **Log**. **Summary** at the top is kept up to date.
 
 - **Everything that exists**: `CATALOG.md` (generated from the sheets by `python tools/catalog.py`) lists every team
   (class, element, base, signature perks, emblem), every perk (rarity, element, trigger, description, gameplay effects,
-  visuals) and every stat card. Current totals: 14 new teams (+ the game's 10), 80 perks (70 new, 3 reworked, 7 kept),
-  29 stat cards. No perk changes the score (enforced by the preflight).
+  visuals) and every stat card. Current totals: 18 new teams (+ the game's 10), 96 perks (86 new, 3 reworked, 7 kept),
+  33 stat cards. No perk changes the score (enforced by the preflight).
 - **Simulator**: `python tools/sim.py <mode>` (match, teams, scaling, perk, perks, run, tune). Results in `sim_results/`
   (one JSON per run plus `index.csv`). See *Simulator* below.
 - **Opponent scaling**: every number lives in `sheets/scaling.json` (the one place to tune; `python tools/set_scaling.py
@@ -23,7 +23,7 @@ of **Log**. **Summary** at the top is kept up to date.
   boss slots), the team's own perks first (signatures / vanilla built-ins), then themed random draws (4x weight for the
   team's element); rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
 - **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~46%
-  (round 10), ~40% (round 15), ~25% (round 20). Teams 44%..53% vs the field at equal rounds.
+  (round 10), ~40% (round 15), ~25% (round 20). Teams 44%..53% vs the field at equal rounds (22 teams).
 - **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
 - **Open questions for you**: see the end of this file.
 
@@ -178,3 +178,25 @@ Modes:
 3. **Classic mode** still uses the game's own difficulty and opponents (new perks/cards do appear on its upgrade screens).
    Should new teams and the scaling system come to Classic too?
 4. **All In** is a deliberately strong epic trade-off (~+16% in the sim). Keep it that way?
+
+### Step 4 — content batch 3 + balance passes 3-4
+- **Vanilla cards on the perk screen are now weighted by rarity** like Overtime perks (common 3, rare 2, epic 1; from
+  `vanilla_rarity` in `sheets/scaling.json`), so Agility (+36% in the sim, the strongest single item) shows up less.
+- **16 new perks**: trade-off/playstyle passives — Overheat (+24% spike, -3% speed), Glacier Body (+18% block, -3%
+  speed), Featherweight (+10% jump, weaker blocks), Stone Skin; reactions/team play — Counter Attack, Lightning Rod,
+  Spirit Bond, Phantom Block, Sharpshooter, Cannonball Serve; epics — Rally Master, Volcano Slam, Blizzard,
+  Typhoon Serve, Abyss Spike, Starfall.
+- **4 new stat cards**: Net Rusher, Float Master, Deep Defender, Berserker (epic trade-off).
+- **4 new teams** with emblems: Hoshikuzu Stargazers (light, shooting star), Oni Gakuen (fire boss, oni mask),
+  Kumo Weavers (shadow, spider in its web), Tsunagi Turtles (earth combo, turtle). Offsets re-tuned: 22 teams 44%..53%.
+- **Emblem tool** now warns if any emblem touches the image edge (fixed five that clipped their lettering).
+- **Simulator fix**: stunning one player (spiker/hitter) now freezes that player — their team digs worse while it lasts
+  and that player can't attack — instead of a random "free ball" chance.
+- **Reworked weak designs** (they did little in the game, not only in the sim): Mud Trap now sticks the defender as the tip
+  arrives; Ember Tip burns their feet as the tip arrives; Quake Spike shakes them as the spike comes in; Lightning Rod now
+  freezes their setter for 2.5 s when they spike (no block on your counter); Aftershock dazes the hitter for 1.4 s.
+  Bedrock Block also adds block jump.
+- **Balance**: many small nerfs/buffs (sweeps at rounds 3/5/8, 120 matches per team per item). Out of band now are mostly
+  situational perks (Showboat, Rival Spirit, Collector) and a few items within ~1% of a band edge.
+- **Curves after batch 3**: fresh build r1 70%; typical build r1 72%, r5 68%, r10 50%, r15 39%, r20 25%.
+- Checked in game: all 16 new perks fired through the dev lab, 0 errors; Oni Gakuen spawned with its emblem.
