@@ -94,7 +94,7 @@
         "blaze_spike"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.7,
+      "points_offset": -0.8,
       "emblem": {
         "mascot": "brazier",
         "layout": "split",
@@ -141,7 +141,7 @@
         "frost_serve"
       ],
       "verified": "no",
-      "points_offset": -2.3,
+      "points_offset": -2.4,
       "emblem": {
         "mascot": "penguin",
         "layout": "top",
@@ -235,7 +235,7 @@
         "gale_serve"
       ],
       "verified": "no",
-      "points_offset": 5.2,
+      "points_offset": 5.3,
       "emblem": {
         "mascot": "swallow",
         "layout": "split",
@@ -330,7 +330,7 @@
         "quake_spike"
       ],
       "verified": "no",
-      "points_offset": -0.9,
+      "points_offset": -1.0,
       "emblem": {
         "mascot": "mountain",
         "layout": "stacked",
@@ -378,7 +378,7 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.6,
+      "points_offset": 0.4,
       "emblem": {
         "mascot": "bat_moon",
         "layout": "split",
@@ -426,7 +426,7 @@
         "holy_lance"
       ],
       "verified": "no",
-      "points_offset": -2.5,
+      "points_offset": -2.9,
       "emblem": {
         "mascot": "sun_crown",
         "layout": "stacked",
@@ -474,7 +474,7 @@
         "swerve_tip"
       ],
       "verified": "no",
-      "points_offset": -1.5,
+      "points_offset": -1.7,
       "emblem": {
         "mascot": "blossom",
         "layout": "split",
@@ -522,7 +522,7 @@
         "storm_serve"
       ],
       "verified": "no",
-      "points_offset": -4.3,
+      "points_offset": -4.9,
       "emblem": {
         "mascot": "bullet_train",
         "layout": "top",
@@ -716,7 +716,7 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.2,
+      "points_offset": 0.3,
       "emblem": {
         "mascot": "ghost",
         "layout": "split",
@@ -813,7 +813,7 @@
         "blaze_spike"
       ],
       "verified": "no",
-      "points_offset": -1.9,
+      "points_offset": -1.6,
       "emblem": {
         "mascot": "oni",
         "layout": "split",
@@ -861,7 +861,7 @@
         "shadow_step"
       ],
       "verified": "no",
-      "points_offset": 0.1,
+      "points_offset": -0.0,
       "emblem": {
         "mascot": "spider",
         "layout": "stacked",
@@ -909,7 +909,7 @@
         "iron_curtain"
       ],
       "verified": "no",
-      "points_offset": -1.8,
+      "points_offset": -1.7,
       "emblem": {
         "mascot": "turtle",
         "layout": "top",
@@ -1005,7 +1005,7 @@
         "undertow"
       ],
       "verified": "no",
-      "points_offset": 5.5,
+      "points_offset": 5.4,
       "emblem": {
         "mascot": "octopus",
         "layout": "split",
@@ -1054,7 +1054,7 @@
         "lightning_reflex"
       ],
       "verified": "no",
-      "points_offset": -3.9,
+      "points_offset": -4.0,
       "emblem": {
         "mascot": "tiger",
         "layout": "top",
@@ -1103,7 +1103,7 @@
         "earthquake_serve"
       ],
       "verified": "no",
-      "points_offset": 0.2,
+      "points_offset": 0.0,
       "emblem": {
         "mascot": "golem",
         "layout": "stacked",
@@ -1152,7 +1152,7 @@
         "nine_tails"
       ],
       "verified": "in game 2026-10-09: forced with F3, spawned dressed in its colors with its emblem on the banner",
-      "points_offset": -1.1,
+      "points_offset": -1.7,
       "emblem": {
         "mascot": "fox",
         "layout": "stacked",
@@ -1201,7 +1201,7 @@
         "cyclone_spike"
       ],
       "verified": "no",
-      "points_offset": 0.3,
+      "points_offset": 0.2,
       "emblem": {
         "mascot": "crow",
         "layout": "top",
@@ -1250,7 +1250,7 @@
         "ice_skates"
       ],
       "verified": "no",
-      "points_offset": -3.8,
+      "points_offset": -3.7,
       "emblem": {
         "mascot": "wolf",
         "layout": "stacked",
@@ -1348,7 +1348,7 @@
         "overdrive"
       ],
       "verified": "in game 2026-10-09: forced with F3, spawned dressed in its colors with its emblem on the banner",
-      "points_offset": -0.0,
+      "points_offset": -0.7,
       "emblem": {
         "mascot": "lion",
         "layout": "top",
@@ -1397,7 +1397,7 @@
         "avalanche"
       ],
       "verified": "no",
-      "points_offset": -4.2,
+      "points_offset": -4.7,
       "emblem": {
         "mascot": "boar",
         "layout": "stacked",
@@ -1446,7 +1446,7 @@
         "firestorm"
       ],
       "verified": "no",
-      "points_offset": 7.2,
+      "points_offset": 7.8,
       "emblem": {
         "mascot": "phoenix",
         "layout": "split",
@@ -1495,12 +1495,208 @@
         "lightning_reflex"
       ],
       "verified": "no",
-      "points_offset": 0.0,
+      "points_offset": -0.5,
       "emblem": {
         "mascot": "eel",
         "layout": "split",
         "font": "marker",
         "accent": "FFE14A"
+      }
+    },
+    {
+      "id": "kongo",
+      "name": "Kongo Titans",
+      "base": "Sunaumi High",
+      "slot": "boss",
+      "element": "power",
+      "jersey": "3A3A3A",
+      "shorts": "1A1A1A",
+      "hair": [
+        "1A1A1A",
+        "6A6A6A"
+      ],
+      "banner": "2A2A2A",
+      "pitch": 0.45,
+      "weights": {
+        "Spike": 5,
+        "Jump": 2,
+        "Block": 4,
+        "Bump": 2,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 0
+      },
+      "intro": "We are the mountain that moves.",
+      "win": "Crushed flat.",
+      "lose": "...the titan kneels.",
+      "got_point": [
+        "HOO!",
+        "Smash!"
+      ],
+      "lost_point": [
+        "Hmph.",
+        "Again."
+      ],
+      "comment": "Every spike felt like being hit by a truck.",
+      "signature": [
+        "titan_slam",
+        "chest_pound",
+        "monster_block"
+      ],
+      "verified": "no",
+      "points_offset": 0.5,
+      "emblem": {
+        "mascot": "gorilla",
+        "layout": "top",
+        "font": "bangers",
+        "accent": "FFB04A"
+      }
+    },
+    {
+      "id": "tombo",
+      "name": "Tombo Dragonflies",
+      "base": "Aomori",
+      "slot": "combo",
+      "element": "wind",
+      "jersey": "6AD8A8",
+      "shorts": "1A4A3A",
+      "hair": [
+        "1A4A3A",
+        "C8FFE8"
+      ],
+      "banner": "2A7A5A",
+      "pitch": 1.3,
+      "weights": {
+        "Spike": 3,
+        "Jump": 3,
+        "Block": 1,
+        "Bump": 3,
+        "SpinServe": 2,
+        "ServeJump": 3,
+        "FloatServe": 2
+      },
+      "intro": "Catch us if you can.",
+      "win": "Zipped past!",
+      "lose": "...grounded.",
+      "got_point": [
+        "Zip!",
+        "Too quick!"
+      ],
+      "lost_point": [
+        "Bzz.",
+        "Next time."
+      ],
+      "comment": "The ball never went where we expected.",
+      "signature": [
+        "dragonfly_dart",
+        "updraft_set",
+        "tailwind"
+      ],
+      "verified": "no",
+      "points_offset": 8.0,
+      "emblem": {
+        "mascot": "dragonfly",
+        "layout": "stacked",
+        "font": "marker",
+        "accent": "FFF3B0"
+      }
+    },
+    {
+      "id": "hotaru",
+      "name": "Hotaru Fireflies",
+      "base": "Ten-Roku",
+      "slot": "combo",
+      "element": "light",
+      "jersey": "2A3A2A",
+      "shorts": "1A1A1A",
+      "hair": [
+        "1A2A1A",
+        "E8FF8A"
+      ],
+      "banner": "1A2A1A",
+      "pitch": 1.2,
+      "weights": {
+        "Spike": 2,
+        "Jump": 3,
+        "Block": 3,
+        "Bump": 3,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 3
+      },
+      "intro": "Shine in the dark.",
+      "win": "Glowing!",
+      "lose": "...lights out.",
+      "got_point": [
+        "Shine!",
+        "Glow!"
+      ],
+      "lost_point": [
+        "Flicker.",
+        "Still shining."
+      ],
+      "comment": "We lost the ball in their lights.",
+      "signature": [
+        "firefly_swarm",
+        "lantern_light",
+        "halo_dig"
+      ],
+      "verified": "no",
+      "points_offset": -1.5,
+      "emblem": {
+        "mascot": "firefly",
+        "layout": "stacked",
+        "font": "bangers",
+        "accent": "E8FF8A"
+      }
+    },
+    {
+      "id": "kage",
+      "name": "Kage Ninjas",
+      "base": "Ten-Roku",
+      "slot": "combo",
+      "element": "shadow",
+      "jersey": "1A1A2A",
+      "shorts": "0A0A1A",
+      "hair": [
+        "0A0A1A",
+        "3A3A5A"
+      ],
+      "banner": "1A1A2A",
+      "pitch": 0.9,
+      "weights": {
+        "Spike": 3,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 3,
+        "SpinServe": 3,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "You won't see us coming.",
+      "win": "Vanished.",
+      "lose": "...retreat.",
+      "got_point": [
+        "Shh.",
+        "Gone."
+      ],
+      "lost_point": [
+        "Spotted.",
+        "Into the shadows."
+      ],
+      "comment": "Half the time we didn't know where the ball was.",
+      "signature": [
+        "shuriken_serve",
+        "smoke_bomb",
+        "shadow_clone"
+      ],
+      "verified": "no",
+      "points_offset": -0.6,
+      "emblem": {
+        "mascot": "ninja",
+        "layout": "split",
+        "font": "marker",
+        "accent": "D04A3A"
       }
     }
   ],
@@ -1508,19 +1704,19 @@
     "about": "Theme element and strength offset for each vanilla team: scaling draws random perks from the element first (built-in perks always come first) and adds points_offset to the team's level-up points. Optional 'weights' replace the team's stat weights in Infinite/Loop (used where the game's weights leave a team unable to grow).",
     "Rensho": {
       "element": "power",
-      "points_offset": -0.7
+      "points_offset": -0.9
     },
     "Hinami Kai": {
       "element": "wind",
-      "points_offset": -0.7
+      "points_offset": -0.5
     },
     "Daigan Tech": {
       "element": "earth",
-      "points_offset": -3.6
+      "points_offset": -3.7
     },
     "Namasito Academy": {
       "element": "water",
-      "points_offset": 2.2
+      "points_offset": 2.0
     },
     "Kozuki Dan": {
       "element": "lightning",
@@ -1536,7 +1732,7 @@
     },
     "Tenzio": {
       "element": "shadow",
-      "points_offset": 1.3,
+      "points_offset": 1.4,
       "weights": {
         "Spike": 2,
         "Jump": 3,
@@ -1549,7 +1745,7 @@
     },
     "Sunaumi High": {
       "element": "water",
-      "points_offset": -0.0
+      "points_offset": 0.1
     },
     "Shirogane": {
       "element": "ice",

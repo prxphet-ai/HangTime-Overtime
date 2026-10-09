@@ -616,7 +616,92 @@ def eel(p, cx, cy, s, accent):
         p.poly(P([q(4, -30), q(-12, 2), q(0, 2), q(-6, 30), q(14, -6), q(2, -6), q(10, -30)]), fill=accent, amp=0.4)
 
 
-MASCOTS = {"lion": lion, "boar": boar, "phoenix": phoenix, "eel": eel, "fox": fox, "crow": crow, "wolf": wolf, "beetle": beetle, "owl": owl, "octopus": octopus, "tiger": tiger, "golem": golem, "star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
+def gorilla(p, cx, cy, s, accent):
+    """Kongo: a gorilla pounding its chest."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    p.poly(P([(-112, -28), (112, -28), (78, 100), (-78, 100)]), amp=2.0)
+    p.ellipse(cx, cy - 64 * s, 46 * s, 42 * s)
+    p.poly(P([(-18, -100), (0, -116), (18, -100)]), amp=0.6)
+    p.ellipse(cx, cy - 58 * s, 32 * s, 28 * s, fill=CLEAR, amp=0.6)
+    p.stroke(P([(-30, -72), (30, -72)]), 9 * s)
+    p.ellipse(cx, cy - 46 * s, 22 * s, 14 * s, amp=0.5)
+    for side in (-1, 1):
+        p.ellipse(cx + side * 13 * s, cy - 63 * s, 5 * s, 5 * s, fill=accent, amp=0.3)
+        p.ellipse(cx + side * 7 * s, cy - 48 * s, 3 * s, 3 * s, fill=CLEAR, amp=0.2)
+        arm = [(side * 104, -22), (side * 130, 30), (side * 58, 26)]
+        p.stroke(P(arm), 40 * s, fill=CLEAR)
+        p.stroke(P(arm), 30 * s)
+        p.ellipse(cx + side * 50 * s, cy + 24 * s, 25 * s, 23 * s, fill=CLEAR, amp=0.5)
+        p.ellipse(cx + side * 50 * s, cy + 24 * s, 20 * s, 18 * s, amp=0.8)
+        p.curve((cx + side * 12 * s, cy + 60 * s), (cx + side * 40 * s, cy + 70 * s), (cx + side * 60 * s, cy + 58 * s), 5 * s, fill=CLEAR)
+        for k in range(3):
+            ang = math.radians(-50 + k * 50)
+            x0, y0 = side * 50, 24
+            p.stroke(P([(x0 + side * 34 * math.cos(ang), y0 + 34 * math.sin(ang) - 30), (x0 + side * 48 * math.cos(ang), y0 + 48 * math.sin(ang) - 30)]), 6 * s, fill=accent)
+
+
+def dragonfly(p, cx, cy, s, accent):
+    """Tombo: a dragonfly darting, four long wings."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    for side in (-1, 1):
+        for dy, L, tilt in ((-22, 128, -14), (8, 112, 10)):
+            p.poly(P([(side * 10, dy), (side * L * 0.45, dy + tilt - 18), (side * L, dy + tilt - 6), (side * L * 0.9, dy + tilt + 10), (side * L * 0.4, dy + tilt + 12)]), amp=1.2)
+            p.stroke(P([(side * 20, dy + 2), (side * L * 0.85, dy + tilt)]), 3 * s, fill=CLEAR)
+    p.ellipse(cx, cy - 34 * s, 16 * s, 14 * s)
+    for side in (-1, 1):
+        p.ellipse(cx + side * 9 * s, cy - 38 * s, 7 * s, 7 * s, fill=accent, amp=0.3)
+    p.stroke(P([(0, -20), (0, 100)]), 13 * s)
+    for k in range(5):
+        y = 30 + k * 14
+        p.stroke(P([(-6, y), (6, y)]), 3 * s, fill=CLEAR)
+    for y, L in ((60, 40), (82, 30)):
+        p.stroke(P([(-118, y), (-118 + L, y)]), 6 * s, fill=accent)
+
+
+def firefly(p, cx, cy, s, accent):
+    """Hotaru: a firefly in flight with a glowing tail among little lights."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+
+    def oval(x, y, rx, ry, ang, fill=INK):
+        t = math.radians(ang)
+        pts = [(x + rx * math.cos(u) * math.cos(t) - ry * math.sin(u) * math.sin(t), y + rx * math.cos(u) * math.sin(t) + ry * math.sin(u) * math.cos(t))
+               for u in (2 * math.pi * k / 40 for k in range(40))]
+        p.poly(P(pts), fill, 0.8)
+    p.ellipse(cx + 56 * s, cy + 22 * s, 58 * s, 50 * s, fill=accent, amp=1.2)
+    p.ellipse(cx + 50 * s, cy + 18 * s, 34 * s, 26 * s, amp=0.8)
+    p.ellipse(cx - 14 * s, cy + 2 * s, 34 * s, 26 * s)
+    p.ellipse(cx - 62 * s, cy - 6 * s, 22 * s, 20 * s)
+    p.ellipse(cx - 70 * s, cy - 10 * s, 5 * s, 5 * s, fill=CLEAR, amp=0.2)
+    for ang, dx in ((-62, -6), (-38, 14)):
+        oval(-4 + dx + 44 * math.cos(math.radians(ang)), -14 + 44 * math.sin(math.radians(ang)), 50, 16, ang, fill=CLEAR)
+        oval(-4 + dx + 44 * math.cos(math.radians(ang)), -14 + 44 * math.sin(math.radians(ang)), 44, 11, ang)
+    for k in (-1, 1):
+        p.curve((cx - 70 * s, cy - 24 * s), (cx + (-84 + k * 6) * s, cy - 54 * s), (cx + (-104 + k * 14) * s, cy - 62 * s), 4 * s)
+    for x, y, r in ((-120, 60, 9), (110, -70, 8), (-104, -92, 6), (128, 92, 7), (-136, 0, 5)):
+        p.sparkle(cx + x * s, cy + y * s, r * 1.8 * s, fill=accent)
+
+
+def ninja(p, cx, cy, s, accent):
+    """Kage: a ninja's masked face with a headband, shuriken flying."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    p.ellipse(cx, cy, 78 * s, 84 * s)
+    p.poly(P([(-80, -30), (80, -30), (78, 6), (-78, 6)]), fill=CLEAR, amp=0.8)
+    p.poly(P([(-74, -26), (74, -26), (72, 2), (-72, 2)]), amp=0.8)
+    p.poly(P([(-60, -18), (-14, -18), (-20, -4), (-56, -6)]), fill=CLEAR, amp=0.5)
+    p.poly(P([(60, -18), (14, -18), (20, -4), (56, -6)]), fill=CLEAR, amp=0.5)
+    p.poly(P([(-80, -60), (80, -60), (80, -42), (-80, -42)]), fill=accent, amp=0.6)
+    p.poly(P([(80, -58), (128, -76), (120, -56), (136, -44), (80, -44)]), fill=accent, amp=0.6)
+    for x, y, r in ((-124, 50, 20), (118, 64, 16)):
+        pts = []
+        for k in range(8):
+            a = math.radians(k * 45 + 10)
+            rr = r if k % 2 == 0 else r * 0.38
+            pts.append((x + math.cos(a) * rr, y + math.sin(a) * rr))
+        p.poly(P(pts), amp=0.4)
+        p.ellipse(cx + x * s, cy + y * s, r * 0.18 * s, r * 0.18 * s, fill=CLEAR, amp=0.2)
+
+
+MASCOTS = {"gorilla": gorilla, "dragonfly": dragonfly, "firefly": firefly, "ninja": ninja, "lion": lion, "boar": boar, "phoenix": phoenix, "eel": eel, "fox": fox, "crow": crow, "wolf": wolf, "beetle": beetle, "owl": owl, "octopus": octopus, "tiger": tiger, "golem": golem, "star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
            "sea_dragon": sea_dragon, "ghost": ghost, "brazier": brazier, "penguin": penguin, "thunder": thunder, "swallow": swallow, "whale": whale,
            "mountain": mountain, "bat_moon": bat_moon, "sun_crown": sun_crown}
 

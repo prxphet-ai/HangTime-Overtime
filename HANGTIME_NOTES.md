@@ -8,8 +8,8 @@ of **Log**. **Summary** at the top is kept up to date.
 
 - **Everything that exists**: `CATALOG.md` (generated from the sheets by `python tools/catalog.py`) lists every team
   (class, element, base, signature perks, emblem), every perk (rarity, element, trigger, description, gameplay effects,
-  visuals) and every stat card. Current totals: 30 new teams (+ the game's 10), 145 perks (135 new, 3 reworked, 7 kept),
-  45 stat cards. No perk changes the score (enforced by the preflight).
+  visuals) and every stat card. Current totals: 34 new teams (+ the game's 10), 154 perks (144 new, 3 reworked, 7 kept),
+  47 stat cards. No perk changes the score (enforced by the preflight).
 - **Simulator**: `python tools/sim.py <mode>` (match, teams, scaling, perk, perks, run, tune). Results in `sim_results/`
   (one JSON per run plus `index.csv`). See *Simulator* below.
 - **Opponent scaling**: every number lives in `sheets/scaling.json` (the one place to tune; `python tools/set_scaling.py
@@ -26,7 +26,7 @@ of **Log**. **Summary** at the top is kept up to date.
 - **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~51%
   (round 10), ~43% (round 15), ~27% (round 20). Every Overtime perk/card sits in its rarity band at round 5 (common 2-7%,
   rare 4-10%, epic 7-14% win-rate gain) except deliberately situational ones (tips, comebacks, Collector). Random 5-perk
-  builds top out around 65% vs the field; nothing trivializes a match. Teams 47%..52% vs the field at equal rounds (40 teams in the Infinite pools: the game's 10 + 30 new).
+  builds top out around 65% vs the field; nothing trivializes a match. Teams 46%..53% vs the field at equal rounds (44 teams in the Infinite pools: the game's 10 + 34 new).
 - **Perk triggers available** (`sheets/triggers.json`): spike, serve, tip, set, setter_set, dig, block, jump, block_jump,
   passive, streak (clean touches), enemy_streak / win_streak (rallies lost / won in a row), long_rally (touches in the current rally), match_point_against,
   enemy_spike. Effects: `sheets/effects.json` (ball, player, game and visual effects; none can touch the score).
@@ -339,3 +339,14 @@ Modes:
   were that many rounds later (or earlier). It moves every knob at once — level-ups, stat ramp, perk count, rarity unlocks —
   so the tuned curve stays intact, just shifted. Checked in game: Difficulty 2 -> match 1 scaled as round 3.
   Simulator, fresh build vs the field: +0 ~69%, +1 ~67%, +2 ~60%, +4 ~45%. Default left at 0 (the brief's 60-75% target).
+
+### Step 14 — content batch 8 (last empty slot/element pairs)
+- **4 new teams** with new emblems: Kongo Titans (power boss, gorilla pounding its chest), Tombo Dragonflies (wind combo,
+  dragonfly), Hotaru Fireflies (light combo, firefly), Kage Ninjas (shadow combo, masked ninja with shuriken). Every
+  element now has a team in every class it fits. Kage moved from the Aomori to the Ten-Roku prefab (Aomori-based teams are
+  weak by default); Tombo keeps Aomori at the +8 offset cap (45.7% vs the field).
+- **9 new perks** (round 5 gain): Titan Slam (epic, +9.8%), Shadow Clone (epic, +8.0%), Chest Pound (+5.0%), Dragonfly
+  Dart (+5.2%), Firefly Swarm (+7.0%), Shuriken Serve (+4.4%) (rares); Updraft Set (+7.4% -> +5.0%), Lantern Light (+5.2%),
+  Smoke Bomb (+3.2%) (commons). All fired through the dev lab as both teams, 0 errors.
+- **2 new stat cards**: Utility Player (rare, +7.8%), Juggernaut (epic trade-off, +7.5%).
+- Teams 45.7%..53.0% vs the field.

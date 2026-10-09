@@ -582,6 +582,34 @@
       },
       "blurb": "Hits and serves like a cannon, then needs a breather.",
       "verified": "no"
+    },
+    {
+      "id": "utility_player",
+      "title": "Utility Player",
+      "rarity": "rare",
+      "style": "boost",
+      "deltas": {
+        "Bump": 0.4,
+        "Set": 0.75,
+        "Serve": 0.75,
+        "Recovery": 0.5
+      },
+      "blurb": "A bit better at everything that isn't hitting.",
+      "verified": "no"
+    },
+    {
+      "id": "juggernaut",
+      "title": "Juggernaut",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Spike": 1.5,
+        "Block": 1.5,
+        "Speed": -0.75,
+        "Recovery": -0.75
+      },
+      "blurb": "Unstoppable at the net, slow everywhere else.",
+      "verified": "no"
     }
   ]
 }

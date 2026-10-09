@@ -2,7 +2,7 @@
 
 Generated from `sheets/` by `python tools/catalog.py`. Numbers here are the live values.
 
-## Teams (30 new, plus the game's 10)
+## Teams (34 new, plus the game's 10)
 
 | Team | Class | Element | Built on | Signature perks | Emblem |
 |---|---|---|---|---|---|
@@ -36,10 +36,14 @@ Generated from `sheets/` by `python tools/catalog.py`. Numbers here are the live
 | **Inoshishi Boars** | regular | earth | Daigan Tech | Boar Rush, Tusk Serve, Avalanche | boar (`assets/emblems/inoshishi.png`) |
 | **Hinotori Phoenix** | combo | fire | Aomori | Rebirth Flame, Phoenix Dive, Firestorm | phoenix (`assets/emblems/hinotori.png`) |
 | **Unagi Eels** | combo | lightning | Ten-Roku | Shock Tip, Voltage, Lightning Reflex | eel (`assets/emblems/unagi.png`) |
+| **Kongo Titans** | boss | power | Sunaumi High | Titan Slam, Chest Pound, Monster Block | gorilla (`assets/emblems/kongo.png`) |
+| **Tombo Dragonflies** | combo | wind | Aomori | Dragonfly Dart, Updraft Set, Tailwind | dragonfly (`assets/emblems/tombo.png`) |
+| **Hotaru Fireflies** | combo | light | Ten-Roku | Firefly Swarm, Lantern Light, Halo Dig | firefly (`assets/emblems/hotaru.png`) |
+| **Kage Ninjas** | combo | shadow | Ten-Roku | Shuriken Serve, Smoke Bomb, Shadow Clone | ninja (`assets/emblems/kage.png`) |
 
 The game's own teams keep their emblems; in Infinite they get a theme element for perk draws: Rensho (power), Hinami Kai (wind), Daigan Tech (earth), Namasito Academy (water), Kozuki Dan (lightning), Aomori (wind), Ten-Roku (earth), Tenzio (shadow), Sunaumi High (water), Shirogane (ice), Club Sumi (none)
 
-## New perks (135)
+## New perks (144)
 
 | Perk | Rarity | Element | Trigger | What it does | Gameplay effects | Visuals |
 |---|---|---|---|---|---|---|
@@ -87,11 +91,13 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Glint** | common | light | spike (chance 0.4) | Sometimes your spike catches the light and dazzles their defenders. | after the net: slow_enemies(mult 0.85, dur 0.4) | flash |
 | **Guiding Light** | common | light | set | Every set lights the way: your next jump goes a little higher. | buff(stat jump, mult 1.06, dur 1.5) | ring |
 | **Halo Dig** | common | light | dig | When you dig, a halo guides your setter: they rush to the ball faster. | buff(stat set, mult 1.4, dur 2) | ring, tint |
+| **Lantern Light** | common | light | passive | A soft glow follows you all match: slightly stronger blocks and quicker feet. | buff(stat block, mult 1.05, dur whole match); buff(stat move, mult 1.03, dur whole match) | aura |
 | **Radiant Set** | common | light | setter_set | Your setter's sets glow gold; spike them in time for extra power. | buff(stat spike, mult 1.12, dur 1.5) | burst, tint, trail |
 | **Guardian Wall** | epic | light | enemy_spike (chance 0.8, cooldown 4) | Often a golden wall slows their spike down so you can dig it. | slow(mult 0.4, dur 0.3) | cutin, flash, ring |
 | **Holy Lance** | epic | light | spike (cooldown 3, min_height 7) | A spike from high up can become a lance of light: much faster. | speed(mult 1.5) | bolt, cutin, flash, sound |
 | **Starfall** | epic | light | spike (chance 0.45, cooldown 4) | Sometimes your spike falls like a star: a blinding flash, then a steep dive. | slow_enemies(mult 0.65, dur 0.8); after the net: plunge(vy 28, xmult 0.8, delay 0.05) | bolt, cutin, flash |
 | **Starlight Finale** | epic | light | long_rally (n 8) | When a rally becomes an epic (8 touches), the stars align: their team freezes and your spikes shine with power until it ends. | stun(dur 0.8, target all); buff(stat spike, mult 1.3, dur rest of rally) | cutin, flash |
+| **Firefly Swarm** | rare | light | serve | Your serves are wrapped in fireflies: a swarm of lights hides which one is the ball. | decoy(offset 6, dur 0.4, fake 1); after the net: invisible(alpha 0.6, dur 0.2) | burst |
 | **Radiant Guard** | rare | light | enemy_spike | Their spikes make your team glow: better blocks and quicker feet for a moment. | buff(stat block, mult 1.1, dur 1.0); buff(stat move, mult 1.1, dur 1.0) | tint |
 | **Read the Play** | rare | light | enemy_spike | When they spike, you read it: a burst of speed to get to the ball. | buff(stat move, mult 1.3, dur 0.8) | burst, flash |
 | **Skyhook** | rare | light | jump (run 10) | Jump from a run and you soar with a halo under your feet. | jump_bonus(add 11, run 10) | ring |
@@ -130,9 +136,11 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Spirit Serve** | epic | power | serve (hold 1.2) | Hold the ball for a moment before serving to charge a much faster spirit serve. | speed(mult 1.45) | aura, cutin, flash, trail |
 | **Tempo Master** | epic | power | setter_set (cooldown 5) | Your setter controls the tempo: time slows and your spike gets a big boost. | slowmo(scale 0.5, dur 0.4); buff(stat spike, mult 1.2, dur 1.4) | cutin, flash |
 | **Time Stop Set** | epic | power | setter_set (cooldown 3) | Your setter's set can freeze time: everything slows and you line up a stronger spike. | slowmo(scale 0.25, dur 0.9); buff(stat spike, mult 1.12, dur 1.2) | cutin, flash, sound |
+| **Titan Slam** | epic | power | spike (chance 0.3, cooldown 4) | Sometimes you spike with a titan's strength: huge power, and their blocker is knocked flat. | power(add 0.4); stun(dur 0.6, target blocker) | cutin, shake, zoom |
 | **Ace Instinct** | rare | power | serve (chance 0.55) | Often you find the perfect serve: faster, and hard to track. | after the net: invisible(alpha 0.25, dur 0.3); speed(mult 1.1) | burst |
 | **Afterimage** | rare | power | passive+spike (chance 0.3) | You leave afterimages as you run, move a bit faster, and sometimes your spike fakes out the defense. | buff(stat move, mult 1.08, dur whole match); after the net: decoy(offset 6, dur 0.35, fake 1) | afterimages |
 | **Beetle Horn** | rare | power | block_jump+block | Your block jumps spring higher, and blocks come off like a beetle's horn toss: faster, and their dig goes astray. | block_jump(add 5); speed(mult 1.2); on their touch: deflect(rand 4, back 3, ymult 0.75) | shake |
+| **Chest Pound** | rare | power | block_jump | Every block jump is a show of strength: you rise higher, and your counter-spike hits harder. | block_jump(add 6); buff(stat spike, mult 1.12, dur 3) | burst |
 | **Clutch Gene** | rare | power | match_point_against | When they're one point from winning, your spikes and blocks get much stronger. | buff(stat spike, mult 1.3, dur rest of rally); buff(stat block, mult 1.2, dur rest of rally) | aura, cutin |
 | **Counter Attack** | rare | power | enemy_spike | When they spike, you get fired up: a quick step toward the ball, and your next spike within 6 seconds hits harder. | next_power(add 0.7, window 6); buff(stat move, mult 1.2, dur 1.0) | flash |
 | **Cut-In Spike** | rare | power | spike (cooldown 3, min_air 0.45) | Hang in the air long enough and your spike gets a dramatic close-up and extra power. | power(add 0.25); slowmo(scale 0.35, dur 0.25) | cutin, flash, zoom |
@@ -145,15 +153,18 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Zone Focus** | rare | power | dig (cooldown 3) | In the zone: sometimes a dig slows time and sharpens your counter-spike. | slowmo(scale 0.4, dur 0.5); buff(stat spike, mult 1.12, dur 1.6) | flash |
 | **Night Serve** | common | shadow | serve | Serves slip into darkness just past the net. | after the net: invisible(alpha 0.3, dur 0.25) | tint |
 | **Shade Dig** | common | shadow | dig | After a dig you melt into the shadows: faster feet for the rest of the play, and your next spike hits a little harder. | buff(stat move, mult 1.15, dur 4.0); next_power(add 0.15, window 4) | afterimages |
+| **Smoke Bomb** | common | shadow | enemy_spike (chance 0.3) | Sometimes when they spike you vanish in smoke and reappear under the ball. | buff(stat move, mult 1.4, dur 0.6) | burst |
 | **Umbral Block** | common | shadow | block_jump+block | Your block jumps rise from the shadows a little higher; blocks vanish for a moment, and their team hesitates. | block_jump(add 3); invisible(alpha 0.45, dur 0.3); slow_enemies(mult 0.8, dur 1.2) | burst |
 | **Eclipse** | epic | shadow | spike (chance 0.3, cooldown 5) | Sometimes the lights go out on your spike: it vanishes and a decoy flies the other way. | after the net: invisible(alpha 0.05, dur 0.45); after the net: decoy(offset 9, dur 0.45, fake 1) | cutin, flash |
 | **Last Breath** | epic | shadow | match_point_against | When they're one point from winning, darkness falls: the other team is slowed for the rest of the rally. | slow_enemies(mult 0.65, dur 20) | cutin, flash |
 | **Nine Tails** | epic | shadow | spike (chance 0.35, cooldown 4) | Sometimes the nine-tailed fox shows itself: your spike splits into illusions and fades from sight. | decoy(offset 9, dur 0.6, fake 1); after the net: invisible(alpha 0.3, dur 0.3) | cutin, flash |
+| **Shadow Clone** | epic | shadow | spike (chance 0.3, cooldown 4) | Sometimes you split into shadow clones mid-air: they spike a fake ball and the real one slips out of sight. | decoy(offset 10, dur 0.5, fake 1); after the net: invisible(alpha 0.4, dur 0.25) | afterimages, cutin |
 | **Feint Tip** | rare | shadow | tip | Your tips fake one way and flicker out of sight. | decoy(offset 7, dur 0.5, fake 1); invisible(alpha 0.5, dur 0.2) |  |
 | **Foxfire Feint** | rare | shadow | spike (chance 0.3, cooldown 2) | Sometimes your spike splits into foxfire and their defense chases the wrong ball. | decoy(offset 8, dur 0.4, fake 1) | tint |
 | **Phantom Block** | rare | shadow | block_jump | Your block jumps leave shadowy copies and reach higher. | block_jump(add 8) | afterimages |
 | **Shadow Ball** | rare | shadow | spike | Your spike fades into shadow for a moment after the net. | after the net: invisible(alpha 0.3, dur 0.3) | trail |
 | **Shadow Step** | rare | shadow | enemy_spike | When they spike, you slip through the shadows toward the ball. | buff(stat move, mult 1.3, dur 0.8) | afterimages |
+| **Shuriken Serve** | rare | shadow | serve | Your serves spin like a thrown star: faster, and they jitter as they cross the net. | speed(mult 1.1); after the net: wobble(amp 6, period 0.1, dur 0.3, mode zigzag) | trail |
 | **Mist Veil** | common | water | serve | Your serve vanishes into mist for a moment after the net. | after the net: invisible(alpha 0.45, dur 0.35) | burst |
 | **Ripple Dig** | common | water | dig | Your digs float up on a ripple and your setter rides the current to the ball. | gravity(add -3.0, dur 1.0); buff(stat set, mult 1.1, dur 1.5) | ring |
 | **Splash Block** | common | water | block_jump+block | Your block jumps spring a little higher; blocks splash over their side, and their team wades through it. | block_jump(add 3); slow_enemies(mult 0.7, dur 1.8) | burst, sound |
@@ -171,10 +182,12 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Spring Heels** | common | wind | jump | Every jump gets a little extra spring. | jump_bonus(add 4, run 0) | afterimages |
 | **Tailwind** | common | wind | passive | A constant tailwind: you run 6% faster. | buff(stat move, mult 1.06, dur whole match) | afterimages |
 | **Tailwind Rush** | common | wind | win_streak (n 1) | Win a rally to start a run and the wind is at your back: faster feet and a little more air for a while (once per winning run). | buff(stat move, mult 1.12, dur 20); buff(stat jump, mult 1.04, dur 20) | afterimages |
+| **Updraft Set** | common | wind | setter_set | Your setter's sets ride an updraft: they hang longer and you jump a little higher to meet them. | gravity(add -1.6, dur 1.0); buff(stat jump, mult 1.04, dur 1.5) | ring |
 | **Tengu Gale** | epic | wind | spike (chance 0.35, cooldown 4) | Sometimes the tengu's fan joins your spike: it's faster, swerves wildly, and the wind pins their team. | speed(mult 1.15); after the net: gust(min -10, max 10); after the net: slow_enemies(mult 0.7, dur 0.6) | cutin, trail |
 | **Typhoon Serve** | epic | wind | serve (chance 0.75, cooldown 4) | Sometimes your serve becomes a typhoon, bending and rolling after the net. | after the net: curve(ax 100, dur 0.4); after the net: wobble(amp 8, period 0.3, dur 0.4, mode wave) | cutin, ring |
 | **Back Set** | rare | wind | setter_set (chance 0.35) | Your setter sometimes fakes the direction, leaving their blocker frozen. | stun(dur 0.4, target blocker) | ring |
 | **Cyclone Spike** | rare | wind | spike | Your spike hops up over their arms, then dives. | after the net: lift(vy 9); after the net: plunge(vy 25, xmult 0.8, delay 0.2) | ring |
+| **Dragonfly Dart** | rare | wind | spike (chance 0.4) | Sometimes your spike darts like a dragonfly: quicker, and it zips sideways after the net. | speed(mult 1.08); after the net: curve(ax 60, dur 0.3); after the net: wobble(amp 5, period 0.08, dur 0.25, mode zigzag) | afterimages |
 | **Featherweight** | rare | wind | passive | Light as air: +10% jump, but weaker blocks. | buff(stat jump, mult 1.1, dur whole match); buff(stat block, mult 0.94, dur whole match) | afterimages |
 | **Tornado Set** | rare | wind | setter_set | Your setter's sets ride an updraft, and you jump higher to meet them. | gravity(add -2, dur 1); buff(stat jump, mult 1.08, dur 1.5) | ring |
 | **Wind Tip** | rare | wind | tip | A gust carries your tips: faster, and they bob unpredictably. | speed(mult 1.2); after the net: gust(min -6, max 6) | ring |
@@ -199,7 +212,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Swerve Tip** | common | wind | tip | Your tips start short, then swerve deep into the court. | curve(ax 60, dur 0.45) | trail |
 | **Dipping Serve** | rare | wind | serve | Your serves dive down sharply once they cross the net. | after the net: plunge(vy 30, xmult 0.85, delay 0.05) | trail |
 
-## Stat cards (45)
+## Stat cards (47)
 
 | Card | Rarity | Style | Changes |
 |---|---|---|---|
@@ -220,6 +233,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Wall Practice** | common | boost | Block +2.5 |
 | **All-Rounder** | rare | boost | Spike +0.3, Jump +0.3, Block +0.3, Receive +0.3, Serve +0.3 |
 | **Quick Hands** | rare | boost | Speed +0.75, Recovery +1 |
+| **Utility Player** | rare | boost | Receive +0.4, Set +0.75, Serve +0.75, Recovery +0.5 |
 | **Ace Hunter** | rare | playstyle | Serve +1.5, Spike +1, Set -1 |
 | **Anchor** | rare | playstyle | Receive +1.25, Recovery +1.5, Jump -1 |
 | **Big Blocker** | rare | playstyle | Block +3, Jump +0.75, Serve -0.75 |
@@ -245,6 +259,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Berserker** | epic | tradeoff | Spike +2.25, Speed +0.75, Receive -1.5, Block -1 |
 | **Daredevil** | epic | tradeoff | Spike +1.75, Jump +1.25, Speed +0.5, Receive -2, Recovery -1 |
 | **Glass Cannon** | epic | tradeoff | Serve +2.5, Spike +2.5, Block -1.5, Receive -1.5 |
+| **Juggernaut** | epic | tradeoff | Spike +1.5, Block +1.5, Speed -0.75, Recovery -0.75 |
 | **Overload** | epic | tradeoff | Spike +1, Serve +1.75, Speed +0.5, Recovery -1.5, Block -1 |
 | **Second Gear** | epic | tradeoff | Speed +1.25, Jump +1, Spike +0.75, Block -1.5, Receive -1 |
 | **Tank** | epic | tradeoff | Block +3, Receive +2.5, Speed -0.75, Spike -0.5 |

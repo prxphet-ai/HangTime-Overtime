@@ -6676,6 +6676,410 @@
       "art_from": "TrickShot",
       "opponent_ok": "yes",
       "verified": "partial: fired through the dev lab as both teams (2026-10-08/09), no errors; not yet watched in normal play"
+    },
+    {
+      "id": "titan_slam",
+      "title": "Titan Slam",
+      "rarity": "epic",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.3,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "power",
+          "add": 0.4,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.6,
+          "target": "blocker",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.5,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "zoom",
+          "amount": -0.6,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "TITAN SLAM!",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes you spike with a titan's strength: huge power, and their blocker is knocked flat.",
+      "flavour": "Earthshaker.",
+      "art_from": "StrongQuick",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "chest_pound",
+      "title": "Chest Pound",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "block_jump"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "block_jump",
+          "add": 6,
+          "on": "block_jump"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.12,
+          "dur": 3,
+          "on": "block_jump"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.9,
+          "color": "FFB04A",
+          "at": "owner",
+          "on": "block_jump"
+        }
+      ],
+      "description": "Every block jump is a show of strength: you rise higher, and your counter-spike hits harder.",
+      "flavour": "Hoo hoo HAA!",
+      "art_from": "BlockBoost",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "dragonfly_dart",
+      "title": "Dragonfly Dart",
+      "rarity": "rare",
+      "element": "wind",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.4,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.08,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "curve",
+          "ax": 60,
+          "dur": 0.3,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "wobble",
+          "amp": 5,
+          "period": 0.08,
+          "dur": 0.25,
+          "mode": "zigzag",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": 0.5,
+          "color": "A8FFC8",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes your spike darts like a dragonfly: quicker, and it zips sideways after the net.",
+      "flavour": "Zip zip.",
+      "art_from": "SpeedStrike",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "updraft_set",
+      "title": "Updraft Set",
+      "rarity": "common",
+      "element": "wind",
+      "origin": "new",
+      "triggers": [
+        "setter_set"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "gravity",
+          "add": -1.6,
+          "dur": 1.0,
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 1.04,
+          "dur": 1.5,
+          "on": "setter_set"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 0.8,
+          "color": "A8FFC8",
+          "at": "ball",
+          "on": "setter_set"
+        }
+      ],
+      "description": "Your setter's sets ride an updraft: they hang longer and you jump a little higher to meet them.",
+      "flavour": "Lift off.",
+      "art_from": "DeadSet",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "firefly_swarm",
+      "title": "Firefly Swarm",
+      "rarity": "rare",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "decoy",
+          "offset": 6,
+          "dur": 0.4,
+          "fake": 1,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "invisible",
+          "alpha": 0.6,
+          "dur": 0.2,
+          "on": "serve"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "FFF3B0",
+          "at": "ball",
+          "on": "serve"
+        }
+      ],
+      "description": "Your serves are wrapped in fireflies: a swarm of lights hides which one is the ball.",
+      "flavour": "Which light is it?",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "lantern_light",
+      "title": "Lantern Light",
+      "rarity": "common",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "block",
+          "mult": 1.05,
+          "dur": -1,
+          "on": "passive"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.03,
+          "dur": -1,
+          "on": "passive"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": -1,
+          "color": "FFF3B0",
+          "on": "passive"
+        }
+      ],
+      "description": "A soft glow follows you all match: slightly stronger blocks and quicker feet.",
+      "flavour": "Light the way.",
+      "art_from": "BlockBoost",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "shadow_clone",
+      "title": "Shadow Clone",
+      "rarity": "epic",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.3,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "decoy",
+          "offset": 10,
+          "dur": 0.5,
+          "fake": 1,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": 0.8,
+          "color": "8A5CFF",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "invisible",
+          "alpha": 0.4,
+          "dur": 0.25,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "SHADOW CLONE!",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes you split into shadow clones mid-air: they spike a fake ball and the real one slips out of sight.",
+      "flavour": "Kage bunshin.",
+      "art_from": "SneakAttack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "shuriken_serve",
+      "title": "Shuriken Serve",
+      "rarity": "rare",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.1,
+          "on": "serve"
+        },
+        {
+          "when": "cross",
+          "fx": "wobble",
+          "amp": 6,
+          "period": 0.1,
+          "dur": 0.3,
+          "mode": "zigzag",
+          "on": "serve"
+        },
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 0.8,
+          "dur": 0.5,
+          "color": "8A5CFF",
+          "on": "serve"
+        }
+      ],
+      "description": "Your serves spin like a thrown star: faster, and they jitter as they cross the net.",
+      "flavour": "Thwip.",
+      "art_from": "SkyServe",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "smoke_bomb",
+      "title": "Smoke Bomb",
+      "rarity": "common",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "enemy_spike"
+      ],
+      "conds": {
+        "chance": 0.3,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.4,
+          "dur": 0.6,
+          "on": "enemy_spike"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.2,
+          "color": "8A8A9A",
+          "at": "owner",
+          "on": "enemy_spike"
+        }
+      ],
+      "description": "Sometimes when they spike you vanish in smoke and reappear under the ball.",
+      "flavour": "Poof.",
+      "art_from": "CounterBump",
+      "opponent_ok": "yes",
+      "verified": "no"
     }
   ]
 }
