@@ -8,8 +8,8 @@ of **Log**. **Summary** at the top is kept up to date.
 
 - **Everything that exists**: `CATALOG.md` (generated from the sheets by `python tools/catalog.py`) lists every team
   (class, element, base, signature perks, emblem), every perk (rarity, element, trigger, description, gameplay effects,
-  visuals) and every stat card. Current totals: 22 new teams (+ the game's 10), 111 perks (101 new, 3 reworked, 7 kept),
-  37 stat cards. No perk changes the score (enforced by the preflight).
+  visuals) and every stat card. Current totals: 26 new teams (+ the game's 10), 128 perks (118 new, 3 reworked, 7 kept),
+  41 stat cards. No perk changes the score (enforced by the preflight).
 - **Simulator**: `python tools/sim.py <mode>` (match, teams, scaling, perk, perks, run, tune). Results in `sim_results/`
   (one JSON per run plus `index.csv`). See *Simulator* below.
 - **Opponent scaling**: every number lives in `sheets/scaling.json` (the one place to tune; `python tools/set_scaling.py
@@ -23,7 +23,7 @@ of **Log**. **Summary** at the top is kept up to date.
   boss slots), the team's own perks first (signatures / vanilla built-ins), then themed random draws (4x weight for the
   team's element); rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
 - **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~46%
-  (round 10), ~40% (round 15), ~25% (round 20). Teams 43%..53% vs the field at equal rounds (32 teams in the Infinite pools: the game's 10 + 22 new).
+  (round 10), ~40% (round 15), ~25% (round 20). Teams 48%..52% vs the field at equal rounds (36 teams in the Infinite pools: the game's 10 + 26 new).
 - **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
 - **Open questions for you**: see the end of this file.
 
@@ -178,6 +178,9 @@ Modes:
 3. **Classic mode** still uses the game's own difficulty and opponents (new perks/cards do appear on its upgrade screens).
    Should new teams and the scaling system come to Classic too?
 4. **All In** is a deliberately strong epic trade-off (~+16% in the sim). Keep it that way?
+5. **Very late Infinite (round 25+)**: opponents stop getting stronger in stats (x1.5 cap) and only add perks (up to 9).
+   If you reach those rounds in real play and it feels easy, I can add a late ramp that isn't raw spike speed (e.g. more
+   block/receive, faster setters) — tell me.
 
 ### Step 4 — content batch 3 + balance passes 3-4
 - **Vanilla cards on the perk screen are now weighted by rarity** like Overtime perks (common 3, rare 2, epic 1; from
@@ -229,3 +232,30 @@ Modes:
 - Fixed a dev-key bug (players never see it): F5/F6/F7 also worked on the upgrade screen, because the game's
   GameManager carries over between scenes, and loaded that screen a second time, which froze its buttons. Those keys now
   only work during a match.
+
+### Step 8 — content batch 5
+- **17 new perks** for the thin spots (shadow/ice/water/light commons, wind and element-free epics, more dig/set/block/jump
+  triggers): Umbral Block, Shade Dig, Ice Skates (passive trade-off: faster, slightly lower jumps), Chill Touch, Ripple Dig,
+  Splash Block, Glint, Guiding Light, Grounded Receive (commons); Frost Fang, Beetle Horn, Foxfire Feint, Lightning Step
+  (rares); Tengu Gale, Flow State (6 clean touches in a row: stronger, higher, quicker for 8 s), Nine Tails, Hercules Block
+  (epics). None touches the score.
+- **4 new stat cards**: Spring Loaded (common), Playmaker, Line Judge (rare playstyle), Daredevil (epic trade-off: big attack,
+  weak defense).
+- **4 new teams** with new emblem mascots: Kitsune Foxfire (shadow regular, fox mask with foxfire), Karasu Tengu (wind boss,
+  crow tengu), Fubuki Wolves (ice boss, wolf howling at the moon), Kabuto Beetles (power combo, rhinoceros beetle). Fills the
+  gaps: first power team, first wind and ice bosses. Checked in game: Kitsune Foxfire spawned with its emblem and colors.
+- **Team balance** (`tune`, rounds 2/5/8/12): all 36 teams 47.9%..52.1% vs the field.
+- **Perk balance** (round 5, 120 matches per team): first pass had Daredevil +17.5% (too strong) and six perks at ~0%
+  (effects too short to matter before the next relevant touch: e.g. a 0.5 s freeze on their digger wore off before
+  their attack). After two passes everything new is inside its rarity band: Daredevil +13.1%, Hercules Block +11.5%,
+  Nine Tails +9.8%, Flow State +9.1%, Tengu Gale +7.9%, Playmaker +6.1%, Line Judge +5.0%, Umbral Block +5.0%,
+  Chill Touch +4.9%, Frost Fang +4.5%, Lightning Step +4.1%, Splash Block +3.9%, Shade Dig +2.8%, Ripple Dig +2.5%.
+- **Combos** (60 random 5-perk builds at round 8): best 59.5%; lightning x3 55.6%. Nothing trivializes a match.
+- **Late rounds**: with `--no-stop` (the simulated player keeps drafting after losses) the per-match win rate falls to
+  ~27% at round 20 but drifts back up past round 25. Cause: opponent spikes get so fast that digging is already
+  near-impossible, and in the model extra speed only adds spike errors; the player meanwhile holds 20+ perks. I tried
+  raising the stat caps (x1.5 -> x2.2) — no effect, and very fast balls risk physics trouble in the real game, so the stat
+  caps stay at x1.5 (verified in game). The opponent perk cap went 7 -> 9 so late opponents keep gaining abilities.
+  In practice this is unreachable: simulated full runs end at median round 3, 2% pass round 10, ~0% reach round 15
+  (the AI plays your side; you will do better). Logged as open question 5.
+- Dev tool fix this round: none needed; all 17 new perks fired through the dev lab as both sides with 0 errors.

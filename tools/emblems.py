@@ -482,7 +482,70 @@ def golem(p, cx, cy, s, accent):
     p.stroke([(cx - 34 * s, cy + 30 * s), (cx - 16 * s, cy + 46 * s)], 6 * s, fill=accent)
 
 
-MASCOTS = {"owl": owl, "octopus": octopus, "tiger": tiger, "golem": golem, "star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
+def fox(p, cx, cy, s, accent):
+    """Kitsune: a fox mask with kitsune markings, foxfire wisps around it."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    p.poly(P([(-100, -36), (-80, -110), (-40, -62), (40, -62), (80, -110), (100, -36), (70, 12), (22, 62), (0, 80), (-22, 62), (-70, 12)]), amp=2.5)
+    for side in (-1, 1):
+        p.poly(P([(side * 76, -94), (side * 50, -64), (side * 84, -50)]), fill=accent, amp=0.6)
+        p.poly(P([(side * 16, -20), (side * 58, -36), (side * 50, -10)]), fill=CLEAR, amp=0.6)
+        p.stroke(P([(side * 22, -40), (side * 12, -54)]), 6 * s, fill=accent)
+        p.stroke(P([(side * 40, 12), (side * 62, 4)]), 5 * s, fill=accent)
+    p.ellipse(cx, cy + 66 * s, 10 * s, 8 * s, fill=accent, amp=0.4)
+    for x, y, r in ((-128, -54, 13), (132, -40, 11), (-122, 52, 10), (126, 60, 12)):
+        p.poly(P([(x, y - r * 2.4), (x + r * 0.9, y - r * 0.3), (x + r, y + r * 0.4), (x, y + r), (x - r, y + r * 0.4), (x - r * 0.9, y - r * 0.3)]), fill=accent, amp=0.6)
+        p.ellipse(cx + x * s, cy + (y + r * 0.1) * s, r * 0.4 * s, r * 0.4 * s, fill=CLEAR, amp=0.3)
+
+
+def crow(p, cx, cy, s, accent):
+    """Karasu Tengu: a crow tengu with spread wings and a tokin cap, riding a gust."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    for side in (-1, 1):
+        p.poly(P([(side * 22, -28), (side * 78, -86), (side * 142, -104), (side * 126, -78), (side * 146, -66), (side * 124, -44),
+                  (side * 140, -30), (side * 108, -14), (side * 118, 2), (side * 28, 22)]), amp=2)
+    p.ellipse(cx, cy, 34 * s, 52 * s)
+    p.ellipse(cx, cy - 60 * s, 30 * s, 28 * s)
+    p.poly(P([(-26, 40), (26, 40), (38, 92), (12, 78), (0, 96), (-12, 78), (-38, 92)]), amp=1.2)
+    p.poly(P([(-11, -58), (11, -58), (0, -26)]), fill=accent, amp=0.4)
+    for side in (-1, 1):
+        p.poly(P([(side * 6, -70), (side * 24, -76), (side * 20, -62)]), fill=CLEAR, amp=0.4)
+    p.ellipse(cx, cy - 90 * s, 11 * s, 9 * s, fill=accent, amp=0.4)
+    p.curve((cx - 120 * s, cy + 70 * s), (cx - 60 * s, cy + 110 * s), (cx - 10 * s, cy + 104 * s), 8 * s, fill=accent)
+    p.curve((cx + 30 * s, cy + 104 * s), (cx + 90 * s, cy + 108 * s), (cx + 128 * s, cy + 64 * s), 8 * s, fill=accent)
+
+
+def wolf(p, cx, cy, s, accent):
+    """Fubuki: a wolf howling in front of a full moon, snow falling."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    p.ellipse(cx + 66 * s, cy - 50 * s, 62 * s, 62 * s, fill=accent, amp=1.5)
+    p.poly(P([(84, 104), (-20, 104), (-30, 72), (-46, 76), (-44, 52), (-62, 52), (-56, 30), (-74, 26), (-78, 4), (-126, -64), (-132, -80),
+              (-104, -86), (-62, -68), (-46, -82), (-30, -86), (-16, -122), (6, -82), (40, -62), (70, -20), (84, 40)]), amp=2.0)
+    p.poly(P([(-128, -70), (-82, -52), (-90, -46)]), fill=CLEAR, amp=0.3)
+    p.poly(P([(-54, -64), (-34, -66), (-42, -56)]), fill=CLEAR, amp=0.3)
+    flake(p, cx - 116 * s, cy + 50 * s, 14 * s)
+    flake(p, cx + 128 * s, cy + 66 * s, 11 * s)
+    flake(p, cx - 66 * s, cy - 112 * s, 9 * s)
+
+
+def beetle(p, cx, cy, s, accent):
+    """Kabuto: a rhinoceros beetle raising its great horn."""
+    P = lambda pts: [(cx + x * s, cy + y * s) for x, y in pts]
+    for side in (-1, 1):
+        for k, (y0, dx, dy) in enumerate(((0, 110, -20), (30, 120, 30), (60, 100, 80))):
+            p.stroke(P([(side * 50, y0), (side * (dx - 20), y0 + (dy - y0) * 0.3), (side * dx, dy)]), 9 * s)
+    p.ellipse(cx, cy + 34 * s, 66 * s, 70 * s)
+    p.stroke(P([(0, -30), (0, 100)]), 6 * s, fill=CLEAR)
+    for side in (-1, 1):
+        p.curve((cx + side * 18 * s, cy + 0 * s), (cx + side * 48 * s, cy + 20 * s), (cx + side * 40 * s, cy + 76 * s), 6 * s, fill=accent)
+    p.ellipse(cx, cy - 40 * s, 42 * s, 26 * s)
+    p.curve((cx, cy - 52 * s), (cx - 14 * s, cy - 92 * s), (cx + 2 * s, cy - 112 * s), 20 * s)
+    for side in (-1, 1):
+        p.stroke(P([(2, -106), (side * 22, -120)]), 10 * s)
+        p.ellipse(cx + side * 22 * s, cy - 42 * s, 5 * s, 5 * s, fill=accent, amp=0.3)
+    p.stroke(P([(-14, -60), (0, -74), (14, -60)]), 9 * s)
+
+
+MASCOTS = {"fox": fox, "crow": crow, "wolf": wolf, "beetle": beetle, "owl": owl, "octopus": octopus, "tiger": tiger, "golem": golem, "star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
            "sea_dragon": sea_dragon, "ghost": ghost, "brazier": brazier, "penguin": penguin, "thunder": thunder, "swallow": swallow, "whale": whale,
            "mountain": mountain, "bat_moon": bat_moon, "sun_crown": sun_crown}
 

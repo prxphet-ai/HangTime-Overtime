@@ -100,7 +100,7 @@
     },
     {
       "id": "perks_max",
-      "value": 7.0,
+      "value": 9.0,
       "meaning": "most perks an opponent can have",
       "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
     },

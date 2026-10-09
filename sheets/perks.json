@@ -5090,6 +5090,789 @@
       "art_from": "AbsoluteBlock",
       "opponent_ok": "yes",
       "verified": "no"
+    },
+    {
+      "id": "umbral_block",
+      "title": "Umbral Block",
+      "rarity": "common",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "block_jump",
+        "block"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "block_jump",
+          "add": 3,
+          "on": "block_jump"
+        },
+        {
+          "when": "now",
+          "fx": "invisible",
+          "alpha": 0.45,
+          "dur": 0.3,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.8,
+          "dur": 1.2,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.8,
+          "color": "6A3AA8",
+          "at": "ball",
+          "on": "block"
+        }
+      ],
+      "description": "Your block jumps rise from the shadows a little higher; blocks vanish for a moment, and their team hesitates.",
+      "flavour": "Where did it go?",
+      "art_from": "AbsoluteBlock",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "shade_dig",
+      "title": "Shade Dig",
+      "rarity": "common",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.15,
+          "dur": 4.0,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "next_power",
+          "add": 0.15,
+          "window": 4,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": 1.0,
+          "color": "8A5CFF",
+          "on": "dig"
+        }
+      ],
+      "description": "After a dig you melt into the shadows: faster feet for the rest of the play, and your next spike hits a little harder.",
+      "flavour": "Already gone.",
+      "art_from": "PerfectBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "ice_skates",
+      "title": "Ice Skates",
+      "rarity": "common",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.06,
+          "dur": -1,
+          "on": "passive"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 0.97,
+          "dur": -1,
+          "on": "passive"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": -1,
+          "color": "9FE8FF",
+          "on": "passive"
+        }
+      ],
+      "description": "You glide across the court: a little faster all match, but your jumps are slightly lower.",
+      "flavour": "Smooth as ice.",
+      "art_from": "Speedster",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "chill_touch",
+      "title": "Chill Touch",
+      "rarity": "common",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "set"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 1
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.85,
+          "dur": 2.0,
+          "on": "set"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 0.8,
+          "color": "9FE8FF",
+          "at": "ball",
+          "on": "set"
+        }
+      ],
+      "description": "Your sets send a chill over the net: their defenders slow down while your attack comes in.",
+      "flavour": "Brr.",
+      "art_from": "DeadSet",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "ripple_dig",
+      "title": "Ripple Dig",
+      "rarity": "common",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "gravity",
+          "add": -3.0,
+          "dur": 1.0,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "set",
+          "mult": 1.1,
+          "dur": 1.5,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 1.0,
+          "color": "4AA8FF",
+          "at": "ball",
+          "on": "dig"
+        }
+      ],
+      "description": "Your digs float up on a ripple and your setter rides the current to the ball.",
+      "flavour": "Go with the flow.",
+      "art_from": "PerfectBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "splash_block",
+      "title": "Splash Block",
+      "rarity": "common",
+      "element": "water",
+      "origin": "new",
+      "triggers": [
+        "block_jump",
+        "block"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "block_jump",
+          "add": 3,
+          "on": "block_jump"
+        },
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.7,
+          "dur": 1.8,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 1.2,
+          "color": "4AA8FF",
+          "at": "ball",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "sound",
+          "vol": 0.3,
+          "pitch": 0.8,
+          "clip": "net",
+          "on": "block"
+        }
+      ],
+      "description": "Your block jumps spring a little higher; blocks splash over their side, and their team wades through it.",
+      "flavour": "Splash!",
+      "art_from": "AbsoluteBlock",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "glint",
+      "title": "Glint",
+      "rarity": "common",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.4,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "cross",
+          "fx": "flash",
+          "alpha": 0.25,
+          "dur": 0.12,
+          "color": "FFF3B0",
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "slow_enemies",
+          "mult": 0.85,
+          "dur": 0.4,
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes your spike catches the light and dazzles their defenders.",
+      "flavour": "Ting!",
+      "art_from": "StrongQuick",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "guiding_light",
+      "title": "Guiding Light",
+      "rarity": "common",
+      "element": "light",
+      "origin": "new",
+      "triggers": [
+        "set"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 1.06,
+          "dur": 1.5,
+          "on": "set"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 0.8,
+          "color": "FFF3B0",
+          "at": "owner",
+          "on": "set"
+        }
+      ],
+      "description": "Every set lights the way: your next jump goes a little higher.",
+      "flavour": "Follow the light.",
+      "art_from": "RiskySet",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "tengu_gale",
+      "title": "Tengu Gale",
+      "rarity": "epic",
+      "element": "wind",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.35,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.15,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "gust",
+          "min": -10,
+          "max": 10,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "slow_enemies",
+          "mult": 0.7,
+          "dur": 0.6,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "trail",
+          "width": 1.4,
+          "dur": 0.6,
+          "color": "A8FFC8",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "TENGU GALE!",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes the tengu's fan joins your spike: it's faster, swerves wildly, and the wind pins their team.",
+      "flavour": "One sweep of the fan.",
+      "art_from": "StrongQuick",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "flow_state",
+      "title": "Flow State",
+      "rarity": "epic",
+      "element": "none",
+      "origin": "new",
+      "triggers": [
+        "streak"
+      ],
+      "conds": {
+        "n": 6,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "spike",
+          "mult": 1.15,
+          "dur": 8,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "jump",
+          "mult": 1.1,
+          "dur": 8,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.1,
+          "dur": 8,
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "aura",
+          "dur": 8,
+          "color": "FFFFFF",
+          "on": "streak"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "FLOW STATE!",
+          "on": "streak"
+        }
+      ],
+      "description": "Six clean touches in a row and everything clicks: stronger spikes, higher jumps and quicker feet for a while.",
+      "flavour": "Everything slows down.",
+      "art_from": "ComeBack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "frost_fang",
+      "title": "Frost Fang",
+      "rarity": "rare",
+      "element": "ice",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 2
+      },
+      "fx": [
+        {
+          "when": "enemy_touch",
+          "fx": "stun",
+          "dur": 1.3,
+          "target": "hitter",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "tint",
+          "dur": 0.6,
+          "color": "9FE8FF",
+          "on": "spike"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "burst",
+          "size": 1.0,
+          "color": "9FE8FF",
+          "at": "ball",
+          "on": "spike"
+        }
+      ],
+      "description": "The wolf bites: whoever touches your spike first is frozen solid for a second.",
+      "flavour": "Cold teeth.",
+      "art_from": "StrongQuick",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "beetle_horn",
+      "title": "Beetle Horn",
+      "rarity": "rare",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "block_jump",
+        "block"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "block_jump",
+          "add": 5,
+          "on": "block_jump"
+        },
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.2,
+          "on": "block"
+        },
+        {
+          "when": "enemy_touch",
+          "fx": "deflect",
+          "rand": 4,
+          "back": 3,
+          "ymult": 0.75,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.2,
+          "on": "block"
+        }
+      ],
+      "description": "Your block jumps spring higher, and blocks come off like a beetle's horn toss: faster, and their dig goes astray.",
+      "flavour": "Flipped.",
+      "art_from": "AbsoluteBlock",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "foxfire_feint",
+      "title": "Foxfire Feint",
+      "rarity": "rare",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.3,
+        "cooldown": 2
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "decoy",
+          "offset": 8,
+          "dur": 0.4,
+          "fake": 1,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "tint",
+          "dur": 0.5,
+          "color": "6AB8FF",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes your spike splits into foxfire and their defense chases the wrong ball.",
+      "flavour": "Kon kon.",
+      "art_from": "SneakAttack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "grounded_receive",
+      "title": "Grounded Receive",
+      "rarity": "common",
+      "element": "earth",
+      "origin": "new",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "lift",
+          "vy": 6,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "set",
+          "mult": 1.1,
+          "dur": 1.5,
+          "on": "dig"
+        },
+        {
+          "when": "now",
+          "fx": "burst",
+          "size": 0.7,
+          "color": "C0B090",
+          "at": "owner",
+          "on": "dig"
+        }
+      ],
+      "description": "Rooted digs pop a little higher, and your setter gets there faster.",
+      "flavour": "Feet planted.",
+      "art_from": "PerfectBump",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "lightning_step",
+      "title": "Lightning Step",
+      "rarity": "rare",
+      "element": "lightning",
+      "origin": "new",
+      "triggers": [
+        "jump"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 0,
+        "run": 8
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "jump_bonus",
+          "add": 10,
+          "run": 8,
+          "on": "jump"
+        },
+        {
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.15,
+          "dur": 1.0,
+          "on": "jump"
+        },
+        {
+          "when": "now",
+          "fx": "afterimages",
+          "dur": 0.6,
+          "color": "FFE14A",
+          "on": "jump"
+        }
+      ],
+      "description": "Jump off a run and lightning carries you: higher, and quicker on the landing.",
+      "flavour": "Flash step.",
+      "art_from": "Speedster",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "nine_tails",
+      "title": "Nine Tails",
+      "rarity": "epic",
+      "element": "shadow",
+      "origin": "new",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.35,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "decoy",
+          "offset": 9,
+          "dur": 0.6,
+          "fake": 1,
+          "on": "spike"
+        },
+        {
+          "when": "cross",
+          "fx": "invisible",
+          "alpha": 0.3,
+          "dur": 0.3,
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "flash",
+          "alpha": 0.25,
+          "dur": 0.2,
+          "color": "6AB8FF",
+          "on": "spike"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "NINE TAILS!",
+          "on": "spike"
+        }
+      ],
+      "description": "Sometimes the nine-tailed fox shows itself: your spike splits into illusions and fades from sight.",
+      "flavour": "Which one is real?",
+      "art_from": "SneakAttack",
+      "opponent_ok": "yes",
+      "verified": "no"
+    },
+    {
+      "id": "hercules_block",
+      "title": "Hercules Block",
+      "rarity": "epic",
+      "element": "power",
+      "origin": "new",
+      "triggers": [
+        "block_jump",
+        "block"
+      ],
+      "conds": {
+        "chance": 1,
+        "cooldown": 4
+      },
+      "fx": [
+        {
+          "when": "now",
+          "fx": "block_jump",
+          "add": 4,
+          "on": "block_jump"
+        },
+        {
+          "when": "now",
+          "fx": "stun",
+          "dur": 0.7,
+          "target": "all",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "slow_enemies",
+          "mult": 0.7,
+          "dur": 1.5,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.15,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "shake",
+          "amount": 0.4,
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "ring",
+          "size": 2.2,
+          "color": "FFB04A",
+          "at": "ball",
+          "on": "block"
+        },
+        {
+          "when": "now",
+          "fx": "cutin",
+          "text": "HERCULES!",
+          "on": "block"
+        }
+      ],
+      "description": "Block jumps with the strength of the Hercules beetle: a strong block comes off faster and knocks their whole team off balance.",
+      "flavour": "Lift with the horn.",
+      "art_from": "AbsoluteBlock",
+      "opponent_ok": "yes",
+      "verified": "no"
     }
   ]
 }

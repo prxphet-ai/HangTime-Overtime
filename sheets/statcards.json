@@ -476,6 +476,59 @@
       },
       "blurb": "An immovable wall that hits a little softer.",
       "verified": "no"
+    },
+    {
+      "id": "spring_loaded",
+      "title": "Spring Loaded",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Jump": 0.6,
+        "Recovery": 0.6
+      },
+      "blurb": "Up and up again.",
+      "verified": "no"
+    },
+    {
+      "id": "playmaker",
+      "title": "Playmaker",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Set": 2.5,
+        "Speed": 0.75,
+        "Serve": -0.75
+      },
+      "blurb": "Runs the offense; serves suffer.",
+      "verified": "no"
+    },
+    {
+      "id": "line_judge",
+      "title": "Line Judge",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Serve": 1.5,
+        "Bump": 1,
+        "Jump": -0.75
+      },
+      "blurb": "Pinpoint serves and steady receives, feet on the floor.",
+      "verified": "no"
+    },
+    {
+      "id": "daredevil",
+      "title": "Daredevil",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Spike": 1.75,
+        "Jump": 1.25,
+        "Speed": 0.5,
+        "Bump": -2,
+        "Recovery": -1
+      },
+      "blurb": "All attack. Defense? Never heard of it.",
+      "verified": "no"
     }
   ]
 }
