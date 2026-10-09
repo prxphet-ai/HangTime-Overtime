@@ -360,3 +360,6 @@ Modes:
 - First version seen by you in game: too big, too low (overlapped CLASSIC) and tilted the wrong way. Now tilted -6 deg like
   the logo (it slopes down to the right), half the logo's width, tucked under it, credit smaller, buttons moved down
   2.4 units. Checked with a to-scale mock on your screenshot; not yet re-seen in game (you were mid-match).
+- Second round: you asked for both lines straight under the logo. OVERTIME and the credit are now upright and centered
+  under HangTime!. Found why the buttons never moved down: the game has more than one object called "Button group", and I
+  was moving the wrong one. The title menu is now found through its CLASSIC button, the same way as the INFINITE button.
