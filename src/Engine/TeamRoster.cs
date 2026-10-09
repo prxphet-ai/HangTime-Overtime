@@ -150,6 +150,35 @@ namespace HangtimeOvertime.Engine
             Plugin.Trace($"banner emblem {banner.sprite?.name} on {cloth?.name}");
         }
 
+        // Versus: player 1's team on the left banner (the gym's "Player Banner" emblem on the left cloth). Same emblem PNG and
+        // darkened cloth colour as the right banner; the emblem is fitted to the cloth both ways (the left emblem is drawn
+        // smaller than the right one, so it may need to grow).
+        public static void LabelPlayerBanner(OpponentBanner banners, TeamDef def)
+        {
+            if (banners == null || def == null) return;
+            var emblem = banners.GetComponentsInChildren<SpriteRenderer>(true).FirstOrDefault(r => r.name == "Player Banner");
+            var cloth = emblem != null && emblem.transform.parent != null ? emblem.transform.parent.GetComponent<SpriteRenderer>() : null;
+            if (emblem == null || cloth == null) { Plugin.Log.LogWarning("Versus: left banner not found"); return; }
+            var sprite = Banner(emblem.sprite, def);
+            if (sprite == null) return;
+            emblem.sprite = sprite;
+            var c = Color.Lerp(Vfx.Hex(def.Banner), Color.black, 0.42f);
+            cloth.color = new Color(c.r, c.g, c.b, cloth.color.a);
+            float fit = Mathf.Min(0.78f * cloth.bounds.size.x / Mathf.Max(0.01f, emblem.bounds.size.x),
+                                  0.62f * cloth.bounds.size.y / Mathf.Max(0.01f, emblem.bounds.size.y));
+            emblem.transform.localScale *= fit;
+            // the left emblem hangs lower on its cloth than the right one: put it at the same spot (mirrored)
+            var right = banners.GetComponentsInChildren<SpriteRenderer>(true).FirstOrDefault(r => r.name == "Opponent Banner");
+            var rightCloth = right != null && right.transform.parent != null ? right.transform.parent.GetComponent<SpriteRenderer>() : null;
+            if (right != null && rightCloth != null)
+            {
+                var offset = right.bounds.center - rightCloth.bounds.center;
+                var want = cloth.bounds.center + new Vector3(-offset.x, offset.y, 0f);
+                emblem.transform.position += new Vector3(want.x - emblem.bounds.center.x, want.y - emblem.bounds.center.y, 0f);
+            }
+            Plugin.Trace($"left banner: {def.Name} emblem on {cloth.name}");
+        }
+
         // ------------------------------------------------------------ opponent perks
 
         private static readonly AccessTools.FieldRef<BallMovement, OpponentDialogue> fDialogue = AccessTools.FieldRefAccess<BallMovement, OpponentDialogue>("opponentDialogue");

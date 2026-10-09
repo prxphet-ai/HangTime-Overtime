@@ -110,7 +110,13 @@ namespace HangtimeOvertime.Patches
                 AccessTools.FieldRefAccess<OpponentBanner, SpriteRenderer>("mySprite");
 
             [HarmonyPostfix]
-            private static void Postfix(OpponentBanner __instance) => TeamRoster.LabelBanner(sprite(__instance));
+            private static void Postfix(OpponentBanner __instance)
+            {
+                TeamRoster.LabelBanner(sprite(__instance));
+                // Versus: player 1's chosen team on the left banner (Hoshiyumi keeps the game's own banner)
+                if (VersusState.Active)
+                    TeamRoster.LabelPlayerBanner(__instance, Generated.Teams.All.FirstOrDefault(t => t.Id == VersusState.Setup.Team[0]));
+            }
         }
 
         [HarmonyPatch(typeof(DialogueList), "GetDialogue", typeof(string))]

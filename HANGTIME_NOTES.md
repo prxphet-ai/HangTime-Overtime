@@ -474,7 +474,7 @@ Modes:
   REMATCH (fresh); MENU; pause, resume, pause -> MENU; a second Versus match starting fresh; a virtual gamepad unplugged
   and replugged mid-match; CO-OP afterwards clean; 0 errors in the log.
 - **Known issues / not done**: no real gamepad was available, so pads were tested with a virtual device (joining and
-  playing with a physical pad is untested). The left banner stays Hoshiyumi even when player 1 picks a new team. The
+  playing with a physical pad is untested). (The left banner issue is fixed in Step 22.) The
   game's own limit-break effects only show on the left side (the game hard-codes them to x<0). The AI-vs-AI simulator
   does not model Versus yet (a build-vs-build mode would be the way to balance the draft); the last line of your brief
   about the simulator was cut off.
@@ -490,3 +490,10 @@ Modes:
   level-ups and its Limit Break card, and Versus offers neither (it uses Overtime stat cards and opponent-safe perks).
   Classic/Infinite are unchanged: limit breaks work there for you as in the game (opponents never get them in the game
   either). Adding them to Versus would need the effects to work for the right side too (the game hard-codes them to x<0).
+
+### Step 22 — Versus: player 1's team on the left banner
+- The gym has two banners under one `Banners` object: the left cloth `Banner` with the Hoshiyumi emblem `Player Banner`,
+  and the right cloth `Banner (1)` with `Opponent Banner` (the only one the game changes). When player 1 picks a new team,
+  the left emblem now shows that team's emblem on its darkened team colour, sized to the cloth and placed at the same spot
+  as the right emblem (the left emblem object hangs lower on its cloth). Hoshiyumi keeps the game's own banner.
+  Checked in game: Kagaribi Flame and Raijin Tech on the left, opponents' banners on the right unchanged.
