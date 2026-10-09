@@ -363,3 +363,4 @@ Modes:
 - Second round: you asked for both lines straight under the logo. OVERTIME and the credit are now upright and centered
   under HangTime!. Found why the buttons never moved down: the game has more than one object called "Button group", and I
   was moving the wrong one. The title menu is now found through its CLASSIC button, the same way as the INFINITE button.
+- Third round: buttons moved down only 0.45 units, so CLASSIC sits just under the credit line.
