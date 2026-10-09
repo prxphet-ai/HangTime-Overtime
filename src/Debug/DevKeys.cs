@@ -75,6 +75,7 @@ namespace HangtimeOvertime.Debugging
                                    $"opponent=[{string.Join(", ", Engine.Engine.StatsOf(1)?.techniques.Select(t => t.name) ?? new string[0])}] " +
                                    $"cards=[{string.Join(", ", StatCards.Points.Select(kv => kv.Key + " " + kv.Value))}]");
             }
+            if (kb.f9Key.wasPressedThisFrame && Plugin.DumpScenes.Value) { Dumps.PlayerParts(); Dumps.BodySprites(); }
             if (kb.f10Key.wasPressedThisFrame)
             {
                 foreach (var p in perks) if (!gm.playerStats.techniques.Contains(p)) gm.playerStats.techniques.Add(p);

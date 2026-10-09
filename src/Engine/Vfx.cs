@@ -31,6 +31,7 @@ namespace HangtimeOvertime.Engine
         private static float tintUntil, trailUntil;
 
         public static Color Hex(string hex) => ColorUtility.TryParseHtmlString("#" + hex, out var c) ? c : Color.white;
+        public static string ToHex(Color c) => ColorUtility.ToHtmlStringRGB(c);
 
         private class Runner : MonoBehaviour
         {

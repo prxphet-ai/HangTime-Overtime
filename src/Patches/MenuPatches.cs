@@ -102,6 +102,7 @@ namespace HangtimeOvertime.Patches
             controller.group = group;
             group.buttons.Insert(at, controller);
             ContinueMenu.Label(classic.gameObject, clone);
+            CreatorMenu.AddTitleButton(classic.gameObject);
         }
 
         [HarmonyPatch(typeof(TitleButton), "Click")]

@@ -63,6 +63,34 @@ namespace HangtimeOvertime.Debugging
             for (int i = 0; i < t.childCount; i++) Hierarchy(t.GetChild(i), depth + 1, sb);
         }
 
+        // every visible part of the player's characters (for the character creator)
+        public static void PlayerParts()
+        {
+            var sb = new StringBuilder("Player parts:\n");
+            foreach (var pc in Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                sb.AppendLine($" {pc.name} (setter {pc.setter}) at {pc.transform.position}");
+                foreach (var r in pc.GetComponentsInChildren<Renderer>(true))
+                {
+                    string extra = r is SpriteRenderer sr ? $"sprite {(sr.sprite != null ? sr.sprite.name : "-")} color #{ColorUtility.ToHtmlStringRGBA(sr.color)}" :
+                                   r.GetComponent<TMPro.TextMeshPro>() is TMPro.TextMeshPro t ? $"text '{t.text}' color #{ColorUtility.ToHtmlStringRGBA(t.color)}" : r.GetType().Name;
+                    sb.AppendLine($"   {Path(r.transform, pc.transform)} [{r.sortingLayerName} {r.sortingOrder}{(r.enabled && r.gameObject.activeInHierarchy ? "" : " off")}] {extra}");
+                }
+                foreach (var c in pc.GetComponentsInChildren<Component>(true).Select(c => c.GetType().Name).Distinct()) sb.Append(c + " ");
+                sb.AppendLine();
+            }
+            Plugin.Log.LogInfo(sb.ToString());
+        }
+
+        public static void BodySprites()
+        {
+            var names = Resources.FindObjectsOfTypeAll<Sprite>().Select(sp => sp.name + " " + sp.rect.width + "x" + sp.rect.height + " tex " + (sp.texture != null ? sp.texture.name : "-"))
+                .Where(n => new[] { "hair", "Core", "Eyes", "Face", "mouth", "Head", "Foot", "Thigh", "Calf", "Hand", "band", "Band", "pad" }.Any(k => n.Contains(k))).Distinct().OrderBy(n => n);
+            Plugin.Log.LogInfo("Body sprites: " + string.Join(" | ", names));
+        }
+
+        private static string Path(Transform t, Transform root) => t == root || t.parent == null ? t.name : Path(t.parent, root) + "/" + t.name;
+
         public static void Opponent(GameObject team)
         {
             var sb = new StringBuilder($"Opponent {team.name}:\n");

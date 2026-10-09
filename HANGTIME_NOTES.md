@@ -387,3 +387,26 @@ Modes:
   opponent came back with exactly the same two perks. Classic — practice -> stat card -> match 1 vs Kozuki, killed,
   CONTINUE restored match 1 vs Kozuki with the stat card. Losing a resumed run cleared its save. NEW RUN -> confirm -> NO
   and BACK both return cleanly.
+
+### Step 17 — character creator
+- **Where**: a CUSTOMIZE button on the title screen, above your player (left of the menu) — the last stop before starting a
+  run. Code: `src/Engine/Look.cs` (options, saving, applying), `src/Patches/CreatorMenu.cs` (the screen),
+  `src/Patches/LookPatches.cs` (where the look is applied).
+- **Options**: hair style (Spiky = your own hair, Round, Big, Flame, Swoop, Long — the game's own hair art, placed the way
+  the game's characters wear it), hair colour (14 + original), skin tone (7 + original), jersey colour (primary), shorts &
+  number colour (secondary), jersey number 0-99, build (Regular, Slim, Broad, Tall, Compact — proportions only), headband,
+  wristbands, knee pads (none or a colour) and shoe colour.
+- **Screen**: a large live preview of your player (and the title-screen player updates too); mouse arrows on every row,
+  or keyboard/gamepad: up/down picks a row, left/right changes it, Enter/A also advances, Esc/B closes. RANDOMIZE, RESET
+  (back to the game's look) and DONE. The title menu is switched off while it's open.
+- **Saved** in `<persistent data>/HangtimeOvertime_look.json` and applied everywhere player one is drawn: the title screen,
+  every match, and the upgrade / win / lose scenes (those draw you as a separate character; it is found by the number 13
+  it wears). The look is global rather than part of a run save, so a resumed run simply uses your current look.
+- **Cosmetic only**: nothing in it touches stats, perks, hitboxes or the simulator.
+- **Decisions**: no eye colour — the game has a single eye sprite and tinting it would colour the whites too. Body types
+  are proportions of the game's one body sprite (there are no other body models). Skin tones multiply the game's own
+  shading, so "Original" is the lightest. Your own spiky hair is drawn in colour, so a recolourable copy is made at runtime.
+- **Tested in game**: every hair style in a bright colour, skin/build/extras up close (headband under the fringe,
+  wristbands before the hand, knee pads at the knee), RANDOMIZE -> DONE then the title, a practice match and the upgrade
+  screen all showed the new look (white Round hair, gray #54 jersey, green shorts); RESET -> DONE restored the original.
+- I removed the test run save my testing created (your Infinite slot starts empty); the appearance file is at the default.

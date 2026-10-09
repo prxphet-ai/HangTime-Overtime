@@ -192,7 +192,7 @@ namespace HangtimeOvertime.Patches
 
         // a rounded box that stretches without blurring its corners (9-sliced)
         private static Sprite rounded;
-        private static Sprite Rounded()
+        internal static Sprite Rounded()
         {
             if (rounded != null) return rounded;
             const int n = 32, r = 10;
