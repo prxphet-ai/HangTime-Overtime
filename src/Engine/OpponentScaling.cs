@@ -58,7 +58,7 @@ namespace HangtimeOvertime.Engine
         // Re-levels a freshly spawned opponent and sets its perks for this round.
         public static void Apply(GameObject team, TeamDef def, int slot)
         {
-            int round = Round;
+            int round = Mathf.Max(1, Round + Plugin.InfiniteRoundOffset.Value);   // config: [Infinite] Difficulty
             string cls = ClassOf(slot);
             var ot = team.GetComponent<OpponentTeam>();
             var stats = team.GetComponent<PlayerStats>();

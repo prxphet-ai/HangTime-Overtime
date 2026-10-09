@@ -17,6 +17,7 @@ namespace HangtimeOvertime
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> DumpScenes;
         internal static ConfigEntry<bool> DevKeys;
+        internal static ConfigEntry<int> InfiniteRoundOffset;
 
         // Perk/mode trigger log, only with DumpScenes on (development).
         internal static void Trace(string msg) { if (DumpScenes != null && DumpScenes.Value) Log.LogInfo("[trace] " + msg); }
@@ -26,6 +27,9 @@ namespace HangtimeOvertime
             Log = Logger;
             DumpScenes = Config.Bind("Debug", "DumpScenes", false, "Log scene hierarchies and game data (for development).");
             DevKeys = Config.Bind("Debug", "DevKeys", false, "Test shortcuts F6-F12 (for development).");
+            InfiniteRoundOffset = Config.Bind("Infinite", "Difficulty", 0,
+                new ConfigDescription("Opponents in Infinite and Loops play as if it were this many rounds later (+) or earlier (-). " +
+                                      "0 = as tuned. Try +2 if round 1 feels too easy.", new AcceptableValueRange<int>(-4, 10)));
 
             PerkRegistry.Build();
             Engine.Vfx.Init();

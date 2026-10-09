@@ -35,6 +35,9 @@ of **Log**. **Summary** at the top is kept up to date.
   (Shift: as the opponent), F2 / Shift+F2 cycle the lab perk (held from the next match), F3 force the next opponent
   (cycles the new teams), F4 serve, F5 / Shift+F5 give a rally point, F6 win / F7 lose the match, F8 next match is the
   final, F9 log state, F10 every Overtime perk, F11 perk screens show only Overtime perks, F12 Infinite +8 rounds.
+- **Difficulty setting**: `[Infinite] Difficulty` in `BepInEx/config/melty.hangtime.overtime.cfg` (default 0, range -4..10):
+  opponents play as if it were that many rounds later. A fresh build's first match in the simulator: 0 -> ~69%, +1 -> ~67%,
+  +2 -> ~60%, +4 -> ~45%.
 - **Open questions for you**: see the end of this file.
 
 ## What I found in the codebase (before changing anything)
@@ -188,7 +191,8 @@ Modes:
    and the point mix looks like a real match. If you have a feel for how strong Block/Jump/Serve are in real play
    compared with Receive/Speed, tell me and I'll recalibrate (`sheets/sim.json`).
 2. **Player skill**: the simulator plays your side like the game's AI. If you're stronger than the AI, round-1 win rates
-   in real play will be higher than 70% — want the early rounds harder for that?
+   in real play will be higher than 70%. You can now raise `[Infinite] Difficulty` in the config yourself (see Summary);
+   tell me what feels right and I'll make it the default.
 3. **Classic mode** still uses the game's own difficulty and opponents (new perks/cards do appear on its upgrade screens).
    Should new teams and the scaling system come to Classic too?
 4. **All In** was the strongest stat card (~+16%); trimmed to +13% (top of the epic band). Want it stronger again?
@@ -329,3 +333,9 @@ Modes:
   +9.5% and Heat Haze at +11% (trimmed); Tidal Rhythm stayed ~3% however strong its spike buff, so it became a common.
 - All six fired through the dev lab as both sides, 0 errors. The trigger itself is checked by code path only (an idle
   player can't make a long rally in a test); its count lives next to the streak count in `Engine.OnAcceptedTouch`.
+
+### Step 13 — difficulty setting
+- New config entry `[Infinite] Difficulty` (int, -4..10, default 0): opponents in Infinite and Loops are scaled as if it
+  were that many rounds later (or earlier). It moves every knob at once — level-ups, stat ramp, perk count, rarity unlocks —
+  so the tuned curve stays intact, just shifted. Checked in game: Difficulty 2 -> match 1 scaled as round 3.
+  Simulator, fresh build vs the field: +0 ~69%, +1 ~67%, +2 ~60%, +4 ~45%. Default left at 0 (the brief's 60-75% target).
