@@ -7,7 +7,7 @@
     "clone_of": "game object/component cloned, or '-'",
     "text": "label text ({best} etc. filled at runtime)",
     "subtext": "second line, or '-'",
-    "offset_y": "world units relative to the cloned object (negative is down)",
+    "offset_y": "world units relative to the cloned object (negative is down); title_overtime: overlap into the logo's bottom edge; title_credit: overlap into OVERTIME's bottom edge; title_buttons_shift: whole title menu moved down",
     "verified": "how it was seen in the running game, or 'no'"
   },
   "rows": [
@@ -28,6 +28,33 @@
       "subtext": "-",
       "offset_y": -3.3,
       "verified": "in game screenshot 2026-10-08"
+    },
+    {
+      "id": "title_overtime",
+      "scene": "Game",
+      "clone_of": "-",
+      "text": "overtime.png",
+      "subtext": "-",
+      "offset_y": 0.25,
+      "verified": "no"
+    },
+    {
+      "id": "title_credit",
+      "scene": "Game",
+      "clone_of": "-",
+      "text": "credit.png",
+      "subtext": "-",
+      "offset_y": 0.05,
+      "verified": "no"
+    },
+    {
+      "id": "title_buttons_shift",
+      "scene": "Game",
+      "clone_of": "-",
+      "text": "-",
+      "subtext": "-",
+      "offset_y": -0.8,
+      "verified": "no"
     },
     {
       "id": "win_continue_button",

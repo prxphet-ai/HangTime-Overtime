@@ -47,6 +47,8 @@
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\plugins\HangtimeOvertime" />
     <ItemGroup><Emblem Include="../assets\emblems\*.png" Exclude="../assets\emblems\preview.png" /></ItemGroup>
     <Copy SourceFiles="@(Emblem)" DestinationFolder="$(GameDir)\BepInEx\plugins\HangtimeOvertime\emblems" />
+    <ItemGroup><TitleArt Include="../assets\title\*.png" /></ItemGroup>
+    <Copy SourceFiles="@(TitleArt)" DestinationFolder="$(GameDir)\BepInEx\plugins\HangtimeOvertime\title" />
   </Target>
 
 </Project>

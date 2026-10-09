@@ -17,7 +17,49 @@ namespace HangtimeOvertime.Patches
     // switching on the game's own buttons.
     internal static class MenuPatches
     {
-        public static void Init() => SceneManager.sceneLoaded += (scene, _) => { if (scene.name == "Game") InjectInfiniteButton(); };
+        public static void Init() => SceneManager.sceneLoaded += (scene, _) => { if (scene.name == "Game") { InjectInfiniteButton(); AddTitleLogo(); } };
+
+        // "OVERTIME" under the game's own HangTime! logo, then the credit line (art: tools/title_logo.py, shipped in the
+        // plugin's title folder). Children of the logo sprite, so they follow its intro animation.
+        private static void AddTitleLogo()
+        {
+            var title = Object.FindObjectsByType<SpriteRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(r => r.name == "Title" && r.transform.parent != null && r.transform.parent.name == "Title Holder");
+            if (title == null) { Plugin.Log.LogWarning("Title logo not found; no Overtime logo"); return; }
+            if (title.transform.Find("Overtime Logo") != null) return;
+            var logo = title.bounds;
+            var over = TitleSprite(title, "Overtime Logo", Ui.TitleOvertime.Text, logo.size.x * 0.62f, 1);
+            if (over == null) return;
+            float cx = logo.center.x + logo.size.x * 0.08f;
+            float overTop = logo.min.y + Ui.TitleOvertime.OffsetY;
+            over.transform.position = new Vector3(cx, overTop - over.bounds.size.y / 2f, title.transform.position.z);
+            var credit = TitleSprite(title, "Overtime Credit", Ui.TitleCredit.Text, logo.size.x * 0.42f, 2);
+            if (credit != null)
+                credit.transform.position = new Vector3(cx, over.bounds.min.y + Ui.TitleCredit.OffsetY - credit.bounds.size.y / 2f, title.transform.position.z);
+            var group = Object.FindObjectsByType<ButtonGroup>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(g => g.name == "Button group");
+            if (group != null)
+                foreach (var b in group.buttons.Where(b => b != null))
+                    b.transform.position += new Vector3(0f, Ui.TitleButtonsShift.OffsetY, 0f);
+        }
+
+        private static SpriteRenderer TitleSprite(SpriteRenderer title, string name, string file, float worldWidth, int order)
+        {
+            var path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(Plugin).Assembly.Location), "title", file);
+            if (!System.IO.File.Exists(path)) { Plugin.Log.LogWarning("No title art " + path); return null; }
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Clamp };
+            tex.LoadImage(System.IO.File.ReadAllBytes(path));
+            var go = new GameObject(name);
+            go.transform.SetParent(title.transform, false);
+            go.transform.localRotation = Quaternion.identity;
+            var lossy = title.transform.lossyScale.x;
+            go.transform.localScale = Vector3.one / (lossy == 0f ? 1f : lossy);
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), tex.width / worldWidth);
+            sr.sortingLayerID = title.sortingLayerID;
+            sr.sortingOrder = title.sortingOrder + order;
+            sr.color = title.color;
+            return sr;
+        }
 
         private static string Fill(string s) => s
             .Replace("{bestInfiniteWins}", RunState.Save.bestInfiniteWins.ToString())

@@ -350,3 +350,11 @@ Modes:
   Smoke Bomb (+3.2%) (commons). All fired through the dev lab as both teams, 0 errors.
 - **2 new stat cards**: Utility Player (rare, +7.8%), Juggernaut (epic trade-off, +7.5%).
 - Teams 45.7%..53.0% vs the field.
+
+### Step 15 — title screen: "Hangtime! Overtime" and credit
+- The game's own HangTime! logo now has **OVERTIME** under it, drawn in the logo's style (white letters, thick yellow
+  outline sampled from the logo, letters slightly turned), and a credit line **by averageprxphet** below that. Art drawn
+  from code by `tools/title_logo.py` (`assets/title/`, shipped in the plugin's `title` folder); placed by
+  `MenuPatches.AddTitleLogo` as children of the logo sprite so they follow its intro animation. The title buttons move
+  down a little to make room. Positions are rows in `sheets/ui.json` (title_overtime, title_credit, title_buttons_shift).
+- Not yet seen in game (your game was open, so I didn't restart it).
