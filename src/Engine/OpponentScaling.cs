@@ -24,9 +24,9 @@ namespace HangtimeOvertime.Engine
             return ps.techniques.Count + StatCards.Points.Values.Sum() / 2f + ps.statUpgrades.Sum(s => s.currentLevel);
         }
 
-        public static float Points(int round, string cls, float power)
+        public static float Points(int round, string cls, float power, float offset = 0f)
         {
-            float pts = Scaling.PointsBase + Scaling.PointsPerRound * (round - 1);
+            float pts = Scaling.PointsBase + Scaling.PointsPerRound * (round - 1) + offset;
             if (cls == "boss") pts += Scaling.PointsBossBonus;
             else if (cls == "combo") pts += Scaling.PointsComboBonus;
             float expected = Scaling.ExpectedPowerBase + Scaling.ExpectedPowerPerRound * (round - 1);
@@ -67,7 +67,11 @@ namespace HangtimeOvertime.Engine
 
             // stats: the game's own weighted level-ups with this round's points, then the curves
             foreach (var s in stats.statUpgrades) s.currentLevel = 0;
-            float points = Points(round, cls, power);
+            var overrideWeights = def == null ? Generated.Teams.VanillaWeights(team.name.Replace("(Clone)", "").Trim()) : null;
+            if (overrideWeights != null) Traverse.Create(ot).Field("statWeights").SetValue(overrideWeights);
+            string baseName = team.name.Replace("(Clone)", "").Trim();
+            float offset = def != null ? def.PointsOffset : Generated.Teams.VanillaPointsOffset(baseName);
+            float points = Points(round, cls, power, offset);
             ot.Init(points);
             float sm = StatMult(round), mm = MoveMult(round);
             foreach (var s in stats.statUpgrades)
@@ -82,16 +86,17 @@ namespace HangtimeOvertime.Engine
                 ab.canSpikeFreeBalls = ab.blockBoost = ab.perfectBump = ab.absoluteBlock = false;
                 ab.skyServe = ab.riskySet = ab.hybridServe = false;   // the given techniques set their own again
             }
-            var own = def != null ? def.Signature.Select(PerkRegistry.Get).Where(p => p != null).Cast<Technique>().ToList() : builtIn;
-            int count = PerkCount(round, cls);
-            var given = own.Take(count).ToList();
-            string element = def != null ? def.Element : Generated.Teams.VanillaElement(team.name.Replace("(Clone)", "").Trim());
             var allowed = new HashSet<string> { "common" };
             if (round >= Scaling.RareFrom) allowed.Add("rare");
             if (round >= Scaling.EpicFrom) allowed.Add("epic");
+            string Rarity(Technique t) => t is DataPerk d ? d.Def.Rarity : Scaling.VanillaRarity(t.GetType().Name);
+            var own = def != null ? def.Signature.Select(PerkRegistry.Get).Where(p => p != null).Cast<Technique>().ToList() : builtIn;
+            int count = PerkCount(round, cls);
+            var given = own.Where(t => allowed.Contains(Rarity(t))).Take(count).ToList();
+            string element = def != null ? def.Element : Generated.Teams.VanillaElement(team.name.Replace("(Clone)", "").Trim());
             var pool = PerkRegistry.All.Where(p => p.Def.OpponentOk && allowed.Contains(p.Def.Rarity) && !given.Contains(p))
                 .Select(p => (tech: (Technique)p, el: p.Def.Element))
-                .Concat(Scaling.OpponentTechniques.Select(PerkRegistry.FindVanilla).Where(t => t != null && !given.Contains(t)).Select(t => (tech: t, el: "none")))
+                .Concat(Scaling.OpponentTechniques.Select(PerkRegistry.FindVanilla).Where(t => t != null && !given.Contains(t) && allowed.Contains(Rarity(t))).Select(t => (tech: t, el: "none")))
                 .ToList();
             while (given.Count < count && pool.Count > 0)
             {

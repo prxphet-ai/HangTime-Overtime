@@ -68,7 +68,10 @@ def mode_match(D, args, rng):
     res = S.play_series(D, a, b, args.n, rng)
     print(f"{args.a} vs {args.b} at round {args.round}: win {res['win_rate']:.1%}, score {res['avg_score'][0]:.1f}-{res['avg_score'][1]:.1f}, "
           f"rally {res['avg_rally_touches']:.1f} touches")
-    top = sorted(res["triggers_per_match"].items(), key=lambda kv: -kv[1])[:15]
+    evs = {k[3:]: v for k, v in res["triggers_per_match"].items() if k.startswith("ev:")}
+    tot = sum(evs.values()) or 1
+    print("how points end: " + ", ".join(f"{k} {v / tot:.0%}" for k, v in sorted(evs.items(), key=lambda kv: -kv[1])))
+    top = sorted(((k, v) for k, v in res["triggers_per_match"].items() if not k.startswith("ev:")), key=lambda kv: -kv[1])[:15]
     if top:
         print("perk triggers per match: " + ", ".join(f"{k} {v:.1f}" for k, v in top))
     return {"win_rate": res["win_rate"], "avg_rally_touches": res["avg_rally_touches"]}, res
@@ -81,16 +84,17 @@ def mode_teams(D, args, rng):
     rallies = []
     for i, a in enumerate(teams):
         for b in teams[i + 1:]:
-            res = S.play_series(D, lambda a=a: S.build_opponent(D, a, args.round, rng), lambda b=b: S.build_opponent(D, b, args.round, rng), args.n, rng)
+            res = S.play_series(D, lambda a=a: S.build_opponent(D, a, args.round, rng, no_class=args.no_class),
+                                lambda b=b: S.build_opponent(D, b, args.round, rng, no_class=args.no_class), args.n, rng)
             matrix[f"{a}|{b}"] = res["win_rate"]
             field[a].append(res["win_rate"])
             field[b].append(1 - res["win_rate"])
             rallies.append(res["avg_rally_touches"])
-    print(f"Team vs field at round {args.round} ({args.n} matches per pair):")
+    print(f"Team vs field at round {args.round} ({args.n} matches per pair{', no boss/combo bonus' if args.no_class else ''}):")
     rows = sorted(((t, sum(v) / len(v)) for t, v in field.items()), key=lambda kv: -kv[1])
     for t, wr in rows:
         flag = "  <-- above target" if wr > D.sim["targets"]["team_field_max"] else ""
-        print(f"  {D.team_name(t):<22} {wr:6.1%}{flag}")
+        print(f"  {D.team_name(t):<22} {D.team_class.get(t, ''):<8} {wr:6.1%}{flag}")
     print(f"average rally: {statistics.mean(rallies):.1f} touches")
     summary = {"round": args.round, "field": {t: round(w, 3) for t, w in rows}, "max": round(rows[0][1], 3), "min": round(rows[-1][1], 3)}
     return summary, {"matrix": matrix}
@@ -147,11 +151,16 @@ def mode_perks(D, args, rng):
     power = None if args.no_power else S.player_power(S.build_player(D, base_perks, base_cards))
     seed = args.seed
     base = field_win_rate(D, lambda: S.build_player(D, base_perks, base_cards), args.round, args.n, random.Random(seed), power)
-    items = [("perk", p) for p in D.perks] + [("card", c) for c in D.cards] + [("vanilla", v) for v in D.vanilla]
+    items = ([("perk", p) for p in D.perks] + [("card", c) for c in D.cards] + [("vanilla", v) for v in D.vanilla if v != "LimitBreak"]
+             + [("vcard", i) for i in range(len(D.vanilla_cards))])
+    if args.only:
+        items = [it for it in items if it[0] in args.only.split(",")]
     out = []
     for kind, pid in items:
         if kind == "card":
             mk = lambda pid=pid: S.build_player(D, base_perks, base_cards + [pid])
+        elif kind == "vcard":
+            mk = lambda pid=pid: S.build_player(D, base_perks, base_cards, [D.vanilla_cards[pid]])
         else:
             mk = lambda pid=pid: S.build_player(D, base_perks + [pid], base_cards)
         wr = field_win_rate(D, mk, args.round, args.n, random.Random(seed), power)
@@ -159,11 +168,56 @@ def mode_perks(D, args, rng):
     out.sort(key=lambda r: -r[2])
     print(f"Field win rate at round {args.round} with no perks: {base:.1%}. Change from adding one:")
     for kind, pid, d in out:
-        name = (D.perks.get(pid) or D.cards.get(pid) or D.vanilla.get(pid))["title"]
+        name = D.vanilla_cards[pid]["title"] if kind == "vcard" else (D.perks.get(pid) or D.cards.get(pid) or D.vanilla.get(pid))["title"]
         print(f"  {kind:<7} {name:<20} {d:+6.1%}")
-    deltas = {pid: round(d, 3) for _, pid, d in out}
-    return {"round": args.round, "base": round(base, 3), "top": out[0][1], "top_delta": round(out[0][2], 3),
-            "bottom": out[-1][1], "bottom_delta": round(out[-1][2], 3)}, {"deltas": deltas}
+    deltas = {(D.vanilla_cards[pid]["title"] if kind == "vcard" else pid): round(d, 3) for kind, pid, d in out}
+    return {"round": args.round, "base": round(base, 3), "top": str(out[0][1]), "top_delta": round(out[0][2], 3),
+            "bottom": str(out[-1][1]), "bottom_delta": round(out[-1][2], 3)}, {"deltas": deltas}
+
+
+def field_rates(D, rounds, n, rng, no_class=True):
+    teams = D.all_teams()
+    tot = {t: [] for t in teams}
+    for rnd in rounds:
+        for i, a in enumerate(teams):
+            for b in teams[i + 1:]:
+                res = S.play_series(D, lambda a=a: S.build_opponent(D, a, rnd, rng, no_class=no_class),
+                                    lambda b=b: S.build_opponent(D, b, rnd, rng, no_class=no_class), n, rng)
+                tot[a].append(res["win_rate"])
+                tot[b].append(1 - res["win_rate"])
+    return {t: sum(v) / len(v) for t, v in tot.items()}
+
+
+def mode_tune(D, args, rng):
+    """Nudges each team's points_offset (sheets/teams.json) toward a 50% field win rate over several rounds."""
+    rounds = [int(r) for r in args.rounds.split(",")]
+    path = os.path.join(S.ROOT, "sheets", "teams.json")
+    history = []
+    for it in range(args.iters):
+        rates = field_rates(D, rounds, args.n, rng)
+        spread = max(rates.values()) - min(rates.values())
+        history.append({t: round(v, 3) for t, v in rates.items()})
+        print(f"iteration {it + 1}: field win rates {min(rates.values()):.1%} - {max(rates.values()):.1%}")
+        with open(path, encoding="utf-8") as f:
+            doc = json.load(f)
+        for t, wr in rates.items():
+            step = max(-1.5, min(1.5, (0.5 - wr) * args.gain))
+            if t in D.new_teams:
+                row = next(r for r in doc["rows"] if r["id"] == t)
+                row["points_offset"] = round(max(-8.0, min(8.0, row["points_offset"] + step)), 1)
+            else:
+                prof = doc["vanilla_profiles"][t]
+                prof["points_offset"] = round(max(-8.0, min(8.0, prof.get("points_offset", 0.0) + step)), 1)
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(json.dumps(doc, indent=2, ensure_ascii=False) + "\n")
+        D = S.Data()
+    rates = field_rates(D, rounds, args.n, rng)
+    rows = sorted(rates.items(), key=lambda kv: -kv[1])
+    print("final field win rates (rounds " + args.rounds + ", no boss/combo bonus):")
+    for t, wr in rows:
+        off = D.new_teams[t]["points_offset"] if t in D.new_teams else D.profiles.get(t, {}).get("points_offset", 0.0)
+        print(f"  {D.team_name(t):<22} {wr:6.1%}   offset {off:+.1f}")
+    return {"rounds": rounds, "final": {t: round(w, 3) for t, w in rows}, "max": round(rows[0][1], 3), "min": round(rows[-1][1], 3)}, {"history": history}
 
 
 def offered_perks(D, owned, rng, k=2):
@@ -207,6 +261,7 @@ def mode_run(D, args, rng):
     """Simulated infinite runs: opponents by slot class, random team, scaled with the player's power."""
     reached = []
     picks_seen = {}
+    played, won = {}, {}
     for _ in range(args.n):
         perks, cards, vcards, recent = [], [], [], []
         rnd = 1
@@ -220,8 +275,10 @@ def mode_run(D, args, rng):
             power = S.player_power(player)
             opp = S.build_opponent(D, team, rnd, rng, power, cls)
             res = S.Match(D, player, opp, rng).play()
-            if res["winner"] != 0:
+            played[rnd] = played.get(rnd, 0) + 1
+            if res["winner"] != 0 and not args.no_stop:
                 break
+            won[rnd] = won.get(rnd, 0) + (res["winner"] == 0)
             wins = rnd
             if wins == 4 and "LimitBreak" not in perks:
                 perks.append("LimitBreak")
@@ -249,12 +306,19 @@ def mode_run(D, args, rng):
     print(f"{args.n} simulated infinite runs (lost at round):")
     print(f"  median {statistics.median(reached)}, mean {statistics.mean(reached):.1f}, 90th percentile {reached[int(len(reached) * 0.9) - 1]}")
     print("  share of runs that beat round: " + ", ".join(f"r{r} {v:.0%}" for r, v in survive.items()))
-    return {"median": statistics.median(reached), "mean": round(statistics.mean(reached), 2), "survive": {str(k): round(v, 3) for k, v in survive.items()}}, {"lost_at": hist, "picks": picks_seen}
+    per_round = {r: won.get(r, 0) / played[r] for r in sorted(played) if played[r] >= 10}
+    print("  win rate of the match at each round (runs that got there): " + ", ".join(f"r{r} {v:.0%}" for r, v in per_round.items()))
+    return ({"median": statistics.median(reached), "mean": round(statistics.mean(reached), 2), "survive": {str(k): round(v, 3) for k, v in survive.items()},
+             "per_round": {str(k): round(v, 3) for k, v in per_round.items()}}, {"lost_at": hist, "picks": picks_seen})
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("mode", choices=["match", "teams", "scaling", "perk", "perks", "run"])
+    ap.add_argument("mode", choices=["match", "teams", "scaling", "perk", "perks", "run", "tune"])
+    ap.add_argument("--iters", type=int, default=4, help="tune: iterations")
+    ap.add_argument("--no-stop", action="store_true", help="run: keep drafting after losses (win rate per round for a typical build)")
+    ap.add_argument("--only", default="", help="perks: only these kinds (perk,card,vanilla,vcard)")
+    ap.add_argument("--gain", type=float, default=10.0, help="tune: offset points per 100%% win-rate gap")
     ap.add_argument("--a", default="player")
     ap.add_argument("--b", default="kagaribi")
     ap.add_argument("--round", type=int, default=1)
@@ -271,6 +335,7 @@ def main():
     ap.add_argument("--label", default="")
     ap.add_argument("--no-save", action="store_true")
     ap.add_argument("--no-power", action="store_true")
+    ap.add_argument("--no-class", action="store_true", help="teams mode: no boss/combo bonus (intrinsic team strength)")
     args = ap.parse_args()
     D = S.Data()
     rng = random.Random(args.seed)

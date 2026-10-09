@@ -20,7 +20,8 @@
     "lost_point": "lines on conceding",
     "comment": "what your team says after beating them",
     "signature": "perks this team always has (perks.json ids)",
-    "verified": "how it was seen in game, or 'no'"
+    "verified": "how it was seen in game, or 'no'",
+    "points_offset": "extra opponent level-up points for this team at every round (team-specific tuning; negative = weaker)"
   },
   "vanilla_teams": {
     "about": "Vanilla team prefabs logged in game (2026-10-08), by slot class.",
@@ -91,7 +92,8 @@
       "signature": [
         "blaze_spike"
       ],
-      "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played"
+      "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
+      "points_offset": -0.6
     },
     {
       "id": "hyoga",
@@ -131,7 +133,8 @@
       "signature": [
         "frost_serve"
       ],
-      "verified": "no"
+      "verified": "no",
+      "points_offset": -3.6
     },
     {
       "id": "raijin",
@@ -171,7 +174,8 @@
       "signature": [
         "zigzag_spike"
       ],
-      "verified": "no"
+      "verified": "no",
+      "points_offset": -1.9
     },
     {
       "id": "fujin",
@@ -211,7 +215,8 @@
       "signature": [
         "gale_serve"
       ],
-      "verified": "no"
+      "verified": "no",
+      "points_offset": 3.6
     },
     {
       "id": "kaien",
@@ -251,7 +256,8 @@
       "signature": [
         "tidal_arc"
       ],
-      "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played"
+      "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
+      "points_offset": -1.5
     },
     {
       "id": "iwao",
@@ -292,7 +298,8 @@
         "bedrock_block",
         "quake_spike"
       ],
-      "verified": "no"
+      "verified": "no",
+      "points_offset": -0.3
     },
     {
       "id": "yomi",
@@ -333,7 +340,8 @@
         "shadow_ball",
         "eclipse"
       ],
-      "verified": "no"
+      "verified": "no",
+      "points_offset": 0.7
     },
     {
       "id": "amaterasu",
@@ -374,43 +382,64 @@
         "solar_flare",
         "holy_lance"
       ],
-      "verified": "no"
+      "verified": "no",
+      "points_offset": -4.2
     }
   ],
   "vanilla_profiles": {
-    "about": "Theme element for each vanilla team: scaling draws its random perks from this element first (its own built-in perks always come first).",
+    "about": "Theme element and strength offset for each vanilla team: scaling draws random perks from the element first (built-in perks always come first) and adds points_offset to the team's level-up points. Optional 'weights' replace the team's stat weights in Infinite/Loop (used where the game's weights leave a team unable to grow).",
     "Rensho": {
-      "element": "power"
+      "element": "power",
+      "points_offset": -0.8
     },
     "Hinami Kai": {
-      "element": "wind"
+      "element": "wind",
+      "points_offset": -0.3
     },
     "Daigan Tech": {
-      "element": "earth"
+      "element": "earth",
+      "points_offset": -1.6
     },
     "Namasito Academy": {
-      "element": "water"
+      "element": "water",
+      "points_offset": 1.8
     },
     "Kozuki Dan": {
-      "element": "lightning"
+      "element": "lightning",
+      "points_offset": -4.3
     },
     "Aomori": {
-      "element": "wind"
+      "element": "wind",
+      "points_offset": 4.8
     },
     "Ten-Roku": {
-      "element": "earth"
+      "element": "earth",
+      "points_offset": 2.5
     },
     "Tenzio": {
-      "element": "shadow"
+      "element": "shadow",
+      "points_offset": 0.6,
+      "weights": {
+        "Spike": 2,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 1,
+        "SpinServe": 0,
+        "ServeJump": 2,
+        "FloatServe": 2
+      }
     },
     "Sunaumi High": {
-      "element": "water"
+      "element": "water",
+      "points_offset": 3.4
     },
     "Shirogane": {
-      "element": "ice"
+      "element": "ice",
+      "points_offset": -6.4
     },
     "Club Sumi": {
-      "element": "none"
+      "element": "none",
+      "points_offset": 0.0
     }
   }
 }

@@ -62,6 +62,16 @@ class Data:
         self.new_teams = {t["id"]: t for t in self.teams_doc["rows"]}
         self.profiles = self.teams_doc.get("vanilla_profiles", {})
 
+    def resolve(self, key):
+        """Team key from a prefab name, new-team id or display name (case-insensitive)."""
+        if key in self.team_class:
+            return key
+        low = key.lower()
+        for k in self.all_teams():
+            if low in (k.lower(), self.team_name(k).lower()):
+                return k
+        raise SystemExit(f"unknown team '{key}'; known: {', '.join(self.all_teams())}")
+
     def all_teams(self):
         vt = self.teams_doc["vanilla_teams"]
         return vt["regular"] + vt["combo"] + vt["boss"] + list(self.new_teams)
@@ -83,7 +93,8 @@ class Data:
         if pid in self.vanilla:
             v = dict(self.vanilla[pid])
             v.setdefault("element", "none")
-            v.setdefault("rarity", "rare")
+            vr = self.scaling_doc.get("vanilla_rarity", {})
+            v["rarity"] = next((r for r in ("common", "rare", "epic") if pid in vr.get(r, [])), "rare")
             return v
         raise KeyError("unknown perk " + pid)
 
@@ -115,9 +126,15 @@ def _ai_of(team):
     return spiker, setter
 
 
-def scaled_points(D, rnd, cls, player_power=None):
+def team_offset(D, key):
+    if key in D.new_teams:
+        return D.new_teams[key].get("points_offset", 0.0)
+    return D.profiles.get(key, {}).get("points_offset", 0.0)
+
+
+def scaled_points(D, rnd, cls, player_power=None, offset=0.0):
     s = D.scaling
-    pts = s["points_base"] + s["points_per_round"] * (rnd - 1)
+    pts = s["points_base"] + s["points_per_round"] * (rnd - 1) + offset
     if cls == "boss":
         pts += s["points_boss_bonus"]
     elif cls == "combo":
@@ -180,11 +197,11 @@ def opponent_perks(D, key, rnd, cls, rng):
         sig = list(D.new_teams[key]["signature"])
     else:
         sig = [t for t in D.game["teams"].get(key, {}).get("techniques", []) if t in D.vanilla]
-    chosen = sig[:count]
-    element = D.element_of_team(key)
     allowed = {"common"} | ({"rare"} if rnd >= s["rare_from"] else set()) | ({"epic"} if rnd >= s["epic_from"] else set())
+    chosen = [p for p in sig if D.perk_row(p)["rarity"] in allowed][:count]
+    element = D.element_of_team(key)
     pool = [p for p in D.perks.values() if p["opponent_ok"] == "yes" and p["rarity"] in allowed and p["id"] not in chosen]
-    pool += [D.perk_row(v) for v in D.scaling_doc["opponent_techniques"]["allowed"] if v not in chosen]
+    pool += [D.perk_row(v) for v in D.scaling_doc["opponent_techniques"]["allowed"] if v not in chosen and D.perk_row(v)["rarity"] in allowed]
     while len(chosen) < count and pool:
         weights = [(s["theme_weight"] if p.get("element") == element and element != "none" else 1.0) for p in pool]
         p = rng.choices(pool, weights)[0]
@@ -193,12 +210,15 @@ def opponent_perks(D, key, rnd, cls, rng):
     return chosen
 
 
-def build_opponent(D, key, rnd, rng, player_power=None, cls=None):
+def build_opponent(D, key, rnd, rng, player_power=None, cls=None, no_class=False):
+    key = D.resolve(key)
     base = D.new_teams[key]["base"] if key in D.new_teams else key
     g = D.game["teams"][base]
     cls = cls or D.team_class.get(key, "regular")
-    weights = D.new_teams[key]["weights"] if key in D.new_teams else g["weights"]
-    pts = scaled_points(D, rnd, cls, player_power)
+    if no_class:
+        cls = "regular"
+    weights = D.new_teams[key]["weights"] if key in D.new_teams else D.profiles.get(key, {}).get("weights", g["weights"])
+    pts = scaled_points(D, rnd, cls, player_power, team_offset(D, key))
     lv = distribute(g["levels"], weights, pts, rng)
     om, mm = over_mult(D, rnd), move_mult(D, rnd)
     side = Side(D.team_name(key))
@@ -364,7 +384,8 @@ class Match:
             jump = side.stats["Jump"] * rt.stat_mult("jump", self.clock)
             if c.get("min_air", 0) > 0 and self.rng.gauss(cm["air_time_base"] + cm["air_time_per_jump"] * jump, 0.08) < c["min_air"]:
                 return False
-            if "min_height" in c and (jump - 61.0) / 2.0 + self.rng.uniform(1, 6) < c["min_height"]:
+            K = self.D.k
+            if "min_height" in c and self.rng.uniform(K["spike_height_min"], K["spike_height_max"]) + K["spike_height_per_jump"] * (jump - 61.0) < c["min_height"]:
                 return False
         if trig == "serve" and c.get("hold", 0) > 0 and self.rng.gauss(cm["serve_hold_mean"], cm["serve_hold_spread"]) < c["hold"]:
             return False
@@ -427,12 +448,12 @@ class Match:
         elif k == "stun":
             if fx["target"] == "all":
                 en.stun_all_until = t + fx["dur"]
-                en.stunned_block_until = t + fx["dur"] + D.k["seconds_per_touch"]
+                en.stunned_block_until = t + fx["dur"] + D.k["t_dig"]
             elif fx["target"] == "blocker":
-                en.stunned_block_until = t + fx["dur"] + D.k["seconds_per_touch"]
+                en.stunned_block_until = t + fx["dur"] + D.k["t_dig"]
             else:
                 if self.rng.random() < min(1.0, fx["dur"] * fm["stun_attack_free_ball"]):
-                    en.stunned_attack_until = t + 2 * D.k["seconds_per_touch"]
+                    en.stunned_attack_until = t + D.k["t_receive"] + D.k["t_set"] + D.k["t_attack"]
         elif k == "slow_enemies":
             en.slows.append((fx["mult"], t + fx["dur"]))
         elif k == "zone":
@@ -478,8 +499,8 @@ class Match:
 
     # ------------------------------------------------ the rally
 
-    def tick(self):
-        self.clock += self.D.k["seconds_per_touch"]
+    def tick(self, phase):
+        self.clock += self.D.k[phase]
         self.touches += 1
 
     def new_flight(self, owner):
@@ -540,7 +561,7 @@ class Match:
             speed = S.stats["SpinServe"] * (1.0 + (S.stats["ServeJump"] - 60.0) / 200.0)
         speed *= ctx.get("speed", 1.0)
         if rng.random() < K["serve_error_base"] + K["serve_error_per_speed"] * max(0.0, speed - 70.0) / 50.0:
-            return r
+            return self.ev("serve_error", r)
         pen = ctx.get("pen", 0.0)
         if "hybridServe" in S.abilities or "skyServe" in S.abilities:
             pen += 0.15
@@ -551,10 +572,10 @@ class Match:
         if flt:
             pen += K["float_penalty"] * max(0.0, S.stats["FloatServe"] - 100.0) / 50.0
             speed = 70.0
+        self.tick("t_receive")
         x = K["receive_base"] - K["receive_speed"] * (speed - 70.0) / 30.0 - pen + self.receive_logit(r)
-        self.tick()
         if rng.random() > sigmoid(x):
-            return s
+            return self.ev("ace", s)
         ectx = {}
         self.enemy_touch(r, ectx)
         q = self.pass_quality(r, speed) * max(0.1, 1.0 - ectx.get("deflect", 0.0))
@@ -574,8 +595,8 @@ class Match:
             d = 1 - t
             T, rt = self.sides[t], self.rt[t]
             # --- set
-            self.tick()
-            x = K["set_base"] + K["set_quality"] * (q - 1.0) + K["setter_move_weight"] * (T.setter_move * rt.stat_mult("set", self.clock) - 1.5) / 0.3
+            self.tick("t_set")
+            x = K["set_base"] + K["set_quality"] * (q - 1.0) + K["setter_move_weight"] * (T.setter_move * rt.stat_mult("set", self.clock) * rt.move_mult(self.clock) - 1.5) / 0.3
             if "riskySet" in T.abilities and q < 0.5:
                 x += 0.4
             if T.is_player:
@@ -587,7 +608,9 @@ class Match:
                 self.fire(t, "set", setctx)
                 self.fire(t, "setter_set", setctx)
                 self.accepted(t)
-                sq = min(1.0, rng.uniform(0.7, 1.0) * (0.6 + 0.4 * q) + rt.own_quality + setctx.get("quality", 0.0))
+                approach = T.move * rt.stat_mult("move", self.clock) * rt.move_mult(self.clock)
+                sq = min(1.0, rng.uniform(0.7, 1.0) * (0.6 + 0.4 * q) + rt.own_quality + setctx.get("quality", 0.0)
+                         + K["approach_move_weight"] * (approach - 1.5) / 0.3 * 0.25)
                 rt.own_quality = 0.0
             else:
                 free = "canSpikeFreeBalls" not in T.abilities
@@ -595,7 +618,7 @@ class Match:
             if self.clock < rt.stunned_attack_until:
                 free = True
             # --- attack
-            self.tick()
+            self.tick("t_attack")
             self.new_flight(t)
             actx = {}
             if free:
@@ -616,7 +639,7 @@ class Match:
                         rt.next_power = 0.0
                     speed = power * D.game["ball"]["originalSPikePower"] * (0.85 + 0.15 * sq) * actx.get("speed", 1.0)
                     if rng.random() < K["spike_error_base"] + K["spike_error_per_speed"] * max(0.0, speed - 110.0) / 40.0 + K["spike_error_bad_set"] * (1.0 - sq):
-                        return d
+                        return self.ev("spike_error", d)
                 self.accepted(t)
                 pen = actx.get("pen", 0.0)
             # --- block (spikes only)
@@ -643,10 +666,10 @@ class Match:
                         if rng.random() < stuff:
                             # rebound onto the attacker's court: the attackers try to cover it
                             cover_speed = speed * 0.7 * kctx.get("speed", 1.0)
+                            self.tick("t_dig")
                             x = K["dig_base"] - K["dig_speed"] * (cover_speed - 80.0) / 30.0 + self.receive_logit(t) - kctx.get("pen", 0.0)
-                            self.tick()
                             if rng.random() > sigmoid(x):
-                                return d
+                                return self.ev("stuff_block", d)
                             q = self.pass_quality(t, cover_speed)
                             self.new_flight(t)
                             continue
@@ -657,17 +680,19 @@ class Match:
             self.cross(cctx)
             speed *= cctx.get("speed", 1.0)
             pen += cctx.get("pen", 0.0)
-            self.tick()
+            self.tick("t_dig" if kind == "spike" else "t_receive")
             if kind == "free":
                 x = K["free_ball_dig"] + self.receive_logit(d)
             elif kind == "tip":
                 move = dside.move * drt.stat_mult("move", self.clock) * drt.move_mult(self.clock)
                 x = K["tip_dig_base"] + K["tip_move_weight"] * (move - 1.5) / 0.3 - pen + self.receive_logit(d, -K["move_weight"] * (move - 1.5) / 0.3)
             else:
+                atk_jump = T.stats["Jump"] * rt.stat_mult("jump", self.clock) + actx.get("jump", 0.0)
                 x = (K["dig_base"] - K["dig_speed"] * (speed - 80.0) / 30.0 - K["dig_set_quality"] * sq - pen
+                     - K["dig_attack_height"] * (atk_jump - 61.0) / 5.0
                      + self.receive_logit(d) + (K["soft_block_dig_bonus"] if soft else 0.0))
             if rng.random() > sigmoid(x):
-                return t
+                return self.ev(kind + "_kill", t)
             ectx = {}
             self.enemy_touch(d, ectx)
             q = self.pass_quality(d, speed) * max(0.1, 1.0 - ectx.get("deflect", 0.0))
@@ -683,6 +708,10 @@ class Match:
                 q = 0.6
             t = d
         return rng.randrange(2)
+
+    def ev(self, name, winner):
+        self.track["ev:" + name] = self.track.get("ev:" + name, 0) + 1
+        return winner
 
     def rally_end(self, winner):
         loser = 1 - winner

@@ -23,7 +23,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Spike": 1.5
+        "Spike": 1
       },
       "blurb": "Hours at the spike line. Hit harder.",
       "verified": "no"
@@ -45,7 +45,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Block": 1.5
+        "Block": 2.5
       },
       "blurb": "Bigger, better blocks.",
       "verified": "no"
@@ -56,7 +56,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Bump": 1.5
+        "Bump": 1
       },
       "blurb": "Cleaner receives off hard hits.",
       "verified": "no"
@@ -78,7 +78,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Speed": 1.5
+        "Speed": 1
       },
       "blurb": "Faster across the court.",
       "verified": "no"
@@ -100,7 +100,7 @@
       "rarity": "common",
       "style": "boost",
       "deltas": {
-        "Recovery": 2
+        "Recovery": 1.5
       },
       "blurb": "Quicker first step after every landing.",
       "verified": "no"
@@ -111,11 +111,11 @@
       "rarity": "rare",
       "style": "boost",
       "deltas": {
-        "Spike": 0.75,
-        "Jump": 0.75,
-        "Block": 0.75,
-        "Bump": 0.75,
-        "Serve": 0.75
+        "Spike": 0.4,
+        "Jump": 0.4,
+        "Block": 0.4,
+        "Bump": 0.4,
+        "Serve": 0.4
       },
       "blurb": "A bit better at everything.",
       "verified": "no"
@@ -126,7 +126,7 @@
       "rarity": "rare",
       "style": "boost",
       "deltas": {
-        "Speed": 1.5,
+        "Speed": 1,
         "Recovery": 1.5
       },
       "blurb": "Fast feet, faster recovery.",
@@ -138,9 +138,9 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Block": 2,
+        "Block": 2.5,
         "Bump": 1.5,
-        "Spike": -1
+        "Spike": -0.5
       },
       "blurb": "Defense first. Your attacks soften.",
       "verified": "no"
@@ -151,7 +151,7 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Speed": 2,
+        "Speed": 1.25,
         "Jump": 1.5,
         "Block": -1
       },
@@ -178,7 +178,7 @@
       "style": "playstyle",
       "deltas": {
         "Serve": 3,
-        "Speed": -1
+        "Speed": -0.5
       },
       "blurb": "Thunderous serves, heavy feet.",
       "verified": "no"
@@ -201,8 +201,8 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Bump": 2,
-        "Recovery": 2,
+        "Bump": 1.5,
+        "Recovery": 1.5,
         "Jump": -1
       },
       "blurb": "Rooted and steady. Lower jumps.",
@@ -215,7 +215,7 @@
       "style": "playstyle",
       "deltas": {
         "Serve": 1.5,
-        "Spike": 1.5,
+        "Spike": 1,
         "Set": -1
       },
       "blurb": "Points from the line and the net. Your setter lags.",
@@ -228,7 +228,7 @@
       "style": "playstyle",
       "deltas": {
         "Bump": 3,
-        "Spike": -1
+        "Spike": -0.5
       },
       "blurb": "Dig everything. Hit softer.",
       "verified": "no"
@@ -240,7 +240,7 @@
       "style": "playstyle",
       "deltas": {
         "Spike": 2.5,
-        "Speed": -1
+        "Speed": -0.5
       },
       "blurb": "Massive spikes, slower feet.",
       "verified": "no"
@@ -251,9 +251,9 @@
       "rarity": "rare",
       "style": "playstyle",
       "deltas": {
-        "Block": 2.5,
-        "Jump": 1,
-        "Speed": -1
+        "Block": 3,
+        "Jump": 1.5,
+        "Speed": -0.5
       },
       "blurb": "A wall at the net. Slow to move.",
       "verified": "no"

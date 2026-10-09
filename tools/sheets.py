@@ -509,7 +509,7 @@ def generate(S):
     L += ["    public sealed class TeamDef",
           "    {",
           "        public string Id, Name, Base, Slot, Element, Jersey, Shorts, Banner, Intro, Win, Lose, Comment;",
-          "        public float Pitch;",
+          "        public float Pitch, PointsOffset;",
           "        public string[] Hair, GotPoint, LostPoint, Signature, WeightStats;",
           "        public float[] Weights;",
           "    }", "",
@@ -523,12 +523,23 @@ def generate(S):
         if k != "about":
             L.append(f"                case {cs(k)}: return {cs(v['element'])};")
     L += ["                default: return \"none\";", "            }", "        }",
+          "        public static float VanillaPointsOffset(string team)", "        {", "            switch (team)", "            {"]
+    for k, v in T.get("vanilla_profiles", {}).items():
+        if k != "about":
+            L.append(f"                case {cs(k)}: return {fl(v.get('points_offset', 0))};")
+    L += ["                default: return 0f;", "            }", "        }",
+          "        public static System.Collections.Generic.List<StatWeight> VanillaWeights(string team)", "        {", "            switch (team)", "            {"]
+    for k, v in T.get("vanilla_profiles", {}).items():
+        if k != "about" and "weights" in v:
+            items = ", ".join(f"new StatWeight {{ statName = {cs(sn)}, weight = {fl(w)} }}" for sn, w in v["weights"].items())
+            L.append(f"                case {cs(k)}: return new System.Collections.Generic.List<StatWeight>({len(v['weights'])}) {{ {items} }};")
+    L += ["                default: return null;", "            }", "        }",
           "        public static readonly TeamDef[] All =", "        {"]
     for t in T["rows"]:
         L.append("            new TeamDef { " + ", ".join([
             f"Id = {cs(t['id'])}", f"Name = {cs(t['name'])}", f"Base = {cs(t['base'])}", f"Slot = {cs(t['slot'])}", f"Element = {cs(t['element'])}",
             f"Jersey = {cs(t['jersey'])}", f"Shorts = {cs(t['shorts'])}", f"Banner = {cs(t['banner'])}", f"Intro = {cs(t['intro'])}",
-            f"Win = {cs(t['win'])}", f"Lose = {cs(t['lose'])}", f"Comment = {cs(t['comment'])}", f"Pitch = {fl(t['pitch'])}",
+            f"Win = {cs(t['win'])}", f"Lose = {cs(t['lose'])}", f"Comment = {cs(t['comment'])}", f"Pitch = {fl(t['pitch'])}", f"PointsOffset = {fl(t['points_offset'])}",
             f"Hair = {arr(t['hair'])}", f"GotPoint = {arr(t['got_point'])}", f"LostPoint = {arr(t['lost_point'])}", f"Signature = {arr(t['signature'])}",
             f"WeightStats = {arr(list(t['weights'].keys()))}", "Weights = new[] { " + ", ".join(fl(v) for v in t["weights"].values()) + " }"]) + " },")
     L += ["        };", "    }", ""]
@@ -559,7 +570,10 @@ def generate(S):
     for s in S["scaling"]["rows"]:
         L.append(f"        public const float {const(s['id'])} = {fl(s['value'])};   // {s['meaning']}")
     L += [f"        public static readonly string[] OpponentTechniques = {arr(S['scaling']['opponent_techniques']['allowed'])};",
-          "    }", ""]
+          "        public static string VanillaRarity(string technique)", "        {"]
+    for rar in ("common", "rare", "epic"):
+        L.append(f"            if (System.Array.IndexOf({arr(S['scaling']['vanilla_rarity'][rar])}, technique) >= 0) return {cs(rar)};")
+    L += ["            return \"rare\";", "        }", "    }", ""]
 
     L += ["    public readonly struct UiDef",
           "    {",

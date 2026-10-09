@@ -16,25 +16,25 @@
     },
     {
       "id": "points_per_round",
-      "value": 1.4,
+      "value": 0.7,
       "meaning": "extra level-up points per round",
       "verified": "no"
     },
     {
       "id": "points_boss_bonus",
-      "value": 3.0,
+      "value": 1.0,
       "meaning": "extra points in boss slots (3, 6, 8 of every 8)",
       "verified": "no"
     },
     {
       "id": "points_combo_bonus",
-      "value": 1.5,
+      "value": 0.5,
       "meaning": "extra points in the combo slot (7)",
       "verified": "no"
     },
     {
       "id": "over_start",
-      "value": 12.0,
+      "value": 7.0,
       "meaning": "round after which stats grow past the level cap",
       "verified": "no"
     },
@@ -52,13 +52,13 @@
     },
     {
       "id": "base_ramp_rounds",
-      "value": 5.0,
+      "value": 8.0,
       "meaning": "rounds over which the base multipliers rise to 1",
       "verified": "no"
     },
     {
       "id": "over_per_round",
-      "value": 0.025,
+      "value": 0.03,
       "meaning": "stat multiplier gained per round after over_start",
       "verified": "no"
     },
@@ -88,13 +88,13 @@
     },
     {
       "id": "perks_per_round",
-      "value": 0.3,
+      "value": 0.22,
       "meaning": "opponent perks gained per round",
       "verified": "no"
     },
     {
       "id": "perks_boss_bonus",
-      "value": 1.0,
+      "value": 0.3,
       "meaning": "extra perks in boss slots",
       "verified": "no"
     },
@@ -177,6 +177,39 @@
       "MomentumSpike",
       "LastStand",
       "ComeBack"
+    ]
+  },
+  "vanilla_rarity": {
+    "about": "Rarity of each vanilla Technique for scaling: a team's built-in perks also wait for their rarity's unlock round (rare_from / epic_from).",
+    "common": [
+      "LowTip",
+      "TopSpinTip",
+      "ToolTip",
+      "DeadSet",
+      "CounterBump",
+      "Pipe",
+      "LastStand",
+      "SpinSpike"
+    ],
+    "rare": [
+      "MomentumSpike",
+      "FallingSpike",
+      "StrongQuick",
+      "SpeedStrike",
+      "ComeBack",
+      "BlockBoost",
+      "PerfectBump",
+      "RiskySet",
+      "SneakAttack",
+      "HybridServe",
+      "SkyServe",
+      "LineCreep"
+    ],
+    "epic": [
+      "Speedster",
+      "AbsoluteBlock",
+      "TrickShot",
+      "LimitBreak"
     ]
   }
 }

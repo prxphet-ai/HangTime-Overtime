@@ -179,9 +179,9 @@
         {
           "when": "enemy_touch",
           "fx": "zone",
-          "width": 7,
-          "mult": 0.6,
-          "dur": 3,
+          "width": 9,
+          "mult": 0.5,
+          "dur": 4,
           "color": "FF5A1A",
           "on": "spike"
         },
@@ -217,7 +217,7 @@
         {
           "when": "cross",
           "fx": "speed",
-          "mult": 1.08,
+          "mult": 1.12,
           "on": "serve"
         },
         {
@@ -268,9 +268,9 @@
         {
           "when": "enemy_touch",
           "fx": "zone",
-          "width": 5,
-          "mult": 0.7,
-          "dur": 2.5,
+          "width": 6,
+          "mult": 0.6,
+          "dur": 3,
           "color": "FF7A2A",
           "on": "tip"
         }
@@ -298,7 +298,7 @@
         {
           "when": "now",
           "fx": "lift",
-          "vy": 7,
+          "vy": 10,
           "on": "dig"
         },
         {
@@ -334,14 +334,14 @@
         "streak"
       ],
       "conds": {
-        "n": 5,
+        "n": 4,
         "cooldown": 0
       },
       "fx": [
         {
           "when": "now",
           "fx": "aura",
-          "dur": 5,
+          "dur": 6,
           "color": "FF5A1A",
           "on": "streak"
         },
@@ -350,7 +350,7 @@
           "fx": "buff",
           "stat": "spike",
           "mult": 1.3,
-          "dur": 5,
+          "dur": 6,
           "on": "streak"
         },
         {
@@ -376,7 +376,7 @@
           "on": "streak"
         }
       ],
-      "description": "After 5 good touches in a row you ignite: much stronger spikes for 5 seconds.",
+      "description": "After 4 good touches in a row you ignite: much stronger spikes for 6 seconds.",
       "flavour": "Burn bright.",
       "art_from": "ComeBack",
       "opponent_ok": "yes",
@@ -459,9 +459,9 @@
         {
           "when": "enemy_touch",
           "fx": "deflect",
-          "rand": 14,
+          "rand": 18,
           "back": 0,
-          "ymult": 0.75,
+          "ymult": 0.7,
           "on": "spike"
         },
         {
@@ -504,9 +504,9 @@
         {
           "when": "enemy_touch",
           "fx": "zone",
-          "width": 8,
-          "mult": 0.7,
-          "dur": 4,
+          "width": 9,
+          "mult": 0.6,
+          "dur": 5,
           "color": "9FE8FF",
           "on": "spike"
         },
@@ -542,8 +542,8 @@
         {
           "when": "now",
           "fx": "slow_enemies",
-          "mult": 0.6,
-          "dur": 1.6,
+          "mult": 0.55,
+          "dur": 2.2,
           "on": "block"
         },
         {
@@ -578,8 +578,8 @@
         "spike"
       ],
       "conds": {
-        "chance": 0.35,
-        "cooldown": 4
+        "chance": 0.45,
+        "cooldown": 3
       },
       "fx": [
         {
@@ -642,7 +642,7 @@
         {
           "when": "cross",
           "fx": "wobble",
-          "amp": 16,
+          "amp": 12,
           "period": 0.1,
           "dur": 0.35,
           "mode": "zigzag",
@@ -745,8 +745,8 @@
           "when": "now",
           "fx": "buff",
           "stat": "move",
-          "mult": 1.35,
-          "dur": 1.2,
+          "mult": 1.4,
+          "dur": 1.8,
           "on": "dig"
         },
         {
@@ -760,7 +760,7 @@
         {
           "when": "now",
           "fx": "afterimages",
-          "dur": 1.2,
+          "dur": 1.8,
           "color": "FFE14A",
           "on": "dig"
         }
@@ -781,14 +781,14 @@
         "serve"
       ],
       "conds": {
-        "chance": 0.6,
+        "chance": 1,
         "cooldown": 0
       },
       "fx": [
         {
           "when": "cross",
           "fx": "wobble",
-          "amp": 8,
+          "amp": 9,
           "period": 0.12,
           "dur": 0.25,
           "mode": "zigzag",
@@ -896,7 +896,7 @@
         {
           "when": "now",
           "fx": "gravity",
-          "add": -3,
+          "add": -2.5,
           "dur": 1.1,
           "on": "set"
         },
@@ -1047,7 +1047,7 @@
           "when": "now",
           "fx": "buff",
           "stat": "move",
-          "mult": 1.1,
+          "mult": 1.06,
           "dur": -1,
           "on": "passive"
         },
@@ -1059,7 +1059,7 @@
           "on": "passive"
         }
       ],
-      "description": "A constant tailwind: you run 10% faster.",
+      "description": "A constant tailwind: you run 6% faster.",
       "flavour": "Wind at your back.",
       "art_from": "Speedster",
       "opponent_ok": "yes",
@@ -1088,7 +1088,7 @@
         {
           "when": "cross",
           "fx": "plunge",
-          "vy": 35,
+          "vy": 28,
           "xmult": 0.8,
           "delay": 0.2,
           "on": "spike"
@@ -1201,8 +1201,8 @@
           "when": "enemy_touch",
           "fx": "deflect",
           "rand": 0,
-          "back": 12,
-          "ymult": 0.9,
+          "back": 16,
+          "ymult": 0.85,
           "on": "spike"
         },
         {
@@ -1274,8 +1274,8 @@
         "spike"
       ],
       "conds": {
-        "chance": 0.4,
-        "cooldown": 5,
+        "chance": 0.6,
+        "cooldown": 3,
         "min_height": 9
       },
       "fx": [
@@ -1346,7 +1346,7 @@
           "when": "enemy_touch",
           "fx": "slow_enemies",
           "mult": 0.75,
-          "dur": 0.8,
+          "dur": 1.6,
           "on": "spike"
         },
         {
@@ -1387,7 +1387,7 @@
         {
           "when": "now",
           "fx": "speed",
-          "mult": 1.15,
+          "mult": 1.25,
           "on": "block"
         },
         {
@@ -1446,7 +1446,7 @@
           "fx": "deflect",
           "rand": 4,
           "back": 0,
-          "ymult": 0.7,
+          "ymult": 0.55,
           "on": "serve"
         },
         {
@@ -1472,14 +1472,14 @@
         "spike"
       ],
       "conds": {
-        "chance": 0.25,
+        "chance": 0.4,
         "cooldown": 4
       },
       "fx": [
         {
           "when": "now",
           "fx": "stun",
-          "dur": 0.4,
+          "dur": 0.5,
           "target": "all",
           "on": "spike"
         },
@@ -1535,9 +1535,9 @@
         {
           "when": "enemy_touch",
           "fx": "zone",
-          "width": 6,
-          "mult": 0.65,
-          "dur": 2.5,
+          "width": 7,
+          "mult": 0.55,
+          "dur": 3,
           "color": "7A5530",
           "on": "tip"
         },
@@ -1573,7 +1573,7 @@
         {
           "when": "cross",
           "fx": "invisible",
-          "alpha": 0.12,
+          "alpha": 0.2,
           "dur": 0.3,
           "on": "spike"
         },
@@ -1702,7 +1702,7 @@
         {
           "when": "now",
           "fx": "slow_enemies",
-          "mult": 0.6,
+          "mult": 0.8,
           "dur": 0.5,
           "on": "spike"
         },
@@ -1754,8 +1754,8 @@
           "when": "now",
           "fx": "buff",
           "stat": "spike",
-          "mult": 1.1,
-          "dur": 1.2,
+          "mult": 1.12,
+          "dur": 1.5,
           "on": "setter_set"
         },
         {
@@ -1783,15 +1783,15 @@
         "spike"
       ],
       "conds": {
-        "chance": 0.5,
+        "chance": 0.8,
         "cooldown": 4,
-        "min_height": 10
+        "min_height": 9
       },
       "fx": [
         {
           "when": "now",
           "fx": "speed",
-          "mult": 1.22,
+          "mult": 1.3,
           "on": "spike"
         },
         {
@@ -1848,8 +1848,8 @@
           "when": "now",
           "fx": "buff",
           "stat": "set",
-          "mult": 1.3,
-          "dur": 1.5,
+          "mult": 1.4,
+          "dur": 2,
           "on": "dig"
         },
         {
@@ -2004,7 +2004,7 @@
       ],
       "conds": {
         "chance": 1,
-        "cooldown": 6
+        "cooldown": 4
       },
       "fx": [
         {
@@ -2197,8 +2197,8 @@
         {
           "when": "now",
           "fx": "next_power",
-          "add": 0.3,
-          "window": 3,
+          "add": 0.35,
+          "window": 5,
           "on": "dig"
         },
         {
@@ -2212,12 +2212,12 @@
         {
           "when": "now",
           "fx": "aura",
-          "dur": 3,
+          "dur": 5,
           "color": "FF4FA0",
           "on": "dig"
         }
       ],
-      "description": "A dig powers you up: your next spike within 3 seconds hits much harder.",
+      "description": "A dig powers you up: your next spike within 5 seconds hits much harder.",
       "flavour": "Gear up.",
       "art_from": "CounterBump",
       "opponent_ok": "yes",
@@ -2234,13 +2234,13 @@
       ],
       "conds": {
         "chance": 1,
-        "cooldown": 4
+        "cooldown": 0
       },
       "fx": [
         {
           "when": "now",
           "fx": "stun",
-          "dur": 0.9,
+          "dur": 1.0,
           "target": "hitter",
           "on": "block"
         },
@@ -2352,7 +2352,7 @@
           "when": "now",
           "fx": "next_power",
           "add": 0.25,
-          "window": 4,
+          "window": 7,
           "on": "tip"
         },
         {
@@ -2372,7 +2372,7 @@
           "on": "tip"
         }
       ],
-      "description": "Every tip pumps you up: your next spike within 4 seconds gets extra power.",
+      "description": "Every tip pumps you up: your next spike within 7 seconds gets extra power.",
       "flavour": "Did you see that?",
       "art_from": "SneakAttack",
       "opponent_ok": "yes",
@@ -2395,7 +2395,7 @@
         {
           "when": "now",
           "fx": "block_jump",
-          "add": 4,
+          "add": 5,
           "on": "block_jump"
         },
         {
@@ -2431,7 +2431,7 @@
         {
           "when": "now",
           "fx": "jump_bonus",
-          "add": 6,
+          "add": 9,
           "run": 12,
           "on": "jump"
         },
@@ -2466,9 +2466,9 @@
         "spike"
       ],
       "conds": {
-        "chance": 0.5,
+        "chance": 0.7,
         "cooldown": 4,
-        "min_height": 11
+        "min_height": 9
       },
       "fx": [
         {
@@ -2496,7 +2496,7 @@
         {
           "when": "cross",
           "fx": "plunge",
-          "vy": 30,
+          "vy": 35,
           "xmult": 0.9,
           "delay": 0,
           "on": "spike"
@@ -2506,7 +2506,7 @@
           "fx": "deflect",
           "rand": 6,
           "back": 0,
-          "ymult": 0.6,
+          "ymult": 0.5,
           "on": "spike"
         },
         {
@@ -2538,8 +2538,8 @@
         {
           "when": "now",
           "fx": "next_power",
-          "add": 0.2,
-          "window": 8,
+          "add": 0.3,
+          "window": 10,
           "on": "enemy_streak"
         },
         {
@@ -2574,15 +2574,15 @@
         "dig"
       ],
       "conds": {
-        "chance": 0.4,
-        "cooldown": 5
+        "chance": 0.6,
+        "cooldown": 3
       },
       "fx": [
         {
           "when": "now",
           "fx": "slowmo",
-          "scale": 0.45,
-          "dur": 0.4,
+          "scale": 0.4,
+          "dur": 0.5,
           "on": "dig"
         },
         {
@@ -2612,13 +2612,13 @@
       "conds": {
         "chance": 1,
         "cooldown": 0,
-        "hold": 1.5
+        "hold": 1.2
       },
       "fx": [
         {
           "when": "now",
           "fx": "speed",
-          "mult": 1.25,
+          "mult": 1.35,
           "on": "serve"
         },
         {
@@ -2674,7 +2674,7 @@
         {
           "when": "now",
           "fx": "decoy",
-          "offset": 5,
+          "offset": 6,
           "dur": 0.5,
           "fake": 1,
           "on": "tip"
@@ -2711,8 +2711,8 @@
         {
           "when": "now",
           "fx": "power_streak",
-          "per": 0.07,
-          "max": 0.35,
+          "per": 0.1,
+          "max": 0.4,
           "on": "spike"
         },
         {
@@ -2789,8 +2789,8 @@
         {
           "when": "now",
           "fx": "power_perks",
-          "per": 0.04,
-          "max": 0.48,
+          "per": 0.06,
+          "max": 0.6,
           "on": "spike"
         }
       ],

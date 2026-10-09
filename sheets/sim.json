@@ -22,13 +22,13 @@
     },
     {
       "id": "receive_base",
-      "value": 1.6,
+      "value": 2.3,
       "meaning": "logit of receiving a 70-speed spin serve with base stats",
       "verified": "no"
     },
     {
       "id": "receive_speed",
-      "value": 0.9,
+      "value": 1.5,
       "meaning": "logit lost per 30 serve speed above 70",
       "verified": "no"
     },
@@ -40,13 +40,13 @@
     },
     {
       "id": "move_weight",
-      "value": 0.55,
+      "value": 0.4,
       "meaning": "logit per 0.3 move speed above 1.5 (receives and digs)",
       "verified": "no"
     },
     {
       "id": "bump_weight",
-      "value": 0.25,
+      "value": 0.15,
       "meaning": "logit per 2 Bump above 3 (receives and digs)",
       "verified": "no"
     },
@@ -112,7 +112,7 @@
     },
     {
       "id": "block_stat_weight",
-      "value": 0.25,
+      "value": 0.35,
       "meaning": "logit per 5 Block (blocker reach)",
       "verified": "no"
     },
@@ -124,13 +124,13 @@
     },
     {
       "id": "block_stuff",
-      "value": 0.5,
+      "value": 0.6,
       "meaning": "chance a block touch is a stuff block (point); otherwise a soft touch the blockers' team digs easily",
       "verified": "no"
     },
     {
       "id": "block_stuff_absolute",
-      "value": 0.75,
+      "value": 0.8,
       "meaning": "stuff chance with AbsoluteBlock (Shutdown)",
       "verified": "no"
     },
@@ -159,6 +159,18 @@
       "verified": "no"
     },
     {
+      "id": "dig_attack_height",
+      "value": 0.2,
+      "meaning": "logit lost per 5 attacker Jump above 61 (spikes from higher come in steeper)",
+      "verified": "no"
+    },
+    {
+      "id": "approach_move_weight",
+      "value": 0.25,
+      "meaning": "set-quality gain per 0.3 attacker move speed above 1.5 (getting under the set)",
+      "verified": "no"
+    },
+    {
       "id": "tip_dig_base",
       "value": 0.9,
       "meaning": "logit of digging a tip",
@@ -177,9 +189,45 @@
       "verified": "no"
     },
     {
-      "id": "seconds_per_touch",
-      "value": 1.2,
-      "meaning": "rally clock per touch (for cooldowns and durations)",
+      "id": "t_receive",
+      "value": 1.0,
+      "meaning": "seconds from a serve or attack crossing to the receive",
+      "verified": "no"
+    },
+    {
+      "id": "t_set",
+      "value": 0.9,
+      "meaning": "seconds from a first touch to the set",
+      "verified": "no"
+    },
+    {
+      "id": "t_attack",
+      "value": 0.8,
+      "meaning": "seconds from the set to the attack",
+      "verified": "no"
+    },
+    {
+      "id": "t_dig",
+      "value": 0.45,
+      "meaning": "seconds from an attack to the block/dig",
+      "verified": "no"
+    },
+    {
+      "id": "spike_height_min",
+      "value": 3.0,
+      "meaning": "lowest spiker height at contact with base Jump (game world units; for min_height conditions)",
+      "verified": "no"
+    },
+    {
+      "id": "spike_height_max",
+      "value": 13.0,
+      "meaning": "highest spiker height at contact with base Jump",
+      "verified": "no"
+    },
+    {
+      "id": "spike_height_per_jump",
+      "value": 0.6,
+      "meaning": "extra contact height per Jump above 61",
       "verified": "no"
     },
     {
