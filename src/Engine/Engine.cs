@@ -27,6 +27,7 @@ namespace HangtimeOvertime.Engine
         }
 
         public static readonly SideState[] Sides = { new SideState(), new SideState() };
+        public static int RallyTouches;                 // accepted touches by both teams in the current rally
         public static PlayerController CurrentInput;   // set by the UpInputPressed prefix (OnBlockJump has no args)
 
         private static readonly Dictionary<string, FxKindDef> fxKinds = FxKinds.All.ToDictionary(k => k.Id);
@@ -38,6 +39,7 @@ namespace HangtimeOvertime.Engine
         public static void ResetMatch()
         {
             for (int s = 0; s < 2; s++) Sides[s] = new SideState();
+            RallyTouches = 0;
             spikePlans.Clear();
             Zones.Clear();
         }
@@ -225,11 +227,17 @@ namespace HangtimeOvertime.Engine
                 if (!perk.Listens("streak") || perk.Def.Cond.N <= 0f) continue;
                 if (Sides[side].TouchStreak % (int)perk.Def.Cond.N == 0) FirePerk(perk, "streak", MainPlayer(side), null);
             }
+            RallyTouches++;
+            for (int s = 0; s < 2; s++)
+                foreach (var perk in PerksOf(s).ToList())
+                    if (perk.Listens("long_rally") && perk.Def.Cond.N > 0f && RallyTouches == (int)perk.Def.Cond.N)
+                        FirePerk(perk, "long_rally", MainPlayer(s), null);
         }
 
         public static void OnRallyEnd(int winner)
         {
             int loser = Other(winner);
+            RallyTouches = 0;
             Sides[winner].RallyWins++;
             Sides[winner].RalliesLost = 0;
             Sides[loser].RallyWins = 0;

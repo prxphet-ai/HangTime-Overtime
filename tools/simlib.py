@@ -370,6 +370,7 @@ class Match:
         self.score = [0, 0]
         self.flight = None          # {"owner": i, "cross": [(fx, m)], "enemy": [(fx, m)]}
         self.touches = 0
+        self.rally_touches = 0
         self.toff = 0.0             # time offset for effects that happen before the current moment (net crossings)
 
     # ------------------------------------------------ perk firing
@@ -410,6 +411,8 @@ class Match:
             if trig == "enemy_streak" and rt.rallies_lost != int(perk["conds"].get("n", 0)):
                 continue
             if trig == "win_streak" and rt.rally_wins != int(perk["conds"].get("n", 0)):
+                continue
+            if trig == "long_rally" and self.rally_touches != int(perk["conds"].get("n", 0)):
                 continue
             if not self.passes(i, perk, trig):
                 continue
@@ -527,6 +530,9 @@ class Match:
         rt = self.rt[i]
         rt.touch_streak += 1
         self.fire(i, "streak", {})
+        self.rally_touches += 1
+        self.fire(0, "long_rally", {})
+        self.fire(1, "long_rally", {})
 
     def receive_logit(self, i, extra=0.0):
         K, side, rt = self.D.k, self.sides[i], self.rt[i]
@@ -759,6 +765,7 @@ class Match:
         L = self.D.match_length
         while max(self.score) < L:
             self.touches = 0
+            self.rally_touches = 0
             w = self.play_rally(server)
             self.score[w] += 1
             rallies += 1

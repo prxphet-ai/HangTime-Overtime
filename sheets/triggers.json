@@ -187,6 +187,18 @@
       "verified": "no"
     },
     {
+      "id": "long_rally",
+      "source": "touch_set",
+      "meaning": "the current rally reaches n accepted touches by both teams together (fires once per rally, for each team that has the perk)",
+      "stages": [
+        "now"
+      ],
+      "conds": [
+        "n"
+      ],
+      "verified": "no"
+    },
+    {
       "id": "match_point_against",
       "source": "rally_end",
       "meaning": "a rally starts with the other team one point from winning the match",

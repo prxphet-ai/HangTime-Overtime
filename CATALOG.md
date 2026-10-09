@@ -39,7 +39,7 @@ Generated from `sheets/` by `python tools/catalog.py`. Numbers here are the live
 
 The game's own teams keep their emblems; in Infinite they get a theme element for perk draws: Rensho (power), Hinami Kai (wind), Daigan Tech (earth), Namasito Academy (water), Kozuki Dan (lightning), Aomori (wind), Ten-Roku (earth), Tenzio (shadow), Sunaumi High (water), Shirogane (ice), Club Sumi (none)
 
-## New perks (129)
+## New perks (135)
 
 | Perk | Rarity | Element | Trigger | What it does | Gameplay effects | Visuals |
 |---|---|---|---|---|---|---|
@@ -48,6 +48,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Iron Serve** | common | earth | serve | Weighty serves: slightly faster, and they knock the first bump down. | speed(mult 1.1); on their touch: deflect(rand 4, back 0, ymult 0.7) |  |
 | **Mud Trap** | common | earth | tip | Tips land in mud: the defender gets stuck as the tip comes in, and the court stays muddy. | after the net: stun(dur 0.35, target spiker); on their touch: zone(width 8, mult 0.45, dur 3, color 7A5530) | burst |
 | **Quake Spike** | common | earth | spike | Spikes land like a quake: the court shakes under the defenders as the ball comes in. | after the net: slow_enemies(mult 0.86, dur 0.6) | burst, shake |
+| **Stamina War** | common | earth | long_rally (n 8) | When a rally drags on (8 touches), you dig in: stronger blocks and quicker feet until it ends. | buff(stat block, mult 1.15, dur -2); buff(stat move, mult 1.1, dur -2) | burst |
 | **Tusk Serve** | common | earth | serve | Serves that gore the receiver: a bit faster, and their first touch gets knocked backward. | speed(mult 1.06); on their touch: deflect(rand 2, back 6, ymult 0.85) | trail |
 | **Earthquake Serve** | epic | earth | serve (chance 0.65, cooldown 4) | Your serve often shakes the ground as it crosses, freezing the other team. | after the net: stun(dur 0.4, target all) | cutin, ring, shake |
 | **Tectonic Slam** | epic | earth | spike (chance 0.3, cooldown 4) | Sometimes your spike splits the court and knocks the other team off balance. | stun(dur 0.5, target all) | cutin, ring, shake, sound |
@@ -66,6 +67,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Rebirth Flame** | epic | fire | enemy_streak (n 3) | After they win three rallies in a row you rise from the ashes: stronger, higher and faster for a while. | buff(stat spike, mult 1.25, dur 35); buff(stat jump, mult 1.12, dur 35); buff(stat move, mult 1.12, dur 35) | aura, cutin, flash |
 | **Volcano Slam** | epic | fire | spike (chance 0.75, cooldown 4, min_height 8) | A high spike can erupt: much faster, and the court burns where they dig it. | power(add 0.2); speed(mult 1.3); on their touch: zone(width 8, mult 0.5, dur 3, color FF4A1A) | burst, cutin, shake |
 | **Wildfire** | epic | fire | streak (n 5) | After 5 good touches in a row, fire sweeps the other team's court and slows them. | zone(width 14, mult 0.5, dur 4, color FF5A1A) | cutin, flash, shake |
+| **Heat Haze** | rare | fire | long_rally (n 6) | When a rally gets long (6 touches), the court shimmers with heat: they slow down and your spikes burn hotter. | slow_enemies(mult 0.85, dur 8); buff(stat spike, mult 1.1, dur -2) | aura |
 | **Overheat** | rare | fire | passive | You run hot all match: +24% spike power, but 3% slower. | buff(stat spike, mult 1.24, dur -1); buff(stat move, mult 0.97, dur -1) | afterimages |
 | **Phoenix Dive** | rare | fire | dig | Your digs rise like a phoenix: extra height, and your counter-spike burns hotter. | lift(vy 13); buff(stat spike, mult 1.1, dur 2.0) | burst, sound |
 | **Scorched Earth** | rare | fire | spike | Your spikes burn hotter, and where they dig one the court catches fire and slows receivers. | on their touch: zone(width 11, mult 0.4, dur 4, color FF5A1A); power(add 0.15) | burst, trail |
@@ -73,6 +75,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Frost Serve** | common | ice | serve | Serves freeze for a split second after the net, then rush on. | after the net: slow(mult 0.55, dur 0.3) | burst, sound, trail |
 | **Frozen Wall** | common | ice | block | A strong block freezes the other team's footwork for a moment. | slow_enemies(mult 0.55, dur 2.2) | burst, tint |
 | **Ice Skates** | common | ice | passive | You glide across the court: a little faster all match, but your jumps are slightly lower. | buff(stat move, mult 1.06, dur -1); buff(stat jump, mult 0.97, dur -1) | afterimages |
+| **Winter's Patience** | common | ice | long_rally (n 6) | When a rally gets long (6 touches), the cold sets in on their side: they slow down. | slow_enemies(mult 0.88, dur 8) | ring |
 | **Blizzard** | epic | ice | streak (n 5) | After 5 good touches in a row, a blizzard slows the other team for a few seconds. | slow_enemies(mult 0.6, dur 2.5) | burst, cutin, flash |
 | **Cold Snap** | epic | ice | spike (chance 0.45, cooldown 3) | Sometimes your spike freezes solid in mid-air, then shatters forward faster. | after the net: hover(dur 0.3, then 1.25); after the net: slowmo(scale 0.4, dur 0.25) | burst, cutin, flash |
 | **Frost Nova** | epic | ice | block | A strong block bursts into a frost nova: the hitter freezes and their team slows down. | slow_enemies(mult 0.45, dur 3); stun(dur 1.0, target hitter) | cutin, flash, ring |
@@ -88,6 +91,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Guardian Wall** | epic | light | enemy_spike (chance 0.8, cooldown 4) | Often a golden wall slows their spike down so you can dig it. | slow(mult 0.4, dur 0.3) | cutin, flash, ring |
 | **Holy Lance** | epic | light | spike (cooldown 3, min_height 7) | A spike from high up can become a lance of light: much faster. | speed(mult 1.5) | bolt, cutin, flash, sound |
 | **Starfall** | epic | light | spike (chance 0.45, cooldown 4) | Sometimes your spike falls like a star: a blinding flash, then a steep dive. | slow_enemies(mult 0.65, dur 0.8); after the net: plunge(vy 28, xmult 0.8, delay 0.05) | bolt, cutin, flash |
+| **Starlight Finale** | epic | light | long_rally (n 8) | When a rally becomes an epic (8 touches), the stars align: their team freezes and your spikes shine with power until it ends. | stun(dur 0.8, target all); buff(stat spike, mult 1.3, dur -2) | cutin, flash |
 | **Radiant Guard** | rare | light | enemy_spike | Their spikes make your team glow: better blocks and quicker feet for a moment. | buff(stat block, mult 1.1, dur 1.0); buff(stat move, mult 1.1, dur 1.0) | tint |
 | **Read the Play** | rare | light | enemy_spike | When they spike, you read it: a burst of speed to get to the ball. | buff(stat move, mult 1.3, dur 0.8) | burst, flash |
 | **Skyhook** | rare | light | jump (run 10) | Jump from a run and you soar with a halo under your feet. | jump_bonus(add 11, run 10) | ring |
@@ -110,6 +114,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Libero Dive** | common | none | dig | Diving digs pop the ball up and you spring back to your feet faster. | lift(vy 6); buff(stat move, mult 1.25, dur 1.5) | ring |
 | **Line Shot** | common | none | spike (chance 0.7) | Half your spikes bend toward their back line. | after the net: curve(ax 55, dur 0.3) | trail |
 | **Momentum** | common | none | win_streak (n 1) | Win a rally to start a run and you ride the momentum: stronger spikes and quicker feet for a while (once per winning run). | buff(stat spike, mult 1.1, dur 20); buff(stat move, mult 1.05, dur 20) | aura |
+| **Second Breath** | common | none | long_rally (n 6) | When a rally gets long (6 touches), you find your second wind: quicker and springier until it ends. | buff(stat move, mult 1.1, dur -2); buff(stat jump, mult 1.04, dur -2) | afterimages |
 | **Sharpshooter** | common | none | spike (chance 0.7) | Some of your spikes bend toward the corners. | after the net: curve(ax 60, dur 0.25) | trail |
 | **Underdog** | common | none | enemy_streak (n 2) | After they win two rallies in a row, you get angry: stronger spikes and quicker feet for a while. | buff(stat spike, mult 1.3, dur 18); buff(stat move, mult 1.2, dur 18) | aura |
 | **Flow State** | epic | none | streak (n 6) | Six clean touches in a row and everything clicks: stronger spikes, higher jumps and quicker feet for a while. | buff(stat spike, mult 1.15, dur 8); buff(stat jump, mult 1.1, dur 8); buff(stat move, mult 1.1, dur 8) | aura, cutin |
@@ -154,6 +159,7 @@ The game's own teams keep their emblems; in Infinite they get a theme element fo
 | **Splash Block** | common | water | block_jump+block | Your block jumps spring a little higher; blocks splash over their side, and their team wades through it. | block_jump(add 3); slow_enemies(mult 0.7, dur 1.8) | burst, sound |
 | **Tidal Arc** | common | water | spike | Spikes ride a wave after the net: a rolling arc that's hard to read. | after the net: wobble(amp 7, period 0.3, dur 0.6, mode wave) | trail |
 | **Tidal Pull** | common | water | enemy_spike (chance 0.5) | Sometimes the tide pulls at their spike, dragging it back for a moment before it reaches you. | slow(mult 0.6, dur 0.25) | ring |
+| **Tidal Rhythm** | common | water | long_rally (n 6) | When a rally gets long (6 touches), you catch its rhythm: stronger spikes and faster sets until it ends. | buff(stat spike, mult 1.25, dur -2); buff(stat set, mult 1.15, dur -2) | trail |
 | **Abyss Spike** | epic | water | spike (chance 0.35, cooldown 4) | Sometimes your spike sinks into the deep: it fades, then dives. | after the net: invisible(alpha 0.2, dur 0.3); after the net: plunge(vy 30, xmult 0.6, delay 0.1) | burst, cutin |
 | **Tsunami** | epic | water | spike (cooldown 3, min_height 9) | A high spike becomes a tidal wave: big power, and it swamps their footwork. | power(add 0.45); after the net: slow_enemies(mult 0.7, dur 1.5); after the net: wobble(amp 6, period 0.35, dur 0.5, mode wave) | burst, cutin, shake |
 | **Mirror Image** | rare | water | spike (chance 0.5) | Your spike often splits into a watery afterimage. The other team may chase the fake. | after the net: decoy(offset 7, dur 0.5, fake 1) | burst |

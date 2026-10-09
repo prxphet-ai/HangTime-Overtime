@@ -8,7 +8,7 @@ of **Log**. **Summary** at the top is kept up to date.
 
 - **Everything that exists**: `CATALOG.md` (generated from the sheets by `python tools/catalog.py`) lists every team
   (class, element, base, signature perks, emblem), every perk (rarity, element, trigger, description, gameplay effects,
-  visuals) and every stat card. Current totals: 30 new teams (+ the game's 10), 139 perks (129 new, 3 reworked, 7 kept),
+  visuals) and every stat card. Current totals: 30 new teams (+ the game's 10), 145 perks (135 new, 3 reworked, 7 kept),
   45 stat cards. No perk changes the score (enforced by the preflight).
 - **Simulator**: `python tools/sim.py <mode>` (match, teams, scaling, perk, perks, run, tune). Results in `sim_results/`
   (one JSON per run plus `index.csv`). See *Simulator* below.
@@ -28,7 +28,7 @@ of **Log**. **Summary** at the top is kept up to date.
   rare 4-10%, epic 7-14% win-rate gain) except deliberately situational ones (tips, comebacks, Collector). Random 5-perk
   builds top out around 65% vs the field; nothing trivializes a match. Teams 47%..52% vs the field at equal rounds (40 teams in the Infinite pools: the game's 10 + 30 new).
 - **Perk triggers available** (`sheets/triggers.json`): spike, serve, tip, set, setter_set, dig, block, jump, block_jump,
-  passive, streak (clean touches), enemy_streak / win_streak (rallies lost / won in a row), match_point_against,
+  passive, streak (clean touches), enemy_streak / win_streak (rallies lost / won in a row), long_rally (touches in the current rally), match_point_against,
   enemy_spike. Effects: `sheets/effects.json` (ball, player, game and visual effects; none can touch the score).
 - **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
 - **Testing in game**: set `DevKeys = true` in the mod's config (off by default for players). F1 fire the lab perk now
@@ -318,3 +318,14 @@ Modes:
 - Not changed on purpose: the game's own **Agility** card is still the strongest single pick in the simulator (+36%). It is
   already offered at epic weight (the rarest); I did not alter vanilla card effects. See open question 1 (how much speed is
   worth in real play).
+
+### Step 12 — long rallies: a new trigger and 6 endurance perks
+- **New trigger `long_rally`** (n): fires once per rally, for each team holding the perk, when the rally reaches n accepted
+  touches by both teams together. In the simulator ~39% of rallies reach 6 touches, ~25% reach 8.
+- **6 new perks** (round 5 gain): Second Breath (common, 6 touches: quicker and springier for the rest of the rally,
+  +4.5%), Winter's Patience (common ice, their team slows, +5.0%), Tidal Rhythm (common water, stronger spikes and faster
+  sets, +3.1%), Stamina War (common earth, 8 touches: blocks and feet, +5.7%), Heat Haze (rare fire, +7.8%), Starlight
+  Finale (epic light, 8 touches: their team freezes and your spikes shine, +8.4%). First numbers had Second Breath at
+  +9.5% and Heat Haze at +11% (trimmed); Tidal Rhythm stayed ~3% however strong its spike buff, so it became a common.
+- All six fired through the dev lab as both sides, 0 errors. The trigger itself is checked by code path only (an idle
+  player can't make a long rally in a test); its count lives next to the streak count in `Engine.OnAcceptedTouch`.

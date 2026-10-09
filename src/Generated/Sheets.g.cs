@@ -641,6 +641,30 @@ namespace HangtimeOvertime.Generated
             new PerkDef { Id = "tidal_pull", Title = "Tidal Pull", Rarity = "common", Element = "water", Origin = "new", Description = "Sometimes the tide pulls at their spike, dragging it back for a moment before it reaches you.", Flavour = "Pulled under.", ArtFrom = "CounterBump", OpponentOk = true, Triggers = new[] { "enemy_spike" }, Cond = new CondDef(0.5f, 0.0f, 0.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
                 new FxDef("enemy_spike", "now", "slow", 0.6f, 0.25f, 0.0f, 0.0f, "", ""),
                 new FxDef("enemy_spike", "now", "ring", 1.0f, 0.0f, 0.0f, 0.0f, "4AA8FF", "ball") } },
+            new PerkDef { Id = "second_breath", Title = "Second Breath", Rarity = "common", Element = "none", Origin = "new", Description = "When a rally gets long (6 touches), you find your second wind: quicker and springier until it ends.", Flavour = "Not tired yet.", ArtFrom = "ComeBack", OpponentOk = true, Triggers = new[] { "long_rally" }, Cond = new CondDef(1.0f, 0.0f, 6.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("long_rally", "now", "buff", 1.1f, -2.0f, 0.0f, 0.0f, "move", ""),
+                new FxDef("long_rally", "now", "buff", 1.04f, -2.0f, 0.0f, 0.0f, "jump", ""),
+                new FxDef("long_rally", "now", "afterimages", 4.0f, 0.0f, 0.0f, 0.0f, "FFFFFF", "") } },
+            new PerkDef { Id = "winters_patience", Title = "Winter's Patience", Rarity = "common", Element = "ice", Origin = "new", Description = "When a rally gets long (6 touches), the cold sets in on their side: they slow down.", Flavour = "Winter always wins.", ArtFrom = "DeadSet", OpponentOk = true, Triggers = new[] { "long_rally" }, Cond = new CondDef(1.0f, 0.0f, 6.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("long_rally", "now", "slow_enemies", 0.88f, 8.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("long_rally", "now", "ring", 1.6f, 0.0f, 0.0f, 0.0f, "9FE8FF", "enemy") } },
+            new PerkDef { Id = "heat_haze", Title = "Heat Haze", Rarity = "rare", Element = "fire", Origin = "new", Description = "When a rally gets long (6 touches), the court shimmers with heat: they slow down and your spikes burn hotter.", Flavour = "Feel the heat.", ArtFrom = "MomentumSpike", OpponentOk = true, Triggers = new[] { "long_rally" }, Cond = new CondDef(1.0f, 0.0f, 6.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("long_rally", "now", "slow_enemies", 0.85f, 8.0f, 0.0f, 0.0f, "", ""),
+                new FxDef("long_rally", "now", "buff", 1.1f, -2.0f, 0.0f, 0.0f, "spike", ""),
+                new FxDef("long_rally", "now", "aura", 6.0f, 0.0f, 0.0f, 0.0f, "FF8A2A", "") } },
+            new PerkDef { Id = "stamina_war", Title = "Stamina War", Rarity = "common", Element = "earth", Origin = "new", Description = "When a rally drags on (8 touches), you dig in: stronger blocks and quicker feet until it ends.", Flavour = "We can do this all day.", ArtFrom = "CounterBump", OpponentOk = true, Triggers = new[] { "long_rally" }, Cond = new CondDef(1.0f, 0.0f, 8.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("long_rally", "now", "buff", 1.15f, -2.0f, 0.0f, 0.0f, "block", ""),
+                new FxDef("long_rally", "now", "buff", 1.1f, -2.0f, 0.0f, 0.0f, "move", ""),
+                new FxDef("long_rally", "now", "burst", 1.0f, 0.0f, 0.0f, 0.0f, "C0B090", "owner") } },
+            new PerkDef { Id = "tidal_rhythm", Title = "Tidal Rhythm", Rarity = "common", Element = "water", Origin = "new", Description = "When a rally gets long (6 touches), you catch its rhythm: stronger spikes and faster sets until it ends.", Flavour = "Ebb and flow.", ArtFrom = "DeadSet", OpponentOk = true, Triggers = new[] { "long_rally" }, Cond = new CondDef(1.0f, 0.0f, 6.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("long_rally", "now", "buff", 1.25f, -2.0f, 0.0f, 0.0f, "spike", ""),
+                new FxDef("long_rally", "now", "buff", 1.15f, -2.0f, 0.0f, 0.0f, "set", ""),
+                new FxDef("long_rally", "now", "trail", 1.2f, 3.0f, 0.0f, 0.0f, "4AA8FF", "") } },
+            new PerkDef { Id = "starlight_finale", Title = "Starlight Finale", Rarity = "epic", Element = "light", Origin = "new", Description = "When a rally becomes an epic (8 touches), the stars align: their team freezes and your spikes shine with power until it ends.", Flavour = "Save the best for last.", ArtFrom = "TrickShot", OpponentOk = true, Triggers = new[] { "long_rally" }, Cond = new CondDef(1.0f, 0.0f, 8.0f, 0.0f, -99.0f, 0.0f, 0.0f), Fx = new[] {
+                new FxDef("long_rally", "now", "stun", 0.8f, 0.0f, 0.0f, 0.0f, "all", ""),
+                new FxDef("long_rally", "now", "buff", 1.3f, -2.0f, 0.0f, 0.0f, "spike", ""),
+                new FxDef("long_rally", "now", "flash", 0.35f, 0.3f, 0.0f, 0.0f, "FFF3B0", ""),
+                new FxDef("long_rally", "now", "cutin", 0.0f, 0.0f, 0.0f, 0.0f, "STARLIGHT FINALE!", "") } },
         };
     }
 
