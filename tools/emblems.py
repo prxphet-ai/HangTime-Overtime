@@ -411,7 +411,78 @@ def turtle(p, cx, cy, s, accent):
     p.stroke([(cx - 150 * s, cy + 62 * s), (cx + 150 * s, cy + 62 * s)], 10 * s, fill=accent)
 
 
-MASCOTS = {"star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
+def owl(p, cx, cy, s, accent):
+    """Fukurou: a wide-eyed owl on a branch."""
+    body = [(cx - 60 * s, cy + 70 * s), (cx - 74 * s, cy), (cx - 66 * s, cy - 60 * s), (cx - 80 * s, cy - 104 * s), (cx - 40 * s, cy - 78 * s),
+            (cx, cy - 86 * s), (cx + 40 * s, cy - 78 * s), (cx + 80 * s, cy - 104 * s), (cx + 66 * s, cy - 60 * s), (cx + 74 * s, cy),
+            (cx + 60 * s, cy + 70 * s)]
+    p.poly(body, amp=2.5)
+    for dx in (-30, 30):
+        p.ellipse(cx + dx * s, cy - 36 * s, 24 * s, 24 * s, fill=CLEAR, amp=0.8)
+        p.ellipse(cx + dx * s, cy - 36 * s, 11 * s, 11 * s, fill=accent, amp=0.5)
+    p.poly([(cx - 9 * s, cy - 18 * s), (cx + 9 * s, cy - 18 * s), (cx, cy), ], fill=accent, amp=0.4)
+    for k in range(3):
+        y = cy + (18 + k * 16) * s
+        p.curve((cx - 30 * s, y), (cx, y + 10 * s), (cx + 30 * s, y), 5 * s, fill=CLEAR)
+    p.stroke([(cx - 140 * s, cy + 78 * s), (cx + 140 * s, cy + 70 * s)], 14 * s, fill=accent)
+    for dx in (-24, 24):
+        p.stroke([(cx + dx * s, cy + 66 * s), (cx + (dx - 8) * s, cy + 80 * s)], 7 * s)
+        p.stroke([(cx + dx * s, cy + 66 * s), (cx + (dx + 8) * s, cy + 80 * s)], 7 * s)
+
+
+def octopus(p, cx, cy, s, accent):
+    """Tako: an octopus waving its arms."""
+    p.ellipse(cx, cy - 40 * s, 58 * s, 54 * s)
+    for i in range(6):
+        x0 = cx + (-50 + i * 20) * s
+        sway = (-1) ** i
+        pts = [(x0, cy), (x0 + sway * 18 * s, cy + 30 * s), (x0 - sway * 10 * s, cy + 62 * s), (x0 + sway * 26 * s, cy + 86 * s)]
+        p.stroke(pts, 16 * s)
+        p.ellipse(pts[2][0] + 3 * s * sway, pts[2][1], 4 * s, 4 * s, fill=accent, amp=0.3)
+    for dx in (-20, 20):
+        p.ellipse(cx + dx * s, cy - 44 * s, 12 * s, 14 * s, fill=CLEAR, amp=0.5)
+        p.ellipse(cx + dx * s, cy - 42 * s, 5 * s, 6 * s, fill=accent, amp=0.3)
+    for x, y, r in ((-112, -70, 12), (110, -84, 10), (124, 30, 8), (-120, 40, 9)):
+        p.ellipse(cx + x * s, cy + y * s, r * s, r * s, fill=accent, amp=0.8)
+        p.ellipse(cx + x * s, cy + y * s, r * 0.45 * s, r * 0.45 * s, fill=CLEAR, amp=0.3)
+
+
+def tiger(p, cx, cy, s, accent):
+    """Byakko: a white tiger's head with lightning stripes."""
+    head = [(cx - 96 * s, cy - 10 * s), (cx - 84 * s, cy - 70 * s), (cx - 100 * s, cy - 110 * s), (cx - 50 * s, cy - 90 * s),
+            (cx, cy - 98 * s), (cx + 50 * s, cy - 90 * s), (cx + 100 * s, cy - 110 * s), (cx + 84 * s, cy - 70 * s), (cx + 96 * s, cy - 10 * s),
+            (cx + 70 * s, cy + 50 * s), (cx + 30 * s, cy + 86 * s), (cx - 30 * s, cy + 86 * s), (cx - 70 * s, cy + 50 * s)]
+    p.poly(head, amp=2.5)
+    for side in (-1, 1):
+        for k in range(2):
+            y = cy + (-50 + k * 36) * s
+            p.poly([(cx + side * 96 * s, y), (cx + side * 60 * s, y + 8 * s), (cx + side * 74 * s, y + 14 * s), (cx + side * 52 * s, y + 24 * s),
+                    (cx + side * 90 * s, y + 18 * s)], fill=accent, amp=0.6)
+        p.poly([(cx + side * 16 * s, cy - 24 * s), (cx + side * 56 * s, cy - 38 * s), (cx + side * 48 * s, cy - 12 * s)], fill=CLEAR, amp=0.6)
+    p.poly([(cx, cy - 90 * s), (cx - 14 * s, cy - 62 * s), (cx - 2 * s, cy - 62 * s), (cx - 12 * s, cy - 40 * s), (cx + 14 * s, cy - 68 * s),
+            (cx + 2 * s, cy - 68 * s), (cx + 12 * s, cy - 90 * s)], fill=accent, amp=0.6)
+    p.poly([(cx - 18 * s, cy + 18 * s), (cx + 18 * s, cy + 18 * s), (cx, cy + 34 * s)], fill=CLEAR, amp=0.5)
+    p.stroke([(cx, cy + 34 * s), (cx, cy + 50 * s)], 5 * s, fill=CLEAR)
+    for side in (-1, 1):
+        p.stroke([(cx, cy + 50 * s), (cx + side * 24 * s, cy + 58 * s)], 5 * s, fill=CLEAR)
+
+
+def golem(p, cx, cy, s, accent):
+    """Iwagami: a blocky stone golem raising its fists."""
+    p.poly([(cx - 46 * s, cy - 104 * s), (cx + 46 * s, cy - 104 * s), (cx + 52 * s, cy - 40 * s), (cx - 52 * s, cy - 40 * s)], amp=2)
+    p.poly([(cx - 74 * s, cy - 34 * s), (cx + 74 * s, cy - 34 * s), (cx + 62 * s, cy + 60 * s), (cx - 62 * s, cy + 60 * s)], amp=2.5)
+    for side in (-1, 1):
+        p.poly([(cx + side * 74 * s, cy - 30 * s), (cx + side * 118 * s, cy - 60 * s), (cx + side * 132 * s, cy - 40 * s), (cx + side * 84 * s, cy + 4 * s)], amp=1.5)
+        p.poly([(cx + side * 110 * s, cy - 96 * s), (cx + side * 146 * s, cy - 92 * s), (cx + side * 142 * s, cy - 54 * s), (cx + side * 108 * s, cy - 58 * s)], amp=1.5)
+        p.poly([(cx + side * 30 * s, cy + 60 * s), (cx + side * 54 * s, cy + 60 * s), (cx + side * 58 * s, cy + 100 * s), (cx + side * 26 * s, cy + 100 * s)], amp=1)
+    for dx in (-20, 20):
+        p.poly([(cx + (dx - 12) * s, cy - 78 * s), (cx + (dx + 12) * s, cy - 78 * s), (cx + (dx + 10) * s, cy - 64 * s), (cx + (dx - 10) * s, cy - 64 * s)], fill=accent, amp=0.4)
+    p.stroke([(cx - 40 * s, cy - 6 * s), (cx - 6 * s, cy + 18 * s), (cx + 24 * s, cy + 2 * s)], 6 * s, fill=CLEAR)
+    p.stroke([(cx + 10 * s, cy + 30 * s), (cx + 36 * s, cy + 44 * s)], 6 * s, fill=CLEAR)
+    p.stroke([(cx - 34 * s, cy + 30 * s), (cx - 16 * s, cy + 46 * s)], 6 * s, fill=accent)
+
+
+MASCOTS = {"owl": owl, "octopus": octopus, "tiger": tiger, "golem": golem, "star": star, "oni": oni, "spider": spider, "turtle": turtle, "blossom": blossom, "bullet_train": bullet_train, "rooster": rooster, "snow_cat": snow_cat,
            "sea_dragon": sea_dragon, "ghost": ghost, "brazier": brazier, "penguin": penguin, "thunder": thunder, "swallow": swallow, "whale": whale,
            "mountain": mountain, "bat_moon": bat_moon, "sun_crown": sun_crown}
 

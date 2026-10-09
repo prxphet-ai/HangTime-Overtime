@@ -656,6 +656,7 @@ class Match:
                 dfx = {}
                 self.fire(d, "enemy_spike", dfx)
                 help_dig = dfx.get("pen", 0.0)        # slows/hovers on their spike help the defenders
+                speed *= dfx.get("speed", 1.0)          # and a stalled spike arrives slower
             # --- block (spikes only)
             soft = False
             if kind == "spike":
@@ -700,7 +701,8 @@ class Match:
                 x = K["free_ball_dig"] + self.receive_logit(d)
             elif kind == "tip":
                 move = dside.move * drt.stat_mult("move", self.clock) * drt.move_mult(self.clock)
-                x = K["tip_dig_base"] + K["tip_move_weight"] * (move - 1.5) / 0.3 - pen + self.receive_logit(d, -K["move_weight"] * (move - 1.5) / 0.3)
+                x = (K["tip_dig_base"] + K["tip_move_weight"] * (move - 1.5) / 0.3 - pen - K["dig_speed"] * (speed - 35.0) / 30.0
+                     + self.receive_logit(d, -K["move_weight"] * (move - 1.5) / 0.3))
             else:
                 atk_jump = T.stats["Jump"] * rt.stat_mult("jump", self.clock) + actx.get("jump", 0.0)
                 x = (K["dig_base"] - K["dig_speed"] * (speed - 80.0) / 30.0 - K["dig_set_quality"] * sq - pen + help_dig

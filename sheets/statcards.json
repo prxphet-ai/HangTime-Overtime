@@ -424,6 +424,58 @@
       },
       "blurb": "All-out attack. Defense is somebody else's problem.",
       "verified": "no"
+    },
+    {
+      "id": "clutch_training",
+      "title": "Clutch Training",
+      "rarity": "common",
+      "style": "boost",
+      "deltas": {
+        "Spike": 0.4,
+        "Jump": 0.4
+      },
+      "blurb": "Reps for the big moments.",
+      "verified": "no"
+    },
+    {
+      "id": "iron_body",
+      "title": "Iron Body",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Block": 1.5,
+        "Bump": 1,
+        "Speed": -0.5
+      },
+      "blurb": "Tough at the net and in the back, a step slower.",
+      "verified": "no"
+    },
+    {
+      "id": "track_star",
+      "title": "Track Star",
+      "rarity": "rare",
+      "style": "playstyle",
+      "deltas": {
+        "Speed": 1,
+        "Recovery": 0.75,
+        "Block": -0.75
+      },
+      "blurb": "Fastest on the court. Blocks suffer.",
+      "verified": "no"
+    },
+    {
+      "id": "tank",
+      "title": "Tank",
+      "rarity": "epic",
+      "style": "tradeoff",
+      "deltas": {
+        "Block": 3,
+        "Bump": 2.5,
+        "Speed": -0.75,
+        "Spike": -0.5
+      },
+      "blurb": "An immovable wall that hits a little softer.",
+      "verified": "no"
     }
   ]
 }

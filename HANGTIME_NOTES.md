@@ -8,8 +8,8 @@ of **Log**. **Summary** at the top is kept up to date.
 
 - **Everything that exists**: `CATALOG.md` (generated from the sheets by `python tools/catalog.py`) lists every team
   (class, element, base, signature perks, emblem), every perk (rarity, element, trigger, description, gameplay effects,
-  visuals) and every stat card. Current totals: 18 new teams (+ the game's 10), 96 perks (86 new, 3 reworked, 7 kept),
-  33 stat cards. No perk changes the score (enforced by the preflight).
+  visuals) and every stat card. Current totals: 22 new teams (+ the game's 10), 111 perks (101 new, 3 reworked, 7 kept),
+  37 stat cards. No perk changes the score (enforced by the preflight).
 - **Simulator**: `python tools/sim.py <mode>` (match, teams, scaling, perk, perks, run, tune). Results in `sim_results/`
   (one JSON per run plus `index.csv`). See *Simulator* below.
 - **Opponent scaling**: every number lives in `sheets/scaling.json` (the one place to tune; `python tools/set_scaling.py
@@ -23,7 +23,7 @@ of **Log**. **Summary** at the top is kept up to date.
   boss slots), the team's own perks first (signatures / vanilla built-ins), then themed random draws (4x weight for the
   team's element); rares unlock at round 5, epics at round 10 (built-ins too: Kozuki's Agility waits until round 10).
 - **Balance status**: fresh build wins ~70% at round 1; a typical drafted build slides from ~70% (rounds 1-5) to ~46%
-  (round 10), ~40% (round 15), ~25% (round 20). Teams 44%..53% vs the field at equal rounds (22 teams).
+  (round 10), ~40% (round 15), ~25% (round 20). Teams 43%..53% vs the field at equal rounds (26 teams in Infinite pools: 10 vanilla + 22 new... see CATALOG).
 - **Build**: `python tools/build.py [--deploy]` (preflight + generate + build); emblems: `python tools/emblems.py`.
 - **Open questions for you**: see the end of this file.
 
@@ -207,3 +207,17 @@ Modes:
   the five strongest perks stacked 66%. Strong builds exist but nothing trivializes a match.
 - Verified in game: beating the final in Classic shows the game's Win screen plus the new **LOOP 2** button (moved up
   under BACK; it sat on the court before); clicking it starts Loop 2 at round 9 of the scaling with a random opponent.
+
+### Step 6 — content batch 4
+- **15 new perks** filling thin spots: comebacks — Clutch Gene, Last Breath (epic), Underdog; jumps — Spring Heels,
+  Skyhook; tips — Feint Tip, Dink Master, Wind Tip; serves — Iron Serve, Ace Instinct, Sunburst Serve; setter — Tidal
+  Surge; epics — Frost Nova, Chain Lightning, Gravity Well (defensive: their spike stalls and loses half its power).
+- **4 new stat cards**: Clutch Training (common), Iron Body, Track Star (rare playstyle), Tank (epic trade-off).
+- **4 new teams** with emblems: Fukurou Owls (light, owl on a branch), Tako Tentacles (water combo, octopus),
+  Byakko Tigers (lightning boss, white tiger), Iwagami Golems (earth boss, stone golem). 26 teams now 43%..53% vs field.
+- **Simulator**: tip speed now matters when digging a tip (faster-tip effects were worth nothing before, vanilla Long
+  Toss too); defensive effects that slow their spike now also lower its speed. Note: tip perks read lower in the sim
+  because its AI tips about 1 attack in 5 — for a player who tips on purpose they are worth more.
+- Balance after tuning (round 5 sweep): Chain Lightning +12.9%, Last Breath +9.6%, Gravity Well +9.5%, Frost Nova +7.5%,
+  Feint Tip +6.9%, Track Star +9.6%, Tank +11.2%, Clutch Training +6.7%; situational ones (Underdog, Clutch Gene) lower.
+- Checked in game: all 15 new perks fired through the dev lab, 0 errors; Byakko Tigers spawned with its emblem.

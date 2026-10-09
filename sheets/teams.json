@@ -94,7 +94,7 @@
         "blaze_spike"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.8,
+      "points_offset": -0.7,
       "emblem": {
         "mascot": "brazier",
         "layout": "split",
@@ -141,7 +141,7 @@
         "frost_serve"
       ],
       "verified": "no",
-      "points_offset": -2.3,
+      "points_offset": -2.4,
       "emblem": {
         "mascot": "penguin",
         "layout": "top",
@@ -188,7 +188,7 @@
         "zigzag_spike"
       ],
       "verified": "no",
-      "points_offset": -4.0,
+      "points_offset": -4.3,
       "emblem": {
         "mascot": "thunder",
         "layout": "stacked",
@@ -282,7 +282,7 @@
         "tidal_arc"
       ],
       "verified": "partial: drawn at random in Infinite, dressed (colors, name, signature perk) and banner seen in game 2026-10-08; full match not played",
-      "points_offset": -0.6,
+      "points_offset": -0.5,
       "emblem": {
         "mascot": "whale",
         "layout": "top",
@@ -330,7 +330,7 @@
         "quake_spike"
       ],
       "verified": "no",
-      "points_offset": -0.8,
+      "points_offset": -0.9,
       "emblem": {
         "mascot": "mountain",
         "layout": "stacked",
@@ -378,7 +378,7 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.6,
+      "points_offset": 0.4,
       "emblem": {
         "mascot": "bat_moon",
         "layout": "split",
@@ -426,7 +426,7 @@
         "holy_lance"
       ],
       "verified": "no",
-      "points_offset": -2.7,
+      "points_offset": -2.8,
       "emblem": {
         "mascot": "sun_crown",
         "layout": "stacked",
@@ -474,7 +474,7 @@
         "swerve_tip"
       ],
       "verified": "no",
-      "points_offset": -1.0,
+      "points_offset": -1.3,
       "emblem": {
         "mascot": "blossom",
         "layout": "split",
@@ -522,7 +522,7 @@
         "storm_serve"
       ],
       "verified": "no",
-      "points_offset": -3.2,
+      "points_offset": -3.7,
       "emblem": {
         "mascot": "bullet_train",
         "layout": "top",
@@ -570,7 +570,7 @@
         "flame_serve"
       ],
       "verified": "no",
-      "points_offset": -1.0,
+      "points_offset": -1.7,
       "emblem": {
         "mascot": "rooster",
         "layout": "split",
@@ -618,7 +618,7 @@
         "ice_wall"
       ],
       "verified": "no",
-      "points_offset": 4.7,
+      "points_offset": 5.2,
       "emblem": {
         "mascot": "snow_cat",
         "layout": "stacked",
@@ -667,7 +667,7 @@
         "undertow"
       ],
       "verified": "no",
-      "points_offset": 0.4,
+      "points_offset": 0.3,
       "emblem": {
         "mascot": "sea_dragon",
         "layout": "top",
@@ -716,7 +716,7 @@
         "eclipse"
       ],
       "verified": "no",
-      "points_offset": 0.3,
+      "points_offset": 0.2,
       "emblem": {
         "mascot": "ghost",
         "layout": "split",
@@ -764,7 +764,7 @@
         "starfall"
       ],
       "verified": "no",
-      "points_offset": 3.4,
+      "points_offset": 4.6,
       "emblem": {
         "mascot": "star",
         "layout": "top",
@@ -813,7 +813,7 @@
         "blaze_spike"
       ],
       "verified": "no",
-      "points_offset": -1.8,
+      "points_offset": -1.6,
       "emblem": {
         "mascot": "oni",
         "layout": "split",
@@ -861,7 +861,7 @@
         "shadow_step"
       ],
       "verified": "no",
-      "points_offset": 0.3,
+      "points_offset": 0.0,
       "emblem": {
         "mascot": "spider",
         "layout": "stacked",
@@ -909,12 +909,206 @@
         "iron_curtain"
       ],
       "verified": "no",
-      "points_offset": -1.4,
+      "points_offset": -1.9,
       "emblem": {
         "mascot": "turtle",
         "layout": "top",
         "font": "marker",
         "accent": "8AC04A"
+      }
+    },
+    {
+      "id": "fukurou",
+      "name": "Fukurou Owls",
+      "base": "Namasito Academy",
+      "slot": "regular",
+      "element": "light",
+      "jersey": "C8A86A",
+      "shorts": "4A3A2A",
+      "hair": [
+        "4A3A2A",
+        "E8D8A8"
+      ],
+      "banner": "8A6A3A",
+      "pitch": 1.05,
+      "weights": {
+        "Spike": 2,
+        "Jump": 2,
+        "Block": 2,
+        "Bump": 4,
+        "SpinServe": 1,
+        "ServeJump": 2,
+        "FloatServe": 3
+      },
+      "intro": "We see everything.",
+      "win": "Wise move.",
+      "lose": "Hoo... lost.",
+      "got_point": [
+        "Hoo!",
+        "Saw that."
+      ],
+      "lost_point": [
+        "A blind spot.",
+        "We watch."
+      ],
+      "comment": "They read every spike we hit.",
+      "signature": [
+        "read_the_play",
+        "sunburst_serve"
+      ],
+      "verified": "no",
+      "points_offset": 2.5,
+      "emblem": {
+        "mascot": "owl",
+        "layout": "top",
+        "font": "marker",
+        "accent": "FFD24A"
+      }
+    },
+    {
+      "id": "tako",
+      "name": "Tako Tentacles",
+      "base": "Aomori",
+      "slot": "combo",
+      "element": "water",
+      "jersey": "E85A8A",
+      "shorts": "6A1A3A",
+      "hair": [
+        "6A1A3A",
+        "FFB0C8"
+      ],
+      "banner": "B83A6A",
+      "pitch": 1.15,
+      "weights": {
+        "Spike": 2,
+        "Jump": 3,
+        "Block": 2,
+        "Bump": 4,
+        "SpinServe": 1,
+        "ServeJump": 2,
+        "FloatServe": 2
+      },
+      "intro": "Eight arms, three players.",
+      "win": "Inked!",
+      "lose": "Slipped away...",
+      "got_point": [
+        "Squish!",
+        "Grabbed it!"
+      ],
+      "lost_point": [
+        "Slippery.",
+        "We'll reach."
+      ],
+      "comment": "They got a hand on everything.",
+      "signature": [
+        "tidal_surge",
+        "undertow"
+      ],
+      "verified": "no",
+      "points_offset": 3.1,
+      "emblem": {
+        "mascot": "octopus",
+        "layout": "split",
+        "font": "bangers",
+        "accent": "FFB0C8"
+      }
+    },
+    {
+      "id": "byakko",
+      "name": "Byakko Tigers",
+      "base": "Shirogane",
+      "slot": "boss",
+      "element": "lightning",
+      "jersey": "F0F0F8",
+      "shorts": "1A1A2A",
+      "hair": [
+        "1A1A2A",
+        "FFE14A"
+      ],
+      "banner": "8A8AA8",
+      "pitch": 0.6,
+      "weights": {
+        "Spike": 4,
+        "Jump": 4,
+        "Block": 2,
+        "Bump": 2,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 0
+      },
+      "intro": "The white tiger hunts.",
+      "win": "Pounced.",
+      "lose": "...the tiger rests.",
+      "got_point": [
+        "Rawr!",
+        "Strike!"
+      ],
+      "lost_point": [
+        "A scratch.",
+        "Hunt again."
+      ],
+      "comment": "Fast, sharp, and full of lightning.",
+      "signature": [
+        "chain_lightning",
+        "zigzag_spike",
+        "lightning_reflex"
+      ],
+      "verified": "no",
+      "points_offset": -3.3,
+      "emblem": {
+        "mascot": "tiger",
+        "layout": "top",
+        "font": "bangers",
+        "accent": "FFE14A"
+      }
+    },
+    {
+      "id": "iwagami",
+      "name": "Iwagami Golems",
+      "base": "Sunaumi High",
+      "slot": "boss",
+      "element": "earth",
+      "jersey": "6A6A6A",
+      "shorts": "3A2A1A",
+      "hair": [
+        "2A2A2A",
+        "C08A4A"
+      ],
+      "banner": "4A4A4A",
+      "pitch": 0.4,
+      "weights": {
+        "Spike": 3,
+        "Jump": 2,
+        "Block": 5,
+        "Bump": 3,
+        "SpinServe": 2,
+        "ServeJump": 2,
+        "FloatServe": 0
+      },
+      "intro": "Stone does not tire.",
+      "win": "Crushed.",
+      "lose": "...crumbled.",
+      "got_point": [
+        "Rumble.",
+        "Unmoved."
+      ],
+      "lost_point": [
+        "A chip.",
+        "Stone endures."
+      ],
+      "comment": "Like playing against a cliff that spikes back.",
+      "signature": [
+        "tectonic_slam",
+        "iron_curtain",
+        "earthquake_serve"
+      ],
+      "verified": "no",
+      "points_offset": 0.2,
+      "emblem": {
+        "mascot": "golem",
+        "layout": "stacked",
+        "font": "bangers",
+        "accent": "D8A060"
       }
     }
   ],
@@ -926,15 +1120,15 @@
     },
     "Hinami Kai": {
       "element": "wind",
-      "points_offset": -0.8
+      "points_offset": -0.7
     },
     "Daigan Tech": {
       "element": "earth",
-      "points_offset": -3.2
+      "points_offset": -3.7
     },
     "Namasito Academy": {
       "element": "water",
-      "points_offset": 2.1
+      "points_offset": 2.0
     },
     "Kozuki Dan": {
       "element": "lightning",
@@ -942,15 +1136,15 @@
     },
     "Aomori": {
       "element": "wind",
-      "points_offset": 4.2
+      "points_offset": 4.0
     },
     "Ten-Roku": {
       "element": "earth",
-      "points_offset": 0.4
+      "points_offset": 0.2
     },
     "Tenzio": {
       "element": "shadow",
-      "points_offset": 1.4,
+      "points_offset": 1.3,
       "weights": {
         "Spike": 2,
         "Jump": 3,
@@ -963,11 +1157,11 @@
     },
     "Sunaumi High": {
       "element": "water",
-      "points_offset": 0.3
+      "points_offset": 0.1
     },
     "Shirogane": {
       "element": "ice",
-      "points_offset": -4.1
+      "points_offset": -3.9
     },
     "Club Sumi": {
       "element": "none",
