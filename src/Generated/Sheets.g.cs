@@ -450,7 +450,24 @@ namespace HangtimeOvertime.Generated
         public static readonly string[] VanillaCombo = new[] { "Aomori", "Ten-Roku" };
         public static readonly string[] VanillaBoss = new[] { "Tenzio", "Sunaumi High", "Shirogane" };
         public static readonly string[] SlotClass = { "", "regular", "regular", "boss", "regular", "regular", "boss", "combo", "boss" };
-        public const int PerksPerInfiniteMatches = 4, PerksPerLoop = 1, BossBonus = 1, MaxPerks = 4;
+        public static string VanillaElement(string team)
+        {
+            switch (team)
+            {
+                case "Rensho": return "power";
+                case "Hinami Kai": return "wind";
+                case "Daigan Tech": return "earth";
+                case "Namasito Academy": return "water";
+                case "Kozuki Dan": return "lightning";
+                case "Aomori": return "wind";
+                case "Ten-Roku": return "earth";
+                case "Tenzio": return "shadow";
+                case "Sunaumi High": return "water";
+                case "Shirogane": return "ice";
+                case "Club Sumi": return "none";
+                default: return "none";
+            }
+        }
         public static readonly TeamDef[] All =
         {
             new TeamDef { Id = "kagaribi", Name = "Kagaribi Flame", Base = "Rensho", Slot = "regular", Element = "fire", Jersey = "E8452A", Shorts = "7A1E10", Banner = "C8321E", Intro = "Hope you can take the heat!", Win = "Burned to a crisp!", Lose = "We... fizzled out.", Comment = "Their spikes were on fire. Literally.", Pitch = 0.9f, Hair = new[] { "FFB000", "FF5A1A" }, GotPoint = new[] { "Too hot for you?", "Feel that burn!" }, LostPoint = new[] { "Just a spark.", "We'll flare up." }, Signature = new[] { "blaze_spike" }, WeightStats = new[] { "Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe" }, Weights = new[] { 5.0f, 3.0f, 0.0f, 1.0f, 3.0f, 3.0f, 0.0f } },
@@ -536,26 +553,34 @@ namespace HangtimeOvertime.Generated
         public static readonly ModeDef Loop = new ModeDef("Loop", "Loop {loop} - {bracket}", "bestLoop", false);
     }
 
-    public readonly struct ScaleDef
-    {
-        public readonly string Id, Target;
-        public readonly float PerTier;
-        public readonly int MaxTiers;
-        public ScaleDef(string id, string target, float perTier, int maxTiers) { Id = id; Target = target; PerTier = perTier; MaxTiers = maxTiers; }
-    }
-
+    // OPPONENT SCALING CONFIG (sheets/scaling.json): one constant per row.
     public static class Scaling
     {
-        public static readonly ScaleDef[] All =
-        {
-            new ScaleDef("opp_spike", "stat:Spike", 0.06f, 6),
-            new ScaleDef("opp_block", "stat:Block", 0.03f, 6),
-            new ScaleDef("opp_bump", "stat:Bump", 0.04f, 6),
-            new ScaleDef("opp_spin_serve", "stat:SpinServe", 0.05f, 6),
-            new ScaleDef("opp_float_serve", "stat:FloatServe", 0.04f, 6),
-            new ScaleDef("opp_jump", "stat:Jump", 0.02f, 6),
-            new ScaleDef("opp_move", "move_speed", 0.05f, 6),
-        };
+        public const float PointsBase = 2.0f;   // opponent level-up points at round 1 (the game spends them by the team's stat weights; each stat caps at level 3)
+        public const float PointsPerRound = 1.4f;   // extra level-up points per round
+        public const float PointsBossBonus = 3.0f;   // extra points in boss slots (3, 6, 8 of every 8)
+        public const float PointsComboBonus = 1.5f;   // extra points in the combo slot (7)
+        public const float OverStart = 12.0f;   // round after which stats grow past the level cap
+        public const float BaseStatMult = 0.92f;   // round-1 'base version' stat multiplier (opponents start a bit below their table values)
+        public const float BaseMoveMult = 0.95f;   // round-1 move-speed multiplier
+        public const float BaseRampRounds = 5.0f;   // rounds over which the base multipliers rise to 1
+        public const float OverPerRound = 0.025f;   // stat multiplier gained per round after over_start
+        public const float OverMax = 1.5f;   // highest stat multiplier
+        public const float MovePerRound = 0.008f;   // opponent move-speed multiplier gained per round after round 1
+        public const float MoveMax = 1.2f;   // highest move-speed multiplier
+        public const float PerksBase = 0.0f;   // opponent perks at round 1 (signature and built-in perks included)
+        public const float PerksPerRound = 0.3f;   // opponent perks gained per round
+        public const float PerksBossBonus = 1.0f;   // extra perks in boss slots
+        public const float PerksMax = 7.0f;   // most perks an opponent can have
+        public const float RareFrom = 5.0f;   // round from which rare perks can be drawn
+        public const float EpicFrom = 10.0f;   // round from which epic perks can be drawn
+        public const float ThemeWeight = 4.0f;   // draw weight of perks in the team's element (others weigh 1): a fire team keeps getting fire perks
+        public const float SignatureFirst = 1.0f;   // perks are given signature-first: the team's own perks (new teams' signatures, vanilla teams' built-ins) fill the count before random draws
+        public const float PlayerPowerWeight = 0.3f;   // how much opponent points follow the player's power (0 = round only); points times 1 + weight x (ratio - 1), ratio clamped
+        public const float PlayerPowerRatioMin = 0.7f;   // lowest player power / expected power ratio used
+        public const float PlayerPowerRatioMax = 1.4f;   // highest ratio used
+        public const float ExpectedPowerBase = 0.0f;   // expected player power at round 1 (power = perks + stat-card points / 2 + game stat levels)
+        public const float ExpectedPowerPerRound = 1.0f;   // expected player power gained per round
         public static readonly string[] OpponentTechniques = new[] { "Speedster", "MomentumSpike", "LastStand", "ComeBack" };
     }
 

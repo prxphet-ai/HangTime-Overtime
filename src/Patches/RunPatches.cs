@@ -88,10 +88,9 @@ namespace HangtimeOvertime.Patches
                 if (team == null) return;
                 int slot = GameManager.gameNumber;
                 if (TeamRoster.Current != null) TeamRoster.Dress(team, TeamRoster.Current, slot);
-                ScaleOpponents(team, RunState.Tier);
-                if (RunState.Mode != RunMode.Normal) TeamRoster.GivePerks(team, slot);
+                if (RunState.Mode != RunMode.Normal) OpponentScaling.Apply(team, TeamRoster.Current, slot);
                 Engine.Engine.FirePassives();
-                Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} tier={RunState.Tier} " +
+                Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} round={OpponentScaling.Round} " +
                                    $"infiniteMatch={RunState.InfiniteMatch} loop={RunState.Loop} vs {__instance.opponentTeam?.teamName}");
                 if (Plugin.DumpScenes.Value) Debugging.Dumps.Opponent(team);
             }
@@ -114,27 +113,6 @@ namespace HangtimeOvertime.Patches
             private static void Postfix(string teamName, ref string __result)
             {
                 if (string.IsNullOrEmpty(__result) && TeamRoster.Current != null && teamName == TeamRoster.Current.Name) __result = TeamRoster.Current.Comment;
-            }
-        }
-
-        private static void ScaleOpponents(GameObject team, int tier)
-        {
-            if (tier <= 0) return;
-            var stats = team.GetComponent<PlayerStats>();
-            foreach (var s in Scaling.All)
-            {
-                int t = Mathf.Min(tier, s.MaxTiers);
-                float factor = 1f + s.PerTier * t;
-                if (s.Target.StartsWith("stat:"))
-                {
-                    var stat = stats?.GetStat(s.Target.Substring(5));
-                    if (stat == null) { Plugin.Log.LogWarning($"scaling {s.Id}: no stat {s.Target}"); continue; }
-                    for (int i = 0; i < stat.levels.Length; i++) stat.levels[i] *= factor;
-                }
-                else if (s.Target == "move_speed")
-                {
-                    foreach (var pc in team.GetComponentsInChildren<PlayerController>(true)) pc.moveSpeed *= factor;
-                }
             }
         }
 

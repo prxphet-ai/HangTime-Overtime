@@ -10,7 +10,7 @@ namespace HangtimeOvertime.Debugging
     {
         public static void Hook()
         {
-            SceneManager.sceneLoaded += (scene, _) => { Dump(scene); if (scene.name == "Game") Dumps.GameData(); };
+            SceneManager.sceneLoaded += (scene, _) => { Dump(scene); if (scene.name == "Game") { Dumps.GameData(); SimExport.Write(); } };
         }
 
         private static void Dump(Scene scene)

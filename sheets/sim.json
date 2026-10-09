@@ -1,0 +1,755 @@
+{
+  "sheet": "sim",
+  "about": "Configuration of the AI vs AI match simulator (tools/sim.py). The simulator is an event model of Hangtime!'s rallies, not the Unity physics: each serve, receive, set, attack, block and dig is a probability built from the same stat values, AI settings (sim_data/game_data.json, exported from the game) and perk rows the mod uses. These coefficients are the model's tuning surface; they set how much each stat or effect matters. Use the simulator to compare (perk vs no perk, round 1 vs round 10); treat absolute win rates as estimates.",
+  "columns": {
+    "id": "key",
+    "value": "number",
+    "meaning": "what it controls",
+    "verified": "how it was checked, or 'no'"
+  },
+  "rows": [
+    {
+      "id": "serve_error_base",
+      "value": 0.05,
+      "meaning": "chance a serve goes out or into the net",
+      "verified": "no"
+    },
+    {
+      "id": "serve_error_per_speed",
+      "value": 0.1,
+      "meaning": "extra serve error per 50 speed above 70",
+      "verified": "no"
+    },
+    {
+      "id": "receive_base",
+      "value": 1.6,
+      "meaning": "logit of receiving a 70-speed spin serve with base stats",
+      "verified": "no"
+    },
+    {
+      "id": "receive_speed",
+      "value": 0.9,
+      "meaning": "logit lost per 30 serve speed above 70",
+      "verified": "no"
+    },
+    {
+      "id": "float_penalty",
+      "value": 0.6,
+      "meaning": "logit lost receiving a float serve (wobble), per 50 FloatServe above 100",
+      "verified": "no"
+    },
+    {
+      "id": "move_weight",
+      "value": 0.55,
+      "meaning": "logit per 0.3 move speed above 1.5 (receives and digs)",
+      "verified": "no"
+    },
+    {
+      "id": "bump_weight",
+      "value": 0.25,
+      "meaning": "logit per 2 Bump above 3 (receives and digs)",
+      "verified": "no"
+    },
+    {
+      "id": "defensive_structure",
+      "value": 0.3,
+      "meaning": "logit bonus for AI that reads the precise landing spot",
+      "verified": "no"
+    },
+    {
+      "id": "pass_deflect_scale",
+      "value": 14.0,
+      "meaning": "pass quality = exp(-deflection / this); deflection = U(v/3, v)/Bump for balls faster than 65 (the game's own rule)",
+      "verified": "no"
+    },
+    {
+      "id": "perfect_receive_chance",
+      "value": 0.2,
+      "meaning": "chance a hard receive is perfect (game: 1 in 5 after 2 hard receives; PerfectBump makes it 1 in 3)",
+      "verified": "no"
+    },
+    {
+      "id": "set_base",
+      "value": 1.2,
+      "meaning": "logit the setter gets a playable set from a perfect pass",
+      "verified": "no"
+    },
+    {
+      "id": "set_quality",
+      "value": 2.0,
+      "meaning": "logit per unit of pass quality",
+      "verified": "no"
+    },
+    {
+      "id": "setter_move_weight",
+      "value": 0.6,
+      "meaning": "logit per 0.3 setter move speed above 1.5",
+      "verified": "no"
+    },
+    {
+      "id": "spike_error_base",
+      "value": 0.07,
+      "meaning": "chance a spike goes out or into the net",
+      "verified": "no"
+    },
+    {
+      "id": "spike_error_per_speed",
+      "value": 0.08,
+      "meaning": "extra spike error per 40 speed above 110",
+      "verified": "no"
+    },
+    {
+      "id": "spike_error_bad_set",
+      "value": 0.1,
+      "meaning": "extra spike error from a poor set (times 1 - set quality)",
+      "verified": "no"
+    },
+    {
+      "id": "block_touch_base",
+      "value": -0.4,
+      "meaning": "logit the blocker touches a spike (equal Block 73 vs Jump 61)",
+      "verified": "no"
+    },
+    {
+      "id": "block_stat_weight",
+      "value": 0.25,
+      "meaning": "logit per 5 Block (blocker reach)",
+      "verified": "no"
+    },
+    {
+      "id": "block_jump_weight",
+      "value": 0.22,
+      "meaning": "logit lost per 5 Jump of the attacker (hits over the block)",
+      "verified": "no"
+    },
+    {
+      "id": "block_stuff",
+      "value": 0.5,
+      "meaning": "chance a block touch is a stuff block (point); otherwise a soft touch the blockers' team digs easily",
+      "verified": "no"
+    },
+    {
+      "id": "block_stuff_absolute",
+      "value": 0.75,
+      "meaning": "stuff chance with AbsoluteBlock (Shutdown)",
+      "verified": "no"
+    },
+    {
+      "id": "soft_block_dig_bonus",
+      "value": 1.2,
+      "meaning": "logit bonus digging a softened (blocked) spike",
+      "verified": "no"
+    },
+    {
+      "id": "dig_base",
+      "value": 0.2,
+      "meaning": "logit of digging an 80-speed spike with base stats",
+      "verified": "no"
+    },
+    {
+      "id": "dig_speed",
+      "value": 0.8,
+      "meaning": "logit lost per 30 spike speed above 80",
+      "verified": "no"
+    },
+    {
+      "id": "dig_set_quality",
+      "value": 0.6,
+      "meaning": "logit lost per unit of the attacker's set quality (good sets place spikes better)",
+      "verified": "no"
+    },
+    {
+      "id": "tip_dig_base",
+      "value": 0.9,
+      "meaning": "logit of digging a tip",
+      "verified": "no"
+    },
+    {
+      "id": "tip_move_weight",
+      "value": 0.8,
+      "meaning": "logit per 0.3 move speed above 1.5 on tips (reaching short balls)",
+      "verified": "no"
+    },
+    {
+      "id": "free_ball_dig",
+      "value": 2.2,
+      "meaning": "logit of digging a free ball (bad set sent over)",
+      "verified": "no"
+    },
+    {
+      "id": "seconds_per_touch",
+      "value": 1.2,
+      "meaning": "rally clock per touch (for cooldowns and durations)",
+      "verified": "no"
+    },
+    {
+      "id": "seconds_between_rallies",
+      "value": 3.0,
+      "meaning": "clock between rallies",
+      "verified": "no"
+    },
+    {
+      "id": "player_skill",
+      "value": 0.0,
+      "meaning": "logit bonus for the player's side on every receive/dig/set (0 = plays like the game's AI; raise to model a strong human)",
+      "verified": "no"
+    }
+  ],
+  "fx_model": {
+    "about": "How each effect kind changes the next play in the model. 'dig_pen' values are logits taken off the defender's next receive or dig. Visual-only kinds (trail, tint, burst, flash, shake, zoom, cutin, sound, aura, afterimages, bolt, ring) change nothing.",
+    "plunge": 0.9,
+    "curve": 0.5,
+    "wobble": 0.6,
+    "hover": 0.5,
+    "slow": 0.35,
+    "gust": 0.45,
+    "invisible": 0.8,
+    "decoy_fake": 0.7,
+    "decoy_plain": 0.2,
+    "lift": 0.25,
+    "float_set": 0.15,
+    "deflect": 0.5,
+    "stun_all": 1.2,
+    "stun_attack_free_ball": 1.0,
+    "zone_coverage": 0.5,
+    "slowmo_quality": 0.35,
+    "game_speed": 1.5,
+    "heavy_gravity": 0.3
+  },
+  "player_ai": {
+    "about": "AI settings used for the player's side (the game has no AI for it; values typical of the game's teams).",
+    "tipChance": 6,
+    "agressiveness": 3,
+    "defensiveStructure": false,
+    "canSpikeQuicks": false,
+    "canSpikeFirstTouch": false
+  },
+  "condition_model": {
+    "about": "Chances for conditions the model can't measure directly.",
+    "run_jump": 0.35,
+    "serve_hold_mean": 1.6,
+    "serve_hold_spread": 0.5,
+    "air_time_per_jump": 0.012,
+    "air_time_base": -0.25
+  },
+  "vanilla": [
+    {
+      "id": "AbsoluteBlock",
+      "title": "Shutdown",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [],
+      "abilities": [
+        "absoluteBlock"
+      ],
+      "note": ""
+    },
+    {
+      "id": "BlockBoost",
+      "title": "Counter Read",
+      "triggers": [
+        "block_jump"
+      ],
+      "conds": {
+        "chance": 0.5
+      },
+      "fx": [
+        {
+          "on": "block_jump",
+          "when": "now",
+          "fx": "block_jump",
+          "add": 5
+        }
+      ],
+      "abilities": [],
+      "note": "+5 block jump on first-touch balls"
+    },
+    {
+      "id": "ComeBack",
+      "title": "Guts",
+      "triggers": [
+        "spike",
+        "jump"
+      ],
+      "conds": {
+        "match_point": 1
+      },
+      "fx": [
+        {
+          "on": "spike",
+          "when": "now",
+          "fx": "power",
+          "add": 0.4
+        },
+        {
+          "on": "jump",
+          "when": "now",
+          "fx": "jump_bonus",
+          "add": 6,
+          "run": 0
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "CounterBump",
+      "title": "Anchor Bump",
+      "triggers": [
+        "dig"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "dig",
+          "when": "now",
+          "fx": "lift",
+          "vy": 4
+        }
+      ],
+      "abilities": [],
+      "note": "absorbs hard balls: better pass"
+    },
+    {
+      "id": "DeadSet",
+      "title": "Dead Ball Set",
+      "triggers": [
+        "set"
+      ],
+      "conds": {
+        "chance": 0.5
+      },
+      "fx": [
+        {
+          "on": "set",
+          "when": "now",
+          "fx": "gravity",
+          "add": -2,
+          "dur": 1
+        }
+      ],
+      "abilities": [],
+      "note": "slow-moving bumps get a drag set"
+    },
+    {
+      "id": "FallingSpike",
+      "title": "Snake Eye Spike",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.35
+      },
+      "fx": [
+        {
+          "on": "spike",
+          "when": "now",
+          "fx": "power",
+          "add": 0.4
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "HybridServe",
+      "title": "Hybrid Serve",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "serve",
+          "when": "cross",
+          "fx": "wobble",
+          "amp": 6,
+          "period": 0.3,
+          "dur": 0.3,
+          "mode": "wave"
+        }
+      ],
+      "abilities": [
+        "hybridServe"
+      ],
+      "note": ""
+    },
+    {
+      "id": "LastStand",
+      "title": "Heart Surge",
+      "triggers": [
+        "jump"
+      ],
+      "conds": {
+        "chance": 0.5
+      },
+      "fx": [
+        {
+          "on": "jump",
+          "when": "now",
+          "fx": "jump_bonus",
+          "add": 5,
+          "run": 0
+        }
+      ],
+      "abilities": [],
+      "note": "+5 jump when receiving"
+    },
+    {
+      "id": "LimitBreak",
+      "title": "Limit Break",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [],
+      "abilities": [
+        "statOverload"
+      ],
+      "note": ""
+    },
+    {
+      "id": "LineCreep",
+      "title": "Knockout Serve",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "serve",
+          "when": "now",
+          "fx": "speed",
+          "mult": 1.4
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "LowTip",
+      "title": "Bounce Tip",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "tip",
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 15,
+          "xmult": 1,
+          "delay": 0
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "MomentumSpike",
+      "title": "Momentum Smash",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.4
+      },
+      "fx": [
+        {
+          "on": "spike",
+          "when": "now",
+          "fx": "power",
+          "add": 0.4
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "PerfectBump",
+      "title": "Perfect Parry",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [],
+      "abilities": [
+        "perfectBump"
+      ],
+      "note": ""
+    },
+    {
+      "id": "Pipe",
+      "title": "Pipe",
+      "triggers": [
+        "jump"
+      ],
+      "conds": {
+        "chance": 0.3
+      },
+      "fx": [
+        {
+          "on": "jump",
+          "when": "now",
+          "fx": "jump_bonus",
+          "add": 5,
+          "run": 0
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "RiskySet",
+      "title": "King Set",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [],
+      "abilities": [
+        "riskySet"
+      ],
+      "note": ""
+    },
+    {
+      "id": "SkyServe",
+      "title": "Sky Serve",
+      "triggers": [
+        "serve"
+      ],
+      "conds": {
+        "chance": 0.5
+      },
+      "fx": [
+        {
+          "on": "serve",
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 25,
+          "xmult": 0.7,
+          "delay": 0
+        }
+      ],
+      "abilities": [
+        "skyServe"
+      ],
+      "note": ""
+    },
+    {
+      "id": "SneakAttack",
+      "title": "Sneak Strike",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [],
+      "abilities": [
+        "canSpikeFreeBalls"
+      ],
+      "note": ""
+    },
+    {
+      "id": "Speedster",
+      "title": "Agility",
+      "triggers": [
+        "passive"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "passive",
+          "when": "now",
+          "fx": "buff",
+          "stat": "move",
+          "mult": 1.4,
+          "dur": -1
+        }
+      ],
+      "abilities": [],
+      "note": "+0.6 move speed"
+    },
+    {
+      "id": "SpeedStrike",
+      "title": "One-Two Punch",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.15
+      },
+      "fx": [
+        {
+          "on": "spike",
+          "when": "now",
+          "fx": "power",
+          "add": 0.4
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "SpinSpike",
+      "title": "Spin Shot",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "spike",
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 15,
+          "xmult": 1,
+          "delay": 0
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "StrongQuick",
+      "title": "Lightning Quick",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.3
+      },
+      "fx": [
+        {
+          "on": "spike",
+          "when": "now",
+          "fx": "power",
+          "add": 0.3
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "ToolTip",
+      "title": "Long Toss",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "tip",
+          "when": "cross",
+          "fx": "speed",
+          "mult": 1.3
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "TopSpinTip",
+      "title": "Hook Tip",
+      "triggers": [
+        "tip"
+      ],
+      "conds": {},
+      "fx": [
+        {
+          "on": "tip",
+          "when": "cross",
+          "fx": "plunge",
+          "vy": 20,
+          "xmult": 1,
+          "delay": 0
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    },
+    {
+      "id": "TrickShot",
+      "title": "Wild Form",
+      "triggers": [
+        "spike"
+      ],
+      "conds": {
+        "chance": 0.33
+      },
+      "fx": [
+        {
+          "on": "spike",
+          "when": "now",
+          "fx": "power",
+          "add": 0.6
+        }
+      ],
+      "abilities": [],
+      "note": ""
+    }
+  ],
+  "run_policy": {
+    "about": "How the simulated player drafts in 'run' mode.",
+    "perk_pick": "value",
+    "stat_pick": "value",
+    "explore": 0.25
+  },
+  "targets": {
+    "about": "Balance targets from the brief (adjust with a note if unrealistic).",
+    "fresh_round1": [
+      0.6,
+      0.75
+    ],
+    "team_field_max": 0.65,
+    "round15_built_min": 0.3
+  },
+  "vanilla_stat_cards": [
+    {
+      "title": "Ace",
+      "upgrades": [
+        "Bump",
+        "Spike"
+      ]
+    },
+    {
+      "title": "Net King",
+      "upgrades": [
+        "Jump",
+        "Block"
+      ]
+    },
+    {
+      "title": "Fortress",
+      "upgrades": [
+        "Block",
+        "Bump"
+      ]
+    },
+    {
+      "title": "Cannon",
+      "upgrades": [
+        "Spike",
+        "SpinServe",
+        "ServeJump"
+      ]
+    },
+    {
+      "title": "Dominator",
+      "upgrades": [
+        "Block",
+        "SpinServe",
+        "ServeJump"
+      ]
+    },
+    {
+      "title": "Wall Breaker",
+      "upgrades": [
+        "Spike",
+        "Jump"
+      ]
+    }
+  ]
+}

@@ -52,13 +52,6 @@
     "7": "combo",
     "8": "boss"
   },
-  "opponent_perks": {
-    "about": "How many random perks an opponent gets (signature perks count toward it). n = infinite match number, loop = loop number.",
-    "infinite_per_matches": 4,
-    "loop_per_loop": 1,
-    "boss_bonus": 1,
-    "max": 4
-  },
   "rows": [
     {
       "id": "kagaribi",
@@ -383,5 +376,41 @@
       ],
       "verified": "no"
     }
-  ]
+  ],
+  "vanilla_profiles": {
+    "about": "Theme element for each vanilla team: scaling draws its random perks from this element first (its own built-in perks always come first).",
+    "Rensho": {
+      "element": "power"
+    },
+    "Hinami Kai": {
+      "element": "wind"
+    },
+    "Daigan Tech": {
+      "element": "earth"
+    },
+    "Namasito Academy": {
+      "element": "water"
+    },
+    "Kozuki Dan": {
+      "element": "lightning"
+    },
+    "Aomori": {
+      "element": "wind"
+    },
+    "Ten-Roku": {
+      "element": "earth"
+    },
+    "Tenzio": {
+      "element": "shadow"
+    },
+    "Sunaumi High": {
+      "element": "water"
+    },
+    "Shirogane": {
+      "element": "ice"
+    },
+    "Club Sumi": {
+      "element": "none"
+    }
+  }
 }

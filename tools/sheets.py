@@ -354,12 +354,19 @@ def preflight():
             errors.append(f"modes.{m['id']}.achievements: allow|block")
         if m["best_key"] != "-" and m["best_key"] not in save_ids:
             errors.append(f"modes.{m['id']}.best_key: '{m['best_key']}' not in saves sheet")
+    need = {"points_base", "points_per_round", "points_boss_bonus", "points_combo_bonus", "base_stat_mult", "base_move_mult", "base_ramp_rounds",
+            "over_start", "over_per_round", "over_max", "move_per_round", "move_max", "perks_base", "perks_per_round", "perks_boss_bonus",
+            "perks_max", "rare_from", "epic_from", "theme_weight", "player_power_weight", "player_power_ratio_min", "player_power_ratio_max",
+            "expected_power_base", "expected_power_per_round"}
+    have = {s["id"] for s in S["scaling"]["rows"]}
+    for m in sorted(need - have):
+        errors.append(f"scaling: missing row '{m}' (read by src/Engine/OpponentScaling.cs and tools/simlib.py)")
     for s in S["scaling"]["rows"]:
-        tgt = s["target"]
-        if tgt.startswith("stat:") and tgt[5:] not in GAME_STATS:
-            errors.append(f"scaling.{s['id']}.target: unknown stat '{tgt[5:]}'")
-        elif not tgt.startswith("stat:") and tgt != "move_speed":
-            errors.append(f"scaling.{s['id']}.target: '{tgt}'")
+        if not is_num(s["value"]):
+            errors.append(f"scaling.{s['id']}.value: not a number")
+    for k, v in S["teams"].get("vanilla_profiles", {}).items():
+        if k != "about" and v.get("element") not in elements:
+            errors.append(f"teams.vanilla_profiles.{k}: element '{v.get('element')}' not in elements sheet")
     for name in S["scaling"]["opponent_techniques"]["allowed"]:
         code = read(os.path.join(DECOMP, name + ".cs"))
         if not is_technique(types, name) or code is None:
@@ -499,7 +506,6 @@ def generate(S):
     L += ["        };", "    }", ""]
 
     T = S["teams"]
-    op = T["opponent_perks"]
     L += ["    public sealed class TeamDef",
           "    {",
           "        public string Id, Name, Base, Slot, Element, Jersey, Shorts, Banner, Intro, Win, Lose, Comment;",
@@ -512,7 +518,11 @@ def generate(S):
           f"        public static readonly string[] VanillaCombo = {arr(T['vanilla_teams']['combo'])};",
           f"        public static readonly string[] VanillaBoss = {arr(T['vanilla_teams']['boss'])};",
           "        public static readonly string[] SlotClass = { \"\", " + ", ".join(cs(T["slots"][str(i)]) for i in range(1, 9)) + " };",
-          f"        public const int PerksPerInfiniteMatches = {int(op['infinite_per_matches'])}, PerksPerLoop = {int(op['loop_per_loop'])}, BossBonus = {int(op['boss_bonus'])}, MaxPerks = {int(op['max'])};",
+          "        public static string VanillaElement(string team)", "        {", "            switch (team)", "            {"]
+    for k, v in T.get("vanilla_profiles", {}).items():
+        if k != "about":
+            L.append(f"                case {cs(k)}: return {cs(v['element'])};")
+    L += ["                default: return \"none\";", "            }", "        }",
           "        public static readonly TeamDef[] All =", "        {"]
     for t in T["rows"]:
         L.append("            new TeamDef { " + ", ".join([
@@ -544,18 +554,11 @@ def generate(S):
         L.append(f"        public static readonly ModeDef {m['id']} = new ModeDef({cs(m['id'])}, {cs(m['banner'])}, {cs(m['best_key'])}, {'true' if m['achievements'] == 'block' else 'false'});")
     L += ["    }", ""]
 
-    L += ["    public readonly struct ScaleDef",
-          "    {",
-          "        public readonly string Id, Target;",
-          "        public readonly float PerTier;",
-          "        public readonly int MaxTiers;",
-          "        public ScaleDef(string id, string target, float perTier, int maxTiers) { Id = id; Target = target; PerTier = perTier; MaxTiers = maxTiers; }",
-          "    }", "",
-          "    public static class Scaling", "    {", "        public static readonly ScaleDef[] All =", "        {"]
+    L += ["    // OPPONENT SCALING CONFIG (sheets/scaling.json): one constant per row.",
+          "    public static class Scaling", "    {"]
     for s in S["scaling"]["rows"]:
-        L.append(f"            new ScaleDef({cs(s['id'])}, {cs(s['target'])}, {fl(s['per_tier'])}, {int(s['max_tiers'])}),")
-    L += ["        };",
-          f"        public static readonly string[] OpponentTechniques = {arr(S['scaling']['opponent_techniques']['allowed'])};",
+        L.append(f"        public const float {const(s['id'])} = {fl(s['value'])};   // {s['meaning']}")
+    L += [f"        public static readonly string[] OpponentTechniques = {arr(S['scaling']['opponent_techniques']['allowed'])};",
           "    }", ""]
 
     L += ["    public readonly struct UiDef",

@@ -1,64 +1,175 @@
 {
   "sheet": "scaling",
-  "about": "One row per opponent property that grows with tier (see modes.json). Each row generates one ScaleDef. Opponent stat levels are capped at 3 by the game, so later tiers multiply the opponent team's own stat values instead. Opponent perks are set in teams.json (opponent_perks).",
+  "about": "OPPONENT SCALING CONFIG: the one place to tune how strong Infinite/Loop opponents are. Round = infinite match number (Infinite) or 8 x (loop - 1) + bracket slot (Loop). The game (src/Engine/OpponentScaling.cs) and the simulator (tools/sim.py) both read these rows. Classic mode keeps the game's own difficulty.",
   "columns": {
-    "id": "stable key",
-    "target": "stat:<statName> | move_speed | techniques",
-    "per_tier": "added per tier (multiplier fraction for stat/move_speed, count for techniques)",
-    "max_tiers": "tier at which growth stops",
-    "verified": "how it was seen working, or 'no'"
+    "id": "key",
+    "value": "number",
+    "meaning": "what it controls",
+    "verified": "how it was checked, or 'no'"
   },
   "rows": [
     {
-      "id": "opp_spike",
-      "target": "stat:Spike",
-      "per_tier": 0.06,
-      "max_tiers": 6,
+      "id": "points_base",
+      "value": 2.0,
+      "meaning": "opponent level-up points at round 1 (the game spends them by the team's stat weights; each stat caps at level 3)",
       "verified": "no"
     },
     {
-      "id": "opp_block",
-      "target": "stat:Block",
-      "per_tier": 0.03,
-      "max_tiers": 6,
+      "id": "points_per_round",
+      "value": 1.4,
+      "meaning": "extra level-up points per round",
       "verified": "no"
     },
     {
-      "id": "opp_bump",
-      "target": "stat:Bump",
-      "per_tier": 0.04,
-      "max_tiers": 6,
+      "id": "points_boss_bonus",
+      "value": 3.0,
+      "meaning": "extra points in boss slots (3, 6, 8 of every 8)",
       "verified": "no"
     },
     {
-      "id": "opp_spin_serve",
-      "target": "stat:SpinServe",
-      "per_tier": 0.05,
-      "max_tiers": 6,
+      "id": "points_combo_bonus",
+      "value": 1.5,
+      "meaning": "extra points in the combo slot (7)",
       "verified": "no"
     },
     {
-      "id": "opp_float_serve",
-      "target": "stat:FloatServe",
-      "per_tier": 0.04,
-      "max_tiers": 6,
+      "id": "over_start",
+      "value": 12.0,
+      "meaning": "round after which stats grow past the level cap",
       "verified": "no"
     },
     {
-      "id": "opp_jump",
-      "target": "stat:Jump",
-      "per_tier": 0.02,
-      "max_tiers": 6,
+      "id": "base_stat_mult",
+      "value": 0.92,
+      "meaning": "round-1 'base version' stat multiplier (opponents start a bit below their table values)",
       "verified": "no"
     },
     {
-      "id": "opp_move",
-      "target": "move_speed",
-      "per_tier": 0.05,
-      "max_tiers": 6,
+      "id": "base_move_mult",
+      "value": 0.95,
+      "meaning": "round-1 move-speed multiplier",
+      "verified": "no"
+    },
+    {
+      "id": "base_ramp_rounds",
+      "value": 5.0,
+      "meaning": "rounds over which the base multipliers rise to 1",
+      "verified": "no"
+    },
+    {
+      "id": "over_per_round",
+      "value": 0.025,
+      "meaning": "stat multiplier gained per round after over_start",
+      "verified": "no"
+    },
+    {
+      "id": "over_max",
+      "value": 1.5,
+      "meaning": "highest stat multiplier",
+      "verified": "no"
+    },
+    {
+      "id": "move_per_round",
+      "value": 0.008,
+      "meaning": "opponent move-speed multiplier gained per round after round 1",
+      "verified": "no"
+    },
+    {
+      "id": "move_max",
+      "value": 1.2,
+      "meaning": "highest move-speed multiplier",
+      "verified": "no"
+    },
+    {
+      "id": "perks_base",
+      "value": 0.0,
+      "meaning": "opponent perks at round 1 (signature and built-in perks included)",
+      "verified": "no"
+    },
+    {
+      "id": "perks_per_round",
+      "value": 0.3,
+      "meaning": "opponent perks gained per round",
+      "verified": "no"
+    },
+    {
+      "id": "perks_boss_bonus",
+      "value": 1.0,
+      "meaning": "extra perks in boss slots",
+      "verified": "no"
+    },
+    {
+      "id": "perks_max",
+      "value": 7.0,
+      "meaning": "most perks an opponent can have",
+      "verified": "no"
+    },
+    {
+      "id": "rare_from",
+      "value": 5.0,
+      "meaning": "round from which rare perks can be drawn",
+      "verified": "no"
+    },
+    {
+      "id": "epic_from",
+      "value": 10.0,
+      "meaning": "round from which epic perks can be drawn",
+      "verified": "no"
+    },
+    {
+      "id": "theme_weight",
+      "value": 4.0,
+      "meaning": "draw weight of perks in the team's element (others weigh 1): a fire team keeps getting fire perks",
+      "verified": "no"
+    },
+    {
+      "id": "signature_first",
+      "value": 1.0,
+      "meaning": "perks are given signature-first: the team's own perks (new teams' signatures, vanilla teams' built-ins) fill the count before random draws",
+      "verified": "no"
+    },
+    {
+      "id": "player_power_weight",
+      "value": 0.3,
+      "meaning": "how much opponent points follow the player's power (0 = round only); points times 1 + weight x (ratio - 1), ratio clamped",
+      "verified": "no"
+    },
+    {
+      "id": "player_power_ratio_min",
+      "value": 0.7,
+      "meaning": "lowest player power / expected power ratio used",
+      "verified": "no"
+    },
+    {
+      "id": "player_power_ratio_max",
+      "value": 1.4,
+      "meaning": "highest ratio used",
+      "verified": "no"
+    },
+    {
+      "id": "expected_power_base",
+      "value": 0.0,
+      "meaning": "expected player power at round 1 (power = perks + stat-card points / 2 + game stat levels)",
+      "verified": "no"
+    },
+    {
+      "id": "expected_power_per_round",
+      "value": 1.0,
+      "meaning": "expected player power gained per round",
       "verified": "no"
     }
   ],
+  "slot_classes": {
+    "about": "Bracket slot -> opponent class (also in teams.json slots).",
+    "boss": [
+      3,
+      6,
+      8
+    ],
+    "combo": [
+      7
+    ]
+  },
   "opponent_techniques": {
     "about": "Vanilla Techniques that may join an opponent's random perks alongside Overtime perks marked opponent_ok. Preflight rejects any that use the shared 'timer' field or player-only global state.",
     "allowed": [

@@ -53,8 +53,6 @@ namespace HangtimeOvertime.Engine
 
         public static void ClearChoice() { ForcedPrefab = null; Current = null; currentKey = null; }
 
-        public static int SkillPoints(int slot) => slot * 3 + 1 + (slot == 3 ? 2 : slot == 8 ? -5 : 0);
-
         // ------------------------------------------------------------ dressing a new team
 
         public static void Dress(GameObject team, TeamDef def, int slot)
@@ -73,9 +71,7 @@ namespace HangtimeOvertime.Engine
             var weights = new List<StatWeight>();
             for (int i = 0; i < def.WeightStats.Length; i++) weights.Add(new StatWeight { statName = def.WeightStats[i], weight = def.Weights[i] });
             weights.Capacity = weights.Count;
-            Traverse.Create(ot).Field("statWeights").SetValue(weights);
-            foreach (var s in stats.statUpgrades) s.currentLevel = 0;
-            ot.Init(SkillPoints(slot));
+            Traverse.Create(ot).Field("statWeights").SetValue(weights);   // OpponentScaling levels the team with these
 
             int idx = 0;
             foreach (var pc in team.GetComponentsInChildren<PlayerController>(true))
@@ -149,32 +145,9 @@ namespace HangtimeOvertime.Engine
 
         // ------------------------------------------------------------ opponent perks
 
-        public static void GivePerks(GameObject team, int slot)
-        {
-            var stats = team.GetComponent<PlayerStats>();
-            if (stats == null) return;
-            bool boss = slot >= 1 && slot <= 8 && Generated.Teams.SlotClass[slot] == "boss";
-            int count = RunState.Mode == RunMode.Infinite ? RunState.InfiniteMatch / Generated.Teams.PerksPerInfiniteMatches
-                      : RunState.Mode == RunMode.Loop ? (RunState.Loop - 1) * Generated.Teams.PerksPerLoop : 0;
-            if (count > 0 && boss) count += Generated.Teams.BossBonus;
-            var given = new List<Technique>();
-            if (Current != null)
-                foreach (var id in Current.Signature) { var p = PerkRegistry.Get(id); if (p != null) given.Add(p); }
-            count = Mathf.Min(Mathf.Max(count, given.Count), Generated.Teams.MaxPerks);
-            var pool = PerkRegistry.All.Where(p => p.Def.OpponentOk).Cast<Technique>()
-                .Concat(Scaling.OpponentTechniques.Select(PerkRegistry.FindVanilla).Where(t => t != null))
-                .Where(t => !given.Contains(t)).OrderBy(_ => Random.value).ToList();
-            foreach (var t in pool) { if (given.Count >= count) break; given.Add(t); }
-            foreach (var t in given) if (!stats.techniques.Contains(t)) stats.techniques.Add(t);
-            if (given.Count == 0) return;
-            string names = string.Join(", ", given.Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t)));
-            Plugin.Log.LogInfo($"Opponent perks: {names}");
-            Announce(team, names);
-        }
-
         private static readonly AccessTools.FieldRef<BallMovement, OpponentDialogue> fDialogue = AccessTools.FieldRefAccess<BallMovement, OpponentDialogue>("opponentDialogue");
 
-        private static void Announce(GameObject team, string names)
+        public static void Announce(GameObject team, string names)
         {
             var ball = GameManager.Instance.ball != null ? GameManager.Instance.ball.GetComponent<BallMovement>() : null;
             var dlg = ball != null ? fDialogue(ball) : null;
