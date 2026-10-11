@@ -367,7 +367,7 @@ def preflight():
         if m["best_key"] != "-" and m["best_key"] not in save_ids:
             errors.append(f"modes.{m['id']}.best_key: '{m['best_key']}' not in saves sheet")
     need = {"points_base", "points_per_round", "points_boss_bonus", "points_combo_bonus", "base_stat_mult", "base_move_mult", "base_ramp_rounds",
-            "over_start", "over_per_round", "over_max", "move_per_round", "move_max", "perks_base", "perks_per_round", "perks_boss_bonus",
+            "over_start", "over_per_round", "over_max", "reach_min_mult", "reach_max_mult", "move_per_round", "move_max", "perks_base", "perks_per_round", "perks_boss_bonus",
             "perks_max", "rare_from", "epic_from", "theme_weight", "player_power_weight", "player_power_ratio_min", "player_power_ratio_max",
             "expected_power_base", "expected_power_per_round"}
     have = {s["id"] for s in S["scaling"]["rows"]}

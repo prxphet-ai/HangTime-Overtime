@@ -10,9 +10,9 @@
   "rows": [
     {
       "id": "points_base",
-      "value": 2.0,
+      "value": 1.0,
       "meaning": "opponent level-up points at round 1 (the game spends them by the team's stat weights; each stat caps at level 3)",
-      "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
+      "verified": "sim 2026-10-11: lowered from 2.0 when the reach stats stopped being weakened at round 1 (fresh player round-1 win 70% -> 61% with 2.0, 64% with 1.0; rounds 5-15 back near the old curve)"
     },
     {
       "id": "points_per_round",
@@ -67,6 +67,18 @@
       "value": 1.5,
       "meaning": "highest stat multiplier",
       "verified": "in game 2026-10-08: OpponentScaling log at rounds 1 and 10 matched the formula (e.g. r10 Kaien: 6.2 pts, x1.09, move x1.07, 1 signature perk); game/sim parity 0 mismatches"
+    },
+    {
+      "id": "reach_min_mult",
+      "value": 1.0,
+      "meaning": "lowest multiplier for the reach stats (Jump, ServeJump, Block): the game's AI needs its table jump (61+) to reach sets and swing, so the round-1 base version never weakens these",
+      "verified": "no"
+    },
+    {
+      "id": "reach_max_mult",
+      "value": 1.12,
+      "meaning": "highest multiplier for the reach stats once stats grow past the cap (top Jump 71 -> about 80, the player's limit-break jump)",
+      "verified": "no"
     },
     {
       "id": "move_per_round",

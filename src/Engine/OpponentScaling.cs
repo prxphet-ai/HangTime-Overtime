@@ -45,6 +45,11 @@ namespace HangtimeOvertime.Engine
             return early * Mathf.Min(Scaling.OverMax, 1f + Scaling.OverPerRound * Mathf.Max(0f, round - Scaling.OverStart));
         }
 
+        // Jump, serve jump and block jump are heights, not strengths: below the table value the game's AI can't reach sets
+        // (it plans its jump and swing around 61+), so the round multiplier only moves them within a narrow band.
+        public static readonly string[] ReachStats = { "Jump", "ServeJump", "Block" };
+        public static float ReachMult(int round) => Mathf.Clamp(StatMult(round), Scaling.ReachMinMult, Scaling.ReachMaxMult);
+
         public static float MoveMult(int round)
         {
             float ramp = Scaling.BaseRampRounds > 0f ? Mathf.Clamp01((round - 1) / Scaling.BaseRampRounds) : 1f;
@@ -76,9 +81,12 @@ namespace HangtimeOvertime.Engine
             float offset = def != null ? def.PointsOffset : Generated.Teams.VanillaPointsOffset(baseName);
             float points = Points(round, cls, power, offset);
             ot.Init(points);
-            float sm = StatMult(round), mm = MoveMult(round);
+            float sm = StatMult(round), rm = ReachMult(round), mm = MoveMult(round);
             foreach (var s in stats.statUpgrades)
-                for (int i = 0; i < s.levels.Length; i++) s.levels[i] *= sm;
+            {
+                float m = System.Array.IndexOf(ReachStats, s.statName) >= 0 ? rm : sm;
+                for (int i = 0; i < s.levels.Length; i++) s.levels[i] *= m;
+            }
             foreach (var pc in team.GetComponentsInChildren<PlayerController>(true)) pc.moveSpeed *= mm;
 
             // perks: the team's own (new-team signatures / vanilla built-ins) first, then themed random draws
@@ -117,7 +125,7 @@ namespace HangtimeOvertime.Engine
             }
             stats.techniques.AddRange(given);
             LastGiven = given.ToList();
-            Plugin.Log.LogInfo($"Scaling round {round} ({cls}): {points:F1} points, stats x{sm:F2}, move x{mm:F2}, player power {power:F1}, " +
+            Plugin.Log.LogInfo($"Scaling round {round} ({cls}): {points:F1} points, stats x{sm:F2} (reach x{rm:F2}), move x{mm:F2}, jump {stats.GetStat("Jump")?.GetCurrentValue():F1}, player power {power:F1}, " +
                                $"perks [{string.Join(", ", given.Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t)))}]");
             // the speech bubble stays readable: four names at most, then "+N more"
             var names = given.Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t)).ToList();

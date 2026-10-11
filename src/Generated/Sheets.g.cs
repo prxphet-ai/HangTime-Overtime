@@ -1069,7 +1069,7 @@ namespace HangtimeOvertime.Generated
     // OPPONENT SCALING CONFIG (sheets/scaling.json): one constant per row.
     public static class Scaling
     {
-        public const float PointsBase = 2.0f;   // opponent level-up points at round 1 (the game spends them by the team's stat weights; each stat caps at level 3)
+        public const float PointsBase = 1.0f;   // opponent level-up points at round 1 (the game spends them by the team's stat weights; each stat caps at level 3)
         public const float PointsPerRound = 0.7f;   // extra level-up points per round
         public const float PointsBossBonus = 1.0f;   // extra points in boss slots (3, 6, 8 of every 8)
         public const float PointsComboBonus = 0.5f;   // extra points in the combo slot (7)
@@ -1079,6 +1079,8 @@ namespace HangtimeOvertime.Generated
         public const float BaseRampRounds = 8.0f;   // rounds over which the base multipliers rise to 1
         public const float OverPerRound = 0.03f;   // stat multiplier gained per round after over_start
         public const float OverMax = 1.5f;   // highest stat multiplier
+        public const float ReachMinMult = 1.0f;   // lowest multiplier for the reach stats (Jump, ServeJump, Block): the game's AI needs its table jump (61+) to reach sets and swing, so the round-1 base version never weakens these
+        public const float ReachMaxMult = 1.12f;   // highest multiplier for the reach stats once stats grow past the cap (top Jump 71 -> about 80, the player's limit-break jump)
         public const float MovePerRound = 0.008f;   // opponent move-speed multiplier gained per round after round 1
         public const float MoveMax = 1.2f;   // highest move-speed multiplier
         public const float PerksBase = 0.0f;   // opponent perks at round 1 (signature and built-in perks included)

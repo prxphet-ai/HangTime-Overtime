@@ -159,6 +159,15 @@ def over_mult(D, rnd):
     return early * min(s["over_max"], 1.0 + s["over_per_round"] * max(0.0, rnd - s["over_start"]))
 
 
+REACH_STATS = ("Jump", "ServeJump", "Block")
+
+
+def reach_mult(D, rnd):
+    """Jump/ServeJump/Block multiplier: the stat multiplier held within [reach_min_mult, reach_max_mult] (OpponentScaling.ReachMult)."""
+    s = D.scaling
+    return max(s["reach_min_mult"], min(s["reach_max_mult"], over_mult(D, rnd)))
+
+
 def move_mult(D, rnd):
     s = D.scaling
     early = s["base_move_mult"] + (1.0 - s["base_move_mult"]) * _ramp(D, rnd)
@@ -220,12 +229,12 @@ def build_opponent(D, key, rnd, rng, player_power=None, cls=None, no_class=False
     weights = D.new_teams[key]["weights"] if key in D.new_teams else D.profiles.get(key, {}).get("weights", g["weights"])
     pts = scaled_points(D, rnd, cls, player_power, team_offset(D, key))
     lv = distribute(g["levels"], weights, pts, rng)
-    om, mm = over_mult(D, rnd), move_mult(D, rnd)
+    om, rm, mm = over_mult(D, rnd), reach_mult(D, rnd), move_mult(D, rnd)
     side = Side(D.team_name(key))
     side.key = key
     side.levels = lv
     for st in STATS7:
-        side.stats[st] = g["levels"][st][min(lv.get(st, 0), len(g["levels"][st]) - 1)] * om
+        side.stats[st] = g["levels"][st][min(lv.get(st, 0), len(g["levels"][st]) - 1)] * (rm if st in REACH_STATS else om)
     spiker, setter = _ai_of(g)
     side.move = (spiker["controller"]["moveSpeed"] if spiker else 1.5) * mm
     side.setter_move = (setter["controller"]["moveSpeed"] if setter else 1.5) * mm

@@ -527,3 +527,23 @@ Modes:
   - The dev autopilot now aims for where the ball will land (without an AI setter it never reached serves in time).
 - **Known**: no physical gamepads to test with (keyboards and a virtual pad only). The right team's setter has the
   right team's look; the left partner wears P1's team colours like the rest of the left side.
+
+### Step 24 — fix: opponents too low to spike (Infinite/Loop)
+- **Bug**: some teams couldn't jump high enough to reach sets, or played passively and never spiked. Cause: opponent
+  scaling multiplied every stat level by the round multiplier, Jump included. At round 1 that is x0.92 (rising to x1 by
+  round 9), and every team's table starts at Jump 61, the height the game's AI is built around (it only goes for high
+  sets above 70 and times its swing from jump height). Teams that got no early Jump level-up played at about 56: of 45
+  teams, 41 averaged under 60 at round 1, and teams with Jump weight 0 or a negative points offset (Namasito Academy,
+  Raijin Tech, Kaminari Express, Inoshishi Boars...) stayed under 61 until about round 8. Serve jump (60 -> 55) and block
+  jump were cut the same way. The simulator didn't show it because it treats jump as a smooth bonus with no reach limit.
+- **Fix**: Jump, ServeJump and Block are "reach" stats with their own multiplier, the stat multiplier clamped to
+  `reach_min_mult` 1.0 .. `reach_max_mult` 1.12 (sheets/scaling.json). They never drop below the table, and late rounds
+  top out near the player's limit-break jump (71 -> about 80) instead of x1.5 (106). Spike power, receive, serve speed,
+  move speed, level-ups and perks still scale as before. Same change in tools/simlib.py.
+- **Balance**: opponents at full jump are stronger early; a fresh player's simulated round-1 win rate fell from 70% to
+  61%. `points_base` 2.0 -> 1.0 brings it to 64% (target 60-75%), and rounds 5-15 sit near the old curve
+  (r5 44%, r8 24%, r10 12%, r15 5%).
+- **Checked**: game/sim parity 0 mismatches after re-exporting the game data; in game, Infinite round 1 vs Sakuradai
+  Petals logged "stats x0.92 (reach x1.00) ... jump 61.0" and its spiker took full approaches and spiked, its setter
+  blocked. The match log now prints each opponent's jump. Classic (the game's own difficulty) and Versus (fixed level-0
+  tables) are not affected. Saves restored byte-identical after the test.
