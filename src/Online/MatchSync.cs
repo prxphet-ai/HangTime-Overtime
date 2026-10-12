@@ -202,6 +202,8 @@ namespace HangtimeOvertime.Online
         private readonly List<Snap> snaps = new List<Snap>();
         private readonly Queue<(float t, NetReader r, byte type)> events = new Queue<(float, NetReader, byte)>();
         private bool haveClock;
+        private readonly List<float> recent = new List<float>(), sorted = new List<float>();
+        public int Starved;                                         // frames shown past the newest snapshot (diagnostics)
         private float offset;                                       // host time - local time (newest-arriving estimate)
         private float scoreMismatchSince = -1f;
         private float renderTime;
@@ -237,8 +239,13 @@ namespace HangtimeOvertime.Online
                 if (!r.B()) continue;
                 s.Players[i] = new PlayerSnap { On = true, Pos = r.V(), Vel = r.V(), Hash = r.I(), T = r.F(), Serving = r.B() };
             }
-            float o = t - Time.unscaledTime;
-            if (!haveClock || o > offset) offset = o; else offset = Mathf.Lerp(offset, o, 0.01f);   // follow the quickest arrivals
+            // where the host's clock is, from recent arrivals: a high percentile, so one unusually quick packet can't make
+            // the picture run ahead of the snapshots it has (it would hold still until the next one: a freeze)
+            recent.Add(t - Time.unscaledTime);
+            if (recent.Count > 60) recent.RemoveAt(0);
+            sorted.Clear(); sorted.AddRange(recent); sorted.Sort();
+            float target = sorted[Mathf.Clamp(Mathf.RoundToInt(sorted.Count * 0.75f), 0, sorted.Count - 1)];
+            offset = haveClock ? Mathf.Lerp(offset, target, 0.1f) : target;
             haveClock = true;
             if (snaps.Count > 0 && t <= snaps[snaps.Count - 1].T) return;                          // late or duplicate
             snaps.Add(s);
@@ -269,6 +276,7 @@ namespace HangtimeOvertime.Online
                 case MatchSync.EvLine: w.S(r.S()).F(r.F()); break;
                 case MatchSync.EvJump: w.U8(r.U8()); break;
                 case MatchSync.EvPoint: w.F(r.F()).V(r.V()).V(r.V()).F(r.F()).I(r.I()).I(r.I()).B(r.B()); break;
+                default: FxSync.Copy(type, r, w); break;
             }
             return new NetReader(w.Bytes());
         }
@@ -328,10 +336,13 @@ namespace HangtimeOvertime.Online
             for (int i = snaps.Count - 1; i >= 0; i--)
                 if (snaps[i].T <= renderTime) { a = snaps[i]; b = i + 1 < snaps.Count ? snaps[i + 1] : snaps[i]; break; }
             float k = b.T > a.T ? Mathf.Clamp01((renderTime - a.T) / (b.T - a.T)) : 0f;
+            // past the newest snapshot (a late packet): keep everything moving along its velocity for a moment
+            float ahead = a == b && renderTime > a.T ? Mathf.Min(renderTime - a.T, 0.12f) : 0f;
+            if (ahead > 0f && transforms) Starved++;
             if (ball != null)
             {
-                var pos = Vector2.Lerp(a.BallPos, b.BallPos, k);
                 var vel = Vector2.Lerp(a.BallVel, b.BallVel, k);
+                var pos = Vector2.Lerp(a.BallPos, b.BallPos, k) + vel * ahead;
                 ballRb.linearVelocity = vel;
                 if (transforms) ball.transform.position = new Vector3(pos.x, pos.y, ball.transform.position.z);
                 BallMovement.lastTouched = b.LastTouched;
@@ -346,7 +357,8 @@ namespace HangtimeOvertime.Online
                 HostSync.servingOf(p) = pb.Serving;
                 if (transforms)
                 {
-                    var pos = Vector2.Lerp(pa.Pos, pb.Pos, k);
+                    var pos = Vector2.Lerp(pa.Pos, pb.Pos, k) + Vector2.Lerp(pa.Vel, pb.Vel, k) * ahead;
+                    if (ahead > 0f) pos.y = Mathf.Max(pos.y, Mathf.Min(pa.Pos.y, pb.Pos.y));   // not through the floor
                     p.transform.position = new Vector3(pos.x, pos.y, p.transform.position.z);
                     var an = anims[i];
                     if (an != null && an.isActiveAndEnabled && pb.Hash != 0)
@@ -376,6 +388,7 @@ namespace HangtimeOvertime.Online
 
         private void Play(byte type, NetReader r)
         {
+            if (FxSync.Play(type, r, players, ball)) { if (Plugin.DevKeys.Value) Plugin.Log.LogInfo($"[fx] client drew event {type}"); return; }
             switch (type)
             {
                 case MatchSync.EvSfx:

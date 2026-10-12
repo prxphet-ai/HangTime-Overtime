@@ -15,7 +15,7 @@ namespace HangtimeOvertime.Online
     // Hosting listens on Steam (friend invites) and on direct IP at once; the first friend to say hello is the peer.
     internal static class Net
     {
-        public const int Protocol = 1;
+        public const int Protocol = 2;               // 2: perk effects travel to the client
 
         public static NetRole Role { get; private set; }
         public static bool Connected { get; private set; }           // handshake done
@@ -133,6 +133,7 @@ namespace HangtimeOvertime.Online
             Connected = false;
             PeerName = "";
             Status = "";
+            PingMs = 0f;
             RemotePads.Clear();
             ClientPads.Clear();
             inbox.Clear();
@@ -196,7 +197,10 @@ namespace HangtimeOvertime.Online
                     int proto = r.I(); string ver = r.S(); string name = r.S();
                     if (proto != Protocol || ver != Plugin.Version)
                     {
-                        link.Send(new NetWriter(Msg.Reject).S($"VERSION MISMATCH: HOST HAS OVERTIME {Plugin.Version}, YOU HAVE {ver}").Bytes(), true);
+                        string why = ver == Plugin.Version
+                            ? $"DIFFERENT OVERTIME {ver} BUILDS: BOTH PLAYERS NEED THE NEWEST ZIP"
+                            : $"VERSION MISMATCH: HOST HAS OVERTIME {Plugin.Version}, YOU HAVE {ver}";
+                        link.Send(new NetWriter(Msg.Reject).S(why).Bytes(), true);
                         Plugin.Log.LogInfo($"Online: rejected {name} (version {ver}, protocol {proto})");
                         return;
                     }
@@ -228,7 +232,10 @@ namespace HangtimeOvertime.Online
                     Send(new NetWriter(Msg.Pong).F(r.F()), false);
                     return;
                 case Msg.Pong:
-                    PingMs = Mathf.Lerp(PingMs, (Time.unscaledTime - r.F()) * 1000f, 0.3f);
+                {
+                    float ms = (Time.unscaledTime - r.F()) * 1000f;
+                    PingMs = PingMs <= 0f ? ms : Mathf.Lerp(PingMs, ms, 0.3f);
+                }
                     return;
                 case Msg.Pads when IsHost:
                     ReadPads(r);
@@ -411,6 +418,7 @@ namespace HangtimeOvertime.Online
             SteamCalls.Hook();
             Net.EarlyUpdate();
             VersusMenu.TitleTick();
+            PingHud.Tick();
         }
 
         private void LateUpdate() => Net.LateUpdate();

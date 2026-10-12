@@ -293,7 +293,7 @@ namespace HangtimeOvertime.Engine
                 case "block_jump": return fx.A;
             }
             if (fxKinds.TryGetValue(fx.Kind, out var k) && k.Kind == "ball") BallFx.Apply(fx, ctx);
-            else Vfx.Run(fx, ctx);
+            else { Online.FxSync.Vfx(fx, ctx); Vfx.Run(fx, ctx); }   // online: the client draws it too
             return 0f;
         }
 
@@ -324,7 +324,7 @@ namespace HangtimeOvertime.Engine
                     hit = enemies.Where(c => last != null ? c.Pc == last : !c.IsSetter).Take(1);
                     break;
             }
-            foreach (var c in hit) { c.Stun(dur); Vfx.Bolt(Vfx.Hex("FFE14A"), c.transform.position + Vector3.up * 2f); }
+            foreach (var c in hit) { c.Stun(dur); Vfx.Bolt(Vfx.Hex("FFE14A"), c.transform.position + Vector3.up * 2f); Online.FxSync.Stun(c.Pc, dur); }
         }
 
         // ------------------------------------------------------------ ground zones
@@ -339,6 +339,7 @@ namespace HangtimeOvertime.Engine
             if (x * enemySign < 2f) x = 2f * enemySign;
             var z = new ZoneState { X = x, Half = width / 2f, Mult = mult, Until = Time.time + dur, Owner = ctx.Side };
             z.Mark = Vfx.GroundMark(color, x, width, dur);
+            Online.FxSync.Zone(Vfx.ToHex(color), x, width, dur);
             Zones.Add(z);
             Plugin.Trace($"zone at x={x:F1} width {width} x{mult} for {dur}s");
         }

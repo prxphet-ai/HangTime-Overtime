@@ -602,3 +602,22 @@ Modes:
 - **Checked in game** (local Versus, dev Ctrl+F9 forcing player 1's block to 66/58/50/40/30 and block-jumping every time
   the ball crossed): reproduced the soft-lock at 66 before the fix; after it, 34 block jumps across all values all
   landed and recovered; 0 errors.
+
+### Step 27 — online: perk effects on the client, ping readout, smoother picture
+- **Perk effects** (`src/Online/FxSync.cs`): perks only run on the host; what they draw now reaches the client as events
+  and is drawn again there: every visual effect kind through `Vfx.Run` (bursts, flashes, auras, afterimages, bolts,
+  rings, trails, tints, slow-mo) on the matching player, element call-outs, stuns (flicker + bolt), ground zones, ball
+  invisibility and decoys (the host's decoy path, not a new random one). Shake/zoom/sounds already travel with the
+  camera and sound events. Checked with two copies and the host firing a random perk every 3 s (`-ovt-fx`): every
+  effect type arrived and showed on both screens (e.g. TITAN SLAM! call-out, stun, bursts), 0 errors.
+- **Ping readout** (`PingHud`): top-right on both screens while connected (menus and matches), round trip in ms,
+  green < 80, yellow < 150, red above.
+- **Freezes**: the client placed its picture by the single quickest packet it had seen, so one quick packet made it
+  run ahead of the snapshots it had and hold still until the next. It now uses a high percentile of recent arrivals,
+  and shows movement continuing along its velocity for up to 0.12 s when a snapshot is late.
+- **BufferMs** default 70 (configs still at the first default, 90, move to 70).
+- **Protocol 2**: builds before this one are refused with "DIFFERENT OVERTIME 0.2.5 BUILDS: BOTH PLAYERS NEED THE
+  NEWEST ZIP" instead of misreading the new events.
+- **Prediction (decided against for now)**: it would make the client's own player move instantly but hits are judged on
+  the host, so the timing gap for touches stays and looks worse ("I was under it"). The fix for touch timing is ball
+  ownership by side (whoever's side the ball is on simulates it), a bigger rework, proposed as the next step.

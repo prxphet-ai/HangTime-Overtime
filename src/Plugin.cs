@@ -37,7 +37,8 @@ namespace HangtimeOvertime
             OnlinePort = Config.Bind("Online", "Port", 27515, "Direct IP: the UDP port a host listens on (forward it on your router for friends outside your network).");
             OnlineJoin = Config.Bind("Online", "JoinAddress", "127.0.0.1", "Direct IP: the host JOIN BY IP connects to (address or address:port). Steam invites need no address.");
             OnlineBind = Config.Bind("Online", "ListenAddress", "0.0.0.0", "Direct IP: the local address a host listens on (0.0.0.0 = every network).");
-            OnlineBuffer = Config.Bind("Online", "BufferMs", 90, new ConfigDescription("Online client: how far behind the host the picture runs, so it stays smooth (raise it on a shaky connection).", new AcceptableValueRange<int>(30, 400)));
+            OnlineBuffer = Config.Bind("Online", "BufferMs", 70, new ConfigDescription("Online client: how far behind the host the picture runs, so it stays smooth (raise it on a shaky connection).", new AcceptableValueRange<int>(30, 400)));
+            if (OnlineBuffer.Value == 90) OnlineBuffer.Value = 70;   // 0.2.5's first default
             OnlineTimeout = Config.Bind("Online", "TimeoutSeconds", 8f, "Online: seconds without hearing from the other player before the session ends.");
 
             PerkRegistry.Build();

@@ -241,8 +241,11 @@ namespace HangtimeOvertime.Engine
             public override void End(Rigidbody2D rb, bool interrupted) => Vfx.BallAlpha(Ball, 1f);
         }
 
-        public static void Invisible(BallMovement ball, float alpha, float dur) =>
+        public static void Invisible(BallMovement ball, float alpha, float dur)
+        {
             running.Add(new InvisibleRun { Ball = ball, Alpha = Mathf.Clamp01(alpha), Until = Time.time + dur });
+            Online.FxSync.Invisible(alpha, dur);
+        }
 
         private class DecoyRun : Running
         {
@@ -278,6 +281,15 @@ namespace HangtimeOvertime.Engine
             };
             running.Add(run);
             if (fake) Fakeout.Offset = dir * offset;
+            Online.FxSync.Decoy(run.Pos, run.Vel, run.Gravity, run.Life);
+        }
+
+        // an online client: the host's decoy, on the same path
+        public static void DecoyCopy(BallMovement ball, Vector2 pos, Vector2 vel, float gravity, float life)
+        {
+            var go = Vfx.MakeDecoy(ball);
+            if (go == null) return;
+            running.Add(new DecoyRun { Go = go, Pos = pos, Vel = vel, Gravity = gravity, Born = Time.time, Life = life, Until = Time.time + life });
         }
     }
 

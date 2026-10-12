@@ -347,6 +347,7 @@ namespace HangtimeOvertime.Engine
 
         public static void CutIn(string text)
         {
+            Online.FxSync.CutIn(text);
             if (TitleCard.instance != null) TitleCard.instance.TextSlide(text);
         }
 

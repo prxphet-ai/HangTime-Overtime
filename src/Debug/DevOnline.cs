@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using HangtimeOvertime.Core;
 using HangtimeOvertime.Online;
@@ -14,13 +15,16 @@ namespace HangtimeOvertime.Debugging
     //   -ovt-format 2v2      the mode (host only; 1v1 by default)
     //   -ovt-seats N         how many players this copy brings (host 1, client 1 by default)
     //   -ovt-end N           client: on the match-end screen, step right N times then confirm (1 = REMATCH)
+    //   -ovt-fx              host: fires a random perk with visual effects every 3 s (both sides), to compare screens
     // The window title gets HOST / CLIENT so screenshots can tell the two apart.
     internal class DevOnline : MonoBehaviour
     {
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern bool SetWindowText(IntPtr hWnd, string text);
 
         private static readonly InputKind[] Keys = { InputKind.KeysWASD, InputKind.KeysArrows, InputKind.KeysIJKL, InputKind.KeysNumpad };
-        private bool host, join, auto, titled;
+        private bool host, join, auto, titled, fx;
+        private float nextFx;
+        private int fxPlayed;
         private string format = "1v1";
         private int seats = 1, endRights = 1;
         private float step = -1f;
@@ -35,7 +39,7 @@ namespace HangtimeOvertime.Debugging
             if (!h && !j) return;
             var d = on.AddComponent<DevOnline>();
             Application.runInBackground = true;                        // both copies keep going side by side
-            d.host = h; d.join = j; d.auto = Array.IndexOf(args, "-ovt-auto") >= 0;
+            d.host = h; d.join = j; d.auto = Array.IndexOf(args, "-ovt-auto") >= 0; d.fx = Array.IndexOf(args, "-ovt-fx") >= 0;
             string Arg(string name) { int i = Array.IndexOf(args, name); return i >= 0 && i + 1 < args.Length ? args[i + 1] : null; }
             d.format = Arg("-ovt-format") ?? "1v1";
             if (int.TryParse(Arg("-ovt-seats"), out var n)) d.seats = Mathf.Clamp(n, 1, 4);
@@ -56,6 +60,18 @@ namespace HangtimeOvertime.Debugging
             }
             if (auto && MatchSync.InMatch && !VersusDriver.Autopilot) VersusDriver.Autopilot = true;
             if (join) ClientScreens();
+            if (fx && host && MatchSync.Recording && Time.unscaledTime > nextFx)
+            {
+                nextFx = Time.unscaledTime + 3f;
+                var visual = Core.PerkRegistry.All.Where(p => p.Def.Fx.Any(f => "burst flash aura afterimages bolt ring trail tint invisible decoy zone stun".Contains(f.Kind))).ToList();
+                if (visual.Count > 0)
+                {
+                    var perk = visual[UnityEngine.Random.Range(0, visual.Count)];
+                    int side = UnityEngine.Random.Range(0, 2);
+                    Engine.Engine.DebugFire(perk, side);
+                    Plugin.Log.LogInfo($"[fx] host fired {perk.Def.Title} ({string.Join("+", perk.Def.Fx.Select(f => f.Kind))}) as side {side}");
+                }
+            }
             if (Time.unscaledTime < step) return;
             switch (stage)
             {
