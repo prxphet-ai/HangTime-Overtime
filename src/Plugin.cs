@@ -12,7 +12,7 @@ namespace HangtimeOvertime
     {
         public const string Guid = "melty.hangtime.overtime";
         public const string Name = "Hangtime! Overtime";
-        public const string Version = "0.2.1";
+        public const string Version = "0.2.5";
 
         internal static ManualLogSource Log;
         internal static ConfigEntry<bool> DumpScenes;
