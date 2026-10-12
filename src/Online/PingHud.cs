@@ -1,3 +1,4 @@
+using System.Linq;
 using HangtimeOvertime.Patches;
 using TMPro;
 using UnityEngine;
@@ -15,12 +16,13 @@ namespace HangtimeOvertime.Online
         // NetRunner: one per scene (it hangs on the scene's camera), only while connected
         public static void Tick()
         {
-            if (!Net.Connected) { if (current != null) Destroy(current.gameObject); current = null; return; }
+            bool show = Net.IsHost ? Net.HasFriends : Net.Connected;
+            if (!show) { if (current != null) Destroy(current.gameObject); current = null; return; }
             if (current != null || Camera.main == null) return;
             var go = new GameObject("Overtime Ping");
             var hud = go.AddComponent<PingHud>();
             if (!hud.InitKit(320)) { Destroy(go); return; }
-            hud.text = hud.Text("", new Vector2(hud.W / 2f - 6f, hud.H / 2f - 1.2f), 0.55f, 11f, Color.white, TextAlignmentOptions.Right);
+            hud.text = hud.Text("", new Vector2(hud.W / 2f - 12f, hud.H / 2f - 1.2f), 0.55f, 23f, Color.white, TextAlignmentOptions.Right);
             current = hud;
         }
 
@@ -28,11 +30,17 @@ namespace HangtimeOvertime.Online
         {
             if (text == null || Time.unscaledTime < nextUpdate) return;
             nextUpdate = Time.unscaledTime + 0.5f;
-            int ms = Mathf.RoundToInt(Net.PingMs);
-            text.color = ms < 80 ? new Color(0.55f, 1f, 0.55f) : ms < 150 ? new Color(1f, 0.85f, 0.35f) : new Color(1f, 0.45f, 0.4f);
-            text.text = $"PING {ms} MS  <size=70%>{Net.PeerName.ToUpperInvariant()}</size>";
+            string Col(int ms) => ms < 80 ? "#8CFF8C" : ms < 150 ? "#FFD95A" : "#FF7366";
+            if (Net.IsClient)
+            {
+                int ms = Mathf.RoundToInt(Net.PingMs);
+                text.text = $"<color={Col(ms)}>PING {ms} MS</color>";
+            }
+            else text.text = string.Join("   ", Net.Peers.Where(p => p.Welcomed).Select(p =>
+                $"<size=70%>{p.Name.Replace("<", "‹").ToUpperInvariant()}</size> <color={Col(Mathf.RoundToInt(p.PingMs))}>{Mathf.RoundToInt(p.PingMs)} MS</color>"));
+            text.color = Color.white;
         }
 
-        private void OnDestroy() { if (current == this) current = null; }
+        protected override void OnDestroy() { base.OnDestroy(); if (current == this) current = null; }
     }
 }

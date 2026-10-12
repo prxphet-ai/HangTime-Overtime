@@ -18,9 +18,10 @@ dozens of new abilities and teams, a character creator and run saves — all bui
   player has an AI setter. 1v2: one player and an AI setter against two players. 2v2: two players a side. Rounds to 5
   points, first to 5 rounds; the losing side picks a perk or stat card each round (a pair takes turns), so builds get
   wilder as the match goes on.
-- **Online Versus** — play Versus with a friend over the internet. Click HOST ONLINE on the Versus screen and invite them
-  through Steam (INVITE), or let them JOIN BY IP. Each machine can bring one or more players (for example 2v2 with two
-  players per PC). Both players need the same Overtime version.
+- **Online Versus (lobbies)** — ONLINE on the title screen opens a lobby browser: every Overtime lobby on Steam
+  (worldwide), search by code, or create your own (name, public or private, 2-4 PCs). A lobby has seats, a players list
+  with pings, chat and Steam invites; after a match everyone goes back to it. Up to four PCs (2v2 with everyone on their
+  own PC), or several players per PC. JOIN BY IP works without Steam. Everyone needs the same Overtime version.
 - **Run saves** — close the game mid-run (Infinite or Classic) and pick up where you left off with CONTINUE on the title screen.
 - **Character creator** — hair style and colour, skin tone, jersey and shorts colours, number, build, headband, wristbands,
   knee pads and shoes. Cosmetic only.

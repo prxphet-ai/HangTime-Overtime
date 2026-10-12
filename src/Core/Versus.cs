@@ -139,14 +139,14 @@ namespace HangtimeOvertime.Core
         }
 
         // leaving Versus (menu, quit, starting another mode): nothing of it may stay behind
-        public static void Leave()
+        public static void Leave(bool keepSession = false)
         {
             if (RunState.Mode == RunMode.Versus) RunState.Mode = RunMode.Normal;
             Setup = null;
             ResetBuilds();
             TeamRoster.ResumeKey = null;
             // an online match ends for both players
-            if (Online.Net.Online) Online.Net.Stop(Online.Net.IsHost ? "THE HOST LEFT THE MATCH" : "YOUR OPPONENT LEFT THE MATCH");
+            if (Online.Net.Online && !keepSession) Online.Net.Stop(Online.Net.IsHost ? "THE HOST LEFT THE MATCH" : "YOUR OPPONENT LEFT THE MATCH");
         }
 
         private static void ResetBuilds()

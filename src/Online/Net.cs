@@ -11,89 +11,128 @@ namespace HangtimeOvertime.Online
 {
     internal enum NetRole { None, Host, Client }
 
-    // The online session: one host (runs the real match) and one client (mirrors it and sends its players' inputs).
-    // Hosting listens on Steam (friend invites) and on direct IP at once; the first friend to say hello is the peer.
+    // Another PC in the session. The host has one per friend (up to three); a client has one, the host.
+    internal class Peer
+    {
+        public ITransport T;
+        public int Tid;                    // the transport's number for it
+        public int Id;                     // the session's: the host is 0, friends 1-3 (in their device keys and labels)
+        public string Name = "";
+        public bool Welcomed;
+        public float LastHeard, PingMs;
+        public int ReadySeq = -1;          // the round load it has finished
+    }
+
+    internal class LobbyOptions
+    {
+        public string Name = "";
+        public bool Public = true;
+        public int MaxPCs = 2;
+        public string Code = "";
+    }
+
+    // The online session. The host runs the real match; up to three friends' PCs mirror it and send their players'
+    // inputs. Hosting listens on Steam (a lobby others find in the browser, by code or by invite) and on direct IP.
     internal static class Net
     {
-        public const int Protocol = 2;               // 2: perk effects travel to the client
+        public const int Protocol = 3;               // 3: lobbies, up to 4 PCs, chat
 
         public static NetRole Role { get; private set; }
-        public static bool Connected { get; private set; }           // handshake done
         public static bool IsHost => Role == NetRole.Host;
         public static bool IsClient => Role == NetRole.Client;
         public static bool Online => Role != NetRole.None;
-        public static string PeerName = "";
-        public static string Status = "";                              // one line for the menus
-        public static float PingMs;
-        public static event Action<string> OnClosed;                   // reason
+        // host: hosting (friends may come and go); client: welcomed by the host
+        public static bool Connected => IsHost || (IsClient && HostPeer != null && HostPeer.Welcomed);
+        public static bool HasFriends => IsHost && Peers.Any(p => p.Welcomed);
+        public static int MyId { get; private set; }  // 0 = host
+        public static string MyName { get; private set; } = "";
+        public static string Status = "";             // one line for the menus
+        public static readonly LobbyOptions Lobby = new LobbyOptions();
+        public static float PingMs => IsClient && HostPeer != null ? HostPeer.PingMs : 0f;
+        public static event Action<string> OnClosed;   // reason
+        public static event Action<Peer> OnPeerLeft;   // host: a friend left or dropped
+        public static event Action<Peer> OnPeerJoined;
 
-        private static INetLink link;                                  // the peer's link once known
-        private static UdpLink udp;                                    // host: listening; client: dialled
-        private static SteamLink steam;
-        private static float lastHeard, lastPing, lastHello, startedAt;
-        private static readonly Dictionary<Msg, Action<NetReader>> handlers = new Dictionary<Msg, Action<NetReader>>();
-        private static readonly List<byte[]> inbox = new List<byte[]>();
+        public static readonly List<Peer> Peers = new List<Peer>();   // host: every friend (welcomed or saying hello)
+        public static Peer HostPeer;                                    // client
+        // the session's name list: id -> (name, ping), the host's own included; the host sends it round
+        public static readonly SortedDictionary<int, (string name, int ping)> Roster = new SortedDictionary<int, (string, int)>();
 
-        public static void On(Msg id, Action<NetReader> h) => handlers[id] = h;
+        private static UdpTransport udp;
+        private static SteamTransport steam;
+        private static float lastPing, lastHello, startedAt, lastRoster;
+        private static readonly Dictionary<Msg, Action<NetReader, Peer>> handlers = new Dictionary<Msg, Action<NetReader, Peer>>();
+        private static readonly List<(int peer, byte[] data)> inbox = new List<(int, byte[])>();
 
+        public static void On(Msg id, Action<NetReader> h) => handlers[id] = (r, p) => h(r);
+        public static void On(Msg id, Action<NetReader, Peer> h) => handlers[id] = h;
+
+        // host: to every welcomed friend; client: to the host
         public static void Send(NetWriter w, bool reliable = true)
         {
-            if (link == null) return;
-            link.Send(w.Bytes(), reliable);
+            var bytes = w.Bytes();
+            if (IsClient) { if (HostPeer != null) HostPeer.T.Send(HostPeer.Tid, bytes, reliable); return; }
+            foreach (var p in Peers) if (p.Welcomed) p.T.Send(p.Tid, bytes, reliable);
         }
 
-        private static string MyName()
+        public static void SendTo(Peer p, NetWriter w, bool reliable = true) => p?.T.Send(p.Tid, w.Bytes(), reliable);
+
+        private static string LocalName()
         {
-            try { if (SteamLink.Available) return SteamFriends.GetPersonaName(); } catch { }
+            try { if (SteamTransport.Available) return SteamFriends.GetPersonaName(); } catch { }
             return Environment.UserName;
         }
 
         // ------------------------------------------------------------ starting and stopping
 
-        // an online game keeps running while its window is in the background (alt-tab must not freeze the other player)
+        // an online game keeps running while its window is in the background (alt-tab must not freeze anyone else)
         private static bool savedRunInBackground;
-        private static void KeepRunning()
-        {
-            savedRunInBackground = Application.runInBackground;
-            Application.runInBackground = true;
-        }
-
-        public static void StartHost()
+        private static void Begin(NetRole role)
         {
             Stop(null, false);
-            KeepRunning();
-            Role = NetRole.Host;
+            savedRunInBackground = Application.runInBackground;
+            Application.runInBackground = true;
+            Role = role;
+            MyName = LocalName();
             startedAt = Time.unscaledTime;
+        }
+
+        public static void StartHost(LobbyOptions opts)
+        {
+            Begin(NetRole.Host);
+            MyId = 0;
+            Lobby.Name = string.IsNullOrWhiteSpace(opts.Name) ? MyName + "'s lobby" : opts.Name.Trim();
+            Lobby.Public = opts.Public;
+            Lobby.MaxPCs = Mathf.Clamp(opts.MaxPCs, 2, 4);
+            Lobby.Code = Lobbies.NewCode();
             var parts = new List<string>();
             try
             {
-                udp = UdpLink.Listen(Plugin.OnlineBind.Value, Plugin.OnlinePort.Value);
-                parts.Add($"IP PORT {Plugin.OnlinePort.Value}");
+                udp = UdpTransport.Listen(Plugin.OnlineBind.Value, Plugin.OnlinePort.Value);
+                parts.Add($"DIRECT IP PORT {Plugin.OnlinePort.Value}");
             }
             catch (Exception e) { Plugin.Log.LogWarning("Online: direct IP unavailable: " + e.Message); }
-            if (SteamLink.Available)
+            if (SteamTransport.Available)
             {
-                steam = SteamLink.Host();
-                SteamCalls.CreateLobby(steam);
+                steam = SteamTransport.Host();
+                Lobbies.Create(Lobby);
                 parts.Add("STEAM");
             }
-            Status = parts.Count == 0 ? "COULDN'T START HOSTING" : "WAITING FOR A FRIEND (" + string.Join(" · ", parts) + ")";
-            Plugin.Log.LogInfo("Online: hosting via " + string.Join(", ", parts));
+            Status = parts.Count == 0 ? "COULDN'T START HOSTING" : "LOBBY OPEN (" + string.Join(" · ", parts) + ")";
+            RefreshRoster();
+            Plugin.Log.LogInfo($"Online: hosting '{Lobby.Name}' code {Lobby.Code}, {(Lobby.Public ? "public" : "private")}, up to {Lobby.MaxPCs} PCs via " + string.Join(", ", parts));
         }
 
         public static void JoinIp(string address)
         {
-            Stop(null, false);
-            KeepRunning();
-            Role = NetRole.Client;
-            startedAt = Time.unscaledTime;
+            Begin(NetRole.Client);
             try
             {
-                string host = address; int port = Plugin.OnlinePort.Value;
-                int colon = address.LastIndexOf(':');
-                if (colon > 0 && int.TryParse(address.Substring(colon + 1), out var p)) { host = address.Substring(0, colon); port = p; }
-                udp = UdpLink.Dial(host, port);
-                link = udp;
+                string host = address.Trim(); int port = Plugin.OnlinePort.Value;
+                int colon = host.LastIndexOf(':');
+                if (colon > 0 && int.TryParse(host.Substring(colon + 1), out var p)) { port = p; host = host.Substring(0, colon); }
+                udp = UdpTransport.Dial(host, port);
+                HostPeer = new Peer { T = udp, Tid = 0, Id = 0, Name = host, LastHeard = Time.unscaledTime };
                 Status = $"CONNECTING TO {host}:{port}...";
                 Plugin.Log.LogInfo($"Online: dialling {host}:{port}");
                 SayHello();
@@ -103,37 +142,35 @@ namespace HangtimeOvertime.Online
 
         public static void JoinSteam(CSteamID hostId)
         {
-            Stop(null, false);
-            KeepRunning();
-            Role = NetRole.Client;
-            startedAt = Time.unscaledTime;
-            steam = SteamLink.Dial(hostId);
-            link = steam;
-            Status = "CONNECTING TO " + steam.PeerName.ToUpperInvariant() + "...";
-            Plugin.Log.LogInfo("Online: joining " + steam.PeerName + " over Steam");
+            Begin(NetRole.Client);
+            steam = SteamTransport.Dial(hostId);
+            HostPeer = new Peer { T = steam, Tid = 0, Id = 0, Name = SteamTransport.NameOf(hostId), LastHeard = Time.unscaledTime };
+            Status = "CONNECTING TO " + HostPeer.Name.ToUpperInvariant() + "...";
+            Plugin.Log.LogInfo("Online: joining " + HostPeer.Name + " over Steam");
             SayHello();
         }
 
         private static void SayHello()
         {
             lastHello = Time.unscaledTime;
-            Send(new NetWriter(Msg.Hello).I(Protocol).S(Plugin.Version).S(MyName()));
+            Send(new NetWriter(Msg.Hello).I(Protocol).S(Plugin.Version).S(MyName));
         }
 
-        // ends the session; tell = let the other side know
+        // ends the session; tell = let the others know
         public static void Stop(string reason, bool tell = true)
         {
-            if (Role == NetRole.None && link == null && udp == null && steam == null) return;
-            if (tell && link != null) { try { link.Send(new NetWriter(Msg.Bye).S(reason ?? "").Bytes(), true); link.Poll(inbox); } catch { } }
+            if (Role == NetRole.None && udp == null && steam == null) return;
+            if (tell) { try { Send(new NetWriter(Msg.Bye).S(reason ?? "")); Flush(); } catch { } }
             udp?.Close(); steam?.Close();
-            udp = null; steam = null; link = null;
+            udp = null; steam = null;
+            Lobbies.Leave();
             bool was = Role != NetRole.None;
             if (was) Application.runInBackground = savedRunInBackground;
             Role = NetRole.None;
-            Connected = false;
-            PeerName = "";
+            Peers.Clear();
+            HostPeer = null;
+            Roster.Clear();
             Status = "";
-            PingMs = 0f;
             RemotePads.Clear();
             ClientPads.Clear();
             inbox.Clear();
@@ -144,10 +181,30 @@ namespace HangtimeOvertime.Online
             }
         }
 
+        // the last reliable messages (a goodbye) go out before the sockets close
+        private static void Flush()
+        {
+            var sink = new List<(int, byte[])>();
+            udp?.Poll(sink); steam?.Poll(sink);
+        }
+
         private static void Fail(string reason)
         {
             Plugin.Log.LogWarning("Online: " + reason);
             Stop(reason, false);
+        }
+
+        // host: a friend leaves the session (said bye, timed out, or the lobby closed for them)
+        private static void DropPeer(Peer p, string why)
+        {
+            if (!Peers.Remove(p)) return;
+            p.T.Drop(p.Tid);
+            foreach (var k in RemotePads.Keys.Where(k => k / 10000 == p.Id).ToList()) RemotePads.Remove(k);
+            if (!p.Welcomed) return;
+            Plugin.Log.LogInfo($"Online: {p.Name} left ({why})");
+            OnlineFlow.SystemChat($"{p.Name.ToUpperInvariant()} {why}");
+            RefreshRoster();
+            OnPeerLeft?.Invoke(p);
         }
 
         // ------------------------------------------------------------ the frame loop (NetRunner)
@@ -156,31 +213,51 @@ namespace HangtimeOvertime.Online
         {
             if (Role == NetRole.None) return;
             float now = Time.unscaledTime;
+            Receive(udp, now);
+            if (Role == NetRole.None) return;
+            Receive(steam, now);
+            if (Role == NetRole.None) return;
+            foreach (var p in RemotePads.Values) p.Step();
+
+            if (IsClient)
+            {
+                if (!HostPeer.Welcomed && now - lastHello > 1f) SayHello();
+                if (!HostPeer.Welcomed && now - startedAt > 12f) { Fail("NO ANSWER FROM THE HOST"); return; }
+                if (HostPeer.Welcomed && now - HostPeer.LastHeard > Plugin.OnlineTimeout.Value) { Fail("THE HOST STOPPED RESPONDING"); return; }
+            }
+            else
+            {
+                foreach (var p in Peers.ToList())
+                {
+                    if (p.Welcomed && now - p.LastHeard > Plugin.OnlineTimeout.Value) DropPeer(p, "STOPPED RESPONDING");
+                    else if (!p.Welcomed && now - p.LastHeard > 15f) DropPeer(p, "");
+                }
+                if (now - lastRoster > 1f) { lastRoster = now; RefreshRoster(); }
+            }
+            if (now - lastPing > 0.5f) { lastPing = now; Send(new NetWriter(Msg.Ping).F(now), false); }
+        }
+
+        private static void Receive(ITransport t, float now)
+        {
+            if (t == null) return;
             inbox.Clear();
-            // the host hears from whichever link a friend uses first, then sticks to it
-            if (udp != null && (link == null || link == udp)) { udp.Poll(inbox); if (link == null && inbox.Count > 0) { link = udp; steam?.Close(); steam = null; } }
-            if (steam != null && (link == null || link == steam)) { int before = inbox.Count; steam.Poll(inbox); if (link == null && inbox.Count > before) { link = steam; udp?.Close(); udp = null; } }
-            foreach (var d in inbox.ToList())
+            t.Poll(inbox);
+            foreach (var (tid, d) in inbox.ToList())
             {
                 NetReader r;
                 try { r = new NetReader(d); } catch { continue; }
-                lastHeard = now;
-                try { Handle(r); }
+                Peer p;
+                if (IsClient) { p = HostPeer; if (p == null || p.T != t) continue; }
+                else
+                {
+                    p = Peers.FirstOrDefault(x => x.T == t && x.Tid == tid);
+                    if (p == null) { p = new Peer { T = t, Tid = tid }; Peers.Add(p); }
+                }
+                p.LastHeard = now;
+                try { Handle(r, p); }
                 catch (Exception e) { Plugin.Log.LogError($"Online: message {r.Id} failed: {e}"); }
                 if (Role == NetRole.None) return;                       // a handler ended the session
             }
-            foreach (var p in RemotePads.Values) p.Step();
-
-            if (IsHost && link == null && now - lastPing > 5f)
-            {
-                lastPing = now;
-                Plugin.Log.LogInfo($"Online: hosting, waiting (direct IP {(udp != null ? "listening" : "off")}, Steam {(steam != null ? "on" : "off")})");
-            }
-            if (link == null) return;
-            if (!Connected && IsClient && now - lastHello > 1f) SayHello();
-            if (!Connected && IsClient && now - startedAt > 12f) { Fail("NO ANSWER FROM THE HOST"); return; }
-            if (now - lastPing > 0.5f) { lastPing = now; Send(new NetWriter(Msg.Ping).F(now), false); }
-            if (Connected && now - lastHeard > Plugin.OnlineTimeout.Value) Fail((IsHost ? PeerName : "THE HOST") + " STOPPED RESPONDING");
         }
 
         internal static void LateUpdate()
@@ -188,63 +265,105 @@ namespace HangtimeOvertime.Online
             if (IsClient && Connected) SendPads();
         }
 
-        private static void Handle(NetReader r)
+        private static void Handle(NetReader r, Peer from)
         {
             switch (r.Id)
             {
                 case Msg.Hello when IsHost:
                 {
                     int proto = r.I(); string ver = r.S(); string name = r.S();
+                    string refuse = null;
                     if (proto != Protocol || ver != Plugin.Version)
+                        refuse = ver == Plugin.Version ? $"DIFFERENT OVERTIME {ver} BUILDS: EVERYONE NEEDS THE NEWEST ZIP"
+                                                       : $"VERSION MISMATCH: THE HOST HAS OVERTIME {Plugin.Version}, YOU HAVE {ver}";
+                    else if (!from.Welcomed && Peers.Count(p => p.Welcomed) >= Lobby.MaxPCs - 1) refuse = "THE LOBBY IS FULL";
+                    else if (!from.Welcomed && OnlineFlow.MatchRunning) refuse = "A MATCH IS IN PROGRESS: TRY AGAIN WHEN IT ENDS";
+                    if (refuse != null)
                     {
-                        string why = ver == Plugin.Version
-                            ? $"DIFFERENT OVERTIME {ver} BUILDS: BOTH PLAYERS NEED THE NEWEST ZIP"
-                            : $"VERSION MISMATCH: HOST HAS OVERTIME {Plugin.Version}, YOU HAVE {ver}";
-                        link.Send(new NetWriter(Msg.Reject).S(why).Bytes(), true);
-                        Plugin.Log.LogInfo($"Online: rejected {name} (version {ver}, protocol {proto})");
+                        SendTo(from, new NetWriter(Msg.Reject).S(refuse));
+                        Plugin.Log.LogInfo($"Online: refused {name} ({refuse})");
                         return;
                     }
-                    bool fresh = !Connected;
-                    Connected = true;
-                    PeerName = name;
-                    Status = name.ToUpperInvariant() + " CONNECTED";
-                    Send(new NetWriter(Msg.Welcome).S(MyName()));
-                    if (fresh) { Plugin.Log.LogInfo($"Online: {name} connected ({(link == udp ? "direct IP" : "Steam")})"); handlers.TryGetValue(Msg.Hello, out var h); h?.Invoke(r); }
+                    bool fresh = !from.Welcomed;
+                    if (fresh)
+                    {
+                        from.Welcomed = true;
+                        from.Name = name;
+                        from.Id = Enumerable.Range(1, 3).First(i => Peers.All(p => p == from || p.Id != i));
+                    }
+                    SendTo(from, new NetWriter(Msg.Welcome).S(MyName).U8(from.Id).S(Lobby.Name).S(Lobby.Code).B(Lobby.Public).U8(Lobby.MaxPCs));
+                    if (fresh)
+                    {
+                        Plugin.Log.LogInfo($"Online: {name} joined as PC {from.Id + 1} ({from.T.Kind})");
+                        OnlineFlow.SystemChat($"{name.ToUpperInvariant()} JOINED");
+                        RefreshRoster();
+                        OnPeerJoined?.Invoke(from);
+                    }
                     return;
                 }
                 case Msg.Welcome when IsClient:
-                    if (Connected) return;
-                    Connected = true;
-                    PeerName = r.S();
-                    Status = "CONNECTED TO " + PeerName.ToUpperInvariant();
-                    Plugin.Log.LogInfo("Online: connected to " + PeerName);
+                {
+                    if (from.Welcomed) return;
+                    from.Name = r.S();
+                    MyId = r.U8();
+                    Lobby.Name = r.S(); Lobby.Code = r.S(); Lobby.Public = r.B(); Lobby.MaxPCs = r.U8();
+                    from.Welcomed = true;
+                    Status = "CONNECTED TO " + from.Name.ToUpperInvariant();
+                    Plugin.Log.LogInfo($"Online: joined {from.Name}'s lobby '{Lobby.Name}' as PC {MyId + 1}");
                     break;
+                }
                 case Msg.Reject when IsClient:
                     Fail(r.S());
                     return;
                 case Msg.Bye:
                 {
                     string why = r.S();
-                    Stop(string.IsNullOrEmpty(why) ? (IsHost ? PeerName + " LEFT" : "THE HOST LEFT") : why, false);
+                    if (IsHost) DropPeer(from, "LEFT");
+                    else Stop(string.IsNullOrEmpty(why) ? "THE HOST LEFT" : why, false);
                     return;
                 }
                 case Msg.Ping:
-                    Send(new NetWriter(Msg.Pong).F(r.F()), false);
+                    SendTo(from, new NetWriter(Msg.Pong).F(r.F()), false);
                     return;
                 case Msg.Pong:
                 {
                     float ms = (Time.unscaledTime - r.F()) * 1000f;
-                    PingMs = PingMs <= 0f ? ms : Mathf.Lerp(PingMs, ms, 0.3f);
+                    from.PingMs = from.PingMs <= 0f ? ms : Mathf.Lerp(from.PingMs, ms, 0.3f);
+                    return;
                 }
+                case Msg.Pads when IsHost && from.Welcomed:
+                    ReadPads(r, from);
                     return;
-                case Msg.Pads when IsHost:
-                    ReadPads(r);
+                case Msg.Roster when IsClient:
+                {
+                    Roster.Clear();
+                    int n = r.U8();
+                    for (int i = 0; i < n; i++) { int id = r.U8(); string name = r.S(); int ping = r.I(); Roster[id] = (name, ping); }
+                    if (Roster.TryGetValue(MyId, out var me)) Roster[MyId] = (me.name, Mathf.RoundToInt(PingMs));
                     return;
+                }
             }
-            if (handlers.TryGetValue(r.Id, out var handler)) handler(r);
+            if (!from.Welcomed && IsHost) return;                                 // nothing else before the handshake
+            if (handlers.TryGetValue(r.Id, out var handler)) handler(r, from);
         }
 
-        // ------------------------------------------------------------ the client's devices, read on the host
+        // host: who is here, with their pings, for everyone's players list
+        private static void RefreshRoster()
+        {
+            if (!IsHost) return;
+            Roster.Clear();
+            Roster[0] = (MyName, 0);
+            foreach (var p in Peers.Where(p => p.Welcomed)) Roster[p.Id] = (p.Name, Mathf.RoundToInt(p.PingMs));
+            var w = new NetWriter(Msg.Roster).U8(Roster.Count);
+            foreach (var kv in Roster) w.U8(kv.Key).S(kv.Value.name).I(kv.Value.ping);
+            Send(w);
+            Lobbies.UpdateMembers(Roster.Count);
+        }
+
+        public static Peer PeerById(int id) => Peers.FirstOrDefault(p => p.Welcomed && p.Id == id);
+        public static string NameOfPc(int id) => Roster.TryGetValue(id, out var r) ? r.name : "PC " + (id + 1);
+
+        // ------------------------------------------------------------ the friends' devices, read on the host
 
         // Presses travel as running counts, so a lost packet only delays a press, it never drops it.
         internal class RemotePad
@@ -252,26 +371,24 @@ namespace HangtimeOvertime.Online
             public string Label;
             public float X;
             public readonly int[] Count = new int[6], Cur = new int[6], Prev = new int[6];
-            public bool Seen;
             public void Step() { Array.Copy(Cur, Prev, 6); Array.Copy(Count, Cur, 6); }
             public bool Edge(int k) => Cur[k] != Prev[k];
         }
 
+        // keyed by PC id * 10000 + the device's key on that PC
         public static readonly Dictionary<int, RemotePad> RemotePads = new Dictionary<int, RemotePad>();
+        public static int PcOf(int remoteKey) => remoteKey / 10000;
+        public static int DeviceOf(int remoteKey) => remoteKey % 10000;
 
-        private static void ReadPads(NetReader r)
+        private static void ReadPads(NetReader r, Peer from)
         {
             int n = r.U8();
             for (int i = 0; i < n; i++)
             {
-                int key = r.I(); string label = r.S(); float x = r.F();
-                if (!RemotePads.TryGetValue(key, out var p))
-                {
-                    p = new RemotePad();
-                    RemotePads[key] = p;
-                }
+                int key = from.Id * 10000 + r.I(); string label = r.S(); float x = r.F();
+                if (!RemotePads.TryGetValue(key, out var p)) RemotePads[key] = p = new RemotePad();
                 p.Label = label; p.X = x;
-                // the client counts each device's presses from 0, so the first packet's counts are all new presses
+                // each PC counts each device's presses from 0, so the first packet's counts are all new presses
                 for (int k = 0; k < 6; k++) { int c = r.I(); if (c > p.Count[k]) p.Count[k] = c; }
             }
         }
@@ -279,28 +396,30 @@ namespace HangtimeOvertime.Online
         public static PadState ReadRemote(int key)
         {
             var s = new PadState();
-            if (!IsHost || !Connected || !RemotePads.TryGetValue(key, out var p)) return s;
+            if (!IsHost || PeerById(PcOf(key)) == null || !RemotePads.TryGetValue(key, out var p)) return s;
             s.Connected = true;
             s.X = p.X;
             s.Up = p.Edge(0); s.Down = p.Edge(1); s.Left = p.Edge(2); s.Right = p.Edge(3); s.Confirm = p.Edge(4); s.Back = p.Edge(5);
             return s;
         }
 
-        // a client device pressed something this frame and isn't in a seat yet
+        // a friend's device pressed something this frame and isn't in a seat yet
         public static SlotInput RemoteJoin(IEnumerable<SlotInput> taken)
         {
-            if (!IsHost || !Connected) return null;
+            if (!IsHost) return null;
             foreach (var kv in RemotePads)
             {
                 var p = kv.Value;
                 if (!(p.Edge(0) || p.Edge(1) || p.Edge(2) || p.Edge(3) || p.Edge(4))) continue;
                 if (taken.Any(t => t != null && t.Kind == InputKind.Remote && t.DeviceId == kv.Key)) continue;
-                return new SlotInput { Kind = InputKind.Remote, DeviceId = kv.Key, Label = $"{p.Label} ({PeerName.ToUpperInvariant()})" };
+                var pc = PeerById(PcOf(kv.Key));
+                if (pc == null) continue;
+                return new SlotInput { Kind = InputKind.Remote, DeviceId = kv.Key, Label = $"{p.Label} ({pc.Name.ToUpperInvariant()})" };
             }
             return null;
         }
 
-        // ------------------------------------------------------------ the client's side: every local device, sent each frame
+        // ------------------------------------------------------------ a friend's side: every local device, sent each frame
 
         private class ClientPad
         {
@@ -315,7 +434,10 @@ namespace HangtimeOvertime.Online
 
         public static int KeyOf(SlotInput i) => i == null ? 0 : i.Kind == InputKind.Gamepad ? 1000 + i.DeviceId : (int)i.Kind;
 
-        // the client's autopilot (development) stands in for a device this frame
+        // a remote slot that belongs to this PC (its device key here), or -1
+        public static int MyDevice(SlotInput i) => IsClient && i?.Kind == InputKind.Remote && PcOf(i.DeviceId) == MyId ? DeviceOf(i.DeviceId) : -1;
+
+        // the autopilot (development) stands in for a device this frame
         public static void OverridePad(int key, PadState s) => overrides[key] = s;
 
         private static void SendPads()
@@ -349,79 +471,18 @@ namespace HangtimeOvertime.Online
         }
     }
 
-    // Steam lobby calls: creating, inviting, and joining from an invite or the friends list.
-    internal static class SteamCalls
-    {
-        private static CallResult<LobbyCreated_t> created;
-        private static CallResult<LobbyEnter_t> entered;
-        private static Callback<GameLobbyJoinRequested_t> joinRequested;
-        private static SteamLink hosting;
-        private static bool hooked;
-        public static CSteamID PendingLobby;          // from the command line (+connect_lobby) or a join request before the menu was ready
-
-        public static void Hook()
-        {
-            if (hooked || !SteamLink.Available) return;
-            hooked = true;
-            created = CallResult<LobbyCreated_t>.Create(OnCreated);
-            entered = CallResult<LobbyEnter_t>.Create(OnEntered);
-            joinRequested = Callback<GameLobbyJoinRequested_t>.Create(r => { PendingLobby = r.m_steamIDLobby; Plugin.Log.LogInfo("Online: Steam join request"); });
-            var args = Environment.GetCommandLineArgs();
-            int i = Array.IndexOf(args, "+connect_lobby");
-            if (i >= 0 && i + 1 < args.Length && ulong.TryParse(args[i + 1], out var id)) PendingLobby = new CSteamID(id);
-        }
-
-        public static void CreateLobby(SteamLink link)
-        {
-            Hook();
-            hosting = link;
-            created.Set(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, 2));
-        }
-
-        private static void OnCreated(LobbyCreated_t r, bool failed)
-        {
-            if (failed || r.m_eResult != EResult.k_EResultOK || hosting == null) { Plugin.Log.LogWarning("Online: Steam lobby failed " + r.m_eResult); return; }
-            hosting.Lobby = new CSteamID(r.m_ulSteamIDLobby);
-            SteamMatchmaking.SetLobbyData(hosting.Lobby, "overtime", Plugin.Version);
-            Plugin.Log.LogInfo("Online: Steam lobby ready");
-        }
-
-        public static bool CanInvite => hosting != null && hosting.Lobby.IsValid() && Net.IsHost;
-        public static void Invite() { if (CanInvite) SteamFriends.ActivateGameOverlayInviteDialog(hosting.Lobby); }
-
-        // the menu takes a pending join when it is ready for it
-        public static void JoinPending()
-        {
-            if (!PendingLobby.IsValid()) return;
-            var lobby = PendingLobby;
-            PendingLobby = CSteamID.Nil;
-            entered.Set(SteamMatchmaking.JoinLobby(lobby));
-        }
-
-        private static void OnEntered(LobbyEnter_t r, bool failed)
-        {
-            var lobby = new CSteamID(r.m_ulSteamIDLobby);
-            if (failed || r.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess) { Plugin.Log.LogWarning("Online: couldn't enter the lobby"); return; }
-            string ver = SteamMatchmaking.GetLobbyData(lobby, "overtime");
-            var owner = SteamMatchmaking.GetLobbyOwner(lobby);
-            if (owner == SteamUser.GetSteamID()) return;                  // our own lobby
-            Net.JoinSteam(owner);
-            Plugin.Log.LogInfo($"Online: entered lobby (host version {ver})");
-        }
-    }
-
     [DefaultExecutionOrder(-500)]
     internal class NetRunner : MonoBehaviour
     {
         private void Update()
         {
-            SteamCalls.Hook();
+            Lobbies.Hook();
             Net.EarlyUpdate();
-            VersusMenu.TitleTick();
+            OnlineFlow.TitleTick();
             PingHud.Tick();
         }
 
         private void LateUpdate() => Net.LateUpdate();
-        private void OnApplicationQuit() => Net.Stop("THE OTHER PLAYER CLOSED THE GAME");
+        private void OnApplicationQuit() => Net.Stop(Net.IsHost ? "THE HOST CLOSED THE GAME" : null);
     }
 }

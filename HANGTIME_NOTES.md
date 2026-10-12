@@ -621,3 +621,32 @@ Modes:
 - **Prediction (decided against for now)**: it would make the client's own player move instantly but hits are judged on
   the host, so the timing gap for touches stays and looks worse ("I was under it"). The fix for touch timing is ball
   ownership by side (whoever's side the ball is on simulates it), a bigger rework, proposed as the next step.
+
+### Step 28 — online lobbies (browser, codes, private lobbies, chat, up to 4 PCs)
+- **Title ONLINE -> lobby browser** (`src/Online/LobbyBrowser.cs`): every Overtime lobby on Steam, worldwide (Steam lobby
+  data marker + distance filter worldwide), with name, version, mode, status (LOBBY / IN MATCH) and PCs n/max; REFRESH,
+  SAME VERSION and SHOW FULL filters; SEARCH BY CODE; CREATE LOBBY (name, PUBLIC on/off, 2-4 PCs); JOIN BY IP with an
+  address field (saved to the config); BACK. Lobbies of other versions show red and can't be joined; full lobbies and
+  lobbies in a match say so. Steam invites / "Join game" / `+connect_lobby` open the browser and join.
+- **Lobby codes and private lobbies** (`Lobbies.cs`): each lobby gets a 6-character code (no 0/O/1/I) in its lobby data.
+  A private lobby is a Steam "invisible" lobby with hidden=1: the browser list leaves it out, a code search finds it.
+- **Lobby screen** (`VersusMenu`, lobby mode): the lobby's name, code, public/private and PCs; the seats (host runs them,
+  every PC shows a copy); PLAYERS with each PC's ping, (YOU) and HOST; CHAT (T or click to type, Enter sends; while
+  typing the key sets don't play); LEAVE, START (host), INVITE (STEAM). After a match the end screen's MENU reads LOBBY
+  and takes everyone back to the lobby (the session stays, the lobby keeps its mode); the Steam lobby shows IN MATCH and
+  is closed to joiners during a match.
+- **Up to 4 PCs** (`Net.cs`, `Links.cs`): the host keeps a peer per friend (each with its own reliable channel on direct
+  IP, or its own Steam session) and numbers them PC 2-4; device keys are PC x 10000 + the device, so each PC's keys and
+  pads are told apart ("W A S D (NAME)"). The host waits for every PC to load each round; a PC that leaves or stops
+  responding drops out of the session alone (its seats empty in the lobby; in a match its players pause with a notice
+  and can be taken over). Protocol 3 (refuses older builds with a message).
+- **Ping readout**: the host's corner lists every friend's ping; a friend's corner shows theirs.
+- **Tested** (2026-10-12): one copy: title button, browser layout, typing a lobby name, CREATE LOBBY -> lobby screen with
+  name/code/PCs, chat (typing "wasd" didn't take a seat; the Enter that sends no longer seats the arrow keys either).
+  Three copies over direct IP: a 1v2 lobby for 3 PCs, both friends joined as PC 2 and PC 3 and took seats with their own
+  WASD, a full 6-round match (4-5, 2-5 rounds), picks, LOBBY at the end -> all three back in the lobby (3/3 PCs, pings,
+  chat kept); a friend killed mid-match -> host paused "P3 LOST THE CONNECTION", the other friend still connected and
+  shown the notice. Steam (one copy under Steam): public lobby created, found in the list with all its data and by code.
+  0 errors in every copy's log; saves unchanged.
+- **Not testable alone**: joining a Steam lobby from another account (needs a second PC/account).
+

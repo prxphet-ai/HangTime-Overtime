@@ -17,7 +17,7 @@ namespace HangtimeOvertime.Online
     {
         public static int LoadSeq;                     // which round load the stream belongs to
         public static bool InMatch;                    // a Versus round scene is running (set up)
-        public static bool Recording => Net.IsHost && Net.Connected && InMatch && VersusState.Active;
+        public static bool Recording => Net.IsHost && Net.HasFriends && InMatch && VersusState.Active;
         public static bool Mirroring => Net.IsClient && InMatch && Mirror.Current != null;
         internal static bool Replay;                   // the client is playing a host event: let it through
 
@@ -313,15 +313,15 @@ namespace HangtimeOvertime.Online
             if (Time.unscaledTime - lastDiag > 5f)
             {
                 lastDiag = Time.unscaledTime;
-                Plugin.Log.LogInfo("[diag] client: " + string.Join(", ", setup.AllHumans.Where(h => h.Input?.Kind == InputKind.Remote)
+                Plugin.Log.LogInfo("[diag] client: " + string.Join(", ", setup.AllHumans.Where(h => Net.MyDevice(h.Input) >= 0)
                     .Select(h => { var pc = PlayerOf(h); return $"P{h.Number} key{h.Input.DeviceId} {pc?.name} x{pc?.transform.position.x:F1} srv{(pc != null && pc.IsServing() ? 1 : 0)} gnd{(pc != null && pc.getGrounded() ? 1 : 0)}"; })));
             }
-            var mine = setup.AllHumans.Where(h => h.Input?.Kind == InputKind.Remote).ToList();
+            var mine = setup.AllHumans.Where(h => Net.MyDevice(h.Input) >= 0).ToList();
             var mates = mine.Select(PlayerOf).Where(p => p != null).ToList();
             foreach (var slot in mine)
             {
                 var pc = PlayerOf(slot);
-                if (pc != null) Net.OverridePad(slot.Input.DeviceId, pilot.Pad(pc, mates));
+                if (pc != null) Net.OverridePad(Net.MyDevice(slot.Input), pilot.Pad(pc, mates));
             }
         }
 

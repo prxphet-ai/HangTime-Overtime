@@ -89,6 +89,106 @@ namespace HangtimeOvertime.Patches
             return t;
         }
 
+        // ------------------------------------------------------------ text fields (lobby name, code, address, chat)
+
+        internal class Field
+        {
+            public SpriteRenderer Box;
+            public TextMeshPro Text;
+            public string Value = "", Placeholder = "";
+            public int Max = 24;
+            public bool Upper;                                  // codes: capitals only
+            public Action<string> OnSubmit;
+            public OvertimePanel Owner;
+        }
+
+        private static Field focused;
+        private static bool textHooked;
+        private float backspaceAt;
+        // a text field has the keyboard: the key sets' keys type instead of moving players
+        public static bool Typing => focused != null && focused.Owner != null;
+
+        protected Field TextField(Vector2 at, Vector2 size, string placeholder, int max, Action<string> onSubmit, string value = "", bool upper = false)
+        {
+            var normal = new Color(0.02f, 0.2f, 0.34f, 1f);
+            var box = Box("Field", at, size, normal, 5);
+            var col = box.gameObject.AddComponent<BoxCollider2D>();
+            col.size = size;
+            var f = new Field { Box = box, Value = value ?? "", Placeholder = placeholder, Max = max, OnSubmit = onSubmit, Upper = upper, Owner = this };
+            var w = box.gameObject.AddComponent<CreatorWidget>();
+            w.Box = box; w.Normal = normal; w.Hover = new Color(0.05f, 0.3f, 0.48f, 1f); w.OnClick = () => Focus(f);
+            f.Text = Text("", at, 0.55f, size.x - 0.8f, Color.white, TextAlignmentOptions.Left, o: 9);
+            ShowField(f);
+            if (!textHooked && UnityEngine.InputSystem.Keyboard.current != null)
+            {
+                textHooked = true;
+                UnityEngine.InputSystem.Keyboard.current.onTextInput += OnChar;
+            }
+            return f;
+        }
+
+        protected static void Focus(Field f)
+        {
+            var old = focused;
+            focused = f;
+            if (old != null && old != f) ShowField(old);
+            if (f != null) ShowField(f);
+        }
+
+        protected static bool IsFocused(Field f) => f != null && focused == f;
+
+        private static void OnChar(char c)
+        {
+            var f = focused;
+            if (f == null || f.Owner == null || char.IsControl(c) || f.Value.Length >= f.Max) return;
+            f.Value += f.Upper ? char.ToUpperInvariant(c) : c;
+            ShowField(f);
+        }
+
+        protected static void ShowField(Field f)
+        {
+            if (f?.Text == null) return;
+            bool on = focused == f;
+            string shown = f.Value.Replace("<", "‹").Replace(">", "›");
+            f.Text.text = shown.Length == 0 && !on ? $"<color=#7FA9C4>{f.Placeholder}</color>" : shown + (on ? "<color=#FFD95A>|</color>" : "");
+            if (f.Box != null) f.Box.color = on ? new Color(0.08f, 0.36f, 0.56f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f);
+        }
+
+        public static void SetField(Field f, string value) { if (f == null) return; f.Value = value ?? ""; ShowField(f); }
+
+        // the focused field's editing keys (called by the panel that owns it); true while a field had the keyboard this
+        // frame, so the key that ends typing (Enter, Esc) isn't also read as a game key
+        protected bool FieldKeys()
+        {
+            var f = focused;
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            if (f == null || f.Owner != this || kb == null) return false;
+            if (kb.escapeKey.wasPressedThisFrame) { Focus(null); return true; }
+            if (kb.enterKey.wasPressedThisFrame || kb.numpadEnterKey.wasPressedThisFrame) { var cb = f.OnSubmit; Focus(null); cb?.Invoke(f.Value); return true; }
+            if (kb.backspaceKey.wasPressedThisFrame) backspaceAt = Time.unscaledTime + 0.4f;
+            if (f.Value.Length > 0 && (kb.backspaceKey.wasPressedThisFrame || (kb.backspaceKey.isPressed && Time.unscaledTime > backspaceAt)))
+            {
+                f.Value = f.Value.Substring(0, f.Value.Length - 1);
+                if (!kb.backspaceKey.wasPressedThisFrame) backspaceAt = Time.unscaledTime + 0.04f;
+                ShowField(f);
+            }
+            return true;
+        }
+
+        protected virtual void OnDestroy() { if (focused != null && focused.Owner == this) focused = null; }
+
+        // an on/off switch: "LABEL  ON"
+        protected SpriteRenderer Toggle(string label, Vector2 at, Vector2 size, Func<bool> get, Action<bool> set, float textSize = 0.55f)
+        {
+            TextMeshPro t = null;
+            SpriteRenderer box = null;
+            void Show() { bool v = get(); if (t != null) t.text = $"{label}  <color={(v ? "#7CFF8A" : "#FF8A7C")}>{(v ? "ON" : "OFF")}</color>"; }
+            box = Button("", at, size, () => { set(!get()); Show(); }, textSize);
+            t = Text("", at, textSize, size.x, Color.white, o: 9);
+            Show();
+            return box;
+        }
+
         protected SpriteRenderer Button(string label, Vector2 at, Vector2 size, Action act, float textSize = 0.8f)
         {
             var normal = new Color(0.16f, 0.66f, 0.9f, 1f);
@@ -281,7 +381,7 @@ namespace HangtimeOvertime.Patches
                 float by = -ph / 2f + 2.6f, bw = pw * 0.22f;
                 AddEnd(d.ContinueLabel, new Vector2(-bw * 1.15f, by), bw, () => VersusFlow.ContinueMatch());
                 AddEnd("REMATCH", new Vector2(0f, by), bw, () => VersusFlow.Rematch());
-                AddEnd("MENU", new Vector2(bw * 1.15f, by), bw, () => VersusFlow.ToMenu());
+                AddEnd(Online.Net.Online ? "LOBBY" : "MENU", new Vector2(bw * 1.15f, by), bw, () => { if (Online.Net.IsHost) Online.OnlineFlow.BackToLobby(); else VersusFlow.ToMenu(); });
                 endSel = 0;
             }
             Refresh();

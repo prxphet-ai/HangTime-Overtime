@@ -22,12 +22,13 @@ Pick a mode at the top, then each player presses a key on their own set (or A on
 Left/right = move (and team on the join screen), up = jump / hit / ready, down = receive.
 1V2 is one player plus an AI setter against two players; 2V2 is two a side.
 
-ONLINE VERSUS (both players need this same Overtime version)
-Host: VERSUS -> HOST ONLINE -> INVITE (STEAM) and pick your friend. Your friend accepts the invite
-(or right-clicks you in the Steam friends list -> Join Game); their game opens VERSUS and connects.
-Everyone then joins a seat with their own keys as usual. Players can be on either PC (1v1, 1v2, 2v2).
-Without Steam: the friend sets [Online] JoinAddress in the config to the host's IP and clicks JOIN BY IP
-(the host forwards UDP port 27515 on their router when playing over the internet).
+ONLINE (everyone needs this same Overtime version; start the game from Steam)
+Title screen -> ONLINE opens the lobby browser:
+  - click a lobby to join it, or type a friend's lobby code and SEARCH (finds private lobbies too)
+  - CREATE LOBBY: name it, PUBLIC on/off, 2-4 PCs; then INVITE (STEAM) to invite friends directly
+In the lobby everyone takes a seat with their own keys (1v1, 1v2, 2v2), T to chat, the host presses START.
+After a match, LOBBY takes everyone back to the lobby.
+Without Steam: type the host's IP under JOIN BY IP (the host forwards UDP port 27515 on their router).
 
 UNINSTALL: delete the BepInEx/plugins/HangtimeOvertime folder.
 

@@ -74,7 +74,7 @@ namespace HangtimeOvertime.Patches
             DressLeft(setup);
 
             var driver = new GameObject("Overtime Versus Driver").AddComponent<VersusDriver>();
-            if (Online.Net.IsHost && Online.Net.Connected) { Online.MatchSync.SetupHost(); driver.WaitForPeer(); }
+            if (Online.Net.IsHost && Online.Net.HasFriends) { Online.MatchSync.SetupHost(); driver.WaitForPeer(); }
             foreach (var slot in setup.AllHumans)
             {
                 var pc = slot.Side == 0 ? (slot.Role == "partner" ? leftPartner : leftHitter) : (slot.Role == "setter" ? rightSetter : rightHitter);

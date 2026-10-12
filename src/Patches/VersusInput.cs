@@ -65,6 +65,7 @@ namespace HangtimeOvertime.Patches
                 return s;
             }
             if (kb == null) return s;
+            if (OvertimePanel.Typing && kind != InputKind.Gamepad) { s.Connected = true; return s; }   // the keys are typing
             var keys = Keys(kind, kb);
             if (keys == null) return s;
             var (l, r, u, d, ok) = keys.Value;
@@ -85,7 +86,7 @@ namespace HangtimeOvertime.Patches
             var remote = Online.Net.RemoteJoin(taken ?? Enumerable.Empty<SlotInput>());
             if (remote != null) return remote;
             var kb = Keyboard.current;
-            if (kb != null)
+            if (kb != null && !OvertimePanel.Typing)
                 foreach (var (kind, label) in KeyboardSets)
                 {
                     var k = Keys(kind, kb).Value;
@@ -151,9 +152,9 @@ namespace HangtimeOvertime.Patches
             if (setup == null) return;
             // Versus assigns every device itself; the game's co-op warning about controllers doesn't apply
             if (controllerWarning != null && controllerWarning.activeSelf) controllerWarning.SetActive(false);
-            if (waitingSince >= 0f && (Online.OnlineFlow.PeerReadySeq == Online.MatchSync.LoadSeq || Time.unscaledTime - waitingSince > 15f || !Online.Net.Connected))
+            if (waitingSince >= 0f && (Online.OnlineFlow.AllReady(Online.MatchSync.LoadSeq) || Time.unscaledTime - waitingSince > 15f || !Online.Net.HasFriends))
             {
-                Plugin.Log.LogInfo($"Online: round starts ({(Online.OnlineFlow.PeerReadySeq == Online.MatchSync.LoadSeq ? "client ready" : "without waiting longer")})");
+                Plugin.Log.LogInfo($"Online: round starts ({(Online.OnlineFlow.AllReady(Online.MatchSync.LoadSeq) ? "every PC ready" : "without waiting longer")})");
                 waitingSince = -1f;
             }
             foreach (var slot in setup.AllHumans)

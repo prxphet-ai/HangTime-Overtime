@@ -8,65 +8,80 @@ using UnityEngine;
 
 namespace HangtimeOvertime.Online
 {
-    // A connection to the one other machine in an online match. Messages are whole byte arrays; reliable ones arrive
-    // once and in order, unreliable ones may be lost (used for the 50-a-second snapshots and inputs, where only the
-    // newest matters).
-    internal interface INetLink
+    // A way to reach other machines. The host's transports hold up to three peers; a client's holds one (the host).
+    // Peers are numbered by the transport. Messages are whole byte arrays; reliable ones arrive once and in order,
+    // unreliable ones may be lost (snapshots and inputs, where only the newest matters).
+    internal interface ITransport
     {
-        bool HasPeer { get; }                 // the host: someone has connected; the client: always (it dials the host)
-        string PeerName { get; }
-        void Send(byte[] msg, bool reliable);
-        void Poll(List<byte[]> received);     // appends everything that arrived since the last poll
+        string Kind { get; }                                   // "direct IP" / "Steam"
+        void Send(int peer, byte[] msg, bool reliable);
+        void Poll(List<(int peer, byte[] data)> received);     // appends everything that arrived since the last poll
+        void Drop(int peer);                                   // forget a peer (it left or was refused)
         void Close();
     }
 
-    // ------------------------------------------------------------ direct IP (UDP), with a small reliable channel
+    // ------------------------------------------------------------ direct IP (UDP), with a small reliable channel per peer
 
     // Datagram: [kind:1] then
     //   kind 0 unreliable: payload
     //   kind 1 reliable:   [seq:4] payload            (resent until acknowledged, delivered in order)
     //   kind 2 ack:        [next expected seq:4]       (everything before it arrived)
-    internal class UdpLink : INetLink
+    internal class UdpTransport : ITransport
     {
+        private class Channel
+        {
+            public IPEndPoint End;
+            public uint NextSend, NextRecv;
+            public readonly SortedDictionary<uint, (byte[] data, float sentAt)> Unacked = new SortedDictionary<uint, (byte[], float)>();
+            public readonly Dictionary<uint, byte[]> Early = new Dictionary<uint, byte[]>();
+        }
+
         private readonly UdpClient udp;
-        private IPEndPoint peer;
-        private readonly bool isHost;
-        private uint nextSendSeq, nextRecvSeq;
-        private readonly SortedDictionary<uint, (byte[] data, float sentAt)> unacked = new SortedDictionary<uint, (byte[], float)>();
-        private readonly Dictionary<uint, byte[]> early = new Dictionary<uint, byte[]>();
+        private readonly bool accepting;                       // the host takes new peers; a client only talks to its host
+        private readonly Dictionary<int, Channel> peers = new Dictionary<int, Channel>();
+        private readonly Dictionary<string, int> byEnd = new Dictionary<string, int>();
+        private int nextId = 1;
         private const float Resend = 0.12f;
 
-        public bool HasPeer => peer != null;
-        public string PeerName => peer != null ? peer.ToString() : "";
+        public string Kind => "direct IP";
 
-        private UdpLink(UdpClient udp, IPEndPoint peer, bool isHost)
+        private UdpTransport(UdpClient udp, bool accepting)
         {
             this.udp = udp;
-            this.peer = peer;
-            this.isHost = isHost;
+            this.accepting = accepting;
             udp.Client.Blocking = false;
             // Windows reports "port unreachable" from an earlier send as an error on the next receive; ignore it
             try { udp.Client.IOControl(-1744830452, new byte[] { 0 }, null); } catch { }
         }
 
-        public static UdpLink Listen(string bind, int port) =>
-            new UdpLink(new UdpClient(new IPEndPoint(IPAddress.Parse(bind), port)), null, true);
+        public static UdpTransport Listen(string bind, int port) => new UdpTransport(new UdpClient(new IPEndPoint(IPAddress.Parse(bind), port)), true);
 
-        public static UdpLink Dial(string host, int port)
+        // a client: peer 0 is the host
+        public static UdpTransport Dial(string host, int port)
         {
             var addr = Dns.GetHostAddresses(host);
             var ip = Array.Find(addr, a => a.AddressFamily == AddressFamily.InterNetwork) ?? addr[0];
-            return new UdpLink(new UdpClient(new IPEndPoint(IPAddress.Any, 0)), new IPEndPoint(ip, port), false);
+            var t = new UdpTransport(new UdpClient(new IPEndPoint(IPAddress.Any, 0)), false);
+            t.Add(0, new IPEndPoint(ip, port));
+            return t;
         }
 
-        public void Send(byte[] msg, bool reliable)
+        private Channel Add(int id, IPEndPoint end)
         {
-            if (peer == null) return;
-            if (!reliable) { Raw(Frame(0, 0, msg, false)); return; }
-            uint seq = nextSendSeq++;
+            var c = new Channel { End = end };
+            peers[id] = c;
+            byEnd[end.ToString()] = id;
+            return c;
+        }
+
+        public void Send(int peer, byte[] msg, bool reliable)
+        {
+            if (!peers.TryGetValue(peer, out var c)) return;
+            if (!reliable) { Raw(c, Frame(0, 0, msg, false)); return; }
+            uint seq = c.NextSend++;
             var d = Frame(1, seq, msg, true);
-            unacked[seq] = (d, Time.unscaledTime);
-            Raw(d);
+            c.Unacked[seq] = (d, Time.unscaledTime);
+            Raw(c, d);
         }
 
         private static byte[] Frame(byte kind, uint seq, byte[] msg, bool withSeq)
@@ -79,14 +94,14 @@ namespace HangtimeOvertime.Online
             return d;
         }
 
-        private void Raw(byte[] d)
+        private void Raw(Channel c, byte[] d)
         {
-            try { udp.Send(d, d.Length, peer); }
+            try { udp.Send(d, d.Length, c.End); }
             catch (SocketException) { }
             catch (ObjectDisposedException) { }
         }
 
-        public void Poll(List<byte[]> received)
+        public void Poll(List<(int peer, byte[] data)> received)
         {
             while (true)
             {
@@ -100,41 +115,48 @@ namespace HangtimeOvertime.Online
                 catch (SocketException) { break; }
                 catch (ObjectDisposedException) { return; }
                 if (d.Length < 1) continue;
-                if (peer == null && isHost) peer = from;                 // the first datagram picks the peer
-                if (!from.Equals(peer)) continue;                        // one peer per match
+                if (!byEnd.TryGetValue(from.ToString(), out int id))
+                {
+                    if (!accepting) continue;                            // a client only listens to its host
+                    id = nextId++;
+                    Add(id, from);
+                }
+                var c = peers[id];
                 switch (d[0])
                 {
                     case 0:
-                        received.Add(Sub(d, 1));
+                        received.Add((id, Sub(d, 1)));
                         break;
                     case 1:
                         if (d.Length < 5) break;
                         uint seq = BitConverter.ToUInt32(d, 1);
-                        if (seq >= nextRecvSeq && !early.ContainsKey(seq)) early[seq] = Sub(d, 5);
-                        while (early.TryGetValue(nextRecvSeq, out var m)) { early.Remove(nextRecvSeq); received.Add(m); nextRecvSeq++; }
-                        var ack = new byte[5]; ack[0] = 2; BitConverter.GetBytes(nextRecvSeq).CopyTo(ack, 1);
-                        Raw(ack);
+                        if (seq >= c.NextRecv && !c.Early.ContainsKey(seq)) c.Early[seq] = Sub(d, 5);
+                        while (c.Early.TryGetValue(c.NextRecv, out var m)) { c.Early.Remove(c.NextRecv); received.Add((id, m)); c.NextRecv++; }
+                        var ack = new byte[5]; ack[0] = 2; BitConverter.GetBytes(c.NextRecv).CopyTo(ack, 1);
+                        Raw(c, ack);
                         break;
                     case 2:
                         if (d.Length < 5) break;
                         uint upTo = BitConverter.ToUInt32(d, 1);
                         var done = new List<uint>();
-                        foreach (var k in unacked.Keys) { if (k < upTo) done.Add(k); else break; }
-                        foreach (var k in done) unacked.Remove(k);
+                        foreach (var k in c.Unacked.Keys) { if (k < upTo) done.Add(k); else break; }
+                        foreach (var k in done) c.Unacked.Remove(k);
                         break;
                 }
             }
-            // resend what hasn't been acknowledged (oldest first, a few per frame)
+            // resend what hasn't been acknowledged (oldest first, a few per peer per frame)
             float now = Time.unscaledTime;
-            int n = 0;
-            var keys = new List<uint>(unacked.Keys);
-            foreach (var k in keys)
+            foreach (var c in peers.Values)
             {
-                var u = unacked[k];
-                if (now - u.sentAt < Resend) continue;
-                Raw(u.data);
-                unacked[k] = (u.data, now);
-                if (++n >= 16) break;
+                int n = 0;
+                foreach (var k in new List<uint>(c.Unacked.Keys))
+                {
+                    var u = c.Unacked[k];
+                    if (now - u.sentAt < Resend) continue;
+                    Raw(c, u.data);
+                    c.Unacked[k] = (u.data, now);
+                    if (++n >= 16) break;
+                }
             }
         }
 
@@ -145,92 +167,109 @@ namespace HangtimeOvertime.Online
             return r;
         }
 
+        public void Drop(int peer)
+        {
+            if (!peers.TryGetValue(peer, out var c)) return;
+            peers.Remove(peer);
+            byEnd.Remove(c.End.ToString());
+        }
+
         public void Close() { try { udp.Close(); } catch { } }
     }
 
-    // ------------------------------------------------------------ Steam (friends lobby + Steam's own P2P relay)
+    // ------------------------------------------------------------ Steam (Steam's own P2P relay: no ports, no addresses)
 
-    // The host makes a friends-only lobby and opens Steam's invite dialog; a friend who accepts (or picks "Join game" in
-    // their friends list) enters the lobby and messages the lobby owner. Steam relays the traffic, so no ports or IPs.
-    internal class SteamLink : INetLink
+    internal class SteamTransport : ITransport
     {
         private const int Channel = 0;
-        private SteamNetworkingIdentity peer;
-        private bool hasPeer;
-        private readonly bool isHost;
+        private readonly bool accepting;
+        private readonly Dictionary<int, SteamNetworkingIdentity> peers = new Dictionary<int, SteamNetworkingIdentity>();
+        private readonly Dictionary<ulong, int> bySteam = new Dictionary<ulong, int>();
+        private int nextId = 1;
         private readonly IntPtr[] inbox = new IntPtr[64];
         private Callback<SteamNetworkingMessagesSessionRequest_t> onRequest;
 
-        public bool HasPeer => hasPeer;
-        public string PeerName { get; private set; } = "";
-        public CSteamID Lobby;
+        public string Kind => "Steam";
 
         public static bool Available
         {
             get { try { return SteamManager.Initialized; } catch { return false; } }
         }
 
-        private SteamLink(bool isHost)
+        private SteamTransport(bool accepting)
         {
-            this.isHost = isHost;
+            this.accepting = accepting;
             onRequest = Callback<SteamNetworkingMessagesSessionRequest_t>.Create(r =>
             {
-                // the host takes the first friend who messages it; the client only ever hears from its host
                 var id = r.m_identityRemote;
-                if (isHost && !hasPeer) SetPeer(id.GetSteamID());
-                if (hasPeer && id.GetSteamID() == peer.GetSteamID()) SteamNetworkingMessages.AcceptSessionWithUser(ref id);
+                ulong sid = id.GetSteamID64();
+                if (bySteam.ContainsKey(sid) || accepting) SteamNetworkingMessages.AcceptSessionWithUser(ref id);
             });
         }
 
-        public static SteamLink Host() => new SteamLink(true);
+        public static SteamTransport Host() => new SteamTransport(true);
 
-        public static SteamLink Dial(CSteamID host)
+        // a client: peer 0 is the host
+        public static SteamTransport Dial(CSteamID host)
         {
-            var l = new SteamLink(false);
-            l.SetPeer(host);
-            return l;
+            var t = new SteamTransport(false);
+            t.Add(0, host);
+            return t;
         }
 
-        private void SetPeer(CSteamID id)
+        private int Add(int id, CSteamID sid)
         {
-            peer = new SteamNetworkingIdentity();
-            peer.SetSteamID(id);
-            hasPeer = true;
-            try { PeerName = SteamFriends.GetFriendPersonaName(id); } catch { PeerName = id.ToString(); }
+            var ident = new SteamNetworkingIdentity();
+            ident.SetSteamID(sid);
+            peers[id] = ident;
+            bySteam[sid.m_SteamID] = id;
+            return id;
         }
 
-        public void Send(byte[] msg, bool reliable)
+        public static string NameOf(CSteamID id)
         {
-            if (!hasPeer) return;
+            try { return SteamFriends.GetFriendPersonaName(id); } catch { return id.ToString(); }
+        }
+
+        public void Send(int peer, byte[] msg, bool reliable)
+        {
+            if (!peers.TryGetValue(peer, out var ident)) return;
             int flags = (reliable ? Constants.k_nSteamNetworkingSend_Reliable : Constants.k_nSteamNetworkingSend_UnreliableNoDelay)
                         | Constants.k_nSteamNetworkingSend_AutoRestartBrokenSession;
             var h = GCHandle.Alloc(msg, GCHandleType.Pinned);
-            try { SteamNetworkingMessages.SendMessageToUser(ref peer, h.AddrOfPinnedObject(), (uint)msg.Length, flags, Channel); }
+            try { SteamNetworkingMessages.SendMessageToUser(ref ident, h.AddrOfPinnedObject(), (uint)msg.Length, flags, Channel); }
             finally { h.Free(); }
         }
 
-        public void Poll(List<byte[]> received)
+        public void Poll(List<(int peer, byte[] data)> received)
         {
             int n = SteamNetworkingMessages.ReceiveMessagesOnChannel(Channel, inbox, inbox.Length);
             for (int i = 0; i < n; i++)
             {
                 var m = SteamNetworkingMessage_t.FromIntPtr(inbox[i]);
                 var from = m.m_identityPeer.GetSteamID();
-                if (isHost && !hasPeer) SetPeer(from);
-                if (hasPeer && from == peer.GetSteamID())
+                if (!bySteam.TryGetValue(from.m_SteamID, out int id) && accepting) id = Add(nextId++, from);
+                if (bySteam.ContainsKey(from.m_SteamID))
                 {
                     var d = new byte[m.m_cbSize];
                     Marshal.Copy(m.m_pData, d, 0, m.m_cbSize);
-                    received.Add(d);
+                    received.Add((id, d));
                 }
                 SteamNetworkingMessage_t.Release(inbox[i]);
             }
         }
 
+        public void Drop(int peer)
+        {
+            if (!peers.TryGetValue(peer, out var ident)) return;
+            SteamNetworkingMessages.CloseSessionWithUser(ref ident);
+            bySteam.Remove(ident.GetSteamID64());
+            peers.Remove(peer);
+        }
+
         public void Close()
         {
-            if (hasPeer) { var p = peer; SteamNetworkingMessages.CloseSessionWithUser(ref p); }
-            if (Lobby.IsValid()) SteamMatchmaking.LeaveLobby(Lobby);
+            foreach (var p in new List<int>(peers.Keys)) Drop(p);
             onRequest?.Dispose();
             onRequest = null;
         }

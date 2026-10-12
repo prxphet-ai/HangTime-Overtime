@@ -14,6 +14,9 @@ namespace HangtimeOvertime.Debugging
     //   -ovt-auto            the autopilot plays this copy's players (the client's travel as its key presses)
     //   -ovt-format 2v2      the mode (host only; 1v1 by default)
     //   -ovt-seats N         how many players this copy brings (host 1, client 1 by default)
+    //   -ovt-pcs N           host: lobby size (2-4 PCs; 2 by default)
+    //   -ovt-tag NAME        the window title's suffix (HOST / CLIENT by default)
+    //   -ovt-steamcheck      host: 6 s after the lobby opens, search the Steam list and then the lobby's code; log both
     //   -ovt-end N           client: on the match-end screen, step right N times then confirm (1 = REMATCH)
     //   -ovt-fx              host: fires a random perk with visual effects every 3 s (both sides), to compare screens
     // The window title gets HOST / CLIENT so screenshots can tell the two apart.
@@ -22,11 +25,13 @@ namespace HangtimeOvertime.Debugging
         [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern bool SetWindowText(IntPtr hWnd, string text);
 
         private static readonly InputKind[] Keys = { InputKind.KeysWASD, InputKind.KeysArrows, InputKind.KeysIJKL, InputKind.KeysNumpad };
-        private bool host, join, auto, titled, fx;
+        private bool host, join, auto, titled, fx, steamCheck;
+        private float steamCheckAt = -1f, codeCheckAt;
+        private string tag;
         private float nextFx;
         private int fxPlayed;
         private string format = "1v1";
-        private int seats = 1, endRights = 1;
+        private int seats = 1, endRights = 1, pcs = 2;
         private float step = -1f;
         private int stage, seated;
         private float screenSince = -1f;
@@ -44,8 +49,13 @@ namespace HangtimeOvertime.Debugging
             d.format = Arg("-ovt-format") ?? "1v1";
             if (int.TryParse(Arg("-ovt-seats"), out var n)) d.seats = Mathf.Clamp(n, 1, 4);
             if (int.TryParse(Arg("-ovt-end"), out var e)) d.endRights = Mathf.Clamp(e, 0, 2);
+            if (int.TryParse(Arg("-ovt-pcs"), out var pc)) d.pcs = Mathf.Clamp(pc, 2, 4);
+            d.tag = Arg("-ovt-tag");
+            d.steamCheck = Array.IndexOf(args, "-ovt-steamcheck") >= 0;
             Plugin.Log.LogInfo($"Dev online: {(h ? "host" : "client")} {d.format}, {d.seats} seat(s){(d.auto ? ", autopilot" : "")}");
         }
+
+        private static bool DevJoin() { Net.JoinIp(Plugin.OnlineJoin.Value); return true; }
 
         private static void Press(InputKind k, bool up = false, bool right = false) =>
             Net.OverridePad((int)k, new PadState { Connected = true, Up = up, Confirm = up, Right = right });
@@ -56,10 +66,27 @@ namespace HangtimeOvertime.Debugging
             {
                 titled = true;
                 var w = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
-                if (w != IntPtr.Zero) SetWindowText(w, host ? "Hangtime! HOST" : "Hangtime! CLIENT");
+                if (w != IntPtr.Zero) SetWindowText(w, "Hangtime! " + (tag ?? (host ? "HOST" : "CLIENT")));
             }
             if (auto && MatchSync.InMatch && !VersusDriver.Autopilot) VersusDriver.Autopilot = true;
             if (join) ClientScreens();
+            if (steamCheck && host && Net.IsHost)
+            {
+                if (steamCheckAt < 0f) steamCheckAt = Time.unscaledTime + 6f;
+                else if (Time.unscaledTime > steamCheckAt && steamCheckAt > 0f)
+                {
+                    steamCheckAt = 0f;
+                    Lobbies.RequestList(true, true, null, list =>
+                        Plugin.Log.LogInfo("[steam] list: " + string.Join(" | ", list.Select(l => $"{l.Name} {l.Version} {l.Mode} {l.State} {l.Pcs}/{l.Max} code {l.Code}"))));
+                    codeCheckAt = Time.unscaledTime + 4f;
+                }
+                if (codeCheckAt > 0f && Time.unscaledTime > codeCheckAt)
+                {
+                    codeCheckAt = 0f;
+                    Lobbies.RequestList(true, true, Net.Lobby.Code, byCode =>
+                        Plugin.Log.LogInfo($"[steam] code {Net.Lobby.Code}: {byCode.Count} found " + string.Join(" | ", byCode.Select(l => l.Name))));
+                }
+            }
             if (fx && host && MatchSync.Recording && Time.unscaledTime > nextFx)
             {
                 nextFx = Time.unscaledTime + 3f;
@@ -77,7 +104,7 @@ namespace HangtimeOvertime.Debugging
             {
                 case 0:                                                    // the title screen is up
                     if (!TitleController.onTitle || Time.unscaledTime < 6f) return;
-                    if (host ? VersusMenu.DevHost(format, seats) : VersusMenu.DevJoin()) { stage = 1; step = Time.unscaledTime + 1f; }
+                    if (host ? VersusMenu.DevHost(format, seats, pcs, steamCheck) : DevJoin()) { stage = 1; step = Time.unscaledTime + 1f; }
                     break;
                 case 1:
                     if (host) { stage = 3; break; }

@@ -24,6 +24,9 @@ namespace HangtimeOvertime.Online
         Pads = 50,        // client -> host, unreliable: the client's devices
         Ping = 60,        // unreliable, both ways (keeps the connection alive, measures the delay)
         Pong = 61,
+        Roster = 70,      // host -> all: who is in the session, with pings
+        Chat = 71,        // client -> host: a line; host -> all: name + line
+        ToLobby = 72,     // host -> all: the match is over, back to the lobby screen
     }
 
     internal class NetWriter
