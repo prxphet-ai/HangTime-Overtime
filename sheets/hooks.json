@@ -691,6 +691,26 @@
       "purpose": "Online client only: its copy of the ball never lands or touches anything by itself (its physics is off too)",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "block_box_floor",
+      "target_type": "PlayerController",
+      "target_method": "MakeBlock",
+      "kind": "prefix",
+      "patch_class": "ControllerPatches",
+      "purpose": "Records the block box's original bottom (first resize)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "block_box_floor_post",
+      "target_type": "PlayerController",
+      "target_method": "MakeBlock",
+      "kind": "postfix",
+      "patch_class": "ControllerPatches",
+      "purpose": "Block values under 73 (stat cards, debuffs) no longer sink the block box under the feet, which left the player stuck in the block pose",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

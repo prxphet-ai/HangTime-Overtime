@@ -10,13 +10,40 @@ namespace HangtimeOvertime.Debugging
     // Test shortcuts, only when DevKeys is enabled in the config (off for players).
     //  F1 fire the lab perk's effects now (Shift: as the opponent)   F2 lab: next perk (Shift: previous), given alone from the next match
     //  F3 force the next opponent (cycles new teams, then random)   F4 player 1 serves now   F5 rally point to player (Shift: opponent) via the game's own scoring
-    //  F6 win this match   F7 lose this match   F8 next win leads to the final match   F9 log state
+    //  F6 win this match   F7 lose this match   F8 next win leads to the final match   F9 log state (Ctrl+F9: force player 1 block 66/58/50/40/30, auto-blocking)
     //  F10 give every Overtime perk   F11 perk screens show only Overtime perks   F12 next infinite match one tier harder
     internal class DevKeys : MonoBehaviour
     {
         public static bool OnlyOvertimeCards;
         private static int lab = -1;
         private static Gamepad testPad;
+
+        private static readonly float[] BlockTests = { 0f, 66f, 58f, 50f, 40f, 30f };
+        private int blockTest;
+        private float probeLog, blockedAt = -10f;
+        private static readonly HarmonyLib.AccessTools.FieldRef<PlayerController, bool> blockingOf = HarmonyLib.AccessTools.FieldRefAccess<PlayerController, bool>("blocking");
+        private static readonly HarmonyLib.AccessTools.FieldRef<PlayerController, BoxCollider2D> blockBoxOf = HarmonyLib.AccessTools.FieldRefAccess<PlayerController, BoxCollider2D>("blockHitBox");
+        private static readonly HarmonyLib.AccessTools.FieldRef<PlayerController, Transform> jumpCheckOf = HarmonyLib.AccessTools.FieldRefAccess<PlayerController, Transform>("jumpCheckPosition");
+
+        // development: player 1 block-jumps whenever the ball is on the other side, and its state is logged
+        private void BlockProbe()
+        {
+            var p1 = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).FirstOrDefault(Engine.Look.IsPlayerOne);
+            var ball = FindFirstObjectByType<BallMovement>();
+            if (p1 == null || ball == null) return;
+            if (p1.getGrounded() && !blockingOf(p1) && ball.transform.position.x > 0f && ball.GetServeTimer() < -0.7f && Time.time - blockedAt > 1.5f)
+            {
+                blockedAt = Time.time;
+                p1.UpInputPressed();
+            }
+            if (Time.time - probeLog > 0.5f && Time.time - blockedAt < 4f)
+            {
+                probeLog = Time.time;
+                var box = blockBoxOf(p1);
+                Plugin.Log.LogInfo($"[block] t+{Time.time - blockedAt:F1} y{p1.transform.position.y:F2} grounded {p1.getGrounded()} blocking {blockingOf(p1)} " +
+                                   $"box {(box.enabled ? "on" : "off")} size {box.size.y:F2} offset {box.offset.y:F2} bottom {box.bounds.min.y:F2} feet {jumpCheckOf(p1).position.y:F2} vy {p1.GetComponent<Rigidbody2D>().linearVelocityY:F1}");
+            }
+        }
 
         private void Update()
         {
@@ -83,7 +110,14 @@ namespace HangtimeOvertime.Debugging
                 if (RunState.Mode == RunMode.Infinite) RunState.InfiniteMatch = 7; else GameManager.gameNumber = 7;
                 Plugin.Log.LogInfo("Dev: next match is the final");
             }
-            if (kb.f9Key.wasPressedThisFrame)
+            if (kb.f9Key.wasPressedThisFrame && kb.ctrlKey.isPressed)
+            {
+                blockTest = (blockTest + 1) % BlockTests.Length;
+                foreach (var fx in Engine.ControllerFx.All) if (fx != null && Engine.Look.IsPlayerOne(fx.Pc)) fx.TestBlock = BlockTests[blockTest];
+                Plugin.Log.LogInfo($"Dev: player 1 block forced to {BlockTests[blockTest]} (0 = normal); blocking every time the ball crosses");
+            }
+            if (blockTest > 0 && inMatch) BlockProbe();
+            if (kb.f9Key.wasPressedThisFrame && !kb.ctrlKey.isPressed)
             {
                 var s0 = Engine.Engine.Sides[0];
                 Plugin.Log.LogInfo($"Dev state: mode={RunState.Mode} gameNumber={GameManager.gameNumber} infiniteMatch={RunState.InfiniteMatch} " +

@@ -589,3 +589,16 @@ Modes:
   players across them). Direct IP from outside your network needs UDP 27515 forwarded on the host's router. The
   client's pause menu is local (the match keeps going).
 
+
+### Step 26 — fix: stuck in the block pose after low-Block stat cards
+- **Bug**: with Block lowered by stat cards (or debuffs), a block jump could leave the player frozen in the block pose,
+  unable to do anything. Cause: the game sizes the block box from the block value with a formula only ever used at 73
+  and up (offset = (block - 73) / 9 + 0.3). Below 73 the box sinks under the player's feet; on the way down it lands
+  on the floor first and holds the player just above it (measured at block 66: box bottom -9.99, feet -9.29, player
+  hovering at y -7.51 instead of -7.99), and the game only ends blocking when the feet land.
+- **Fix** (`ControllerPatches.BlockBox`, MakeBlock prefix/postfix): the box's bottom never goes below where the game puts
+  it at block 73, and its height never under 1. Low Block still costs a lower block jump and a smaller box above.
+  Values of 73 and up are untouched.
+- **Checked in game** (local Versus, dev Ctrl+F9 forcing player 1's block to 66/58/50/40/30 and block-jumping every time
+  the ball crossed): reproduced the soft-lock at 66 before the fix; after it, 34 block jumps across all values all
+  landed and recovered; 0 errors.

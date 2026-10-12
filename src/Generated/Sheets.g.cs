@@ -1046,6 +1046,8 @@ namespace HangtimeOvertime.Generated
             new HookDef("online_jump_dust", "ParticleManager", "PlayJumpEffect", "prefix", "MatchSync"),
             new HookDef("online_point", "BallMovement", "GetPoint", "prefix", "MatchSync"),
             new HookDef("online_no_local_touch", "BallMovement", "OnCollisionEnter2D", "prefix", "MatchSync"),
+            new HookDef("block_box_floor", "PlayerController", "MakeBlock", "prefix", "ControllerPatches"),
+            new HookDef("block_box_floor_post", "PlayerController", "MakeBlock", "postfix", "ControllerPatches"),
         };
     }
 

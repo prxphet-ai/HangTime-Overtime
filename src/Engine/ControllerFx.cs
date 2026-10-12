@@ -140,8 +140,10 @@ namespace HangtimeOvertime.Engine
             Pc.moveSpeed = baseMove * move;
             fSpike(Pc) = baseSpike * Mult("spike");
             if (!IsSetter) fJump(Pc) = baseJump * Mult("jump");
-            fBlock(Pc) = baseBlock * Mult("block");
+            fBlock(Pc) = TestBlock > 0f ? TestBlock : baseBlock * Mult("block");
         }
+
+        public float TestBlock;   // development (Ctrl+F9): force this player's block value
 
         private void Landed()
         {
