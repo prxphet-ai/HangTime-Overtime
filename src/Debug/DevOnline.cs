@@ -1,0 +1,103 @@
+using System;
+using System.Runtime.InteropServices;
+using HangtimeOvertime.Core;
+using HangtimeOvertime.Online;
+using HangtimeOvertime.Patches;
+using UnityEngine;
+
+namespace HangtimeOvertime.Debugging
+{
+    // Development (DevKeys on): two copies of the game on one PC play an online match by themselves.
+    //   -ovt-host            opens VERSUS, hosts, and seats this copy's players first (left side first)
+    //   -ovt-join            opens VERSUS, joins by IP (Online.JoinAddress), seats its players and readies them
+    //   -ovt-auto            the autopilot plays this copy's players (the client's travel as its key presses)
+    //   -ovt-format 2v2      the mode (host only; 1v1 by default)
+    //   -ovt-seats N         how many players this copy brings (host 1, client 1 by default)
+    //   -ovt-end N           client: on the match-end screen, step right N times then confirm (1 = REMATCH)
+    // The window title gets HOST / CLIENT so screenshots can tell the two apart.
+    internal class DevOnline : MonoBehaviour
+    {
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)] private static extern bool SetWindowText(IntPtr hWnd, string text);
+
+        private static readonly InputKind[] Keys = { InputKind.KeysWASD, InputKind.KeysArrows, InputKind.KeysIJKL, InputKind.KeysNumpad };
+        private bool host, join, auto, titled;
+        private string format = "1v1";
+        private int seats = 1, endRights = 1;
+        private float step = -1f;
+        private int stage, seated;
+        private float screenSince = -1f;
+        private int screenStep;
+
+        public static void Hook(GameObject on)
+        {
+            var args = Environment.GetCommandLineArgs();
+            bool h = Array.IndexOf(args, "-ovt-host") >= 0, j = Array.IndexOf(args, "-ovt-join") >= 0;
+            if (!h && !j) return;
+            var d = on.AddComponent<DevOnline>();
+            Application.runInBackground = true;                        // both copies keep going side by side
+            d.host = h; d.join = j; d.auto = Array.IndexOf(args, "-ovt-auto") >= 0;
+            string Arg(string name) { int i = Array.IndexOf(args, name); return i >= 0 && i + 1 < args.Length ? args[i + 1] : null; }
+            d.format = Arg("-ovt-format") ?? "1v1";
+            if (int.TryParse(Arg("-ovt-seats"), out var n)) d.seats = Mathf.Clamp(n, 1, 4);
+            if (int.TryParse(Arg("-ovt-end"), out var e)) d.endRights = Mathf.Clamp(e, 0, 2);
+            Plugin.Log.LogInfo($"Dev online: {(h ? "host" : "client")} {d.format}, {d.seats} seat(s){(d.auto ? ", autopilot" : "")}");
+        }
+
+        private static void Press(InputKind k, bool up = false, bool right = false) =>
+            Net.OverridePad((int)k, new PadState { Connected = true, Up = up, Confirm = up, Right = right });
+
+        private void Update()
+        {
+            if (!titled && Time.unscaledTime > 3f)
+            {
+                titled = true;
+                var w = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+                if (w != IntPtr.Zero) SetWindowText(w, host ? "Hangtime! HOST" : "Hangtime! CLIENT");
+            }
+            if (auto && MatchSync.InMatch && !VersusDriver.Autopilot) VersusDriver.Autopilot = true;
+            if (join) ClientScreens();
+            if (Time.unscaledTime < step) return;
+            switch (stage)
+            {
+                case 0:                                                    // the title screen is up
+                    if (!TitleController.onTitle || Time.unscaledTime < 6f) return;
+                    if (host ? VersusMenu.DevHost(format, seats) : VersusMenu.DevJoin()) { stage = 1; step = Time.unscaledTime + 1f; }
+                    break;
+                case 1:
+                    if (host) { stage = 3; break; }
+                    if (!Net.Connected) return;
+                    step = Time.unscaledTime + 1f;
+                    stage = 2;
+                    break;
+                case 2:                                                    // client: each player joins with its own key set
+                    Press(Keys[seated], up: true);
+                    seated++;
+                    step = Time.unscaledTime + 1f;
+                    if (seated >= seats) { stage = 3; seated = 0; }
+                    break;
+                case 3:                                                    // client: ready each; host: ready once everyone else is
+                    if (join)
+                    {
+                        Press(Keys[seated], up: true);
+                        seated++;
+                        step = Time.unscaledTime + 0.6f;
+                        if (seated >= seats) stage = 4;
+                    }
+                    else if (VersusMenu.DevReadyWhenOthersAre()) stage = 4;
+                    break;
+            }
+        }
+
+        // the client on the host's screens between rounds: right (pick screen once, end screen endRights times), then
+        // jump, from every key set it plays on; the host only listens to whoever's turn it is
+        private void ClientScreens()
+        {
+            if (!VersusOverlay.IsMirror) { screenSince = -1f; return; }
+            if (screenSince < 0f) { screenSince = Time.unscaledTime; screenStep = 0; }
+            int rights = VersusOverlay.MirrorMatchOver ? endRights : 1;
+            float t = Time.unscaledTime - screenSince;
+            if (screenStep < rights && t > 1f + screenStep * 0.6f) { for (int i = 0; i < seats; i++) Press(Keys[i], right: true); screenStep++; }
+            else if (screenStep == rights && t > 1.6f + rights * 0.6f) { for (int i = 0; i < seats; i++) Press(Keys[i], up: true); screenStep++; }
+        }
+    }
+}

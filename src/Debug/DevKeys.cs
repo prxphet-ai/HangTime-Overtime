@@ -60,7 +60,7 @@ namespace HangtimeOvertime.Debugging
                 if (testPad.added) { InputSystem.RemoveDevice(testPad); Plugin.Log.LogInfo("Dev: virtual gamepad unplugged"); }
                 else { InputSystem.AddDevice(testPad); Plugin.Log.LogInfo("Dev: virtual gamepad plugged back in"); }
             }
-            else if (kb.f4Key.wasPressedThisFrame && inMatch && VersusState.Active && Patches.VersusDriver.Current != null)
+            else if (kb.f4Key.wasPressedThisFrame && inMatch && VersusState.Active && (Patches.VersusDriver.Current != null || Online.MatchSync.Mirroring))
             {
                 Patches.VersusDriver.Autopilot = !Patches.VersusDriver.Autopilot;
                 Plugin.Log.LogInfo($"Dev: Versus autopilot {(Patches.VersusDriver.Autopilot ? "on" : "off")} (both players driven through the Versus input path)");

@@ -591,6 +591,106 @@
       "purpose": "Versus only: same",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "online_sfx",
+      "target_type": "AudioManager",
+      "target_method": "PlaySFX",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: every sound effect in an online round travels to the client; the client's own are held back (online: the host records it for the client; the client's copy only makes it when replaying the host)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_cam_zoom",
+      "target_type": "CameraController",
+      "target_method": "zoom",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: camera zoom kicks (online: the host records it for the client; the client's copy only makes it when replaying the host)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_cam_freeze",
+      "target_type": "CameraController",
+      "target_method": "freezeTime",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: hit-stop (online: the host records it for the client; the client's copy only makes it when replaying the host)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_cam_shake",
+      "target_type": "CameraController",
+      "target_method": "Shake",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: camera shake (online: the host records it for the client; the client's copy only makes it when replaying the host)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_cam_rotate",
+      "target_type": "CameraController",
+      "target_method": "Rotate",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: camera tilt (online: the host records it for the client; the client's copy only makes it when replaying the host)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_voice",
+      "target_type": "RandomSound",
+      "target_method": "PlaySound",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: the ball's hit voices (online: the host records it for the client; the client's copy only makes it when replaying the host); other RandomSounds untouched",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_line",
+      "target_type": "OpponentDialogue",
+      "target_method": "PlayDialogue",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: dialogue lines, so both players read the same one (online: the host records it for the client; the client's copy only makes it when replaying the host)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_jump_dust",
+      "target_type": "ParticleManager",
+      "target_method": "PlayJumpEffect",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: jump dust under the right player (online: the host records it for the client; the client's copy only makes it when replaying the host)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_point",
+      "target_type": "BallMovement",
+      "target_method": "GetPoint",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online: each point (with the ball's state) is sent; the client runs the game's own point routine at the same moment (score, next server, point effects)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "online_no_local_touch",
+      "target_type": "BallMovement",
+      "target_method": "OnCollisionEnter2D",
+      "kind": "prefix",
+      "patch_class": "MatchSync",
+      "purpose": "Online client only: its copy of the ball never lands or touches anything by itself (its physics is off too)",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

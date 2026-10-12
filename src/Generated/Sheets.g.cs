@@ -1036,6 +1036,16 @@ namespace HangtimeOvertime.Generated
             new HookDef("versus_no_game_move2", "LocalInputManager", "OnMoveP2", "prefix", "VersusPatches"),
             new HookDef("versus_no_game_up2", "LocalInputManager", "OnUpP2", "prefix", "VersusPatches"),
             new HookDef("versus_no_game_down2", "LocalInputManager", "OnDownP2", "prefix", "VersusPatches"),
+            new HookDef("online_sfx", "AudioManager", "PlaySFX", "prefix", "MatchSync"),
+            new HookDef("online_cam_zoom", "CameraController", "zoom", "prefix", "MatchSync"),
+            new HookDef("online_cam_freeze", "CameraController", "freezeTime", "prefix", "MatchSync"),
+            new HookDef("online_cam_shake", "CameraController", "Shake", "prefix", "MatchSync"),
+            new HookDef("online_cam_rotate", "CameraController", "Rotate", "prefix", "MatchSync"),
+            new HookDef("online_voice", "RandomSound", "PlaySound", "prefix", "MatchSync"),
+            new HookDef("online_line", "OpponentDialogue", "PlayDialogue", "prefix", "MatchSync"),
+            new HookDef("online_jump_dust", "ParticleManager", "PlayJumpEffect", "prefix", "MatchSync"),
+            new HookDef("online_point", "BallMovement", "GetPoint", "prefix", "MatchSync"),
+            new HookDef("online_no_local_touch", "BallMovement", "OnCollisionEnter2D", "prefix", "MatchSync"),
         };
     }
 

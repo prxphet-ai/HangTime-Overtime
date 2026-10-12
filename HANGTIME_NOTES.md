@@ -547,3 +547,45 @@ Modes:
   Petals logged "stats x0.92 (reach x1.00) ... jump 61.0" and its spiker took full approaches and spiked, its setter
   blocked. The match log now prints each opponent's jump. Classic (the game's own difficulty) and Versus (fixed level-0
   tables) are not affected. Saves restored byte-identical after the test.
+
+### Step 25 — Online Versus
+- **How to play**: VERSUS -> HOST ONLINE. The host listens on Steam (a friends-only lobby; the button becomes INVITE
+  (STEAM), which opens Steam's invite dialog) and on direct IP (UDP port 27515) at the same time. A friend joins by
+  accepting the Steam invite / "Join game" in the friends list (the game opens VERSUS and connects by itself, also from
+  a cold start via `+connect_lobby`), or with JOIN BY IP (address in `[Online] JoinAddress`). Then everyone joins seats
+  with their own keys as in local Versus; the friend's players show as e.g. "W A S D (NAME)". Any mix works: 1v1,
+  1v2, 2v2, with players on either machine (seats fill in join order). Different Overtime versions are refused with a
+  message.
+- **How it works**: the host plays the real match. The client's copy of the round is a mirror: players and ball follow
+  the host's snapshots (50/s, shown ~90 ms behind and interpolated, `[Online] BufferMs`), with their physics off so the
+  copy never scores or touches the ball by itself; animation states come with each snapshot. Everything the host's game
+  produced is replayed at the same moment: every sound, the ball's voices, dialogue lines, camera shake/zoom/tilt/
+  hit-stop, the ball's particle effects, jump dust, and each point (the client runs the game's own point routine, so
+  its score, next server and point effects match; the score is also checked against the snapshots). The client's
+  devices travel to the host as running press counts (a lost packet delays a press, never drops it) and are read
+  exactly like local devices (`InputKind.Remote`), so menus, picks and matches needed no other changes. The join screen,
+  pick screens and match-end screen are run by the host and drawn on the client from the host's data; only the picker's
+  keys count, whichever machine they are on. Each round waits for the client to finish loading (up to 15 s).
+- **Online games keep running in the background** (alt-tab must not freeze the other player); the setting is restored
+  when the session ends.
+- **Disconnects**: no packets for 8 s (`[Online] TimeoutSeconds`) ends the session. The host pauses with "P2 LOST THE
+  CONNECTION" and a free key set or gamepad can take that player over (or ESC -> MENU). The client returns to the title
+  with the reason ("THE HOST STOPPED RESPONDING", "THE OTHER PLAYER CLOSED THE GAME", "THE HOST LEFT THE MATCH").
+  Leaving by MENU or closing VERSUS ends the session for both.
+- **Tested** (2026-10-12, two copies of the game on this PC over direct IP, `-ovt-host` / `-ovt-join` / `-ovt-auto`):
+  joining and readying from the client; menu mirror; 1v1 full match (5-2 in rounds, several 5-4) with P2 played from the
+  client over the network; the client's pick (right + jump on its own keys took the second offer); REMATCH chosen from
+  the client; 2v2 with two players per machine, the host pair's picks alternating; side-by-side screenshots matching
+  (positions, score, animations); killing the client (host paused with the notice) and killing the host (client back to
+  the title with the reason); 0 exceptions in either game's log; saves unchanged. Steam: hosting under Steam created
+  the lobby and showed INVITE (STEAM).
+- **Fixed while testing**: the host stopped running when its window was in the background (hence "no answer"); the
+  client's point routine crashed when the right side scored (the right server is only registered by the AI the mirror
+  turns off); the first press from a new client device was lost; the dev autopilot's serve could get stuck at low frame
+  rates; the host autopilot was also playing the client's players (test-only).
+- **Not done / known**: joining over Steam needs two Steam accounts on two PCs and is untested end to end. Perk visuals
+  made by Overtime's own effects code are not mirrored yet (their effect on the ball is, through its movement). The
+  client feels its ping on its own player (no prediction), plus the ~90 ms buffer. Two machines per match (up to four
+  players across them). Direct IP from outside your network needs UDP 27515 forwarded on the host's router. The
+  client's pause menu is local (the match keeps going).
+

@@ -18,6 +18,9 @@ namespace HangtimeOvertime
         internal static ConfigEntry<bool> DumpScenes;
         internal static ConfigEntry<bool> DevKeys;
         internal static ConfigEntry<int> InfiniteRoundOffset;
+        internal static ConfigEntry<int> OnlinePort, OnlineBuffer;
+        internal static ConfigEntry<string> OnlineJoin, OnlineBind;
+        internal static ConfigEntry<float> OnlineTimeout;
 
         // Perk/mode trigger log, only with DumpScenes on (development).
         internal static void Trace(string msg) { if (DumpScenes != null && DumpScenes.Value) Log.LogInfo("[trace] " + msg); }
@@ -31,6 +34,12 @@ namespace HangtimeOvertime
                 new ConfigDescription("Opponents in Infinite and Loops play as if it were this many rounds later (+) or earlier (-). " +
                                       "0 = as tuned. Try +2 if round 1 feels too easy.", new AcceptableValueRange<int>(-4, 10)));
 
+            OnlinePort = Config.Bind("Online", "Port", 27515, "Direct IP: the UDP port a host listens on (forward it on your router for friends outside your network).");
+            OnlineJoin = Config.Bind("Online", "JoinAddress", "127.0.0.1", "Direct IP: the host JOIN BY IP connects to (address or address:port). Steam invites need no address.");
+            OnlineBind = Config.Bind("Online", "ListenAddress", "0.0.0.0", "Direct IP: the local address a host listens on (0.0.0.0 = every network).");
+            OnlineBuffer = Config.Bind("Online", "BufferMs", 90, new ConfigDescription("Online client: how far behind the host the picture runs, so it stays smooth (raise it on a shaky connection).", new AcceptableValueRange<int>(30, 400)));
+            OnlineTimeout = Config.Bind("Online", "TimeoutSeconds", 8f, "Online: seconds without hearing from the other player before the session ends.");
+
             PerkRegistry.Build();
             Engine.Vfx.Init();
             RunState.LoadSave();
@@ -42,7 +51,9 @@ namespace HangtimeOvertime
             RunPatches.Init();
             MenuPatches.Init();
             if (DumpScenes.Value) Debugging.SceneDumper.Hook();
-            if (DevKeys.Value) gameObject.AddComponent<Debugging.DevKeys>();
+            if (DevKeys.Value) { gameObject.AddComponent<Debugging.DevKeys>(); Debugging.DevOnline.Hook(gameObject); }
+            gameObject.AddComponent<Online.NetRunner>();
+            Online.OnlineFlow.Init();
             new Harmony(Guid).PatchAll(typeof(Plugin).Assembly);
             Log.LogInfo($"{Name} {Version} loaded");
         }

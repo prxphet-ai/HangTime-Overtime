@@ -102,8 +102,62 @@ namespace HangtimeOvertime.Patches
         }
     }
 
+    // What the between-rounds / match-end screen shows. The host fills it from the match; an online client gets it sent.
+    internal class RoundScreen
+    {
+        public bool MatchOver;
+        public string Head = "", Score = "", Sub = "", PickHead = "", PickHint = "", ContinueLabel = "";
+        public readonly string[] SideTitle = new string[2];
+        public readonly List<string>[] Builds = { new List<string>(), new List<string>() };
+        public readonly List<(string title, string kind, string rarity, string text)> Offers = new List<(string, string, string, string)>();
+
+        public static RoundScreen From(int winner, bool matchOver, List<VersusOffer> offers, VersusSlot picker)
+        {
+            var setup = VersusState.Setup;
+            int loser = 1 - winner;
+            int[] w = VersusState.RoundWins;
+            string Name(int side) => setup.SideLabel(side);
+            var s = new RoundScreen { MatchOver = matchOver };
+            s.Head = matchOver ? $"{Name(winner)} {(setup.Humans(winner).Count > 1 ? "WIN" : "WINS")} THE MATCH!" : $"ROUND {VersusState.Round} TO {Name(winner)}";
+            s.Score = $"{Name(0)}  {w[0]} - {w[1]}  {Name(1)}";
+            s.Sub = matchOver ? "" : $"FIRST TO {VersusState.Target} ROUNDS";
+            for (int side = 0; side < 2; side++)
+            {
+                s.SideTitle[side] = $"{Name(side)} - {VersusState.TeamName(side, setup.Team[side]).ToUpperInvariant()}";
+                s.Builds[side].AddRange(VersusState.Build(side));
+            }
+            if (!matchOver)
+            {
+                string team = setup.Humans(loser).Count > 1 ? $" FOR {Name(loser)}" : "";
+                s.PickHead = $"P{picker?.Number} PICKS AN UPGRADE{team}  <size=70%>({picker?.Input?.Label})</size>";
+                s.PickHint = $"P{picker?.Number}: LEFT / RIGHT TO CHOOSE, JUMP TO TAKE IT";
+                foreach (var o in offers) s.Offers.Add((o.Title, o.Kind, o.Rarity, o.Text));
+            }
+            s.ContinueLabel = $"CONTINUE  <size=60%>(FIRST TO {VersusState.Target + VersusRules.ContinueRounds})</size>";
+            return s;
+        }
+
+        public void Write(Online.NetWriter w)
+        {
+            w.B(MatchOver).S(Head).S(Score).S(Sub).S(PickHead).S(PickHint).S(ContinueLabel).S(SideTitle[0]).S(SideTitle[1]);
+            for (int side = 0; side < 2; side++) { w.I(Builds[side].Count); foreach (var b in Builds[side]) w.S(b); }
+            w.I(Offers.Count);
+            foreach (var o in Offers) w.S(o.title).S(o.kind).S(o.rarity).S(o.text);
+        }
+
+        public static RoundScreen Read(Online.NetReader r)
+        {
+            var s = new RoundScreen { MatchOver = r.B(), Head = r.S(), Score = r.S(), Sub = r.S(), PickHead = r.S(), PickHint = r.S(), ContinueLabel = r.S() };
+            s.SideTitle[0] = r.S(); s.SideTitle[1] = r.S();
+            for (int side = 0; side < 2; side++) { int n = r.I(); for (int i = 0; i < n; i++) s.Builds[side].Add(r.S()); }
+            int k = r.I();
+            for (int i = 0; i < k; i++) s.Offers.Add((r.S(), r.S(), r.S(), r.S()));
+            return s;
+        }
+    }
+
     // Between rounds: the round score, both builds, and the loser's pick (only the loser's device can choose).
-    // End of match: both builds and CONTINUE / REMATCH / MENU.
+    // End of match: both builds and CONTINUE / REMATCH / MENU. Online, the host runs it and the client shows a copy.
     internal class VersusOverlay : OvertimePanel
     {
         private static VersusOverlay open;
@@ -111,11 +165,15 @@ namespace HangtimeOvertime.Patches
         private int picker = -1;                      // side choosing an upgrade, or -1
         private VersusSlot pickerSlot;                // the player choosing for that side
         private List<VersusOffer> offers;
+        private bool mirror;                          // an online client's copy: no input, the host moves the highlight
         private readonly List<SpriteRenderer> offerBoxes = new List<SpriteRenderer>();
         private readonly List<SpriteRenderer> endButtons = new List<SpriteRenderer>();
         private readonly List<Action> endActions = new List<Action>();
         private int sel, endSel;
         private bool done;
+        private float shownAt;
+
+        private void Awake() => shownAt = Time.unscaledTime;
 
         public static void ShowRound(int winner, bool matchOver)
         {
@@ -123,12 +181,44 @@ namespace HangtimeOvertime.Patches
             var go = new GameObject("Overtime Versus Overlay");
             open = go.AddComponent<VersusOverlay>();
             if (!open.InitKit(200)) { Plugin.Log.LogWarning("Versus overlay: no camera/font; skipping to the next round"); Destroy(go); VersusFlow.NextRound(); return; }
-            open.Build(winner, matchOver);
+            int loser = 1 - winner;
+            if (!matchOver)
+            {
+                open.picker = loser;
+                open.offers = VersusState.Offer(loser);
+                open.pickerSlot = VersusState.Picker(loser);
+                Plugin.Log.LogInfo($"Versus: P{open.pickerSlot?.Number} ({VersusState.Setup.SideLabel(loser)}) offered " + string.Join(" | ", open.offers.Select((o, i) => $"{i}: {o.Title} ({o.Kind})")));
+            }
+            var data = RoundScreen.From(winner, matchOver, open.offers, open.pickerSlot);
+            open.Build(data);
+            Online.OnlineFlow.SendScreen(data);
+        }
+
+        // an online client: the host's screen
+        public static void ShowMirror(RoundScreen data)
+        {
+            if (open != null) Destroy(open.gameObject);
+            var go = new GameObject("Overtime Versus Overlay (online)");
+            open = go.AddComponent<VersusOverlay>();
+            open.mirror = true;
+            if (!open.InitKit(200)) { Destroy(go); open = null; return; }
+            open.Build(data);
+        }
+
+        public static bool IsMirror => open != null && open.mirror;
+        public static bool MirrorMatchOver => IsMirror && open.endButtons.Count > 0;
+
+        public static void MirrorSelection(int sel, int endSel)
+        {
+            if (open == null || !open.mirror) return;
+            open.sel = sel; open.endSel = endSel;
+            open.Refresh();
         }
 
         public static void Notice(string text)
         {
             if (notice != null) Destroy(notice);
+            Online.OnlineFlow.SendNotice(text);
             if (text == null) return;
             var go = new GameObject("Overtime Versus Notice");
             var p = go.AddComponent<NoticePanel>();
@@ -147,61 +237,49 @@ namespace HangtimeOvertime.Patches
             }
         }
 
-        private void Build(int winner, bool matchOver)
+        private void Build(RoundScreen d)
         {
-            int loser = 1 - winner;
-            int[] w = VersusState.RoundWins;
             Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.08f, 0.16f, 0.62f), 0);
             float pw = W * 0.88f, ph = H * 0.86f;
             Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
             float top = ph / 2f;
-            var setup = VersusState.Setup;
-            string Name(int side) => setup.SideLabel(side);
-            string head = matchOver ? $"{Name(winner)} {(setup.Humans(winner).Count > 1 ? "WIN" : "WINS")} THE MATCH!" : $"ROUND {VersusState.Round} TO {Name(winner)}";
-            Text(head, new Vector2(0f, top - 2f), 1.3f, pw - 2f, Color.white);
-            Text($"{Name(0)}  {w[0]} - {w[1]}  {Name(1)}", new Vector2(0f, top - 4.6f), 1.6f, pw - 2f, new Color(1f, 0.85f, 0.35f));
-            Text(matchOver ? "" : $"FIRST TO {VersusState.Target} ROUNDS", new Vector2(0f, top - 6.6f), 0.6f, pw - 2f, new Color(0.85f, 0.95f, 1f));
+            Text(d.Head, new Vector2(0f, top - 2f), 1.3f, pw - 2f, Color.white);
+            Text(d.Score, new Vector2(0f, top - 4.6f), 1.6f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+            Text(d.Sub, new Vector2(0f, top - 6.6f), 0.6f, pw - 2f, new Color(0.85f, 0.95f, 1f));
 
             // both builds, left and right
             for (int side = 0; side < 2; side++)
             {
                 float x = (side == 0 ? -1f : 1f) * pw * 0.36f;
-                Text($"{Name(side)} - {VersusState.TeamName(side, setup.Team[side]).ToUpperInvariant()}", new Vector2(x, top - 8.6f), 0.7f, pw * 0.26f, Color.white);
-                var build = VersusState.Build(side);
+                Text(d.SideTitle[side], new Vector2(x, top - 8.6f), 0.7f, pw * 0.26f, Color.white);
+                var build = d.Builds[side];
                 string list = build.Count == 0 ? "NO UPGRADES YET" : string.Join("\n", build.Take(12).Select(b => b.ToUpperInvariant())) + (build.Count > 12 ? $"\n+{build.Count - 12} MORE" : "");
                 Text(list, new Vector2(x, top - 8.6f - 1.4f - 7f), 0.68f, pw * 0.26f, new Color(0.85f, 0.95f, 1f), TextAlignmentOptions.Top, height: 14f, wrap: true);
             }
 
-            if (!matchOver)
+            if (!d.MatchOver)
             {
-                picker = loser;
-                offers = VersusState.Offer(loser);
-                var slot = VersusState.Picker(loser);
-                pickerSlot = slot;
-                Plugin.Log.LogInfo($"Versus: P{slot?.Number} ({Name(loser)}) offered " + string.Join(" | ", offers.Select((o, i) => $"{i}: {o.Title} ({o.Kind})")));
-                string team = setup.Humans(loser).Count > 1 ? $" FOR {Name(loser)}" : "";
-                Text($"P{slot?.Number} PICKS AN UPGRADE{team}  <size=70%>({slot?.Input?.Label})</size>", new Vector2(0f, top - 8.6f), 0.8f, pw * 0.42f, Color.white);
+                Text(d.PickHead, new Vector2(0f, top - 8.6f), 0.8f, pw * 0.42f, Color.white);
                 float cw = Mathf.Min(pw * 0.15f, 9f), ch = ph * 0.45f, gap = cw * 0.12f;
-                for (int i = 0; i < offers.Count; i++)
+                for (int i = 0; i < d.Offers.Count; i++)
                 {
-                    int idx = i;
-                    float x = (i - (offers.Count - 1) / 2f) * (cw + gap);
+                    float x = (i - (d.Offers.Count - 1) / 2f) * (cw + gap);
                     float y = -ph * 0.08f;
-                    var o = offers[i];
+                    var o = d.Offers[i];
                     var box = Box("Offer", new Vector2(x, y), new Vector2(cw, ch), new Color(0.16f, 0.6f, 0.86f, 1f), 4);
                     offerBoxes.Add(box);
-                    var rarity = o.Rarity == "epic" ? new Color(1f, 0.78f, 0.29f) : o.Rarity == "rare" ? new Color(0.6f, 0.9f, 1f) : Color.white;
-                    Text(o.Title.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 2.4f), 0.8f, cw - 0.8f, Color.white, height: 3.6f, wrap: true);
-                    Text(o.Kind + " · " + o.Rarity.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 4.8f), 0.5f, cw - 0.6f, rarity);
-                    Text(o.Text, new Vector2(x, y - 2.2f), 0.6f, cw - 1.2f, Color.white, TextAlignmentOptions.Top, height: ch - 8f, wrap: true);
+                    var rarity = o.rarity == "epic" ? new Color(1f, 0.78f, 0.29f) : o.rarity == "rare" ? new Color(0.6f, 0.9f, 1f) : Color.white;
+                    Text(o.title.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 2.4f), 0.8f, cw - 0.8f, Color.white, height: 3.6f, wrap: true);
+                    Text(o.kind + " · " + o.rarity.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 4.8f), 0.5f, cw - 0.6f, rarity);
+                    Text(o.text, new Vector2(x, y - 2.2f), 0.6f, cw - 1.2f, Color.white, TextAlignmentOptions.Top, height: ch - 8f, wrap: true);
                 }
-                Text($"P{slot?.Number}: LEFT / RIGHT TO CHOOSE, JUMP TO TAKE IT", new Vector2(0f, -ph / 2f + 1.6f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
+                Text(d.PickHint, new Vector2(0f, -ph / 2f + 1.6f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
                 sel = 0;
             }
             else
             {
                 float by = -ph / 2f + 2.6f, bw = pw * 0.22f;
-                AddEnd($"CONTINUE  <size=60%>(FIRST TO {VersusState.Target + VersusRules.ContinueRounds})</size>", new Vector2(-bw * 1.15f, by), bw, () => VersusFlow.ContinueMatch());
+                AddEnd(d.ContinueLabel, new Vector2(-bw * 1.15f, by), bw, () => VersusFlow.ContinueMatch());
                 AddEnd("REMATCH", new Vector2(0f, by), bw, () => VersusFlow.Rematch());
                 AddEnd("MENU", new Vector2(bw * 1.15f, by), bw, () => VersusFlow.ToMenu());
                 endSel = 0;
@@ -217,7 +295,7 @@ namespace HangtimeOvertime.Patches
 
         private void Choose(Action act)
         {
-            if (done) return;
+            if (done || mirror) return;
             done = true;
             act();
         }
@@ -230,17 +308,23 @@ namespace HangtimeOvertime.Patches
                 offerBoxes[i].transform.localScale = Vector3.one * (i == sel ? 1.06f : 1f);
             }
             for (int i = 0; i < endButtons.Count; i++) endButtons[i].transform.localScale = Vector3.one * (i == endSel ? 1.08f : 1f);
+            if (!mirror) Online.OnlineFlow.SendSelection(sel, endSel);
         }
 
         private void Update()
         {
-            if (done) return;
+            if (done || mirror) return;
             var setup = VersusState.Setup;
             if (setup == null) return;
             if (picker >= 0)
             {
                 // only the losing side's picker chooses (a pair takes turns, round by round)
                 var s = VersusInput.Read(pickerSlot?.Input);
+                // development autopilot: a player on this machine takes the second offer after a moment
+                if (VersusDriver.Autopilot && pickerSlot?.Input?.Kind != InputKind.Remote && Time.unscaledTime - shownAt > 2.5f)
+                {
+                    if (sel < Mathf.Min(1, offers.Count - 1)) s.Right = true; else s.Confirm = true;
+                }
                 int dx = (s.Right ? 1 : 0) - (s.Left ? 1 : 0);
                 if (dx != 0) { sel = Mathf.Clamp(sel + dx, 0, offers.Count - 1); Refresh(); }
                 if (s.Confirm && offers.Count > 0)
@@ -308,9 +392,14 @@ namespace HangtimeOvertime.Patches
             Runner.Instance.StartCoroutine(Reload(true));
         }
 
+        // an online client: the host started the next round
+        public static void ReloadRound() => Runner.Instance.StartCoroutine(Reload(false));
+
         private static IEnumerator Reload(bool toTitle)
         {
             var gm = GameManager.Instance;
+            Online.MatchSync.InMatch = false;
+            if (!toTitle && Online.Net.IsHost) Online.OnlineFlow.SendLoad(false);
             gm.transition.Play();
             yield return new WaitForSecondsRealtime(0.5f);
             VersusOverlay.Close();

@@ -23,6 +23,7 @@ namespace HangtimeOvertime.Patches
         public static void SetupMatch(GameManager gm, GameObject team)
         {
             var setup = VersusState.Setup;
+            if (Online.Net.IsClient) { DressLeft(setup); Online.MatchSync.SetupMirror(gm, team); return; }   // an online client mirrors the host
             gm.matchLength = Generated.VersusRules.PointsPerRound;
 
             // equal footing: the right team uses the player's own stat tables, from level 0, without built-in abilities;
@@ -70,17 +71,10 @@ namespace HangtimeOvertime.Patches
             }
             ServeTurns.Reset(rightHitter, setup.HumanSetter(1) ? rightSetter : null);
 
-            // player 1's side can wear a new team's colours (player 1's own look still goes on top)
-            var def = Generated.Teams.All.FirstOrDefault(t => t.Id == setup.Team[0]);
-            if (def != null)
-                foreach (var pc in all.Where(p => p.transform.position.x < 0f))
-                    foreach (var sr in pc.GetComponentsInChildren<SpriteRenderer>(true))
-                    {
-                        if (sr.name == "Core_0") sr.color = Vfx.Hex(def.Jersey);
-                        else if (sr.name.StartsWith("Thigh_0")) sr.color = Vfx.Hex(def.Shorts);
-                    }
+            DressLeft(setup);
 
             var driver = new GameObject("Overtime Versus Driver").AddComponent<VersusDriver>();
+            if (Online.Net.IsHost && Online.Net.Connected) { Online.MatchSync.SetupHost(); driver.WaitForPeer(); }
             foreach (var slot in setup.AllHumans)
             {
                 var pc = slot.Side == 0 ? (slot.Role == "partner" ? leftPartner : leftHitter) : (slot.Role == "setter" ? rightSetter : rightHitter);
@@ -90,6 +84,19 @@ namespace HangtimeOvertime.Patches
                                string.Join(", ", driver.Players.Select(kv => $"P{kv.Key.Number} {kv.Value?.name} ({kv.Key.Input?.Label})")) +
                                $"; {team.name} on the right; AI setters {(setup.HumanSetter(0) || setup.Format == "2v2" ? "-" : leftSetter?.name)}/{(setup.HumanSetter(1) ? "-" : rightSetter?.name)}" +
                                $"; perks {VersusState.PerksOf(0).Count}/{VersusState.RightPerks.Count}");
+        }
+
+        // player 1's side can wear a new team's colours (player 1's own look still goes on top)
+        private static void DressLeft(VersusSetup setup)
+        {
+            var def = Generated.Teams.All.FirstOrDefault(t => t.Id == setup.Team[0]);
+            if (def == null) return;
+            foreach (var pc in Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(p => p.transform.position.x < 0f))
+                foreach (var sr in pc.GetComponentsInChildren<SpriteRenderer>(true))
+                {
+                    if (sr.name == "Core_0") sr.color = Vfx.Hex(def.Jersey);
+                    else if (sr.name.StartsWith("Thigh_0")) sr.color = Vfx.Hex(def.Shorts);
+                }
         }
 
         // Two humans on the right take turns serving (the game alternates its own co-op pair on the left the same way).
@@ -142,6 +149,8 @@ namespace HangtimeOvertime.Patches
             private static bool Prefix(GameManager __instance, string nextScene, ref IEnumerator __result)
             {
                 if (!VersusState.Active) return true;
+                // an online client's round ends when the host says so (its screen arrives from the host)
+                if (Online.Net.IsClient) { __instance.done = true; __result = Nothing(); return false; }
                 __result = __instance.done ? Nothing() : VersusFlow.RoundOver(__instance, nextScene == "Lose" ? 1 : 0);
                 return false;
             }

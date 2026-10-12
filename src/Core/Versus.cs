@@ -20,7 +20,7 @@ namespace HangtimeOvertime.Core
         public InputKind Kind;
         public int DeviceId;          // gamepads: the Input System device id
         public string Label;          // "WASD", "ARROWS", "GAMEPAD 1"
-        public bool Same(SlotInput o) => o != null && o.Kind == Kind && (Kind != InputKind.Gamepad || o.DeviceId == DeviceId);
+        public bool Same(SlotInput o) => o != null && o.Kind == Kind && (Kind != InputKind.Gamepad && Kind != InputKind.Remote || o.DeviceId == DeviceId);
     }
 
     public class VersusSlot
@@ -145,6 +145,8 @@ namespace HangtimeOvertime.Core
             Setup = null;
             ResetBuilds();
             TeamRoster.ResumeKey = null;
+            // an online match ends for both players
+            if (Online.Net.Online) Online.Net.Stop(Online.Net.IsHost ? "THE HOST LEFT THE MATCH" : "YOUR OPPONENT LEFT THE MATCH");
         }
 
         private static void ResetBuilds()

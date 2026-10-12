@@ -302,7 +302,7 @@ def preflight():
             errors.append(f"hooks.{hid}.changes_score: must be 'no'")
         if h["kind"] == "event":
             short = t.rsplit(".", 1)[-1]
-            code = read(os.path.join(SRC, "Patches", h["patch_class"] + ".cs"))
+            code = read(os.path.join(SRC, "Patches", h["patch_class"] + ".cs")) or read(os.path.join(SRC, "Online", h["patch_class"] + ".cs"))
             if not t.startswith("UnityEngine."):
                 errors.append(f"hooks.{hid}.target_type: events must be UnityEngine types")
             if code is None:
@@ -323,7 +323,7 @@ def preflight():
         if h["kind"] not in ("native", "prefix", "postfix"):
             errors.append(f"hooks.{hid}.kind: '{h['kind']}'")
         if h["kind"] in ("prefix", "postfix"):
-            code = read(os.path.join(SRC, "Patches", h["patch_class"] + ".cs"))
+            code = read(os.path.join(SRC, "Patches", h["patch_class"] + ".cs")) or read(os.path.join(SRC, "Online", h["patch_class"] + ".cs"))
             if code is None:
                 errors.append(f"hooks.{hid}.patch_class: src/Patches/{h['patch_class']}.cs missing")
             else:
@@ -336,7 +336,7 @@ def preflight():
             errors.append(f"hooks.{hid}.patch_class: native hooks use '-'")
     # every Harmony patch in the code has a hooks row (nothing touches the game unlisted)
     listed = {(h["target_type"], h["target_method"], h["kind"]) for h in S["hooks"]["rows"]}
-    for d, _, files in os.walk(os.path.join(SRC, "Patches")):
+    for d, _, files in [w for folder in ("Patches", "Online") for w in os.walk(os.path.join(SRC, folder))]:
         for fn in files:
             code = read(os.path.join(d, fn)) or ""
             starts = [x.start() for x in re.finditer(r"\[HarmonyPatch\(", code)] + [len(code)]

@@ -45,6 +45,7 @@ namespace HangtimeOvertime.Patches
             var s = new PadState();
             var kb = Keyboard.current;
             var kind = b?.Kind ?? InputKind.None;
+            if (kind == InputKind.Remote) return Online.Net.ReadRemote(b.DeviceId);   // a player on the other machine
             if (kind == InputKind.Gamepad)
             {
                 var g = PadOf(b);
@@ -79,8 +80,10 @@ namespace HangtimeOvertime.Patches
         }
 
         // "Press a button to join": the first device that something was pressed on this frame, or null.
-        public static SlotInput DetectJoin()
+        public static SlotInput DetectJoin(IEnumerable<SlotInput> taken = null)
         {
+            var remote = Online.Net.RemoteJoin(taken ?? Enumerable.Empty<SlotInput>());
+            if (remote != null) return remote;
             var kb = Keyboard.current;
             if (kb != null)
                 foreach (var (kind, label) in KeyboardSets)
@@ -103,6 +106,20 @@ namespace HangtimeOvertime.Patches
                     return new SlotInput { Kind = InputKind.Gamepad, DeviceId = g.deviceId, Label = "GAMEPAD " + (Gamepad.all.ToList().IndexOf(g) + 1) };
             return null;
         }
+
+        // An unused keyboard set's key press (an online player who dropped out can be taken over from the keyboard too).
+        public static SlotInput FreeKeysPressed(IEnumerable<SlotInput> taken)
+        {
+            var kb = Keyboard.current;
+            if (kb == null) return null;
+            foreach (var (kind, label) in KeyboardSets)
+            {
+                if (taken.Any(t => t != null && t.Kind == kind)) continue;
+                var k = Keys(kind, kb).Value;
+                if (k.u.wasPressedThisFrame || k.ok.wasPressedThisFrame) return new SlotInput { Kind = kind, Label = label };
+            }
+            return null;
+        }
     }
 
     // Drives the human-controlled players of a Versus match from their own devices, through the same calls the game's
@@ -113,6 +130,8 @@ namespace HangtimeOvertime.Patches
         public static bool Autopilot;                     // development (DevKeys F4): every human slot plays itself, same input path
         public readonly Dictionary<VersusSlot, PlayerController> Players = new Dictionary<VersusSlot, PlayerController>();
         public bool Frozen;                               // between rounds: nobody moves
+        private float waitingSince = -1f;                 // online host: the client is still loading this round
+        public void WaitForPeer() => waitingSince = Time.unscaledTime;
         public VersusSlot Disconnected;                   // slot whose device is gone, or null
         private float savedTimeScale = 1f;
         private GameObject controllerWarning;             // the game's co-op "connect two controllers" message
@@ -132,34 +151,67 @@ namespace HangtimeOvertime.Patches
             if (setup == null) return;
             // Versus assigns every device itself; the game's co-op warning about controllers doesn't apply
             if (controllerWarning != null && controllerWarning.activeSelf) controllerWarning.SetActive(false);
+            if (waitingSince >= 0f && (Online.OnlineFlow.PeerReadySeq == Online.MatchSync.LoadSeq || Time.unscaledTime - waitingSince > 15f || !Online.Net.Connected))
+            {
+                Plugin.Log.LogInfo($"Online: round starts ({(Online.OnlineFlow.PeerReadySeq == Online.MatchSync.LoadSeq ? "client ready" : "without waiting longer")})");
+                waitingSince = -1f;
+            }
             foreach (var slot in setup.AllHumans)
             {
                 Players.TryGetValue(slot, out var pc);
-                var s = Autopilot && pc != null ? AutoPad(pc) : VersusInput.Read(slot.Input);
+                var s = Autopilot && pc != null && slot.Input?.Kind != InputKind.Remote ? AutoPad(pc) : VersusInput.Read(slot.Input);   // online: the other machine plays its own
                 if (!s.Connected) { OnLost(slot); continue; }
                 if (Disconnected == slot) OnBack(slot);
                 if (pc == null || !pc.isActiveAndEnabled) continue;
-                if (Frozen || Disconnected != null || PauseController.paused || GameManager.gameOver) { pc.SetXInput(0f); continue; }
+                if (Frozen || waitingSince >= 0f || Disconnected != null || PauseController.paused || GameManager.gameOver) { pc.SetXInput(0f); continue; }
                 pc.SetXInput(s.X);
                 if (s.Up) pc.UpInputPressed();
                 if (s.Down) pc.DownInputPressed();
             }
             if (Disconnected != null)
             {
-                // any free gamepad can take the lost player's place
-                var free = VersusInput.FreePadPressed(setup.AllHumans.Where(h => h != Disconnected).Select(h => h.Input));
+                // any free gamepad can take the lost player's place (an online player's: a free keyboard set too)
+                var taken = setup.AllHumans.Where(h => h != Disconnected).Select(h => h.Input).ToList();
+                var free = VersusInput.FreePadPressed(taken) ?? (Disconnected.Input?.Kind == InputKind.Remote ? VersusInput.FreeKeysPressed(taken) : null);
                 if (free != null) { Disconnected.Input = free; Plugin.Log.LogInfo($"Versus: P{Disconnected.Number} now on {free.Label}"); }
             }
         }
 
-        // ------------------------------------------------------------ development autopilot (DevKeys only)
+        // development autopilot (DevKeys only)
+        private readonly AutoPilot pilot = new AutoPilot();
+        private PadState AutoPad(PlayerController pc) => pilot.Pad(pc, Players.Values);
+
+        private void OnLost(VersusSlot slot)
+        {
+            if (Disconnected != null) return;
+            Disconnected = slot;
+            savedTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
+            Time.timeScale = 0f;
+            VersusOverlay.Notice(slot.Input?.Kind == InputKind.Remote
+                ? $"P{slot.Number} LOST THE CONNECTION\n<size=70%>JUMP ON A FREE KEY SET OR A ON A GAMEPAD TO TAKE OVER, OR ESC FOR THE MENU</size>"
+                : $"P{slot.Number}'S CONTROLLER DISCONNECTED\n<size=70%>RECONNECT IT, OR PRESS A ON ANOTHER GAMEPAD</size>");
+            Plugin.Log.LogInfo($"Versus: P{slot.Number} device lost, match paused");
+        }
+
+        private void OnBack(VersusSlot slot)
+        {
+            Disconnected = null;
+            Time.timeScale = savedTimeScale;
+            VersusOverlay.Notice(null);
+            Plugin.Log.LogInfo($"Versus: P{slot.Number} device back, match resumed");
+        }
+    }
+
+    // Development (DevKeys F4, or -ovt-auto): plays a human slot by itself, through the same input path as a device.
+    internal class AutoPilot
+    {
         private BallMovement ball;
         private readonly Dictionary<PlayerController, (float serveAt, float swingAt)> auto = new Dictionary<PlayerController, (float, float)>();
 
-        private PadState AutoPad(PlayerController pc)
+        public PadState Pad(PlayerController pc, IEnumerable<PlayerController> mates)
         {
             var s = new PadState { Connected = true };
-            if (ball == null) ball = FindFirstObjectByType<BallMovement>();
+            if (ball == null) ball = Object.FindFirstObjectByType<BallMovement>();
             if (ball == null) return s;
             auto.TryGetValue(pc, out var t);
             float x = pc.transform.position.x, bx = ball.transform.position.x, by = ball.transform.position.y;
@@ -170,7 +222,11 @@ namespace HangtimeOvertime.Patches
             {
                 if (Mathf.Abs(x) < pc.COURT_SIZE + 0.3f) { s.X = -dir; t.serveAt = 0f; auto[pc] = t; return s; }
                 if (t.serveAt == 0f) { t.serveAt = Time.time; s.Up = true; auto[pc] = t; return s; }
-                if (Time.time - t.serveAt > 0.35f && Time.time - t.serveAt < 0.4f) s.Up = true;
+                float since = Time.time - t.serveAt;
+                // the hit, once, in the serve jump (a slow frame rate can't skip it); landed still holding the ball: again
+                if (since > 0.35f && since < 0.9f && t.swingAt != t.serveAt) { s.Up = true; t.swingAt = t.serveAt; }
+                if (since > 1.6f && pc.getGrounded()) t.serveAt = 0f;
+                auto[pc] = t;
                 return s;
             }
             // where the ball comes down to head height (gravity only), so a pair without a setter can receive serves
@@ -182,7 +238,7 @@ namespace HangtimeOvertime.Patches
             }
             bool mine = Mathf.Sign(bx) == Mathf.Sign(x);
             // two humans on a side share it: the one nearer the ball goes for it, the other covers the back
-            bool closest = !Players.Values.Any(o => o != null && o != pc && o.isActiveAndEnabled && Mathf.Sign(o.transform.position.x) == Mathf.Sign(x) &&
+            bool closest = !mates.Any(o => o != null && o != pc && o.isActiveAndEnabled && Mathf.Sign(o.transform.position.x) == Mathf.Sign(x) &&
                                                      Mathf.Abs(o.transform.position.x - bx) < Mathf.Abs(x - bx));
             float target = mine && closest ? bx - dir * 1.5f : -dir * (closest ? 22f : 30f);
             float d = target - x;
@@ -204,22 +260,5 @@ namespace HangtimeOvertime.Patches
             return s;
         }
 
-        private void OnLost(VersusSlot slot)
-        {
-            if (Disconnected != null) return;
-            Disconnected = slot;
-            savedTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f;
-            Time.timeScale = 0f;
-            VersusOverlay.Notice($"P{slot.Number}'S CONTROLLER DISCONNECTED\n<size=70%>RECONNECT IT, OR PRESS A ON ANOTHER GAMEPAD</size>");
-            Plugin.Log.LogInfo($"Versus: P{slot.Number} device lost, match paused");
-        }
-
-        private void OnBack(VersusSlot slot)
-        {
-            Disconnected = null;
-            Time.timeScale = savedTimeScale;
-            VersusOverlay.Notice(null);
-            Plugin.Log.LogInfo($"Versus: P{slot.Number} device back, match resumed");
-        }
     }
 }

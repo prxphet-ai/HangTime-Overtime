@@ -30,9 +30,14 @@ namespace HangtimeOvertime.Patches
         private readonly SpriteRenderer[,] rowBoxes = new SpriteRenderer[2, 2];
         private readonly TextMeshPro[] teamText = new TextMeshPro[2], sideTitle = new TextMeshPro[2];
         private readonly SpriteRenderer[] swatch = new SpriteRenderer[2], formatTabs = new SpriteRenderer[3];
-        private TextMeshPro heading;
+        private TextMeshPro heading, status;
+        private SpriteRenderer hostButton;
         private float openedAt;
         private bool starting;
+        private static TitleButton classicRef;
+        public static string PendingMessage;                                   // shown next time the menu opens (why an online match ended)
+        private string lastSent;
+        private bool Mirror => Online.Net.IsClient && Online.Net.Connected;     // an online client shows the host's menu
 
         private string Format => VersusSetup.Formats[format];
         private (int side, string role)[] Seats => VersusSetup.Seats(Format);
@@ -52,6 +57,7 @@ namespace HangtimeOvertime.Patches
             foreach (var m in b.GetComponents<MonoBehaviour>().Where(m => m is PopupClick)) DestroyImmediate(m);
             var click = b.AddComponent<PopupClick>();
             var tb = classicButton.GetComponent<TitleButton>();
+            classicRef = tb;
             click.Action = () => Open(tb);
             var ctrl = b.GetComponent<ButtonController>();
             onClickOf(ctrl) = click;
@@ -60,6 +66,14 @@ namespace HangtimeOvertime.Patches
             b.transform.position = customize.transform.position + new Vector3(0f, 3.3f, 0f);
             Traverse.Create(ctrl).Field("originalScale").SetValue(b.transform.localScale.x);
             group.buttons.Insert(group.buttons.IndexOf(customize), ctrl);
+        }
+
+        // the title screen: a Steam invite was accepted, or an online match ended (say why)
+        public static void TitleTick()
+        {
+            if (open != null || classicRef == null || !TitleController.onTitle || !classicRef.gameObject.activeInHierarchy) return;
+            if (Online.SteamCalls.PendingLobby.IsValid()) { Open(classicRef); Online.SteamCalls.JoinPending(); }
+            else if (PendingMessage != null) Open(classicRef);
         }
 
         private static void Open(TitleButton classicTb)
@@ -122,12 +136,126 @@ namespace HangtimeOvertime.Patches
                 new Vector2(0f, -ph / 2f + 3.8f), 0.4f, pw - 2f, new Color(0.85f, 0.95f, 1f), height: 2.4f, wrap: true);
             Button("BACK", new Vector2(-pw * 0.12f, -ph / 2f + 1.6f), new Vector2(pw * 0.18f, 2.4f), () => Close(), 0.7f);
             Button("START", new Vector2(pw * 0.12f, -ph / 2f + 1.6f), new Vector2(pw * 0.18f, 2.4f), () => TryStart(), 0.7f);
+            // online: host (Steam invite or direct IP) or join a host by IP; a Steam invite joins by itself
+            hostButton = Button("HOST ONLINE", new Vector2(-pw * 0.36f, -ph / 2f + 1.6f), new Vector2(pw * 0.2f, 2.4f), () => HostOrInvite(), 0.6f);
+            hostLabel = transform.GetComponentsInChildren<TextMeshPro>().Last();
+            Button("JOIN BY IP", new Vector2(pw * 0.36f, -ph / 2f + 1.6f), new Vector2(pw * 0.2f, 2.4f), () => JoinByIp(), 0.6f);
+            status = Text("", new Vector2(0f, -ph / 2f + 5.8f), 0.5f, pw - 4f, new Color(1f, 0.85f, 0.35f));
+            if (PendingMessage != null) { status.text = PendingMessage; PendingMessage = null; }
             Refresh();
+        }
+
+        private TextMeshPro hostLabel;
+
+        private void HostOrInvite()
+        {
+            if (Online.Net.IsClient) return;
+            if (Online.Net.IsHost) { Online.SteamCalls.Invite(); return; }
+            Online.Net.StartHost();
+            SetHostLabel();
+        }
+
+        private void SetHostLabel()
+        {
+            if (hostLabel != null) hostLabel.text = Online.Net.IsHost ? (Online.SteamCalls.CanInvite ? "INVITE (STEAM)" : "HOSTING") : "HOST ONLINE";
+        }
+
+        private void JoinByIp()
+        {
+            if (Online.Net.Online) return;
+            Online.Net.JoinIp(Plugin.OnlineJoin.Value);
+        }
+
+        // ------------------------------------------------------------ online
+
+        public static void PeerJoined() { if (open != null) { open.lastSent = null; open.Refresh(); } }
+
+        public static void SessionEnded(string reason)
+        {
+            if (open == null) return;
+            if (open.status != null) open.status.text = reason ?? "";
+            open.SetHostLabel();
+            // the other machine's players leave their seats
+            for (int i = 0; i < MaxPlayers; i++) if (open.input[i]?.Kind == InputKind.Remote) { open.input[i] = null; open.ready[i] = false; }
+            open.Refresh();
+        }
+
+        // host -> client: the whole join screen, whenever it changes
+        private void SendState()
+        {
+            if (!(Online.Net.IsHost && Online.Net.Connected)) return;
+            var w = new Online.NetWriter(Online.Msg.Menu).U8(format).I(team[0]).I(team[1]);
+            for (int i = 0; i < MaxPlayers; i++) w.S(input[i]?.Label ?? "").B(ready[i]);
+            string key = System.Convert.ToBase64String(w.Bytes());
+            if (key == lastSent) return;
+            lastSent = key;
+            Online.Net.Send(w);
+        }
+
+        public static void MirrorState(Online.NetReader r)
+        {
+            if (open == null || !Online.Net.IsClient) return;
+            open.format = r.U8(); open.team[0] = r.I(); open.team[1] = r.I();
+            for (int i = 0; i < MaxPlayers; i++)
+            {
+                string label = r.S(); bool rd = r.B();
+                open.input[i] = label.Length > 0 ? new SlotInput { Kind = InputKind.Remote, Label = label } : null;
+                open.ready[i] = rd;
+            }
+            open.Refresh();
+        }
+
+        // development (-ovt-host / -ovt-join, DevKeys on)
+        public static bool DevHost(string format, int seats)
+        {
+            if (classicRef == null) return false;
+            Open(classicRef);
+            if (open == null) return false;
+            open.HostOrInvite();
+            open.SetFormat(System.Math.Max(0, System.Array.IndexOf(VersusSetup.Formats, format)));
+            for (int i = 0; i < seats && i < open.Count; i++)
+                open.input[i] = new SlotInput { Kind = VersusInput.KeyboardSets[i].kind, Label = VersusInput.KeyboardSets[i].label };
+            open.Refresh();
+            return true;
+        }
+
+        public static bool DevJoin()
+        {
+            if (classicRef == null) return false;
+            Open(classicRef);
+            if (open == null) return false;
+            open.JoinByIp();
+            return true;
+        }
+
+        public static bool DevReadyWhenOthersAre()
+        {
+            if (open == null) return false;
+            for (int i = 0; i < open.Count; i++) if (open.input[i] == null || (open.input[i].Kind == InputKind.Remote && !open.ready[i])) return false;
+            for (int i = 0; i < open.Count; i++) open.ready[i] = true;
+            open.Refresh();
+            open.TryStart();
+            return true;
+        }
+
+        // client: the host started the match
+        public static bool StartFromHost()
+        {
+            if (open == null) return false;
+            open.starting = true;
+            var gm = GameManager.Instance;
+            var title = titleOf(open.classic);
+            if (title != null) open.classic.StartCoroutine(title.StartGame());
+            gm.ResetGame();
+            PauseController.paused = false;
+            open.classic.StartCoroutine(gm.LoadGame());
+            open.Close(keepMenuOff: true);
+            return true;
         }
 
         private void SetFormat(int f)
         {
-            if (starting || f == format) return;
+            if (starting || f == format || Mirror) return;
             format = f;
             // players beyond the new mode's seats leave; everyone un-readies (seats may have moved sides)
             for (int i = 0; i < MaxPlayers; i++) { ready[i] = false; if (i >= Count) input[i] = null; }
@@ -176,12 +304,14 @@ namespace HangtimeOvertime.Patches
                     rows[side, r].text = text;
                     rowBoxes[side, r].color = box;
                 }
+                if (team[side] >= teams[side].Count) team[side] = 0;
                 bool joined = input[Leader(side)] != null;
                 swatch[side].enabled = joined;
                 teamText[side].text = joined ? "<  " + TeamLabel(side) + "  >" : "";
                 var c = TeamColour(side);
                 swatch[side].color = new Color(c.r * 0.7f, c.g * 0.7f, c.b * 0.7f, 1f);
             }
+            SendState();
         }
 
         // ------------------------------------------------------------ input
@@ -191,12 +321,14 @@ namespace HangtimeOvertime.Patches
             if (starting || Time.unscaledTime - openedAt < 0.3f) return;
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb != null && kb.escapeKey.wasPressedThisFrame) { Close(); return; }
+            if (status != null && Online.Net.Online && status.text != Online.Net.Status) { status.text = Online.Net.Status; SetHostLabel(); }
+            if (Mirror) return;                                                     // the host runs the menu; our keys travel to it
             var seats = Seats;
             for (int i = 0; i < Count; i++)
             {
                 if (input[i] == null) continue;
                 var s = VersusInput.Read(input[i]);
-                if (s.Back) { if (ready[i]) ready[i] = false; else if (input[i].Kind == InputKind.Gamepad) Leave(i); Refresh(); return; }
+                if (s.Back) { if (ready[i]) ready[i] = false; else if (input[i].Kind == InputKind.Gamepad || input[i].Kind == InputKind.Remote) Leave(i); Refresh(); return; }
                 int side = seats[i].side;
                 int dx = (s.Right ? 1 : 0) - (s.Left ? 1 : 0);
                 if (dx != 0 && !ready[i] && Leader(side) == i) { team[side] = (team[side] + dx + teams[side].Count) % teams[side].Count; Refresh(); }
@@ -208,7 +340,8 @@ namespace HangtimeOvertime.Patches
                     if (Enumerable.Range(0, Count).All(j => input[j] != null && ready[j])) { TryStart(); return; }
                 }
             }
-            var join = VersusInput.DetectJoin();
+            if (Online.Net.IsClient) return;                                        // dialling a host: our keys wait for it
+            var join = VersusInput.DetectJoin(input);
             if (join != null && !input.Any(x => x != null && x.Same(join)))
             {
                 int free = System.Array.FindIndex(input, x => x == null);
@@ -226,12 +359,13 @@ namespace HangtimeOvertime.Patches
 
         private void TryStart()
         {
-            if (starting || Enumerable.Range(0, Count).Any(i => input[i] == null)) return;
+            if (starting || Mirror || Enumerable.Range(0, Count).Any(i => input[i] == null)) return;
             starting = true;
             var setup = VersusSetup.Create(Format, input.Take(Count).ToList(), teams[0][team[0]], teams[1][team[1]]);
             VersusState.NewMatch(setup);
             var gm = GameManager.Instance;
             gm.numberOfPlayers = Format == "2v2" ? 2 : 1;     // 2v2: the game's own co-op pair on the left
+            Online.OnlineFlow.SendLoad(true);
             var title = titleOf(classic);
             if (title != null) classic.StartCoroutine(title.StartGame());
             gm.ResetGame();
@@ -244,6 +378,7 @@ namespace HangtimeOvertime.Patches
         {
             if (!keepMenuOff)
             {
+                if (Online.Net.Online) Online.Net.Stop(Online.Net.IsHost ? "THE HOST CLOSED VERSUS" : null);
                 foreach (var c in disabled) if (c != null) c.enabled = true;
                 if (titleGroup != null)
                 {

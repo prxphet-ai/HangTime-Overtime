@@ -110,6 +110,7 @@ namespace HangtimeOvertime.Engine
         // Fires one perk for one trigger. Returns the summed jump/block-jump bonus (jump triggers).
         public static float FirePerk(DataPerk perk, string trigger, PlayerController pc, BallMovement ball, bool checkConds = true)
         {
+            if (Online.MatchSync.Mirroring) return 0f;                     // an online client mirrors the host's match: perks run there only
             int side = pc != null ? SideOf(pc) : 0;
             if (checkConds && !Passes(perk, trigger, side, pc)) return 0f;
             StartCooldown(perk, trigger, side);
@@ -130,6 +131,7 @@ namespace HangtimeOvertime.Engine
 
         public static void FireAll(string trigger, int side, PlayerController pc, BallMovement ball)
         {
+            if (Online.MatchSync.Mirroring) return;
             foreach (var perk in PerksOf(side).ToList())
                 if (perk.Listens(trigger)) FirePerk(perk, trigger, pc, ball);
         }
@@ -221,6 +223,7 @@ namespace HangtimeOvertime.Engine
 
         public static void OnAcceptedTouch(int side)
         {
+            if (Online.MatchSync.Mirroring) return;
             Sides[side].TouchStreak++;
             foreach (var perk in PerksOf(side).ToList())
             {
@@ -236,6 +239,7 @@ namespace HangtimeOvertime.Engine
 
         public static void OnRallyEnd(int winner)
         {
+            if (Online.MatchSync.Mirroring) return;
             int loser = Other(winner);
             RallyTouches = 0;
             Sides[winner].RallyWins++;

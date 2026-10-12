@@ -64,3 +64,8 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   `src/Patches/VersusInput.cs` (devices, driver, disconnects), `src/Patches/VersusPatches.cs` (round-end hook, match
   setup), `src/Patches/VersusUI.cs` (overlays, round flow), `src/Patches/VersusMenu.cs` (join screen).
   Rules: `sheets/modes.json` -> `versus`.
+- Online (`src/Online/`): `Links.cs` (direct-IP UDP with a reliable channel; Steam lobby + SteamNetworkingMessages),
+  `Net.cs` (session, handshake/version check, pings/timeouts, the client's devices as remote pads, Steam lobby calls),
+  `MatchSync.cs` (host snapshots + timed events; the client's mirror and the record/hold-back hooks), `OnlineFlow.cs`
+  (join screen, round loads, between-round screens, notices, session end). Config: `[Online]` in the BepInEx config.
+  Dev harness: `src/Debug/DevOnline.cs` (`-ovt-host` / `-ovt-join` / `-ovt-auto` ..., DevKeys on).
