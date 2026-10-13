@@ -60,6 +60,7 @@ namespace HangtimeOvertime.Patches
                 var ai = rightHitter.GetComponent<SpikerInput>();
                 if (ai != null) ai.enabled = false;
                 if (ball != null) ball.opponent = rightHitter;
+                AsHuman(rightHitter, leftHitter);
             }
             if (setup.HumanSetter(1) && rightSetter != null)
             {
@@ -68,6 +69,7 @@ namespace HangtimeOvertime.Patches
                 rightSetter.setter = false;
                 var mate = leftPartner != null && setup.Format == "2v2" ? leftPartner : leftHitter;
                 if (mate != null) rightSetter.moveSpeed = mate.moveSpeed;
+                AsHuman(rightSetter, leftHitter);
             }
             ServeTurns.Reset(rightHitter, setup.HumanSetter(1) ? rightSetter : null);
 
@@ -84,6 +86,55 @@ namespace HangtimeOvertime.Patches
                                string.Join(", ", driver.Players.Select(kv => $"P{kv.Key.Number} {kv.Value?.name} ({kv.Key.Input?.Label})")) +
                                $"; {team.name} on the right; AI setters {(setup.HumanSetter(0) || setup.Format == "2v2" ? "-" : leftSetter?.name)}/{(setup.HumanSetter(1) ? "-" : rightSetter?.name)}" +
                                $"; perks {VersusState.PerksOf(0).Count}/{VersusState.RightPerks.Count}");
+        }
+
+        // A person playing a right-side player gets player 1's controls and rules: spikes aimed by movement (the team's
+        // spiker aims by position, made for the AI) and player 1's serve line (the AI teams serve from 3.5 closer).
+        private static readonly AccessTools.FieldRef<PlayerController, bool> velocityAimOf = AccessTools.FieldRefAccess<PlayerController, bool>("velocityAim");
+        private static void AsHuman(PlayerController pc, PlayerController p1)
+        {
+            velocityAimOf(pc) = true;
+            if (p1 != null) pc.COURT_SIZE = p1.COURT_SIZE;
+        }
+
+        // The game's movement aim was only written for the left side: on the right, moving toward the net gave the short
+        // spike. Mirrored for right-side players in Versus (the player's speed is read the other way round for this hit).
+        [HarmonyPatch(typeof(BallMovement), "Spike")]
+        private static class MirroredAim
+        {
+            [HarmonyPrefix]
+            private static void Prefix(float direction, Rigidbody2D playerRb, bool velocityAim, out bool __state)
+            {
+                __state = VersusState.Active && velocityAim && direction > 0f && playerRb != null;
+                if (__state) playerRb.linearVelocity = new Vector2(-playerRb.linearVelocityX, playerRb.linearVelocityY);
+            }
+
+            [HarmonyPostfix]
+            private static void Postfix(Rigidbody2D playerRb, bool __state)
+            {
+                if (__state) playerRb.linearVelocity = new Vector2(-playerRb.linearVelocityX, playerRb.linearVelocityY);
+            }
+        }
+
+        // The game stops the left side from block-jumping for 0.7 s after the other side's serve; the right side (always
+        // the AI in the game) had no such rule, so player 2 could block every serve at the net. Same rule for the right in
+        // Versus: in that window a jump is an ordinary jump.
+        [HarmonyPatch(typeof(PlayerController), "UpInputPressed")]
+        private static class NoServeBlock
+        {
+            [HarmonyPrefix]
+            private static void Prefix(PlayerController __instance, out bool __state)
+            {
+                __state = false;
+                if (!VersusState.Active || __instance.attackDirection != -1f || !__instance.getGrounded() || __instance.IsServing() || BallMovement.freeBall) return;
+                var ball = GameManager.Instance != null && GameManager.Instance.ball != null ? GameManager.Instance.ball.GetComponent<BallMovement>() : null;
+                if (ball == null || ball.transform.position.x >= 0f || ball.GetServeTimer() < -0.7f) return;
+                BallMovement.freeBall = true;                 // the game's block test reads "not a free ball": skip it for this press
+                __state = true;
+            }
+
+            [HarmonyPostfix]
+            private static void Postfix(bool __state) { if (__state) BallMovement.freeBall = false; }
         }
 
         // player 1's side can wear a new team's colours (player 1's own look still goes on top)

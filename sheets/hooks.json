@@ -711,6 +711,46 @@
       "purpose": "Block values under 73 (stat cards, debuffs) no longer sink the block box under the feet, which left the player stuck in the block pose",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "versus_mirrored_aim",
+      "target_type": "BallMovement",
+      "target_method": "Spike",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: right-side players' movement aim mirrored (toward the net = long spike, like player 1)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_mirrored_aim_post",
+      "target_type": "BallMovement",
+      "target_method": "Spike",
+      "kind": "postfix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: restores the player's speed after the mirrored aim",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_serve_block",
+      "target_type": "PlayerController",
+      "target_method": "UpInputPressed",
+      "kind": "prefix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: the right side can't block-jump in the 0.7 s after a serve (the left side's rule in the game)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "versus_no_serve_block_post",
+      "target_type": "PlayerController",
+      "target_method": "UpInputPressed",
+      "kind": "postfix",
+      "patch_class": "VersusPatches",
+      "purpose": "Versus only: restores the free-ball flag after that press",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

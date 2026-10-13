@@ -650,3 +650,16 @@ Modes:
   0 errors in every copy's log; saves unchanged.
 - **Not testable alone**: joining a Steam lobby from another account (needs a second PC/account).
 
+
+### Step 29 — fix: right-side spike aim and serve blocking (player reports, v0.3.1)
+- **Spike aim on the right was backwards**: player 1 aims spikes by movement (the game's `velocityAim`), but the right
+  team's spiker was made for the AI and aims by position, and the game's movement aim was never mirrored for the right.
+  Now a person on the right (the spiker, and the setter in 1v2/2v2) gets movement aim, mirrored (BallMovement.Spike
+  prefix/postfix flips the player's speed for that one hit): toward the net = long, away = short, like player 1.
+  Checked in game (spike log): right still 120 deg / depth 1.73 = the mirror of the left's 240 deg; right toward the net
+  depth 4.0 (long), away 1.4 (short); left away 1.3-1.6.
+- **Player 2 could block every serve**: the game stops the left side from block-jumping for 0.7 s after the other side's
+  serve but has no such rule for the right (always the AI there). Same rule for the right in Versus (UpInputPressed
+  prefix: in that window the press is an ordinary jump). Checked with Ctrl+F10 (player 2 jumps right after each serve):
+  "blocking False" every time; blocks later in a rally are unchanged.
+- **Same serve line**: a person on the right now serves from player 1's line (COURT_SIZE 33.5; the AI teams' is 30).

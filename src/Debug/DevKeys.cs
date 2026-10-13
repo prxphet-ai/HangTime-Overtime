@@ -11,7 +11,7 @@ namespace HangtimeOvertime.Debugging
     //  F1 fire the lab perk's effects now (Shift: as the opponent)   F2 lab: next perk (Shift: previous), given alone from the next match
     //  F3 force the next opponent (cycles new teams, then random)   F4 player 1 serves now   F5 rally point to player (Shift: opponent) via the game's own scoring
     //  F6 win this match   F7 lose this match   F8 next win leads to the final match   F9 log state (Ctrl+F9: force player 1 block 66/58/50/40/30, auto-blocking)
-    //  F10 give every Overtime perk   F11 perk screens show only Overtime perks   F12 next infinite match one tier harder
+    //  F10 give every Overtime perk (Ctrl+F10: player 2 jumps right after every serve, logs if it blocked)   F11 perk screens show only Overtime perks   F12 next infinite match one tier harder
     internal class DevKeys : MonoBehaviour
     {
         public static bool OnlyOvertimeCards;
@@ -42,6 +42,24 @@ namespace HangtimeOvertime.Debugging
                 var box = blockBoxOf(p1);
                 Plugin.Log.LogInfo($"[block] t+{Time.time - blockedAt:F1} y{p1.transform.position.y:F2} grounded {p1.getGrounded()} blocking {blockingOf(p1)} " +
                                    $"box {(box.enabled ? "on" : "off")} size {box.size.y:F2} offset {box.offset.y:F2} bottom {box.bounds.min.y:F2} feet {jumpCheckOf(p1).position.y:F2} vy {p1.GetComponent<Rigidbody2D>().linearVelocityY:F1}");
+            }
+        }
+
+        private bool serveProbe;
+        private float serveJumpAt = -10f;
+
+        // development (Ctrl+F10): the right spiker jumps as soon as the other side has served; logs whether it blocked
+        private void ServeProbe()
+        {
+            var ball = FindFirstObjectByType<BallMovement>();
+            var p2 = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).FirstOrDefault(p => p.attackDirection == -1f && !p.setter);
+            if (ball == null || p2 == null) return;
+            float st = ball.GetServeTimer();
+            if (ball.transform.position.x < 0f && st < 0f && st > -0.6f && p2.getGrounded() && Time.time - serveJumpAt > 1.5f)
+            {
+                serveJumpAt = Time.time;
+                p2.UpInputPressed();
+                Plugin.Log.LogInfo($"[serveprobe] P2 jumped {-st:F2}s after the serve: blocking {blockingOf(p2)}");
             }
         }
 
@@ -117,6 +135,8 @@ namespace HangtimeOvertime.Debugging
                 Plugin.Log.LogInfo($"Dev: player 1 block forced to {BlockTests[blockTest]} (0 = normal); blocking every time the ball crosses");
             }
             if (blockTest > 0 && inMatch) BlockProbe();
+            if (kb.f10Key.wasPressedThisFrame && kb.ctrlKey.isPressed) { serveProbe = !serveProbe; Plugin.Log.LogInfo($"Dev: serve-block probe {(serveProbe ? "on" : "off")}"); }
+            if (serveProbe && inMatch) ServeProbe();
             if (kb.f9Key.wasPressedThisFrame && !kb.ctrlKey.isPressed)
             {
                 var s0 = Engine.Engine.Sides[0];

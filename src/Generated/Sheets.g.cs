@@ -1048,6 +1048,10 @@ namespace HangtimeOvertime.Generated
             new HookDef("online_no_local_touch", "BallMovement", "OnCollisionEnter2D", "prefix", "MatchSync"),
             new HookDef("block_box_floor", "PlayerController", "MakeBlock", "prefix", "ControllerPatches"),
             new HookDef("block_box_floor_post", "PlayerController", "MakeBlock", "postfix", "ControllerPatches"),
+            new HookDef("versus_mirrored_aim", "BallMovement", "Spike", "prefix", "VersusPatches"),
+            new HookDef("versus_mirrored_aim_post", "BallMovement", "Spike", "postfix", "VersusPatches"),
+            new HookDef("versus_no_serve_block", "PlayerController", "UpInputPressed", "prefix", "VersusPatches"),
+            new HookDef("versus_no_serve_block_post", "PlayerController", "UpInputPressed", "postfix", "VersusPatches"),
         };
     }
 
