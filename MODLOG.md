@@ -113,3 +113,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Lobby rules: `sheets/rules.json` -> `Generated.RulePresets`; `src/Core/LobbyRules.cs` (RuleSet, presets, custom slots,
   wire format, starting perks), `src/Patches/RulesPanel.cs` (+ BanPanel); `Msg.Menu` and `Msg.Load` carry the rules
   (protocol 6). Dev: `-ovt-rules <preset id>` (host).
+- Replays: `src/Online/Replays.cs` (recorder, files, ReplayPlayer, ReplayHud), `src/Patches/ReplayMenu.cs`. `MatchSync.Emit`
+  sends to friends and / or the replay; `Mirror.ReplayMode` + `ReplayTime`; `NetReader.Raw`. Runs start `HostSync` at
+  kick-off when recording. Config `[Replays] Record`.

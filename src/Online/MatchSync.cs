@@ -17,8 +17,17 @@ namespace HangtimeOvertime.Online
     {
         public static int LoadSeq;                     // which round load the stream belongs to
         public static bool InMatch;                    // a Versus round scene is running (set up)
-        public static bool Recording => Net.IsHost && Net.HasFriends && InMatch && VersusState.Active;
-        public static bool Mirroring => Net.IsClient && InMatch && Mirror.Current != null;
+        // the stream is written: for friends' PCs (online host) and / or into a replay (any match this PC runs)
+        private static bool NetRecording => Net.IsHost && Net.HasFriends && InMatch && VersusState.Active;
+        public static bool Recording => NetRecording || (Replays.Capturing && InMatch && HostSync.Current != null && !Net.IsClient);
+        public static bool Mirroring => (Net.IsClient || Replays.Playing) && InMatch && Mirror.Current != null;
+
+        // a stream message: to friends' PCs, and into the replay being recorded
+        internal static void Emit(NetWriter w, bool reliable)
+        {
+            if (NetRecording) Net.Send(w, reliable);
+            if (Replays.Capturing) Replays.Add(w.Bytes());
+        }
         internal static bool Replay;                   // the client is playing a host event: let it through
 
         // The same four players on both machines: left hitter, the left's second player (bot setter or co-op partner),
@@ -53,7 +62,7 @@ namespace HangtimeOvertime.Online
         internal static void Flush()
         {
             if (batch == null) return;
-            Net.Send(batch);
+            Emit(batch, true);
             batch = null;
         }
 
@@ -83,10 +92,14 @@ namespace HangtimeOvertime.Online
             // the game registers the right side's server in the right spiker AI's first update, which the mirror switches off
             if (ball != null && players[2] != null) ball.opponent = players[2];
             Patches.VersusPatches.ServeTurns.Reset(players[2], VersusState.Setup.HumanSetter(1) ? players[3] : null);
-            if (OnlineFlow.HostLook != null && players[0] != null) Look.Apply(Look.RigOf(players[0]), OnlineFlow.HostLook);
-            var m = new GameObject("Overtime Online Mirror").AddComponent<Mirror>();
+            var look = OnlineFlow.HostLook;
+            if (Replays.Playing) { try { look = JsonUtility.FromJson<PlayerLook>(Replays.Current.Look); } catch { look = null; } }
+            if (look != null && players[0] != null) Look.Apply(Look.RigOf(players[0]), look);
+            var m = new GameObject(Replays.Playing ? "Overtime Replay Mirror" : "Overtime Online Mirror").AddComponent<Mirror>();
             m.Init(players, ball);
             InMatch = true;
+            if (Replays.Playing) { m.gameObject.AddComponent<ReplayPlayer>().Init(m); return; }
+            Replays.Begin(Replays.VersusHeader(JsonUtility.ToJson(OnlineFlow.HostLook)));   // a friend's PC keeps the host's stream too
             Net.Send(new NetWriter(Msg.Ready).I(LoadSeq));
             Plugin.Log.LogInfo($"Online: mirroring round {VersusState.Round} (load {LoadSeq}): " + string.Join(", ", players.Select(p => p != null ? p.name : "-")));
         }
@@ -128,7 +141,7 @@ namespace HangtimeOvertime.Online
                 }
         }
 
-        private void OnDestroy() { if (Current == this) Current = null; MatchSync.InMatch = false; }
+        private void OnDestroy() { if (Current == this) Current = null; MatchSync.InMatch = false; MatchSync.Flush(); Replays.End(); }
 
         private float lastDiag;
 
@@ -161,7 +174,7 @@ namespace HangtimeOvertime.Online
                 }
                 w.V(p.transform.position).V(rb.linearVelocity).I(hash).F(t).B(servingOf(p));
             }
-            Net.Send(w, false);
+            MatchSync.Emit(w, false);
         }
 
         private void LateUpdate()
@@ -207,6 +220,9 @@ namespace HangtimeOvertime.Online
         private float offset;                                       // host time - local time (newest-arriving estimate)
         private float scoreMismatchSince = -1f;
         private float renderTime;
+        public bool ReplayMode;                                     // a replay: every snapshot kept, the clock from ReplayPlayer
+        public float ReplayTime;
+        public void ClearEvents() => events.Clear();
 
         public void Init(PlayerController[] p, BallMovement b)
         {
@@ -224,7 +240,7 @@ namespace HangtimeOvertime.Online
                 }
         }
 
-        private void OnDestroy() { if (Current == this) Current = null; MatchSync.InMatch = false; }
+        private void OnDestroy() { if (Current == this) Current = null; MatchSync.InMatch = false; if (!ReplayMode) Replays.End(); }
 
         // ---- receiving
 
@@ -239,6 +255,7 @@ namespace HangtimeOvertime.Online
                 if (!r.B()) continue;
                 s.Players[i] = new PlayerSnap { On = true, Pos = r.V(), Vel = r.V(), Hash = r.I(), T = r.F(), Serving = r.B() };
             }
+            if (ReplayMode) { if (snaps.Count == 0 || t > snaps[snaps.Count - 1].T) snaps.Add(s); haveClock = true; return; }
             // where the host's clock is, from recent arrivals: a high percentile, so one unusually quick packet can't make
             // the picture run ahead of the snapshots it has (it would hold still until the next one: a freeze)
             recent.Add(t - Time.unscaledTime);
@@ -288,7 +305,7 @@ namespace HangtimeOvertime.Online
         private void Update()
         {
             if (!haveClock) return;
-            renderTime = Time.unscaledTime + offset - Delay;
+            renderTime = ReplayMode ? ReplayTime : Time.unscaledTime + offset - Delay;
             while (events.Count > 0 && events.Peek().t <= renderTime)
             {
                 var (_, r, type) = events.Dequeue();

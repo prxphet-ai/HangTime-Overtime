@@ -23,8 +23,8 @@ namespace HangtimeOvertime.Online
             Net.On(Msg.Menu, r => VersusMenu.MirrorState(r));
             Net.On(Msg.Load, OnLoad);
             Net.On(Msg.Ready, (r, p) => { p.ReadySeq = r.I(); Plugin.Log.LogInfo($"Online: {p.Name} ready for load {p.ReadySeq}"); });
-            Net.On(Msg.Snap, r => { if (r.I() == MatchSync.LoadSeq) Mirror.Current?.OnSnap(r); });
-            Net.On(Msg.Events, r => { if (r.I() == MatchSync.LoadSeq) Mirror.Current?.OnEvents(r); });
+            Net.On(Msg.Snap, r => { if (r.I() == MatchSync.LoadSeq) { Replays.Incoming(r); Mirror.Current?.OnSnap(r); } });
+            Net.On(Msg.Events, r => { if (r.I() == MatchSync.LoadSeq) { Replays.Incoming(r); Mirror.Current?.OnEvents(r); } });
             Net.On(Msg.Screen, r =>
             {
                 if (!Net.IsClient) return;

@@ -25,6 +25,7 @@ namespace HangtimeOvertime.Patches
             Buttons.Add(("DAILY RUN", () => DailyMenu.Open()));
             Buttons.Add(("DRAFT", () => DraftMenu.Open()));
             Buttons.Add(("COLLECTION", () => CollectionMenu.Open()));
+            Buttons.Add(("REPLAYS", () => ReplayMenu.Open()));
             Buttons.Add(("CONTROLS", () => ControlsMenu.Open()));
             Buttons.Add(("REPORT BUG", () => BugReport.Open()));
         }
@@ -46,7 +47,7 @@ namespace HangtimeOvertime.Patches
         }
 
         // any full-screen panel of the mod
-        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
+        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || ReplayMenu.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
         public static int PanelCount;                     // other menus register themselves while open
 
         private bool barFocus;                           // a gamepad is driving the bar (SELECT), the title menu is held
@@ -116,6 +117,8 @@ namespace HangtimeOvertime.Patches
                 () => Plugin.SkipTutorial.Value, v => { Plugin.SkipTutorial.Value = v; if (v) TutorialManager.onTutorial = false; }));
             Toggles.Add(("CHECK FOR UPDATES", "ON LAUNCH, ASK GITHUB IF A NEWER OVERTIME IS OUT (NOTHING ABOUT YOU IS SENT)",
                 () => Plugin.CheckForUpdates.Value, v => { Plugin.CheckForUpdates.Value = v; if (!v) { TitleBar.Notice = null; } else UpdateCheck.Start(); }));
+            Toggles.Add(("RECORD REPLAYS", "KEEP A REPLAY OF EVERY MATCH AND VERSUS ROUND (THE LAST 10; REPLAYS > SAVE KEEPS ONE)",
+                () => Plugin.RecordReplays.Value, v => Plugin.RecordReplays.Value = v));
             Toggles.Add(("CHAT BUBBLES", "IN MATCHES, CHAT AND EMOTES SHOW ABOVE THE PLAYER (OFF: ONLY THE CHAT LOG IN THE CORNER)",
                 () => Plugin.ChatBubbles.Value, v => Plugin.ChatBubbles.Value = v));
             Toggles.Add(("MUTE OTHERS' CHAT", "ONLINE: HIDE OTHER PLAYERS' CHAT LINES AND EMOTES",

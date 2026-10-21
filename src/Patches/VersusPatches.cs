@@ -15,7 +15,7 @@ namespace HangtimeOvertime.Patches
         public static void Init() => SceneManager.sceneLoaded += (scene, _) =>
         {
             if (scene.name != "Game" || TitleController.onTitle || !VersusState.Active) return;
-            GameManager.gameNumber = 1;                                   // a regular gym, no difficulty hitbox changes
+            GameManager.gameNumber = Online.Replays.Playing ? Online.Replays.Current.GameNumber : 1;   // a regular gym (a replay: its own)
             TeamRoster.ResumeKey = VersusState.Setup.Team[1];             // player 2's team spawns on the right
         };
 
@@ -23,7 +23,7 @@ namespace HangtimeOvertime.Patches
         public static void SetupMatch(GameManager gm, GameObject team)
         {
             var setup = VersusState.Setup;
-            if (Online.Net.IsClient) { DressLeft(setup); Online.MatchSync.SetupMirror(gm, team); return; }   // an online client mirrors the host
+            if (Online.Net.IsClient || Online.Replays.Playing) { DressLeft(setup); Online.MatchSync.SetupMirror(gm, team); return; }   // an online client mirrors the host; a replay mirrors its file
             gm.matchLength = LobbyRules.Current.Points;
 
             // equal footing: the right team uses the player's own stat tables, from level 0, without built-in abilities;
@@ -77,6 +77,8 @@ namespace HangtimeOvertime.Patches
 
             var driver = new GameObject("Overtime Versus Driver").AddComponent<VersusDriver>();
             if (Online.Net.IsHost && Online.Net.HasFriends) { Online.MatchSync.SetupHost(); driver.WaitForPeer(); }
+            else if (Plugin.RecordReplays.Value) Online.MatchSync.SetupHost();                // the stream, for the replay
+            Online.Replays.Begin(Online.Replays.VersusHeader(JsonUtility.ToJson(Look.Current)));
             foreach (var slot in setup.AllHumans)
             {
                 var pc = slot.Side == 0 ? (slot.Role == "partner" ? leftPartner : leftHitter) : (slot.Role == "setter" ? rightSetter : rightHitter);
@@ -201,7 +203,7 @@ namespace HangtimeOvertime.Patches
             {
                 if (!VersusState.Active) return true;
                 // an online client's round ends when the host says so (its screen arrives from the host)
-                if (Online.Net.IsClient) { __instance.done = true; __result = Nothing(); return false; }
+                if (Online.Net.IsClient || Online.Replays.Playing) { __instance.done = true; __result = Nothing(); return false; }
                 __result = __instance.done ? Nothing() : VersusFlow.RoundOver(__instance, nextScene == "Lose" ? 1 : 0);
                 return false;
             }

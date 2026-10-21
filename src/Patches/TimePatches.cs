@@ -6,6 +6,8 @@ namespace HangtimeOvertime.Patches
 {
     internal static class TimePatches
     {
+        private static float ReplayHudSpeed() => Online.ReplayHud.SpeedNow;
+
         // CameraController.Update sets timeScale to 1 every frame unless paused or in a hit
         // freeze-frame; perks only change that normal-play value (game_speed, slow motion).
         [HarmonyPatch(typeof(CameraController), "Update")]
@@ -14,6 +16,7 @@ namespace HangtimeOvertime.Patches
             [HarmonyPostfix]
             private static void Postfix()
             {
+                if (Online.Replays.Playing) { Time.timeScale = ReplayHudSpeed(); return; }      // the replay viewer's speed / pause
                 if (Time.timeScale != 1f || PauseController.paused || GameManager.gameOver
                     || TitleController.onTitle || TutorialManager.onTutorial) return;
                 float t = Engine.Engine.GameSpeed;

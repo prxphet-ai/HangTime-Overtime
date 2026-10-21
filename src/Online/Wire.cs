@@ -49,7 +49,8 @@ namespace HangtimeOvertime.Online
     {
         private readonly BinaryReader r;
         public readonly Msg Id;
-        public NetReader(byte[] d) { r = new BinaryReader(new MemoryStream(d), Encoding.UTF8); Id = (Msg)r.ReadByte(); }
+        public readonly byte[] Raw;                   // the whole message (replays keep it as it came)
+        public NetReader(byte[] d) { Raw = d; r = new BinaryReader(new MemoryStream(d), Encoding.UTF8); Id = (Msg)r.ReadByte(); }
         public bool B() => r.ReadBoolean();
         public int U8() => r.ReadByte();
         public int I() => r.ReadInt32();

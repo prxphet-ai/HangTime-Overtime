@@ -57,7 +57,7 @@ namespace HangtimeOvertime.Patches
         public static void Tick()
         {
             if (current != null) return;
-            if (TitleController.onTitle || TutorialManager.onTutorial || GameManager.Instance == null || Camera.main == null) return;
+            if (TitleController.onTitle || TutorialManager.onTutorial || GameManager.Instance == null || Camera.main == null || Online.Replays.Playing) return;
             if (SceneManager.GetActiveScene().name != "Game") return;
             var go = new GameObject("Overtime Chat");
             current = go.AddComponent<ChatHud>();
@@ -453,7 +453,7 @@ namespace HangtimeOvertime.Patches
         private static class HoldPause
         {
             [HarmonyPrefix]
-            private static bool Prefix() => !Busy && !JustClosed && !OnScreenKeyboard.IsOpen;
+            private static bool Prefix() => !Busy && !JustClosed && !OnScreenKeyboard.IsOpen && !Online.Replays.Playing;
         }
     }
 }

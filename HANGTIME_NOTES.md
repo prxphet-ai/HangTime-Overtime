@@ -964,7 +964,32 @@ Modes:
   chaos`, dev flag): the client logged the host's CHAOS rules, both sides started with 3 perks. The friend's read-only
   view wasn't clicked (two copies of the game on one PC can't both take the mouse). 0 errors.
 
+### Feature 15 — replays (done)
+- **Determinism, checked first**: the game isn't deterministic. Rallies run on Unity physics (`Rigidbody2D`, frame
+  timing), the AI and the perks roll `Random` constantly, and the camera / time-scale tricks change the step. A replay
+  of inputs + seed would drift apart within seconds. **Chosen: the snapshot fallback**, which already existed: the online
+  host's match stream (50 snapshots a second of the ball and the four players with their animation states, plus timed
+  events for sounds, camera, ball effects, perk visuals, voices, lines, jumps and points).
+- **Recording** (`src/Online/Replays.cs`): every Classic / Co-op / Infinite / Loop / daily / draft match and every
+  Versus round. Local games start the same recorder the online host uses; an online friend keeps the stream as it
+  arrives. The header carries teams, look, gym, points, title, date and final score. On the scene's end the replay goes
+  to `HangtimeOvertime_replays/recent-*.ovr` (gzip, about 100-130 KB a round); the last 10 are kept, shorter than 3 s
+  dropped. SETTINGS > RECORD REPLAYS (`[Replays] Record`).
+- **REPLAYS** (title bar, `src/Patches/ReplayMenu.cs`): recent and saved replays with title, date, length and score;
+  WATCH, SAVE (keeps a recent one for good: `saved-*.ovr`), DELETE (saved ones).
+- **Viewer**: the replay's scene loads like a Versus round that only mirrors (the friend's-PC mirror, on a replay clock).
+  Controls: play / pause (Space / A), speed 0.25x-4x ([ ] / LB RB), seek 5 s (arrows / D-pad) or click the time bar,
+  camera GAME / WHOLE COURT / FOLLOW BALL (C / Y), restart (R / Select), exit (Esc / B). Seeking sets the score from the
+  snapshot there and skips the events in between.
+- **Tested**: Classic match recorded (43 s, 99 KB), watched (players moving as played; seek to the end -> final score;
+  4x; both camera modes; restart); local Versus round with rallies recorded and watched (score following the points,
+  the opponent's line replayed); SAVE; Esc back to the title with the saved runs intact. Online: host and friend both kept
+  the round (2207 messages each). 0 errors. Test replays deleted afterwards.
+- **Limits**: a replay shows what was on the host's screen; perk visuals that aren't in the stream (some screen-space
+  effects) don't replay. Playback isn't offered while online (leaving a replay ends the Versus state, which would end a
+  session).
+
 ## Session status (2026-10-21)
-- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-14.
-- Not started: 15 replays, 16 party tournament, 17 spectators.
+- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-15.
+- Not started: 16 party tournament, 17 spectators.
 - Open questions: co-op now gets two picks per screen with personal perks for one character each; is co-op still the right difficulty? (the simulator can't model two humans); should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).

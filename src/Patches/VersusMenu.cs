@@ -486,6 +486,21 @@ namespace HangtimeOvertime.Patches
             LoadMatch();
         }
 
+        // a replay: its scene loads like a Versus round (Replays.Watch has set the match up)
+        public static void StartReplayScene(int players)
+        {
+            var tb = classicRef;
+            if (tb == null) return;
+            var gm = GameManager.Instance;
+            gm.numberOfPlayers = players;
+            RunState.Daily = null; RunState.Draft = null;
+            var title = titleOf(tb);
+            if (title != null) tb.StartCoroutine(title.StartGame());
+            gm.ResetGame();
+            PauseController.paused = false;
+            tb.StartCoroutine(gm.LoadGame());
+        }
+
         private void LoadMatch()
         {
             var gm = GameManager.Instance;

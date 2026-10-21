@@ -103,6 +103,11 @@ namespace HangtimeOvertime.Patches
                 if (RunState.Draft != null) Drafting.GiveOpponent(team, slot);
                 CollectionPatches.MatchStarted(__instance);
                 if (RunState.Mode == RunMode.Normal || RunState.Mode == RunMode.Loop) Bracket.MatchStarted(slot, __instance.opponentTeam?.teamName);
+                if (RunState.Mode != RunMode.Versus && slot >= 1 && Plugin.RecordReplays.Value)
+                {
+                    Online.MatchSync.SetupHost();                                                 // the match stream, for its replay
+                    Online.Replays.Begin(Online.Replays.RunHeader(__instance));
+                }
                 if (Plugin.DumpScenes.Value) { Debugging.Dumps.Opponent(team); Debugging.Dumps.PlayerParts(); }
             }
         }
