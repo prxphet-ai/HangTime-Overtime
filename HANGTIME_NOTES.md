@@ -807,3 +807,28 @@ Modes:
   Hinotori Phoenix, perk screen found Afterburner / Radiant Guard, picked Afterburner. The screen showed 8 / 285 found,
   details, filters (SHOW: FOUND -> 3 cards), the stats page; mouse, keyboard and pad (LB / RB tabs, B back). Saves restored
   afterwards. 0 errors.
+
+### Feature 8 — bracket screen between matches (done for Classic / Co-op / Loop; tournaments reuse it)
+- **When**: Classic, Co-op and Loop open the bracket at the start of every upgrade screen (the screen is paused under it,
+  its buttons and START-skip wait), and Classic shows it as **CHAMPIONS!** on the win screen. CONTINUE (A / Enter /
+  Space / Esc / click) closes it.
+- **What** (`src/Patches/BracketPanel.cs`, model `src/Core/Bracket.cs`): one column per round with the game's own match
+  titles (QUALIFIER ... FINALS, remembered from its title card), YOU against each opponent; the winner gold, the loser
+  struck through; BOSS / COMBO tags; lines between rounds light up as they're won. The YOU marker hops from the match just
+  won to the next one, which then pulses. Classic's upcoming teams come from the game's own line-up (`TournamentLineUps`)
+  and its fixed bosses; the combo match is drawn at kick-off, so it shows ??? until then (Loop draws every slot: ???).
+- **Generic**: `BracketModel` is rounds of matches (A, B, winner, note) in plain strings and ints; when a round has half
+  the matches of the one before, it's drawn as a knockout tree with elbow lines. Features 10, 11 and 16 (tournaments) pass
+  their own model, and send it to other PCs as is. **Online sync** therefore lands with those tournaments: Classic and
+  Co-op have no online version.
+- **Panel kit fix found here**: panels were laid out in world units at whatever size the camera had, and copied the
+  scene's first text object outside the title (the upgrade screen's animated, tilted dialogue). Every panel now scales
+  itself to a fixed 36-unit layout height (the title's settled view; the camera starts zoomed in at 32) and keeps the
+  title label's font, material and size; copied labels lose extra components and rotation. Title panels look as before;
+  upgrade (view 32) and win (view 17) screens now match them.
+- **Bug found here**: closing the champions bracket with A also pressed the win screen's LOOP 2 button, which appears after
+  the bracket opens. While the bracket is open, `ButtonGroup.Select` and `ButtonController.Press` do nothing.
+- **Tested**: continued a Classic run, F6 -> bracket "NEXT: FIRST ROUND · VS RENSHO", Namasito struck through, marker hop,
+  A closed it and the upgrade screen carried on (stats, cards); F8 + F6 -> "NEXT: FINALS · VS SHIROGANE"; final won ->
+  CHAMPIONS on the win screen, A closed it and the win screen stayed. Title panels (collection, versus) unchanged. Co-op
+  takes the same path (RunMode.Normal) but wasn't run. Saves restored. 0 errors.

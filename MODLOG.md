@@ -92,3 +92,8 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Collection: `src/Core/Collection.cs` (HangtimeOvertime_collection.json: keys team:/perk:/vperk:/card:/vcard: with seen,
   picked, beaten; catalog of the game's own card titles), `src/Patches/CollectionPatches.cs` (TechniqueButton / UpgradeButton
   Start + Click, EndGame), `src/Patches/CollectionMenu.cs`. `Scaling.VanillaTechniques` is generated from scaling.json.
+- Bracket: `src/Core/Bracket.cs` (model + Classic from `GameManager.tournamentLineUps` / midBoss1 / midBoss2 / finalBoss;
+  combo team = random at kick-off), `src/Patches/BracketPanel.cs` (UpgradeManager.Start, WinManager.Start). Game facts:
+  `UpgradeManager.LoadGame` does `gameNumber++`; `TitleCard.MatchTitles[gameNumber]` are the round names.
+- Panel kit (`OvertimePanel.InitKit`): fixed layout height 36 (panel scaled by view/36), the title label's font kept for
+  other scenes. Upgrade scene camera view 32, win scene 17.

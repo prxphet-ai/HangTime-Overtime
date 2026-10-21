@@ -19,12 +19,21 @@ namespace HangtimeOvertime.Patches
         protected float W, H;
         protected Vector3 textScale = new Vector3(0.02f, 0.02f, 1f);
         private float baseOrtho;
+        // the title menu's label (font, material, size, scale for its view), kept for scenes without one: there the kit
+        // would copy whatever text it finds (the upgrade screen's animated dialogue) at that scene's camera size
+        private static TMP_FontAsset kitFont;
+        private static Material kitMaterial;
+        private static float kitFontSize;
+        private const float LayoutH = 36f;               // the title screen's settled view height: every panel is laid out for it
+        private static Vector3 kitScale;
+        private float fontFix = 1f;
+        private float unit = 1f;                         // view height / LayoutH: the panel scales by it, so layouts fit any camera
 
         // the camera zooms (match point, kills): the panel keeps filling the same part of the screen
         protected virtual void LateUpdate()
         {
             var cam = Camera.main;
-            if (cam != null && baseOrtho > 0f) transform.localScale = Vector3.one * (cam.orthographicSize / baseOrtho);
+            if (cam != null && baseOrtho > 0f) transform.localScale = Vector3.one * unit * (cam.orthographicSize / baseOrtho);
         }
 
         // Lays the panel over the camera's view (it follows camera shake and zoom).
@@ -45,9 +54,22 @@ namespace HangtimeOvertime.Patches
             order = orderBase;
             H = cam.orthographicSize * 2f; W = H * cam.aspect;
             baseOrtho = cam.orthographicSize;
+            if (Plugin.DevKeys.Value) Plugin.Log.LogInfo($"[panel] {GetType().Name}: view {W:F1} x {H:F1}, label {fontSource.name} size {fontSource.fontSize:F1} scale {textScale.x:F4}");
+            if (kitFont == null && fontSource.GetComponentInParent<TitleButton>() != null)
+            {
+                kitFont = fontSource.font; kitMaterial = fontSource.fontSharedMaterial; kitFontSize = fontSource.fontSize; kitScale = textScale;
+            }
+            if (kitFont != null)
+            {
+                textScale = kitScale;
+                fontFix = kitFontSize / Mathf.Max(0.01f, fontSource.fontSize);
+            }
+            unit = H / LayoutH;
+            H = LayoutH; W = LayoutH * cam.aspect;
             transform.SetParent(cam.transform, false);
             transform.localPosition = new Vector3(0f, 0f, 1f);
             transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one * unit;
             return true;
         }
 
@@ -70,8 +92,11 @@ namespace HangtimeOvertime.Patches
             var t = Instantiate(fontSource.gameObject, transform).GetComponent<TextMeshPro>();
             t.gameObject.SetActive(true);
             t.name = "Text";
+            foreach (var mb in t.GetComponents<MonoBehaviour>()) if (!(mb is TMP_Text)) DestroyImmediate(mb);   // typewriters, wobbles
+            if (kitFont != null) { t.font = kitFont; t.fontSharedMaterial = kitMaterial; }
             var ls = textScale;
             t.transform.localScale = ls;
+            t.transform.localRotation = Quaternion.identity;          // a tilted source label stays straight here
             t.transform.localPosition = new Vector3(at.x, at.y, -0.01f * o);
             t.text = s;
             t.alignment = align;
@@ -80,7 +105,7 @@ namespace HangtimeOvertime.Patches
             t.textWrappingMode = wrap ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
             t.overflowMode = TextOverflowModes.Overflow;
             t.enableAutoSizing = false;
-            t.fontSize = fontSource.fontSize * size;
+            t.fontSize = fontSource.fontSize * size * fontFix;
             t.rectTransform.sizeDelta = new Vector2(width / ls.x, height / ls.y);
             t.color = color;
             var r = t.GetComponent<Renderer>();

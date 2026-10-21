@@ -100,6 +100,7 @@ namespace HangtimeOvertime.Patches
                 Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} round={OpponentScaling.Round} " +
                                    $"infiniteMatch={RunState.InfiniteMatch} loop={RunState.Loop} vs {__instance.opponentTeam?.teamName}");
                 CollectionPatches.MatchStarted(__instance);
+                if (RunState.Mode == RunMode.Normal || RunState.Mode == RunMode.Loop) Bracket.MatchStarted(slot, __instance.opponentTeam?.teamName);
                 if (Plugin.DumpScenes.Value) { Debugging.Dumps.Opponent(team); Debugging.Dumps.PlayerParts(); }
             }
         }
@@ -157,6 +158,7 @@ namespace HangtimeOvertime.Patches
             [HarmonyPrefix]
             private static bool Prefix(TitleCard __instance)
             {
+                Bracket.RememberTitles(__instance.MatchTitles);
                 if (RunState.Mode == RunMode.Normal || TutorialManager.onTutorial) return true;
                 int g = Mathf.Clamp(GameManager.gameNumber, 0, __instance.MatchTitles.Count - 1);
                 string text = RunState.ModeDef.Banner

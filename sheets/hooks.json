@@ -763,6 +763,66 @@
       "verified": "no"
     },
     {
+      "id": "bracket_between_matches",
+      "target_type": "UpgradeManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "BracketPanel",
+      "purpose": "Classic / Co-op / Loop: the bracket screen opens at the start of each upgrade screen (the screen waits under it)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "bracket_won_slot",
+      "target_type": "UpgradeManager",
+      "target_method": "Start",
+      "kind": "prefix",
+      "patch_class": "BracketPanel",
+      "purpose": "Remembers the match just won before the reward screen swaps in a stand-in match number",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "bracket_hold_groups",
+      "target_type": "ButtonGroup",
+      "target_method": "Select",
+      "kind": "prefix",
+      "patch_class": "BracketPanel",
+      "purpose": "No game button group presses on gamepad A while the bracket is open",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "bracket_hold_buttons",
+      "target_type": "ButtonController",
+      "target_method": "Press",
+      "kind": "prefix",
+      "patch_class": "BracketPanel",
+      "purpose": "No game button presses while the bracket is open (buttons that appear after it opened)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "bracket_hold_skip",
+      "target_type": "UpgradeManager",
+      "target_method": "SkipUpgrade",
+      "kind": "prefix",
+      "patch_class": "BracketPanel",
+      "purpose": "The upgrade screen's skip (gamepad START) does nothing while the bracket is open",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "bracket_champions",
+      "target_type": "WinManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "BracketPanel",
+      "purpose": "Classic: the finished bracket (CHAMPIONS) on the win screen",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
       "id": "collection_perk_seen",
       "target_type": "TechniqueButton",
       "target_method": "Start",
