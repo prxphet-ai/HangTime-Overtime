@@ -76,3 +76,5 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   camera zoomed in). Court: floor x -100..100 top -10, side walls |x| 70..80 to y 88.
 - Title bar + settings (`src/Patches/TitleBar.cs`): top-left buttons on the title screen; SETTINGS has toggles stored in
   the BepInEx config. Tutorial skip = `[General] SkipTutorial` (GameManager.Awake postfix).
+- Update checker (`src/Patches/UpdateCheck.cs`): GitHub releases/latest on title load, notice in the title bar; `[General]
+  CheckForUpdates`. Needs `UnityEngine.UnityWebRequestModule` (referenced in the csproj).

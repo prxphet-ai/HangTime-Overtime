@@ -694,3 +694,14 @@ Modes:
 - **Tested**: dev flag `-ovt-forcetutorial` (DevKeys on) starts as if the tutorial had never been finished: skip off ->
   "Tutorial at launch: plays"; toggled on in SETTINGS (config written at once: `SkipTutorial = true`), restarted -> "Tutorial
   skipped (setting)". 0 errors. Gamepad navigation for the settings screen comes with feature 6.
+
+### Feature 2 — update checker (done)
+- `src/Patches/UpdateCheck.cs`: when the title screen first shows, one background request (UnityWebRequest, 8 s timeout)
+  to GitHub's public API `repos/prxphet-ai/HangTime-Overtime/releases/latest`; only standard headers are sent. If its
+  `tag_name` is a newer version than the installed one, a notice appears under the title bar ("OVERTIME vX IS OUT (YOU
+  HAVE vY) · CLICK TO OPEN THE RELEASES PAGE"); clicking it opens the releases page in the browser. Any failure (offline,
+  timeout, odd reply) logs one line and shows nothing. Startup never waits for it.
+- Setting: `[General] CheckForUpdates` (default on), also SETTINGS -> CHECK FOR UPDATES.
+- **Tested**: installed 0.3.1 vs latest v0.3.0 -> "up to date"; dev `-ovt-pretendversion 0.2.0` -> notice shown on the
+  title; dev `-ovt-updateurl http://127.0.0.1:9/none` -> "no answer after 2.0 s ... nothing shown". 0 errors.
+- Note: the check compares release tags, so publish releases with tags like `v0.3.1`.

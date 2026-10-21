@@ -21,7 +21,7 @@ namespace HangtimeOvertime
         internal static ConfigEntry<int> OnlinePort, OnlineBuffer;
         internal static ConfigEntry<string> OnlineJoin, OnlineBind;
         internal static ConfigEntry<float> OnlineTimeout;
-        internal static ConfigEntry<bool> SkipTutorial;
+        internal static ConfigEntry<bool> SkipTutorial, CheckForUpdates;
 
         // Perk/mode trigger log, only with DumpScenes on (development).
         internal static void Trace(string msg) { if (DumpScenes != null && DumpScenes.Value) Log.LogInfo("[trace] " + msg); }
@@ -43,6 +43,7 @@ namespace HangtimeOvertime
             OnlineTimeout = Config.Bind("Online", "TimeoutSeconds", 8f, "Online: seconds without hearing from the other player before the session ends.");
 
             SkipTutorial = Config.Bind("General", "SkipTutorial", false, "Never start the game's tutorial (the pause menu's TUTORIAL still plays it). Also in the title screen's SETTINGS.");
+            CheckForUpdates = Config.Bind("General", "CheckForUpdates", true, "On launch, ask GitHub whether a newer Overtime release exists and say so on the title screen (nothing about you is sent). Also in SETTINGS.");
             Patches.TitleBar.Init();
             Patches.SettingsMenu.Init();
 

@@ -30,6 +30,7 @@ namespace HangtimeOvertime.Patches
             if (current == null)
             {
                 if (!TitleController.onTitle || !VersusMenu.TitleReady || Camera.main == null) return;
+                UpdateCheck.Start();
                 var go = new GameObject("Overtime Title Bar");
                 current = go.AddComponent<TitleBar>();
                 if (!current.InitKit(150)) { Destroy(go); current = null; return; }
@@ -84,6 +85,8 @@ namespace HangtimeOvertime.Patches
             if (Toggles.Count > 0) return;
             Toggles.Add(("SKIP TUTORIAL", "THE TUTORIAL NEVER STARTS (PAUSE MENU > TUTORIAL STILL PLAYS IT)",
                 () => Plugin.SkipTutorial.Value, v => { Plugin.SkipTutorial.Value = v; if (v) TutorialManager.onTutorial = false; }));
+            Toggles.Add(("CHECK FOR UPDATES", "ON LAUNCH, ASK GITHUB IF A NEWER OVERTIME IS OUT (NOTHING ABOUT YOU IS SENT)",
+                () => Plugin.CheckForUpdates.Value, v => { Plugin.CheckForUpdates.Value = v; if (!v) { TitleBar.Notice = null; } else UpdateCheck.Start(); }));
         }
 
         public static void Open()
