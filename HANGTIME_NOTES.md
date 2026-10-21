@@ -722,3 +722,20 @@ Modes:
   user path, names, a LAN IP with port, a Steam id and an e-mail into placeholders; COPY put 1640 characters on the
   clipboard without the Windows user name; the issue link is built (2605 characters). OPEN ON GITHUB not clicked in tests
   (it opens the browser). 0 errors.
+
+### Feature 4 — win streaks (done)
+- **Data**: `src/Core/Records.cs` writes `HangtimeOvertime_stats.json` next to the game's save (never save.json): per mode
+  the current streak, best streak, wins and losses (arrays, since the game's JsonUtility only writes plain arrays from a
+  mod's classes), plus Classic runs won, the highest Infinite round and Versus matches played (for the stats page in
+  feature 7). Modes: Classic (and Loops), Co-op, Infinite, Versus (local), Versus (online); tournament modes will add
+  their own keys.
+- **Decision: a streak = matches won in a row in that mode**, kept across runs and sessions; a loss resets it.
+- **Versus**: the side of this PC's own players counts (local: player 1's side; online: each PC records for its own
+  players, so the host and the friend get opposite results; a PC with players on both sides records nothing). The
+  match-end screen tells each PC the winner (online protocol 4).
+- **Shown**: after a win, in the upgrade screen's GAME STATS card ("WIN STREAK 2 · BEST 2"); after a loss, a banner at
+  the top of the lose screen ("STREAK ENDED AT 1 · BEST 2", or "BEST STREAK 2"); the Versus match-end screen under the
+  score. The lose screen's stats text no longer wraps (a long team name pushed the mod's Infinite line into TRY AGAIN).
+- **Tested**: Infinite win -> card line, loss -> banner (layout clear of TRY AGAIN); local Versus 5-0 for P1 -> "WIN
+  STREAK 1 · BEST 1"; online match between two copies -> host "Versus (online) loss", friend "win, streak 1", friend chose
+  LOBBY and both returned to the lobby. 0 errors. Test stats file deleted and saves restored afterwards.

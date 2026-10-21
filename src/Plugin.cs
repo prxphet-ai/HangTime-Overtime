@@ -56,6 +56,7 @@ namespace HangtimeOvertime
             VersusPatches.Init();
             GameManager.OnPlayerLose += RunSaves.ClearCurrent;   // a lost match ends the run (the lose screen is not a scene)
             RunPatches.Init();
+            StreakPatches.Init();
             MenuPatches.Init();
             if (DumpScenes.Value) Debugging.SceneDumper.Hook();
             if (DevKeys.Value) { gameObject.AddComponent<Debugging.DevKeys>(); Debugging.DevOnline.Hook(gameObject); }

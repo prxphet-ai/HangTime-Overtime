@@ -236,6 +236,7 @@ namespace HangtimeOvertime.Patches
     internal class RoundScreen
     {
         public bool MatchOver;
+        public int Winner;
         public string Head = "", Score = "", Sub = "", PickHead = "", PickHint = "", ContinueLabel = "";
         public readonly string[] SideTitle = new string[2];
         public readonly List<string>[] Builds = { new List<string>(), new List<string>() };
@@ -247,7 +248,7 @@ namespace HangtimeOvertime.Patches
             int loser = 1 - winner;
             int[] w = VersusState.RoundWins;
             string Name(int side) => setup.SideLabel(side);
-            var s = new RoundScreen { MatchOver = matchOver };
+            var s = new RoundScreen { MatchOver = matchOver, Winner = winner };
             s.Head = matchOver ? $"{Name(winner)} {(setup.Humans(winner).Count > 1 ? "WIN" : "WINS")} THE MATCH!" : $"ROUND {VersusState.Round} TO {Name(winner)}";
             s.Score = $"{Name(0)}  {w[0]} - {w[1]}  {Name(1)}";
             s.Sub = matchOver ? "" : $"FIRST TO {VersusState.Target} ROUNDS";
@@ -269,7 +270,7 @@ namespace HangtimeOvertime.Patches
 
         public void Write(Online.NetWriter w)
         {
-            w.B(MatchOver).S(Head).S(Score).S(Sub).S(PickHead).S(PickHint).S(ContinueLabel).S(SideTitle[0]).S(SideTitle[1]);
+            w.B(MatchOver).U8(Winner).S(Head).S(Score).S(Sub).S(PickHead).S(PickHint).S(ContinueLabel).S(SideTitle[0]).S(SideTitle[1]);
             for (int side = 0; side < 2; side++) { w.I(Builds[side].Count); foreach (var b in Builds[side]) w.S(b); }
             w.I(Offers.Count);
             foreach (var o in Offers) w.S(o.title).S(o.kind).S(o.rarity).S(o.text);
@@ -277,7 +278,7 @@ namespace HangtimeOvertime.Patches
 
         public static RoundScreen Read(Online.NetReader r)
         {
-            var s = new RoundScreen { MatchOver = r.B(), Head = r.S(), Score = r.S(), Sub = r.S(), PickHead = r.S(), PickHint = r.S(), ContinueLabel = r.S() };
+            var s = new RoundScreen { MatchOver = r.B(), Winner = r.U8(), Head = r.S(), Score = r.S(), Sub = r.S(), PickHead = r.S(), PickHint = r.S(), ContinueLabel = r.S() };
             s.SideTitle[0] = r.S(); s.SideTitle[1] = r.S();
             for (int side = 0; side < 2; side++) { int n = r.I(); for (int i = 0; i < n; i++) s.Builds[side].Add(r.S()); }
             int k = r.I();
@@ -375,7 +376,8 @@ namespace HangtimeOvertime.Patches
             float top = ph / 2f;
             Text(d.Head, new Vector2(0f, top - 2f), 1.3f, pw - 2f, Color.white);
             Text(d.Score, new Vector2(0f, top - 4.6f), 1.6f, pw - 2f, new Color(1f, 0.85f, 0.35f));
-            Text(d.Sub, new Vector2(0f, top - 6.6f), 0.6f, pw - 2f, new Color(0.85f, 0.95f, 1f));
+            Text(d.MatchOver && StreakPatches.VersusLine != null ? StreakPatches.VersusLine : d.Sub, new Vector2(0f, top - 6.6f), 0.6f, pw - 2f,
+                 d.MatchOver ? new Color(1f, 0.85f, 0.35f) : new Color(0.85f, 0.95f, 1f));
 
             // both builds, left and right
             for (int side = 0; side < 2; side++)
@@ -494,6 +496,7 @@ namespace HangtimeOvertime.Patches
             VersusState.LastWinner = winner;
             bool over = VersusState.RoundWins[winner] >= VersusState.Target;
             Plugin.Log.LogInfo($"Versus: round {VersusState.Round} to {VersusState.Setup.SideLabel(winner)} ({gm.playerPoints}-{gm.opponentPoints}); rounds {VersusState.RoundWins[0]}-{VersusState.RoundWins[1]}{(over ? ", match over" : "")}");
+            if (over) StreakPatches.RecordVersus(winner);
             yield return new WaitForSeconds(1.3f);
             VersusOverlay.ShowRound(winner, over);
         }

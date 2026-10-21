@@ -25,7 +25,13 @@ namespace HangtimeOvertime.Online
             Net.On(Msg.Ready, (r, p) => { p.ReadySeq = r.I(); Plugin.Log.LogInfo($"Online: {p.Name} ready for load {p.ReadySeq}"); });
             Net.On(Msg.Snap, r => { if (r.I() == MatchSync.LoadSeq) Mirror.Current?.OnSnap(r); });
             Net.On(Msg.Events, r => { if (r.I() == MatchSync.LoadSeq) Mirror.Current?.OnEvents(r); });
-            Net.On(Msg.Screen, r => { if (Net.IsClient) VersusOverlay.ShowMirror(RoundScreen.Read(r)); });
+            Net.On(Msg.Screen, r =>
+            {
+                if (!Net.IsClient) return;
+                var screen = RoundScreen.Read(r);
+                if (screen.MatchOver) StreakPatches.RecordVersus(screen.Winner);      // this PC's own streak
+                VersusOverlay.ShowMirror(screen);
+            });
             Net.On(Msg.ScreenSel, r => VersusOverlay.MirrorSelection(r.I(), r.I()));
             Net.On(Msg.ScreenClose, r => VersusOverlay.Close());
             Net.On(Msg.Notice, r => { if (Net.IsClient) { string t = r.S(); VersusOverlay.Notice(t.Length == 0 ? null : t); } });

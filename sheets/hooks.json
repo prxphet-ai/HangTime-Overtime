@@ -781,6 +781,26 @@
       "purpose": "Adds REPORT BUG under the pause menu's last button",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "streak_match_end",
+      "target_type": "GameManager",
+      "target_method": "EndGame",
+      "kind": "prefix",
+      "patch_class": "StreakPatches",
+      "purpose": "Win streaks: records each finished Classic/Co-op/Infinite match (Versus records in its own round flow)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "streak_lose_line",
+      "target_type": "LoseController",
+      "target_method": "HandleLoss",
+      "kind": "postfix",
+      "patch_class": "StreakPatches",
+      "purpose": "Win streaks: the streak line on the lose screen",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

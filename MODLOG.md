@@ -81,3 +81,5 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Report bug (`src/Patches/BugReport.cs`): preview -> GitHub new-issue link or clipboard; scrubbed of names/paths/IPs.
   Pause menu button = clone of the pause menu's lowest button (PauseController.Start postfix). Needs
   `UnityEngine.IMGUIModule` (clipboard).
+- Win streaks: `src/Core/Records.cs` (HangtimeOvertime_stats.json) + `src/Patches/StreakPatches.cs` (EndGame prefix,
+  lose banner, upgrade-card line, Versus via VersusFlow / the online Screen message). Online protocol 4.
