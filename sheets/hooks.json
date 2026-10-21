@@ -761,6 +761,16 @@
       "purpose": "A player above the net's invisible wall (y 19.3) can't cross to the other side",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "tutorial_skip",
+      "target_type": "GameManager",
+      "target_method": "Awake",
+      "kind": "postfix",
+      "patch_class": "TitleBar",
+      "purpose": "The SkipTutorial setting: the tutorial never starts at launch (the game's save is not touched)",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

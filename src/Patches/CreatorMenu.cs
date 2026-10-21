@@ -26,6 +26,7 @@ namespace HangtimeOvertime.Patches
         private static readonly AccessTools.FieldRef<ButtonController, OnClick> onClickOf = AccessTools.FieldRefAccess<ButtonController, OnClick>("onClick");
 
         private static CreatorMenu open;
+        public static bool IsOpen => open != null;
         private PlayerLook work;
         private Transform preview, titleRig;
         private ButtonGroup titleGroup;

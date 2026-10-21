@@ -175,7 +175,37 @@ namespace HangtimeOvertime.Patches
             return true;
         }
 
-        protected virtual void OnDestroy() { if (focused != null && focused.Owner == this) focused = null; }
+        protected virtual void OnDestroy()
+        {
+            if (focused != null && focused.Owner == this) focused = null;
+            ReleaseTitle();
+        }
+
+        // ------------------------------------------------------------ the title menu behind a panel
+
+        private ButtonGroup heldGroup;
+        private readonly List<Collider2D> heldColliders = new List<Collider2D>();
+
+        // the title menu's buttons stop taking clicks and keys until this panel closes
+        protected void HoldTitle()
+        {
+            var classic = VersusMenu.ClassicButton;
+            heldGroup = classic != null ? classic.GetComponentInParent<ButtonGroup>(true) : null;
+            if (heldGroup == null) return;
+            heldGroup.enabled = false;
+            foreach (var b in heldGroup.buttons.Where(b => b != null))
+                foreach (var c in b.GetComponents<Collider2D>().Where(c => c.enabled)) { c.enabled = false; heldColliders.Add(c); }
+        }
+
+        protected void ReleaseTitle()
+        {
+            foreach (var c in heldColliders) if (c != null) c.enabled = true;
+            heldColliders.Clear();
+            if (heldGroup == null) return;
+            heldGroup.enabled = true;
+            foreach (var b in heldGroup.buttons.Where(b => b != null)) { b.interactable = true; b.wasClicked = false; }
+            heldGroup = null;
+        }
 
         // an on/off switch: "LABEL  ON"
         protected SpriteRenderer Toggle(string label, Vector2 at, Vector2 size, Func<bool> get, Action<bool> set, float textSize = 0.55f)

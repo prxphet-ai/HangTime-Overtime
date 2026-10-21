@@ -480,6 +480,7 @@ namespace HangtimeOvertime.Online
             Net.EarlyUpdate();
             OnlineFlow.TitleTick();
             PingHud.Tick();
+            TitleBar.Tick();
         }
 
         private void LateUpdate() => Net.LateUpdate();

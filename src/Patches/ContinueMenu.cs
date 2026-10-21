@@ -24,6 +24,7 @@ namespace HangtimeOvertime.Patches
     {
         public static bool Bypass;                 // the next TitleButton click starts a fresh run
         private static GameObject popup;
+        public static bool IsOpen => popup != null;
         private static readonly List<GameObject> popupButtons = new List<GameObject>();   // live next to the menu buttons (same scale)
         private static GameObject savedOpponent;
 

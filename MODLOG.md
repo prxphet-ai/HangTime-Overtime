@@ -74,4 +74,5 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Bugs: `ControllerPatches.OwnSide` (players stay on their side above the net's invisible wall, top y 19.3);
   `BallPatches.Arena` (a ball that leaves the arena ends the rally as out; it used to fall forever past x 100 and pin the
   camera zoomed in). Court: floor x -100..100 top -10, side walls |x| 70..80 to y 88.
-
+- Title bar + settings (`src/Patches/TitleBar.cs`): top-left buttons on the title screen; SETTINGS has toggles stored in
+  the BepInEx config. Tutorial skip = `[General] SkipTutorial` (GameManager.Awake postfix).

@@ -682,3 +682,15 @@ Modes:
   toward it, Ctrl+2 throws the ball over a side wall in free flight): fixes off, player 1 crossed to the other side and the
   ball fell to y -717 with the score frozen; turning the fix on scored that ball as out (it was at y -6127); fixes on,
   player 1 stayed at x -1.44 and the thrown ball was scored out at (109, 92) and play went on. 0 errors.
+
+### Feature 1 — tutorial skip toggle (done)
+- **Where**: the new **title bar** (top-left of the title screen, `src/Patches/TitleBar.cs`) -> **SETTINGS** -> SKIP
+  TUTORIAL. The bar holds the mod's title-screen buttons (more come with later features) and hides while any mod menu
+  or the Continue popup is open. Mod panels can now hold the title menu (`OvertimePanel.HoldTitle`) so clicks don't reach
+  the title buttons behind them.
+- **How**: `[General] SkipTutorial` in the mod's BepInEx config (never the game's save.json). The game decides at
+  startup (GameManager.Awake) whether the tutorial plays; with the setting on, the mod's postfix turns it off. The pause
+  menu's TUTORIAL button still plays it on purpose.
+- **Tested**: dev flag `-ovt-forcetutorial` (DevKeys on) starts as if the tutorial had never been finished: skip off ->
+  "Tutorial at launch: plays"; toggled on in SETTINGS (config written at once: `SkipTutorial = true`), restarted -> "Tutorial
+  skipped (setting)". 0 errors. Gamepad navigation for the settings screen comes with feature 6.

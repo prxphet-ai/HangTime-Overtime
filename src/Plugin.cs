@@ -21,6 +21,7 @@ namespace HangtimeOvertime
         internal static ConfigEntry<int> OnlinePort, OnlineBuffer;
         internal static ConfigEntry<string> OnlineJoin, OnlineBind;
         internal static ConfigEntry<float> OnlineTimeout;
+        internal static ConfigEntry<bool> SkipTutorial;
 
         // Perk/mode trigger log, only with DumpScenes on (development).
         internal static void Trace(string msg) { if (DumpScenes != null && DumpScenes.Value) Log.LogInfo("[trace] " + msg); }
@@ -40,6 +41,10 @@ namespace HangtimeOvertime
             OnlineBuffer = Config.Bind("Online", "BufferMs", 70, new ConfigDescription("Online client: how far behind the host the picture runs, so it stays smooth (raise it on a shaky connection).", new AcceptableValueRange<int>(30, 400)));
             if (OnlineBuffer.Value == 90) OnlineBuffer.Value = 70;   // 0.2.5's first default
             OnlineTimeout = Config.Bind("Online", "TimeoutSeconds", 8f, "Online: seconds without hearing from the other player before the session ends.");
+
+            SkipTutorial = Config.Bind("General", "SkipTutorial", false, "Never start the game's tutorial (the pause menu's TUTORIAL still plays it). Also in the title screen's SETTINGS.");
+            Patches.TitleBar.Init();
+            Patches.SettingsMenu.Init();
 
             PerkRegistry.Build();
             Engine.Vfx.Init();
