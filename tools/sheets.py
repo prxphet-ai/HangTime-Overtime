@@ -19,7 +19,7 @@ GAME = os.environ.get("HANGTIME_DIR", r"C:\Program Files (x86)\Steam\steamapps\c
 ASM = os.path.join(GAME, "Hangtime!_Data", "Managed", "Assembly-CSharp.dll")
 DECOMP = os.environ.get("HANGTIME_DECOMP", os.path.join(os.path.dirname(ROOT), "hangtime-decomp"))
 
-NAMES = ("perks", "triggers", "effects", "elements", "stats", "statcards", "teams", "hooks", "modes", "scaling", "ui", "saves")
+NAMES = ("perks", "triggers", "effects", "elements", "stats", "statcards", "teams", "hooks", "modes", "scaling", "ui", "saves", "draft")
 GAME_STATS = ["Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe"]
 EMPTY_OK = {"conds", "params", "text_params", "stages"}
 TEXT_RULES = {
@@ -370,6 +370,31 @@ def preflight():
             "over_start", "over_per_round", "over_max", "reach_min_mult", "reach_max_mult", "move_per_round", "move_max", "perks_base", "perks_per_round", "perks_boss_bonus",
             "perks_max", "rare_from", "epic_from", "theme_weight", "player_power_weight", "player_power_ratio_min", "player_power_ratio_max",
             "expected_power_base", "expected_power_per_round"}
+    card_ids = {c["id"] for c in S["statcards"]["rows"]}
+    for r in S["draft"]["rows"]:
+        if r["kind"] not in ("perk", "card"):
+            errors.append(f"draft.{r['id']}.kind: perk or card")
+        elif r["id"] not in (perks if r["kind"] == "perk" else card_ids):
+            errors.append(f"draft.{r['id']}: no such {r['kind']}")
+    team_ids = {t["id"] for t in S["teams"]["rows"]}
+    for i, pk in enumerate(S["draft"].get("packages", [])):
+        if pk["team"] not in team_ids:
+            errors.append(f"draft.packages[{i}].team: no team '{pk['team']}'")
+        for pid in pk["perks"]:
+            if pid not in perks:
+                errors.append(f"draft.packages[{i}]: no perk '{pid}'")
+        for cid in pk["cards"]:
+            if cid not in card_ids:
+                errors.append(f"draft.packages[{i}]: no stat card '{cid}'")
+    if S["draft"].get("packages") and len({pk["team"] for pk in S["draft"]["packages"]}) < S["draft"]["settings"]["offers"]:
+        errors.append("draft.packages: fewer teams than a draft offers")
+    dst = S["draft"]["settings"]
+    if dst["theme_perks"] > dst["perks"]:
+        errors.append("draft.settings: theme_perks is more than perks")
+    if S["draft"]["rows"] and (sum(1 for r in S["draft"]["rows"] if r["kind"] == "perk" and r["power"] > dst["min_power"]) < dst["perks"] * dst["offers"]
+                                or sum(1 for r in S["draft"]["rows"] if r["kind"] == "card" and r["power"] > dst["min_power"]) < dst["cards"] * dst["offers"]):
+        errors.append("draft.settings: too few rows above min_power for a full draft")
+
     have = {s["id"] for s in S["scaling"]["rows"]}
     for m in sorted(need - have):
         errors.append(f"scaling: missing row '{m}' (read by src/Engine/OpponentScaling.cs and tools/simlib.py)")
@@ -603,6 +628,26 @@ def generate(S):
     for rar in ("common", "rare", "epic"):
         vt += [t for t in S['scaling']['vanilla_rarity'][rar] if t not in vt]
     L += [f"        public static readonly string[] VanillaTechniques = {arr(vt)};", "    }", ""]
+
+    # DRAFT (sheets/draft.json): settings and each perk / stat card's simulated power
+    dst = S["draft"]["settings"]
+    dp = [r for r in S["draft"]["rows"] if r["kind"] == "perk"]
+    dc = [r for r in S["draft"]["rows"] if r["kind"] == "card"]
+    L += ["    // DRAFT TOURNAMENT BALANCE (sheets/draft.json, powers from tools/draft.py power).",
+          "    public static class Draft", "    {",
+          f"        public const int Offers = {int(dst['offers'])}, Perks = {int(dst['perks'])}, Cards = {int(dst['cards'])}, ThemePerks = {int(dst['theme_perks'])}, OpponentPerks = {int(dst['opponent_perks'])}, Tries = {int(dst['tries'])};",
+          f"        public const float Target = {fl(dst['target'])}, Band = {fl(dst['band'])}, MinPower = {fl(dst['min_power'])};",
+          f"        public static readonly string[] PerkIds = {arr([r['id'] for r in dp])};",
+          f"        public static readonly float[] PerkPower = new float[] {{ {', '.join(fl(r['power']) for r in dp)} }};",
+          f"        public static readonly string[] CardIds = {arr([r['id'] for r in dc])};",
+          f"        public static readonly float[] CardPower = new float[] {{ {', '.join(fl(r['power']) for r in dc)} }};"]
+    pks = S["draft"].get("packages", [])
+    L += ["        // simulator-checked packages (tools/draft.py build): team, perks, stat cards, field win rate",
+          f"        public static readonly string[] PackageTeam = {arr([pk['team'] for pk in pks])};",
+          "        public static readonly string[][] PackagePerks = new string[][] { " + ", ".join(arr(pk["perks"]) for pk in pks) + " };",
+          "        public static readonly string[][] PackageCards = new string[][] { " + ", ".join(arr(pk["cards"]) for pk in pks) + " };",
+          f"        public static readonly float[] PackageWin = new float[] {{ {', '.join(fl(pk['sim_win']) for pk in pks)} }};",
+          "    }", ""]
 
     L += ["    public readonly struct UiDef",
           "    {",

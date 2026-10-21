@@ -83,13 +83,18 @@ namespace HangtimeOvertime.Core
     {
         public Technique Perk;        // an Overtime perk or one of the game's own
         public StatCardDef Card;      // or a stat card
-        public string Title => Perk is DataPerk d ? d.Def.Title : Perk != null ? PerkRegistry.VanillaTitle(Perk) : Card.Title;
-        public string Rarity => Perk is DataPerk d ? d.Def.Rarity : Perk != null ? Scaling.VanillaRarity(Perk.GetType().Name) : Card.Rarity;
-        public string Kind => Card != null ? "STAT CARD" : Perk is DataPerk d && d.Def.Element != "none" ? d.Def.Element.ToUpperInvariant() + " PERK" : "PERK";
+        public DraftOption Draft;     // or a whole drafted team (the draft start)
+        public bool TeamWide;         // a side with two players: this perk / card works for both (not only the picker)
+        public string Title => Draft != null ? Draft.Team.Name : Perk is DataPerk d ? d.Def.Title : Perk != null ? PerkRegistry.VanillaTitle(Perk) : Card.Title;
+        public string Rarity => Draft != null ? Draft.Team.Element : Perk is DataPerk d ? d.Def.Rarity : Perk != null ? Scaling.VanillaRarity(Perk.GetType().Name) : Card.Rarity;
+        public string Kind => (Draft != null ? "DRAFT" : Card != null ? "STAT CARD" : Perk is DataPerk d && d.Def.Element != "none" ? d.Def.Element.ToUpperInvariant() + " PERK" : "PERK") + (TeamWide ? " · TEAM-WIDE" : "");
         public string Text
         {
             get
             {
+                if (Draft != null)
+                    return string.Join("\n", Draft.Perks.Select(id => PerkRegistry.Get(id)?.Def.Title ?? id)) + "\n\n" +
+                           string.Join("\n", Draft.Cards.Select(id => StatCards.Get(id)?.Title ?? id));
                 if (Card != null) return StatCards.LongText(Card).Split('\n').Where(l => l.Length > 0 && !l.Equals(Card.Rarity.ToUpperInvariant())).Aggregate((a, b) => a + "\n" + b);
                 if (Perk is DataPerk d) return d.Def.Description;
                 var card = PerkRegistry.VanillaCards.FirstOrDefault(v => PerkRegistry.TechniqueOf(v) == Perk);
@@ -158,6 +163,7 @@ namespace HangtimeOvertime.Core
                 gm.playerStats.techniques.Clear();
             }
             RightPerks.Clear();
+            Ownership.Clear();
             StatCards.ResetRun();
             LimitBreakEffects.ResetLimits();
             GameManager.statOverload = false;
@@ -200,6 +206,7 @@ namespace HangtimeOvertime.Core
                 }
             }
             foreach (var o in offer) Collection.See(o.Card != null ? "card:" + o.Card.Id : Collection.KeyOf(o.Perk));
+            if (Setup.Humans(side).Count > 1) foreach (var o in offer) o.TeamWide = o.Card != null || !Ownership.Personal(o.Perk);
             return offer;
         }
 
@@ -219,19 +226,40 @@ namespace HangtimeOvertime.Core
             return humans.Count == 0 ? null : humans[Picks[side] % humans.Count];
         }
 
+        // the draft start: three teams with their builds for a side (the same deal as the draft cup's)
+        public static List<VersusOffer> DraftOffer(int side, int seed) =>
+            Drafting.Deal(seed * 2 + side).Select(d => new VersusOffer { Draft = d }).ToList();
+
         public static void Take(int side, VersusOffer o)
         {
+            // two players on the side: what the picker takes is theirs (team-wide kinds stay the team's)
+            int owner = Setup.Humans(side).Count > 1 ? (Picker(side)?.Number ?? 0) : 0;
             Picks[side]++;
+            if (o.Draft != null)
+            {
+                // the drafted team is the side's: its team, and its build for the whole side
+                foreach (var id in o.Draft.Perks) { var t = PerkRegistry.Get(id); if (t != null && !PerksOf(side).Contains(t)) PerksOf(side).Add(t); }
+                Setup.Team[side] = o.Draft.Team.Id;
+                foreach (var id in o.Draft.Cards) { var c = StatCards.Get(id); if (c != null) StatCards.Take(c, side); }
+                Plugin.Log.LogInfo($"Versus: {Setup.SideLabel(side)} drafted {o.Draft.Team.Name}: {string.Join(", ", o.Draft.Perks)} + {string.Join(", ", o.Draft.Cards)}");
+                return;
+            }
             Collection.Pick(o.Card != null ? "card:" + o.Card.Id : Collection.KeyOf(o.Perk));
             if (o.Card != null) StatCards.Take(o.Card, side);
-            else if (o.Perk != null && !PerksOf(side).Contains(o.Perk)) PerksOf(side).Add(o.Perk);
+            else if (o.Perk != null && !PerksOf(side).Contains(o.Perk))
+            {
+                PerksOf(side).Add(o.Perk);
+                if (Ownership.Personal(o.Perk)) Ownership.Set(side, o.Perk, owner);
+            }
             Plugin.Log.LogInfo($"Versus: {Setup.SideLabel(side)} took {o.Title} ({o.Kind})");
         }
 
         // a player's build for the screens between rounds: perks and stat totals
         public static List<string> Build(int side)
         {
-            var lines = PerksOf(side).Select(t => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t)).ToList();
+            string Title(Technique t) => t is DataPerk d ? d.Def.Title : PerkRegistry.VanillaTitle(t);
+            // two players on the side: each one's own perks, then the team's
+            var lines = Setup != null && Setup.Humans(side).Count > 1 ? Ownership.Lines(side, PerksOf(side), Title) : PerksOf(side).Select(Title).ToList();
             foreach (var kv in StatCards.PointsFor(side).Where(kv => Mathf.Abs(kv.Value) > 0.01f))
                 lines.Add($"{StatCards.Label(kv.Key)} {(kv.Value > 0 ? "+" : "")}{kv.Value:0.##}");
             return lines;

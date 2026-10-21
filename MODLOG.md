@@ -102,3 +102,8 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   upgrade cards are drawn in the `UpgradeManager.CreateUpgrade` coroutine (Random across yields), button `Start` runs later.
 - Daily cup: `RunState.StartCup/EndCup`, `Daily.Cup` (Normal mode + Daily), run slot `cup`, `TeamRoster.CupPick/CupName`;
   DAILY RUN menu RUN / CUP tabs.
+- Draft: `sheets/draft.json` (settings, power rows, simulator-checked packages) -> `Generated.Draft`; `tools/draft.py`
+  power / build / check; `src/Core/Drafting.cs` (deal, opponent perks), `src/Patches/DraftMenu.cs`; run slot `draft`;
+  `RunState.Draft`; Versus DRAFT START (`VersusOverlay.ShowDraft`, `VersusOffer.Draft`). Dev: `-ovt-draft` (host).
+- Individual picks: `src/Engine/Ownership.cs` (checked in `Engine.FirePerk`), `src/Patches/CoopPick.cs`. Co-op characters
+  = `LocalInputManager.player1` / `player2`; Versus = `VersusDriver.Current.Players`. F9 logs ownership.

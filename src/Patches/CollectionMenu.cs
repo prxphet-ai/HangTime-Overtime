@@ -199,7 +199,7 @@ namespace HangtimeOvertime.Patches
             string[] head = { "MODE", "WINS", "LOSSES", "WIN %", "STREAK", "BEST STREAK" };
             for (int i = 0; i < head.Length; i++) Text(head[i], new Vector2(cx[i], y), 0.5f, 9f, new Color(1f, 0.85f, 0.35f));
             y -= 1.9f;
-            string[] modes = { Records.Classic, Records.Coop, Records.Infinite, Records.VersusLocal, Records.VersusOnline };
+            string[] modes = { Records.Classic, Records.Coop, Records.Infinite, Records.Draft, Records.VersusLocal, Records.VersusOnline };
             foreach (var m in modes)
             {
                 int i = Array.IndexOf(r.modes, m);
@@ -217,6 +217,7 @@ namespace HangtimeOvertime.Patches
             var records = new List<(string, string)>
             {
                 ("CLASSIC RUNS WON", r.classicRunsWon.ToString()),
+                ("DRAFT CUPS WON", $"{r.draftCupsWon} OF {r.draftsPlayed}"),
                 ("HIGHEST INFINITE MATCH WON", r.infiniteBestRound > 0 ? r.infiniteBestRound.ToString() : "-"),
                 ("BEST INFINITE RUN", RunState.Save.bestInfiniteWins + " WINS"),
                 ("MOST FACED TEAM", faced != null ? $"{faced.Title.ToUpperInvariant()} ({faced.Seen})" : "-"),

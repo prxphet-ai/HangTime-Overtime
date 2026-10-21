@@ -1,0 +1,2662 @@
+{
+  "sheet": "draft",
+  "about": "Draft tournament balance. One row per Overtime perk and stat card: its power, the field win-rate gain the AI vs AI simulator measures when it's added alone to a fresh player (tools/draft.py power writes these rows). A draft option is a team plus `perks` perks (`theme_perks` of them in the team's element when there are enough) and `cards` stat cards, redrawn until the summed power is within `band` of `target`. tools/draft.py check deals drafts the same way and plays each option in the simulator. Generates Draft in src/Generated/Sheets.g.cs.",
+  "columns": {
+    "id": "perks.json or statcards.json id",
+    "kind": "perk | card",
+    "power": "field win-rate gain when added alone (simulator)",
+    "verified": "the simulator run that measured it"
+  },
+  "settings": {
+    "offers": 3,
+    "perks": 3,
+    "cards": 2,
+    "theme_perks": 2,
+    "opponent_perks": 3,
+    "target": 0.36,
+    "band": 0.02,
+    "tries": 300,
+    "min_power": 0.0,
+    "sim_round": 3,
+    "target_win": 0.8,
+    "win_band": 0.025
+  },
+  "rows": [
+    {
+      "id": "second_gear",
+      "kind": "card",
+      "power": 0.143,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "all_in",
+      "kind": "card",
+      "power": 0.133,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "daredevil",
+      "kind": "card",
+      "power": 0.131,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "overload",
+      "kind": "card",
+      "power": 0.126,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tank",
+      "kind": "card",
+      "power": 0.117,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "setters_eye",
+      "kind": "card",
+      "power": 0.113,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "ace_hunter",
+      "kind": "card",
+      "power": 0.112,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "glass_cannon",
+      "kind": "card",
+      "power": 0.109,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "quick_hands",
+      "kind": "card",
+      "power": 0.108,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "heavy_hitter",
+      "kind": "card",
+      "power": 0.107,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "featherstep",
+      "kind": "card",
+      "power": 0.106,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "anchor",
+      "kind": "card",
+      "power": 0.104,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tower",
+      "kind": "card",
+      "power": 0.102,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "track_star",
+      "kind": "card",
+      "power": 0.1,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "berserker",
+      "kind": "card",
+      "power": 0.099,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "all_rounder",
+      "kind": "card",
+      "power": 0.098,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "iron_wall",
+      "kind": "card",
+      "power": 0.096,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "liberos_instinct",
+      "kind": "card",
+      "power": 0.096,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "deep_defender",
+      "kind": "card",
+      "power": 0.091,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "plyometrics",
+      "kind": "card",
+      "power": 0.089,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "power_drills",
+      "kind": "card",
+      "power": 0.086,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "spike_specialist",
+      "kind": "card",
+      "power": 0.086,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "utility_player",
+      "kind": "card",
+      "power": 0.084,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "sky_walker",
+      "kind": "card",
+      "power": 0.081,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "sprint_training",
+      "kind": "card",
+      "power": 0.08,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "platform_drills",
+      "kind": "card",
+      "power": 0.079,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "setter_duo",
+      "kind": "card",
+      "power": 0.078,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "iron_body",
+      "kind": "card",
+      "power": 0.077,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "rookie_grit",
+      "kind": "card",
+      "power": 0.076,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "line_judge",
+      "kind": "card",
+      "power": 0.074,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "clutch_training",
+      "kind": "card",
+      "power": 0.073,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "jet_setter",
+      "kind": "card",
+      "power": 0.072,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "quick_feet",
+      "kind": "card",
+      "power": 0.07,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "playmaker",
+      "kind": "card",
+      "power": 0.068,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "cannon_arm",
+      "kind": "card",
+      "power": 0.067,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "servers_wrist",
+      "kind": "card",
+      "power": 0.067,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "stamina",
+      "kind": "card",
+      "power": 0.065,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "juggernaut",
+      "kind": "card",
+      "power": 0.064,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "wall_practice",
+      "kind": "card",
+      "power": 0.063,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "block_party",
+      "kind": "card",
+      "power": 0.063,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "marathon",
+      "kind": "card",
+      "power": 0.062,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "net_rusher",
+      "kind": "card",
+      "power": 0.062,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "float_master",
+      "kind": "card",
+      "power": 0.06,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "spring_loaded",
+      "kind": "card",
+      "power": 0.059,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "big_blocker",
+      "kind": "card",
+      "power": 0.059,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "setter_sync",
+      "kind": "card",
+      "power": 0.057,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "toss_practice",
+      "kind": "card",
+      "power": 0.036,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "meteor_serve",
+      "kind": "perk",
+      "power": 0.14,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "blizzard",
+      "kind": "perk",
+      "power": 0.14,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tectonic_slam",
+      "kind": "perk",
+      "power": 0.137,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "chain_lightning",
+      "kind": "perk",
+      "power": 0.137,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "aura_burst",
+      "kind": "perk",
+      "power": 0.126,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "titan_slam",
+      "kind": "perk",
+      "power": 0.119,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "time_stop_set",
+      "kind": "perk",
+      "power": 0.118,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "rally_master",
+      "kind": "perk",
+      "power": 0.116,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "cyclone_spike",
+      "kind": "perk",
+      "power": 0.115,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "gravity_well",
+      "kind": "perk",
+      "power": 0.115,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "shadow_ball",
+      "kind": "perk",
+      "power": 0.11,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "read_the_play",
+      "kind": "perk",
+      "power": 0.11,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "shadow_step",
+      "kind": "perk",
+      "power": 0.11,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "wildfire",
+      "kind": "perk",
+      "power": 0.11,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "thunder_god",
+      "kind": "perk",
+      "power": 0.109,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "zigzag_spike",
+      "kind": "perk",
+      "power": 0.107,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "spirit_serve",
+      "kind": "perk",
+      "power": 0.105,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "starfall",
+      "kind": "perk",
+      "power": 0.105,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tornado_set",
+      "kind": "perk",
+      "power": 0.103,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tempo_master",
+      "kind": "perk",
+      "power": 0.102,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "counter_attack",
+      "kind": "perk",
+      "power": 0.099,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "hercules_block",
+      "kind": "perk",
+      "power": 0.099,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "avalanche",
+      "kind": "perk",
+      "power": 0.099,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "afterburner",
+      "kind": "perk",
+      "power": 0.098,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tsunami_spike",
+      "kind": "perk",
+      "power": 0.097,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "nine_tails",
+      "kind": "perk",
+      "power": 0.096,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "eclipse",
+      "kind": "perk",
+      "power": 0.094,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "cold_snap",
+      "kind": "perk",
+      "power": 0.092,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "solar_flare",
+      "kind": "perk",
+      "power": 0.09,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "earthquake_serve",
+      "kind": "perk",
+      "power": 0.09,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "heat_haze",
+      "kind": "perk",
+      "power": 0.09,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "holy_lance",
+      "kind": "perk",
+      "power": 0.089,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "firestorm",
+      "kind": "perk",
+      "power": 0.089,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "typhoon_serve",
+      "kind": "perk",
+      "power": 0.088,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "last_breath",
+      "kind": "perk",
+      "power": 0.088,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "starlight_finale",
+      "kind": "perk",
+      "power": 0.087,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "guardian_wall",
+      "kind": "perk",
+      "power": 0.086,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "ember_tip",
+      "kind": "perk",
+      "power": 0.085,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "flow_state",
+      "kind": "perk",
+      "power": 0.085,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "bank_shot",
+      "kind": "perk",
+      "power": 0.084,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tengu_gale",
+      "kind": "perk",
+      "power": 0.083,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tidal_wall",
+      "kind": "perk",
+      "power": 0.082,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "feint_tip",
+      "kind": "perk",
+      "power": 0.082,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "phantom_serve",
+      "kind": "perk",
+      "power": 0.081,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "shadow_clone",
+      "kind": "perk",
+      "power": 0.08,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "cut_in_spike",
+      "kind": "perk",
+      "power": 0.079,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "monster_block",
+      "kind": "perk",
+      "power": 0.078,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "firefly_swarm",
+      "kind": "perk",
+      "power": 0.077,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "thunderclap",
+      "kind": "perk",
+      "power": 0.076,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "afterimage",
+      "kind": "perk",
+      "power": 0.076,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "guiding_light",
+      "kind": "perk",
+      "power": 0.076,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "second_breath",
+      "kind": "perk",
+      "power": 0.076,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "mirror_image",
+      "kind": "perk",
+      "power": 0.075,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "lightning_rod",
+      "kind": "perk",
+      "power": 0.075,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tidal_surge",
+      "kind": "perk",
+      "power": 0.075,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "winters_patience",
+      "kind": "perk",
+      "power": 0.073,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "abyss_spike",
+      "kind": "perk",
+      "power": 0.072,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "inferno_aura",
+      "kind": "perk",
+      "power": 0.071,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tailwind",
+      "kind": "perk",
+      "power": 0.071,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "radiant_guard",
+      "kind": "perk",
+      "power": 0.071,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "iron_curtain",
+      "kind": "perk",
+      "power": 0.071,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "updraft_set",
+      "kind": "perk",
+      "power": 0.071,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "meteor_smash",
+      "kind": "perk",
+      "power": 0.07,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "echo_tip",
+      "kind": "perk",
+      "power": 0.07,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tailwind_rush",
+      "kind": "perk",
+      "power": 0.07,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "frost_nova",
+      "kind": "perk",
+      "power": 0.069,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "scorched_earth",
+      "kind": "perk",
+      "power": 0.067,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tidal_arc",
+      "kind": "perk",
+      "power": 0.067,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "kaiju_leap",
+      "kind": "perk",
+      "power": 0.067,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "spirit_bond",
+      "kind": "perk",
+      "power": 0.067,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "moon_set",
+      "kind": "perk",
+      "power": 0.066,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "mud_trap",
+      "kind": "perk",
+      "power": 0.066,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "overclock",
+      "kind": "perk",
+      "power": 0.066,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "spring_heels",
+      "kind": "perk",
+      "power": 0.066,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "chill_touch",
+      "kind": "perk",
+      "power": 0.066,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "kings_roar",
+      "kind": "perk",
+      "power": 0.066,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "underdog",
+      "kind": "perk",
+      "power": 0.065,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "sunburst_serve",
+      "kind": "perk",
+      "power": 0.065,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "back_set",
+      "kind": "perk",
+      "power": 0.064,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "storm_serve",
+      "kind": "perk",
+      "power": 0.063,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "gravity_drop",
+      "kind": "perk",
+      "power": 0.063,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "volcano_slam",
+      "kind": "perk",
+      "power": 0.063,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "stamina_war",
+      "kind": "perk",
+      "power": 0.063,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "dipping_serve",
+      "kind": "perk",
+      "power": 0.062,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "phoenix_dive",
+      "kind": "perk",
+      "power": 0.06,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "slippery_ice",
+      "kind": "perk",
+      "power": 0.06,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "mist_veil",
+      "kind": "perk",
+      "power": 0.059,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "second_wind",
+      "kind": "perk",
+      "power": 0.059,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "boar_rush",
+      "kind": "perk",
+      "power": 0.059,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "dragonfly_dart",
+      "kind": "perk",
+      "power": 0.059,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "cannonball_serve",
+      "kind": "perk",
+      "power": 0.058,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tidal_rhythm",
+      "kind": "perk",
+      "power": 0.058,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "ice_wall",
+      "kind": "perk",
+      "power": 0.057,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "line_shot",
+      "kind": "perk",
+      "power": 0.057,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "ace_instinct",
+      "kind": "perk",
+      "power": 0.057,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "umbral_block",
+      "kind": "perk",
+      "power": 0.057,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "foxfire_feint",
+      "kind": "perk",
+      "power": 0.057,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "featherweight",
+      "kind": "perk",
+      "power": 0.056,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "phantom_block",
+      "kind": "perk",
+      "power": 0.055,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "quake_spike",
+      "kind": "perk",
+      "power": 0.054,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "boulder_serve",
+      "kind": "perk",
+      "power": 0.054,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "lantern_light",
+      "kind": "perk",
+      "power": 0.054,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "undertow",
+      "kind": "perk",
+      "power": 0.051,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "iron_will",
+      "kind": "perk",
+      "power": 0.051,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "skyhook",
+      "kind": "perk",
+      "power": 0.051,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "dink_master",
+      "kind": "perk",
+      "power": 0.051,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "permafrost",
+      "kind": "perk",
+      "power": 0.05,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "night_serve",
+      "kind": "perk",
+      "power": 0.05,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "lightning_step",
+      "kind": "perk",
+      "power": 0.05,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "rebirth_flame",
+      "kind": "perk",
+      "power": 0.05,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "overdrive",
+      "kind": "perk",
+      "power": 0.049,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tidal_pull",
+      "kind": "perk",
+      "power": 0.049,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "hot_streak",
+      "kind": "perk",
+      "power": 0.048,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "aftershock",
+      "kind": "perk",
+      "power": 0.048,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "ice_skates",
+      "kind": "perk",
+      "power": 0.048,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "splash_block",
+      "kind": "perk",
+      "power": 0.048,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "chest_pound",
+      "kind": "perk",
+      "power": 0.048,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "thunder_serve",
+      "kind": "perk",
+      "power": 0.047,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "overheat",
+      "kind": "perk",
+      "power": 0.047,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "shuriken_serve",
+      "kind": "perk",
+      "power": 0.047,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "stone_skin",
+      "kind": "perk",
+      "power": 0.046,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "sharpshooter",
+      "kind": "perk",
+      "power": 0.046,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "frost_serve",
+      "kind": "perk",
+      "power": 0.045,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "gale_serve",
+      "kind": "perk",
+      "power": 0.045,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "zone_focus",
+      "kind": "perk",
+      "power": 0.045,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "blaze_spike",
+      "kind": "perk",
+      "power": 0.044,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "quick_set",
+      "kind": "perk",
+      "power": 0.044,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "frost_fang",
+      "kind": "perk",
+      "power": 0.043,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "smoke_bomb",
+      "kind": "perk",
+      "power": 0.043,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "voltage",
+      "kind": "perk",
+      "power": 0.042,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "wind_tip",
+      "kind": "perk",
+      "power": 0.041,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "ripple_dig",
+      "kind": "perk",
+      "power": 0.041,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "beetle_horn",
+      "kind": "perk",
+      "power": 0.041,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "frozen_block",
+      "kind": "perk",
+      "power": 0.04,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "swerve_tip",
+      "kind": "perk",
+      "power": 0.04,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "radiant_set",
+      "kind": "perk",
+      "power": 0.04,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "glacier_body",
+      "kind": "perk",
+      "power": 0.04,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "momentum",
+      "kind": "perk",
+      "power": 0.04,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "shock_tip",
+      "kind": "perk",
+      "power": 0.04,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "flame_serve",
+      "kind": "perk",
+      "power": 0.039,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "halo_dig",
+      "kind": "perk",
+      "power": 0.038,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "shade_dig",
+      "kind": "perk",
+      "power": 0.038,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "glint",
+      "kind": "perk",
+      "power": 0.038,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "tusk_serve",
+      "kind": "perk",
+      "power": 0.037,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "bedrock_block",
+      "kind": "perk",
+      "power": 0.034,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "libero_dive",
+      "kind": "perk",
+      "power": 0.034,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "jump_float",
+      "kind": "perk",
+      "power": 0.034,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "grounded_receive",
+      "kind": "perk",
+      "power": 0.033,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "iron_serve",
+      "kind": "perk",
+      "power": 0.032,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "lightning_reflex",
+      "kind": "perk",
+      "power": 0.031,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "clutch_gene",
+      "kind": "perk",
+      "power": 0.03,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "collector",
+      "kind": "perk",
+      "power": 0.023,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "rival_spirit",
+      "kind": "perk",
+      "power": 0.02,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    },
+    {
+      "id": "showboat",
+      "kind": "perk",
+      "power": 0.01,
+      "verified": "tools/draft.py power --round 3 --n 150 (base 0.535)"
+    }
+  ],
+  "packages": [
+    {
+      "team": "kagaribi",
+      "perks": [
+        "flame_serve",
+        "rebirth_flame",
+        "thunderclap"
+      ],
+      "cards": [
+        "plyometrics",
+        "deep_defender"
+      ],
+      "sim_win": 0.812,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kagaribi",
+      "perks": [
+        "rebirth_flame",
+        "volcano_slam",
+        "cold_snap"
+      ],
+      "cards": [
+        "featherstep",
+        "playmaker"
+      ],
+      "sim_win": 0.81,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kagaribi",
+      "perks": [
+        "heat_haze",
+        "inferno_aura",
+        "frozen_block"
+      ],
+      "cards": [
+        "utility_player",
+        "stamina"
+      ],
+      "sim_win": 0.797,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hyoga",
+      "perks": [
+        "frost_serve",
+        "slippery_ice",
+        "overdrive"
+      ],
+      "cards": [
+        "overload",
+        "plyometrics"
+      ],
+      "sim_win": 0.789,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hyoga",
+      "perks": [
+        "winters_patience",
+        "frozen_block",
+        "ripple_dig"
+      ],
+      "cards": [
+        "daredevil",
+        "sprint_training"
+      ],
+      "sim_win": 0.799,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hyoga",
+      "perks": [
+        "cold_snap",
+        "frost_fang",
+        "boulder_serve"
+      ],
+      "cards": [
+        "deep_defender",
+        "quick_feet"
+      ],
+      "sim_win": 0.822,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "raijin",
+      "perks": [
+        "lightning_rod",
+        "shock_tip",
+        "tsunami_spike"
+      ],
+      "cards": [
+        "sprint_training",
+        "servers_wrist"
+      ],
+      "sim_win": 0.799,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "raijin",
+      "perks": [
+        "lightning_reflex",
+        "thunder_serve",
+        "gravity_drop"
+      ],
+      "cards": [
+        "ace_hunter",
+        "track_star"
+      ],
+      "sim_win": 0.815,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "raijin",
+      "perks": [
+        "thunderclap",
+        "lightning_reflex",
+        "line_shot"
+      ],
+      "cards": [
+        "setters_eye",
+        "liberos_instinct"
+      ],
+      "sim_win": 0.813,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fujin",
+      "perks": [
+        "typhoon_serve",
+        "wind_tip",
+        "afterburner"
+      ],
+      "cards": [
+        "net_rusher",
+        "stamina"
+      ],
+      "sim_win": 0.824,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fujin",
+      "perks": [
+        "dipping_serve",
+        "updraft_set",
+        "stamina_war"
+      ],
+      "cards": [
+        "juggernaut",
+        "plyometrics"
+      ],
+      "sim_win": 0.788,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fujin",
+      "perks": [
+        "swerve_tip",
+        "jump_float",
+        "bank_shot"
+      ],
+      "cards": [
+        "ace_hunter",
+        "quick_feet"
+      ],
+      "sim_win": 0.789,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kaien",
+      "perks": [
+        "tidal_arc",
+        "tidal_wall",
+        "beetle_horn"
+      ],
+      "cards": [
+        "float_master",
+        "anchor"
+      ],
+      "sim_win": 0.816,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kaien",
+      "perks": [
+        "mirror_image",
+        "ripple_dig",
+        "guardian_wall"
+      ],
+      "cards": [
+        "power_drills",
+        "plyometrics"
+      ],
+      "sim_win": 0.801,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kaien",
+      "perks": [
+        "mist_veil",
+        "undertow",
+        "tengu_gale"
+      ],
+      "cards": [
+        "overload",
+        "setter_sync"
+      ],
+      "sim_win": 0.817,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "iwao",
+      "perks": [
+        "grounded_receive",
+        "stone_skin",
+        "echo_tip"
+      ],
+      "cards": [
+        "iron_wall",
+        "tank"
+      ],
+      "sim_win": 0.815,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "iwao",
+      "perks": [
+        "boar_rush",
+        "grounded_receive",
+        "mist_veil"
+      ],
+      "cards": [
+        "featherstep",
+        "iron_wall"
+      ],
+      "sim_win": 0.824,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "iwao",
+      "perks": [
+        "mud_trap",
+        "tusk_serve",
+        "hercules_block"
+      ],
+      "cards": [
+        "quick_hands",
+        "block_party"
+      ],
+      "sim_win": 0.815,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "yomi",
+      "perks": [
+        "shade_dig",
+        "night_serve",
+        "counter_attack"
+      ],
+      "cards": [
+        "rookie_grit",
+        "all_rounder"
+      ],
+      "sim_win": 0.792,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "yomi",
+      "perks": [
+        "shade_dig",
+        "shadow_clone",
+        "tidal_pull"
+      ],
+      "cards": [
+        "platform_drills",
+        "featherstep"
+      ],
+      "sim_win": 0.822,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "yomi",
+      "perks": [
+        "feint_tip",
+        "umbral_block",
+        "firestorm"
+      ],
+      "cards": [
+        "block_party",
+        "jet_setter"
+      ],
+      "sim_win": 0.81,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "amaterasu",
+      "perks": [
+        "glint",
+        "firefly_swarm",
+        "holy_lance"
+      ],
+      "cards": [
+        "track_star",
+        "stamina"
+      ],
+      "sim_win": 0.818,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "amaterasu",
+      "perks": [
+        "starlight_finale",
+        "starfall",
+        "wind_tip"
+      ],
+      "cards": [
+        "sky_walker",
+        "stamina"
+      ],
+      "sim_win": 0.792,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "amaterasu",
+      "perks": [
+        "solar_flare",
+        "guiding_light",
+        "frost_nova"
+      ],
+      "cards": [
+        "marathon",
+        "net_rusher"
+      ],
+      "sim_win": 0.816,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "sakuradai",
+      "perks": [
+        "back_set",
+        "tailwind",
+        "stone_skin"
+      ],
+      "cards": [
+        "iron_wall",
+        "jet_setter"
+      ],
+      "sim_win": 0.815,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "sakuradai",
+      "perks": [
+        "jump_float",
+        "updraft_set",
+        "afterburner"
+      ],
+      "cards": [
+        "platform_drills",
+        "marathon"
+      ],
+      "sim_win": 0.818,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "sakuradai",
+      "perks": [
+        "spring_heels",
+        "back_set",
+        "lightning_rod"
+      ],
+      "cards": [
+        "playmaker",
+        "track_star"
+      ],
+      "sim_win": 0.819,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kaminari",
+      "perks": [
+        "thunderclap",
+        "shock_tip",
+        "rally_master"
+      ],
+      "cards": [
+        "block_party",
+        "platform_drills"
+      ],
+      "sim_win": 0.813,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kaminari",
+      "perks": [
+        "thunder_god",
+        "shock_tip",
+        "phantom_serve"
+      ],
+      "cards": [
+        "juggernaut",
+        "rookie_grit"
+      ],
+      "sim_win": 0.804,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kaminari",
+      "perks": [
+        "zigzag_spike",
+        "lightning_reflex",
+        "guardian_wall"
+      ],
+      "cards": [
+        "setter_sync",
+        "rookie_grit"
+      ],
+      "sim_win": 0.818,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hinode",
+      "perks": [
+        "blaze_spike",
+        "heat_haze",
+        "cyclone_spike"
+      ],
+      "cards": [
+        "jet_setter",
+        "setter_sync"
+      ],
+      "sim_win": 0.823,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hinode",
+      "perks": [
+        "heat_haze",
+        "firestorm",
+        "stone_skin"
+      ],
+      "cards": [
+        "servers_wrist",
+        "juggernaut"
+      ],
+      "sim_win": 0.792,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hinode",
+      "perks": [
+        "ember_tip",
+        "inferno_aura",
+        "clutch_gene"
+      ],
+      "cards": [
+        "deep_defender",
+        "tower"
+      ],
+      "sim_win": 0.824,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "yukimura",
+      "perks": [
+        "ice_wall",
+        "winters_patience",
+        "halo_dig"
+      ],
+      "cards": [
+        "overload",
+        "stamina"
+      ],
+      "sim_win": 0.811,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "yukimura",
+      "perks": [
+        "winters_patience",
+        "ice_skates",
+        "cyclone_spike"
+      ],
+      "cards": [
+        "rookie_grit",
+        "float_master"
+      ],
+      "sim_win": 0.82,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "yukimura",
+      "perks": [
+        "winters_patience",
+        "ice_wall",
+        "chest_pound"
+      ],
+      "cards": [
+        "all_in",
+        "playmaker"
+      ],
+      "sim_win": 0.822,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "ryujin",
+      "perks": [
+        "tidal_wall",
+        "mirror_image",
+        "chest_pound"
+      ],
+      "cards": [
+        "playmaker",
+        "servers_wrist"
+      ],
+      "sim_win": 0.791,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "ryujin",
+      "perks": [
+        "tidal_arc",
+        "ripple_dig",
+        "phoenix_dive"
+      ],
+      "cards": [
+        "stamina",
+        "tank"
+      ],
+      "sim_win": 0.821,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "ryujin",
+      "perks": [
+        "mirror_image",
+        "tsunami_spike",
+        "glacier_body"
+      ],
+      "cards": [
+        "jet_setter",
+        "stamina"
+      ],
+      "sim_win": 0.806,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "mugen",
+      "perks": [
+        "shadow_clone",
+        "last_breath",
+        "stone_skin"
+      ],
+      "cards": [
+        "wall_practice",
+        "spike_specialist"
+      ],
+      "sim_win": 0.803,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "mugen",
+      "perks": [
+        "shadow_ball",
+        "smoke_bomb",
+        "eclipse"
+      ],
+      "cards": [
+        "cannon_arm",
+        "spring_loaded"
+      ],
+      "sim_win": 0.822,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "mugen",
+      "perks": [
+        "night_serve",
+        "feint_tip",
+        "shade_dig"
+      ],
+      "cards": [
+        "tower",
+        "clutch_training"
+      ],
+      "sim_win": 0.801,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hoshikuzu",
+      "perks": [
+        "radiant_set",
+        "firefly_swarm",
+        "spring_heels"
+      ],
+      "cards": [
+        "float_master",
+        "all_in"
+      ],
+      "sim_win": 0.814,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hoshikuzu",
+      "perks": [
+        "glint",
+        "holy_lance",
+        "second_wind"
+      ],
+      "cards": [
+        "anchor",
+        "wall_practice"
+      ],
+      "sim_win": 0.783,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hoshikuzu",
+      "perks": [
+        "starlight_finale",
+        "sunburst_serve",
+        "winters_patience"
+      ],
+      "cards": [
+        "power_drills",
+        "block_party"
+      ],
+      "sim_win": 0.788,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "oni",
+      "perks": [
+        "volcano_slam",
+        "phoenix_dive",
+        "back_set"
+      ],
+      "cards": [
+        "iron_body",
+        "power_drills"
+      ],
+      "sim_win": 0.792,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "oni",
+      "perks": [
+        "rebirth_flame",
+        "inferno_aura",
+        "mud_trap"
+      ],
+      "cards": [
+        "sky_walker",
+        "setter_duo"
+      ],
+      "sim_win": 0.818,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "oni",
+      "perks": [
+        "scorched_earth",
+        "blaze_spike",
+        "gravity_well"
+      ],
+      "cards": [
+        "net_rusher",
+        "setter_sync"
+      ],
+      "sim_win": 0.812,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kumo",
+      "perks": [
+        "nine_tails",
+        "foxfire_feint",
+        "beetle_horn"
+      ],
+      "cards": [
+        "utility_player",
+        "servers_wrist"
+      ],
+      "sim_win": 0.806,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kumo",
+      "perks": [
+        "shadow_clone",
+        "shade_dig",
+        "ice_wall"
+      ],
+      "cards": [
+        "deep_defender",
+        "spike_specialist"
+      ],
+      "sim_win": 0.791,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kumo",
+      "perks": [
+        "shadow_step",
+        "foxfire_feint",
+        "cut_in_spike"
+      ],
+      "cards": [
+        "cannon_arm",
+        "net_rusher"
+      ],
+      "sim_win": 0.812,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tsunagi",
+      "perks": [
+        "earthquake_serve",
+        "boar_rush",
+        "collector"
+      ],
+      "cards": [
+        "all_in",
+        "quick_feet"
+      ],
+      "sim_win": 0.786,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tsunagi",
+      "perks": [
+        "boulder_serve",
+        "boar_rush",
+        "updraft_set"
+      ],
+      "cards": [
+        "stamina",
+        "quick_hands"
+      ],
+      "sim_win": 0.824,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tsunagi",
+      "perks": [
+        "stone_skin",
+        "boulder_serve",
+        "shade_dig"
+      ],
+      "cards": [
+        "tank",
+        "all_rounder"
+      ],
+      "sim_win": 0.823,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fukurou",
+      "perks": [
+        "skyhook",
+        "solar_flare",
+        "chill_touch"
+      ],
+      "cards": [
+        "tower",
+        "float_master"
+      ],
+      "sim_win": 0.802,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fukurou",
+      "perks": [
+        "starlight_finale",
+        "guardian_wall",
+        "frost_fang"
+      ],
+      "cards": [
+        "cannon_arm",
+        "deep_defender"
+      ],
+      "sim_win": 0.82,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fukurou",
+      "perks": [
+        "halo_dig",
+        "read_the_play",
+        "kings_roar"
+      ],
+      "cards": [
+        "block_party",
+        "juggernaut"
+      ],
+      "sim_win": 0.781,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tako",
+      "perks": [
+        "tidal_wall",
+        "tidal_pull",
+        "foxfire_feint"
+      ],
+      "cards": [
+        "rookie_grit",
+        "iron_wall"
+      ],
+      "sim_win": 0.814,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tako",
+      "perks": [
+        "undertow",
+        "mist_veil",
+        "holy_lance"
+      ],
+      "cards": [
+        "setter_sync",
+        "track_star"
+      ],
+      "sim_win": 0.814,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tako",
+      "perks": [
+        "tidal_surge",
+        "mirror_image",
+        "wind_tip"
+      ],
+      "cards": [
+        "tower",
+        "quick_feet"
+      ],
+      "sim_win": 0.814,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "byakko",
+      "perks": [
+        "quick_set",
+        "lightning_rod",
+        "spirit_serve"
+      ],
+      "cards": [
+        "wall_practice",
+        "sky_walker"
+      ],
+      "sim_win": 0.806,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "byakko",
+      "perks": [
+        "lightning_rod",
+        "thunderclap",
+        "shade_dig"
+      ],
+      "cards": [
+        "tank",
+        "servers_wrist"
+      ],
+      "sim_win": 0.807,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "byakko",
+      "perks": [
+        "thunderclap",
+        "lightning_reflex",
+        "earthquake_serve"
+      ],
+      "cards": [
+        "juggernaut",
+        "quick_hands"
+      ],
+      "sim_win": 0.816,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "iwagami",
+      "perks": [
+        "mud_trap",
+        "iron_serve",
+        "gravity_drop"
+      ],
+      "cards": [
+        "second_gear",
+        "wall_practice"
+      ],
+      "sim_win": 0.796,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "iwagami",
+      "perks": [
+        "quake_spike",
+        "stamina_war",
+        "ember_tip"
+      ],
+      "cards": [
+        "sprint_training",
+        "iron_body"
+      ],
+      "sim_win": 0.817,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "iwagami",
+      "perks": [
+        "mud_trap",
+        "bedrock_block",
+        "flame_serve"
+      ],
+      "cards": [
+        "overload",
+        "plyometrics"
+      ],
+      "sim_win": 0.811,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kitsune",
+      "perks": [
+        "night_serve",
+        "eclipse",
+        "echo_tip"
+      ],
+      "cards": [
+        "setter_sync",
+        "platform_drills"
+      ],
+      "sim_win": 0.807,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kitsune",
+      "perks": [
+        "shuriken_serve",
+        "shade_dig",
+        "ice_wall"
+      ],
+      "cards": [
+        "second_gear",
+        "setter_sync"
+      ],
+      "sim_win": 0.797,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kitsune",
+      "perks": [
+        "umbral_block",
+        "shadow_step",
+        "wind_tip"
+      ],
+      "cards": [
+        "berserker",
+        "wall_practice"
+      ],
+      "sim_win": 0.819,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "karasu",
+      "perks": [
+        "back_set",
+        "tengu_gale",
+        "zigzag_spike"
+      ],
+      "cards": [
+        "power_drills",
+        "toss_practice"
+      ],
+      "sim_win": 0.799,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "karasu",
+      "perks": [
+        "spring_heels",
+        "gale_serve",
+        "echo_tip"
+      ],
+      "cards": [
+        "toss_practice",
+        "daredevil"
+      ],
+      "sim_win": 0.801,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "karasu",
+      "perks": [
+        "updraft_set",
+        "back_set",
+        "grounded_receive"
+      ],
+      "cards": [
+        "quick_hands",
+        "servers_wrist"
+      ],
+      "sim_win": 0.806,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fubuki",
+      "perks": [
+        "frost_fang",
+        "slippery_ice",
+        "phantom_serve"
+      ],
+      "cards": [
+        "liberos_instinct",
+        "clutch_training"
+      ],
+      "sim_win": 0.824,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fubuki",
+      "perks": [
+        "slippery_ice",
+        "cold_snap",
+        "thunderclap"
+      ],
+      "cards": [
+        "clutch_training",
+        "cannon_arm"
+      ],
+      "sim_win": 0.801,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "fubuki",
+      "perks": [
+        "frost_fang",
+        "frozen_block",
+        "tidal_surge"
+      ],
+      "cards": [
+        "setters_eye",
+        "rookie_grit"
+      ],
+      "sim_win": 0.808,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kabuto",
+      "perks": [
+        "overdrive",
+        "phantom_serve",
+        "stamina_war"
+      ],
+      "cards": [
+        "stamina",
+        "setters_eye"
+      ],
+      "sim_win": 0.807,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kabuto",
+      "perks": [
+        "phantom_serve",
+        "ace_instinct",
+        "scorched_earth"
+      ],
+      "cards": [
+        "spring_loaded",
+        "anchor"
+      ],
+      "sim_win": 0.824,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kabuto",
+      "perks": [
+        "afterimage",
+        "echo_tip",
+        "flow_state"
+      ],
+      "cards": [
+        "clutch_training",
+        "big_blocker"
+      ],
+      "sim_win": 0.79,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "shishi",
+      "perks": [
+        "titan_slam",
+        "kings_roar",
+        "ripple_dig"
+      ],
+      "cards": [
+        "clutch_training",
+        "stamina"
+      ],
+      "sim_win": 0.812,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "shishi",
+      "perks": [
+        "kaiju_leap",
+        "chest_pound",
+        "phoenix_dive"
+      ],
+      "cards": [
+        "playmaker",
+        "featherstep"
+      ],
+      "sim_win": 0.815,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "shishi",
+      "perks": [
+        "second_wind",
+        "chest_pound",
+        "voltage"
+      ],
+      "cards": [
+        "platform_drills",
+        "second_gear"
+      ],
+      "sim_win": 0.811,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "inoshishi",
+      "perks": [
+        "quake_spike",
+        "bedrock_block",
+        "tidal_rhythm"
+      ],
+      "cards": [
+        "tower",
+        "featherstep"
+      ],
+      "sim_win": 0.82,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "inoshishi",
+      "perks": [
+        "earthquake_serve",
+        "quake_spike",
+        "iron_will"
+      ],
+      "cards": [
+        "anchor",
+        "clutch_training"
+      ],
+      "sim_win": 0.82,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "inoshishi",
+      "perks": [
+        "iron_serve",
+        "tusk_serve",
+        "eclipse"
+      ],
+      "cards": [
+        "sprint_training",
+        "overload"
+      ],
+      "sim_win": 0.821,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hinotori",
+      "perks": [
+        "scorched_earth",
+        "afterburner",
+        "featherweight"
+      ],
+      "cards": [
+        "servers_wrist",
+        "power_drills"
+      ],
+      "sim_win": 0.789,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hinotori",
+      "perks": [
+        "rebirth_flame",
+        "phoenix_dive",
+        "boulder_serve"
+      ],
+      "cards": [
+        "power_drills",
+        "deep_defender"
+      ],
+      "sim_win": 0.814,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hinotori",
+      "perks": [
+        "volcano_slam",
+        "ember_tip",
+        "stamina_war"
+      ],
+      "cards": [
+        "jet_setter",
+        "spring_loaded"
+      ],
+      "sim_win": 0.807,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "unagi",
+      "perks": [
+        "thunder_serve",
+        "lightning_step",
+        "flame_serve"
+      ],
+      "cards": [
+        "track_star",
+        "featherstep"
+      ],
+      "sim_win": 0.825,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "unagi",
+      "perks": [
+        "thunderclap",
+        "quick_set",
+        "mirror_image"
+      ],
+      "cards": [
+        "wall_practice",
+        "all_rounder"
+      ],
+      "sim_win": 0.805,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "unagi",
+      "perks": [
+        "shock_tip",
+        "thunder_god",
+        "starlight_finale"
+      ],
+      "cards": [
+        "cannon_arm",
+        "clutch_training"
+      ],
+      "sim_win": 0.782,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kongo",
+      "perks": [
+        "rally_master",
+        "echo_tip",
+        "lightning_reflex"
+      ],
+      "cards": [
+        "playmaker",
+        "setter_sync"
+      ],
+      "sim_win": 0.795,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kongo",
+      "perks": [
+        "monster_block",
+        "iron_will",
+        "cannonball_serve"
+      ],
+      "cards": [
+        "sprint_training",
+        "setter_duo"
+      ],
+      "sim_win": 0.802,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kongo",
+      "perks": [
+        "second_wind",
+        "zone_focus",
+        "shadow_step"
+      ],
+      "cards": [
+        "quick_feet",
+        "line_judge"
+      ],
+      "sim_win": 0.819,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tombo",
+      "perks": [
+        "tengu_gale",
+        "tailwind_rush",
+        "solar_flare"
+      ],
+      "cards": [
+        "big_blocker",
+        "net_rusher"
+      ],
+      "sim_win": 0.797,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tombo",
+      "perks": [
+        "gale_serve",
+        "back_set",
+        "lantern_light"
+      ],
+      "cards": [
+        "marathon",
+        "daredevil"
+      ],
+      "sim_win": 0.823,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "tombo",
+      "perks": [
+        "jump_float",
+        "cyclone_spike",
+        "libero_dive"
+      ],
+      "cards": [
+        "platform_drills",
+        "glass_cannon"
+      ],
+      "sim_win": 0.775,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hotaru",
+      "perks": [
+        "spirit_bond",
+        "skyhook",
+        "second_breath"
+      ],
+      "cards": [
+        "featherstep",
+        "cannon_arm"
+      ],
+      "sim_win": 0.816,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hotaru",
+      "perks": [
+        "spirit_bond",
+        "radiant_set",
+        "frost_serve"
+      ],
+      "cards": [
+        "iron_body",
+        "tank"
+      ],
+      "sim_win": 0.814,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "hotaru",
+      "perks": [
+        "guiding_light",
+        "starlight_finale",
+        "tengu_gale"
+      ],
+      "cards": [
+        "big_blocker",
+        "setter_sync"
+      ],
+      "sim_win": 0.785,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kage",
+      "perks": [
+        "night_serve",
+        "shadow_step",
+        "underdog"
+      ],
+      "cards": [
+        "big_blocker",
+        "block_party"
+      ],
+      "sim_win": 0.807,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kage",
+      "perks": [
+        "eclipse",
+        "phantom_block",
+        "moon_set"
+      ],
+      "cards": [
+        "clutch_training",
+        "wall_practice"
+      ],
+      "sim_win": 0.798,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    },
+    {
+      "team": "kage",
+      "perks": [
+        "phantom_block",
+        "feint_tip",
+        "phoenix_dive"
+      ],
+      "cards": [
+        "featherstep",
+        "marathon"
+      ],
+      "sim_win": 0.82,
+      "verified": "tools/draft.py build, field win at round 3, n 150"
+    }
+  ]
+}

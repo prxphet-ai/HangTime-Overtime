@@ -876,7 +876,52 @@ Modes:
 - Fixed while testing: the champions bracket said CLASSIC (the cup flag is cleared when the win screen loads); the
   bracket now keeps the cup's day from kick-off.
 
+### Feature 11 — draft tournament (done)
+- **DRAFT** (title bar, `src/Patches/DraftMenu.cs`): three teams side by side, each with 3 abilities (rarity, element,
+  rules text) and 2 stat cards, plus a strength bar from the simulator. PICK one: an 8-match **draft cup** (the daily
+  cup's machinery with a random seed: one team per bracket slot, none twice, Classic difficulty) where every opponent has
+  drafted too (3 extra perks, aimed at the perk part of a package's strength; "DRAFTED: ..." bubble). The drafted team is
+  on the left banner and in the bracket ("DRAFT CUP · KAGE NINJAS"). The deal stays the same until a pick; CONTINUE
+  resumes a saved draft cup (run slot `draft`). Records: drafts played, cups won, a Draft streak (stats page too).
+- **Balance with the simulator** (`tools/draft.py`, `sheets/draft.json`):
+  1. `power`: every Overtime perk and stat card alone on a fresh player, field win-rate gain over all 44 teams at round
+     3 (n 150). Base 53.5%; perk median +6.5%, card median +8.1%.
+  2. Summing powers wasn't enough: 12 drafts dealt to the same summed power (0.36) played 64-88%, worst spread
+     inside a draft 22%. So `build` plays every candidate package and keeps the ones within 80% +- 2.5%: **102 packages,
+     3 per team, 77.5-82.5%**. The game deals one package for each of three different teams.
+  3. `check` replays 12 random drafts from the packages with new seeds: mean 80.8%, every option 78.0-83.0%, spread
+     inside a draft median 2.1%, worst 3.9%.
+  Re-run `power`, then `build`, after changing perks, cards or the simulator.
+- **Online, where it makes sense**: Versus has **DRAFT START** (next to the mode tabs, host's choice): before round 1
+  each side's first player picks one of three drafted teams on the round-screen overlay (synced to the other PC like the
+  between-round picks); the team becomes the side's team (banner) and its build. The draft cup itself is single player.
+- **Tested**: DRAFT screen (Hinode Sparks / Kage Ninjas / Fubuki Wolves, strength shown); picked Kage Ninjas: banner,
+  opponent "drafted Quick Set, Lightning Rod, Second Breath", F6 -> bracket "DRAFT CUP · KAGE NINJAS", F7 -> draft loss,
+  save cleared. Local 2v2 with DRAFT START: P1 drafted Tako Tentacles, P3 Hinotori Phoenix, the match loaded. Online
+  (host + client on this PC): the client's player drafted Amaterasu Royals on their own PC, both screens showed the
+  Hotaru / Amaterasu banners, rounds went on. 0 errors.
+- Fixed while testing: a game team's in-match name can be shorter than its prefab ("Kozuki" vs "Kozuki Dan"): the cup
+  lineup and the collection now use the right one each.
+
+### Feature 12 — individual picks in co-op and team modes (done)
+- **Rule** (`src/Engine/Ownership.cs`): a perk belongs to the player who picked it. Its triggers that are a character's
+  own action (spike, serve, tip, set, dig, block, jump, block jump) fire only for that player's character; everything
+  else (passives, streaks, the other team's spikes...), stat cards and the game's own techniques work for the whole team
+  and are labelled **TEAM-WIDE**. A side with one human is unchanged.
+- **Co-op** (`src/Patches/CoopPick.cs`): player 1 picks on the game's own upgrade screen (perk cards say "PLAYER 1 PICKS:
+  THEIRS" or "TEAM-WIDE"), then player 2 gets an offer of their own of the same kind (never player 1's card) on a panel,
+  chosen with key set 1, their gamepad or the mouse. The upgrade screen is paused until player 2 has picked.
+- **Versus sides with two players** (1v2's right side, 2v2): the picker already alternated; now offers show TEAM-WIDE
+  where it applies, a personal perk is the picker's, and the round screen lists builds per player: "P1: ...",
+  "P3: ...", "TEAM: ...". Online the same screen goes to the other PC (it was already synced as text).
+- **Tested**: co-op, two upgrade screens: player 2 offered three stat cards (took Setter Sync with D + W), then two
+  perks (took Volcano Slam, "theirs"). The F9 log shows Skyhook (P1's) fires for P1's character and is skipped for
+  P2's, and Volcano Slam the other way round, also in real touches. Local 2v2: round screens showed "P3: Volcano Slam,
+  Ember Tip / P4: Iron Curtain / TEAM: Stamina War"; online 2v2: TEAM-WIDE labels and P2's own Showboat. 0 errors.
+- **Balance note**: in co-op a personal perk now helps one character instead of both, while each player picks every
+  screen, so the team gets twice the cards. Not run in the simulator (it models one player per team). Open question below.
+
 ## Session status (2026-10-21)
-- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-10.
-- Not started: 11 draft tournament, 12 individual picks, 13 chat / emotes, 14 lobby rules, 15 replays, 16 party tournament, 17 spectators.
-- Open questions: should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).
+- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-12.
+- Not started: 13 chat / emotes, 14 lobby rules, 15 replays, 16 party tournament, 17 spectators.
+- Open questions: co-op now gets two picks per screen with personal perks for one character each; is co-op still the right difficulty? (the simulator can't model two humans); should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).

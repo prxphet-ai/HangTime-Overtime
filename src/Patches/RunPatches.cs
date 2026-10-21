@@ -22,7 +22,7 @@ namespace HangtimeOvertime.Patches
             if (scene.name == "Upgrade") RunSaves.SaveUpgradeScreen();
             else if (scene.name == "Lose") RunSaves.ClearCurrent();
             else if (scene.name == "Win" && RunState.Mode == RunMode.Normal) RunSaves.ClearCurrent();   // LOOP 2 saves again at its first match
-            if ((scene.name == "Lose" || scene.name == "Win") && Daily.Cup) RunState.Daily = null;          // the cup is over; TRY AGAIN / LOOP 2 are normal runs
+            if ((scene.name == "Lose" || scene.name == "Win") && Daily.Cup) { RunState.Daily = null; RunState.Draft = null; }   // the cup is over; TRY AGAIN / LOOP 2 are normal runs
             if (scene.name != "Game" || TitleController.onTitle) return;
             if (RunState.Mode == RunMode.Infinite)
             {
@@ -100,6 +100,7 @@ namespace HangtimeOvertime.Patches
                 Engine.Engine.FirePassives();
                 Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} round={OpponentScaling.Round} " +
                                    $"infiniteMatch={RunState.InfiniteMatch} loop={RunState.Loop} vs {__instance.opponentTeam?.teamName}");
+                if (RunState.Draft != null) Drafting.GiveOpponent(team, slot);
                 CollectionPatches.MatchStarted(__instance);
                 if (RunState.Mode == RunMode.Normal || RunState.Mode == RunMode.Loop) Bracket.MatchStarted(slot, __instance.opponentTeam?.teamName);
                 if (Plugin.DumpScenes.Value) { Debugging.Dumps.Opponent(team); Debugging.Dumps.PlayerParts(); }
@@ -119,6 +120,7 @@ namespace HangtimeOvertime.Patches
                 // Versus: player 1's chosen team on the left banner (Hoshiyumi keeps the game's own banner)
                 if (VersusState.Active)
                     TeamRoster.LabelPlayerBanner(__instance, Generated.Teams.All.FirstOrDefault(t => t.Id == VersusState.Setup.Team[0]));
+                else if (RunState.Draft != null) TeamRoster.LabelPlayerBanner(__instance, Drafting.TeamOf(RunState.Draft));   // the drafted team
             }
         }
 
@@ -164,7 +166,7 @@ namespace HangtimeOvertime.Patches
                 if (Daily.Cup && !TutorialManager.onTutorial)
                 {
                     int gc = Mathf.Clamp(GameManager.gameNumber, 0, __instance.MatchTitles.Count - 1);
-                    __instance.TextSlide("Daily Cup - " + __instance.MatchTitles[gc]);
+                    __instance.TextSlide((RunState.Draft != null ? "Draft Cup - " : "Daily Cup - ") + __instance.MatchTitles[gc]);
                     return false;
                 }
                 if (RunState.Mode == RunMode.Normal || TutorialManager.onTutorial) return true;

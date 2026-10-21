@@ -49,6 +49,8 @@ namespace HangtimeOvertime.Patches
         public static bool TitleReady => classicRef != null && classicRef.gameObject.activeInHierarchy;
 
         private string Format => VersusSetup.Formats[format];
+        public static bool DraftStart;                   // before round 1 each side drafts a team with a build (the draft cup's deal)
+        private SpriteRenderer draftButton;
         private (int side, string role)[] Seats => VersusSetup.Seats(Format);
         private int Count => Seats.Length;
         private int Leader(int side) => System.Array.FindIndex(Seats, x => x.side == side);   // seat that picks the side's team
@@ -135,6 +137,11 @@ namespace HangtimeOvertime.Patches
             {
                 int idx = i;
                 formatTabs[i] = Button(VersusSetup.Formats[i].Replace("v", " VS "), new Vector2(centre + (i - 1) * tw * 1.1f, ph / 2f - 6f), new Vector2(tw, 2.2f), () => SetFormat(idx), 0.6f);
+            }
+            // the draft start (the host's choice online; a friend's PC shows nothing to click)
+            if (!Mirror)
+            {
+                draftButton = Toggle("DRAFT START", new Vector2(centre + area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.15f, 2.2f), () => DraftStart, v => DraftStart = v, 0.4f);
             }
             for (int side = 0; side < 2; side++)
             {
@@ -454,6 +461,19 @@ namespace HangtimeOvertime.Patches
             starting = true;
             var setup = VersusSetup.Create(Format, input.Take(Count).ToList(), teams[0][team[0]], teams[1][team[1]]);
             VersusState.NewMatch(setup);
+            if (DraftStart)
+            {
+                // both sides draft on top of the menu, then the match loads
+                int seed = System.Math.Abs(System.Environment.TickCount) | 1;
+                foreach (Transform t in transform) t.gameObject.SetActive(false);
+                VersusOverlay.ShowDraft(0, seed, () => VersusOverlay.ShowDraft(1, seed, () => { VersusOverlay.Close(); LoadMatch(); }));
+                return;
+            }
+            LoadMatch();
+        }
+
+        private void LoadMatch()
+        {
             var gm = GameManager.Instance;
             gm.numberOfPlayers = Format == "2v2" ? 2 : 1;     // 2v2: the game's own co-op pair on the left
             OnlineFlow.SendLoad(true);

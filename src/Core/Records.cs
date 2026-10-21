@@ -15,12 +15,13 @@ namespace HangtimeOvertime.Core
         public string[] modes = new string[0];
         public int[] streak = new int[0], best = new int[0], wins = new int[0], losses = new int[0];
         public int classicRunsWon, infiniteBestRound, versusMatches;
+        public int draftsPlayed, draftCupsWon;
     }
 
     internal static class Records
     {
         // mode keys (also the labels on the stats page)
-        public const string Classic = "Classic", Coop = "Co-op", Infinite = "Infinite", VersusLocal = "Versus (local)", VersusOnline = "Versus (online)";
+        public const string Classic = "Classic", Coop = "Co-op", Infinite = "Infinite", VersusLocal = "Versus (local)", VersusOnline = "Versus (online)", Draft = "Draft";
 
         private static RecordsData data;
         private static string PathOf => Path.Combine(Application.persistentDataPath, "HangtimeOvertime_stats.json");
@@ -77,6 +78,8 @@ namespace HangtimeOvertime.Core
 
         public static void InfiniteRound(int round) { if (round > Data.infiniteBestRound) { data.infiniteBestRound = round; Save(); } }
         public static void ClassicRunWon() { Data.classicRunsWon++; Save(); }
+        public static void DraftStarted() { Data.draftsPlayed++; Save(); }
+        public static void DraftWon() { Data.draftCupsWon++; Save(); }
 
         // "WIN STREAK 3 · BEST 7" / after a loss: "STREAK ENDED AT 3 · BEST 7"
         public static string Line(string mode, bool won, int before)

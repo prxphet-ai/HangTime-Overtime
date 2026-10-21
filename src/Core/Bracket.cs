@@ -36,7 +36,7 @@ namespace HangtimeOvertime.Core
         private static readonly string[] played = new string[9];
         private static readonly List<string> titles = new List<string>();
         public static int LastSlot;           // the slot of the latest match
-        private static string cupDay;         // the daily cup being played (kept until its win screen, where the run has already ended)
+        private static string cupDay, draftTeam;         // the daily cup being played (kept until its win screen, where the run has already ended)
 
         public static void RememberTitles(List<string> t) { if (t != null && t.Count > 0 && titles.Count == 0) titles.AddRange(t); }
 
@@ -49,6 +49,7 @@ namespace HangtimeOvertime.Core
             played[slot] = opponent;
             LastSlot = slot;
             cupDay = Daily.Cup ? RunState.Daily : null;
+            draftTeam = RunState.Draft != null ? Drafting.TeamOf(RunState.Draft)?.Name : null;
         }
 
         private static string Title(int g) => g < titles.Count && !string.IsNullOrEmpty(titles[g]) ? titles[g].ToUpperInvariant() : $"MATCH {g}";
@@ -80,13 +81,14 @@ namespace HangtimeOvertime.Core
         public static BracketModel Classic(int won)
         {
             var m = new BracketModel();
-            string mode = cupDay != null ? "DAILY CUP " + cupDay : RunState.Mode == RunMode.Loop ? $"LOOP {RunState.Loop}" : GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2 ? "CO-OP" : "CLASSIC";
+            string mode = draftTeam != null ? "DRAFT CUP  ·  " + draftTeam.ToUpperInvariant() : cupDay != null ? "DAILY CUP " + cupDay : RunState.Mode == RunMode.Loop ? $"LOOP {RunState.Loop}" : GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2 ? "CO-OP" : "CLASSIC";
             m.Champion = won >= 8;
-            m.Title = m.Champion ? "CHAMPIONS!" : $"{mode}  ·  BRACKET";
+            if (draftTeam != null) m.You = draftTeam.ToUpperInvariant();
+            m.Title = m.Champion ? "CHAMPIONS!" : draftTeam != null ? mode : $"{mode}  ·  BRACKET";
             for (int g = 1; g <= 8; g++)
             {
                 var r = new BracketRound { Name = Title(g) };
-                r.Matches.Add(new BracketMatch { A = m.You, B = played[g] ?? Upcoming(g), Winner = g <= won ? 0 : -1, Note = SlotClass(g) });
+                r.Matches.Add(new BracketMatch { A = draftTeam != null ? draftTeam.ToUpperInvariant() : m.You, B = played[g] ?? Upcoming(g), Winner = g <= won ? 0 : -1, Note = SlotClass(g) });
                 m.Rounds.Add(r);
             }
             if (!m.Champion)

@@ -19,6 +19,7 @@ namespace HangtimeOvertime.Debugging
     //   -ovt-steamcheck      host: 6 s after the lobby opens, search the Steam list and then the lobby's code; log both
     //   -ovt-end N           client: on the match-end screen, step right N times then confirm (1 = REMATCH)
     //   -ovt-fx              host: fires a random perk with visual effects every 3 s (both sides), to compare screens
+    //   -ovt-draft           host: the match starts with DRAFT START (each side drafts a team)
     // The window title gets HOST / CLIENT so screenshots can tell the two apart.
     internal class DevOnline : MonoBehaviour
     {
@@ -52,6 +53,7 @@ namespace HangtimeOvertime.Debugging
             if (int.TryParse(Arg("-ovt-pcs"), out var pc)) d.pcs = Mathf.Clamp(pc, 2, 4);
             d.tag = Arg("-ovt-tag");
             d.steamCheck = Array.IndexOf(args, "-ovt-steamcheck") >= 0;
+            if (h && Array.IndexOf(args, "-ovt-draft") >= 0) Patches.VersusMenu.DraftStart = true;
             Plugin.Log.LogInfo($"Dev online: {(h ? "host" : "client")} {d.format}, {d.seats} seat(s){(d.auto ? ", autopilot" : "")}");
         }
 
@@ -68,7 +70,7 @@ namespace HangtimeOvertime.Debugging
                 var w = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
                 if (w != IntPtr.Zero) SetWindowText(w, "Hangtime! " + (tag ?? (host ? "HOST" : "CLIENT")));
             }
-            if (auto && MatchSync.InMatch && !VersusDriver.Autopilot) VersusDriver.Autopilot = true;
+            if (auto && (MatchSync.InMatch || VersusOverlay.Picking) && !VersusDriver.Autopilot) VersusDriver.Autopilot = true;
             if (join) ClientScreens();
             if (steamCheck && host && Net.IsHost)
             {
@@ -133,10 +135,12 @@ namespace HangtimeOvertime.Debugging
 
         // the client on the host's screens between rounds: right (pick screen once, end screen endRights times), then
         // jump, from every key set it plays on; the host only listens to whoever's turn it is
+        private int seenSerial;
+
         private void ClientScreens()
         {
             if (!VersusOverlay.IsMirror) { screenSince = -1f; return; }
-            if (screenSince < 0f) { screenSince = Time.unscaledTime; screenStep = 0; }
+            if (screenSince < 0f || seenSerial != VersusOverlay.MirrorSerial) { screenSince = Time.unscaledTime; screenStep = 0; seenSerial = VersusOverlay.MirrorSerial; }
             int rights = VersusOverlay.MirrorMatchOver ? endRights : 1;
             float t = Time.unscaledTime - screenSince;
             if (screenStep < rights && t > 1f + screenStep * 0.6f) { for (int i = 0; i < seats; i++) Press(Keys[i], right: true); screenStep++; }

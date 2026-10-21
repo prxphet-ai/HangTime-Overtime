@@ -100,7 +100,14 @@ namespace HangtimeOvertime.Engine
         }
 
         // the cup's team in a slot, by name (the bracket shows it before it's played)
-        public static string CupName(int slot, string date = null) { var p = CupPick(slot, date ?? RunState.Daily); return p.def != null ? p.def.Name : p.key; }
+        public static string CupName(int slot, string date = null)
+        {
+            var p = CupPick(slot, date ?? RunState.Daily);
+            if (p.def != null) return p.def.Name;
+            // the game's team: the name it shows in the match ("Kozuki" for the prefab "Kozuki Dan")
+            var shown = prefabs.TryGetValue(p.key, out var go) && go != null ? go.GetComponent<OpponentTeam>()?.teamName : null;
+            return string.IsNullOrEmpty(shown) ? p.key : shown;
+        }
 
         // the daily run: the day's whole sequence up to this match (no repeats within 3), so it doesn't depend on what
         // was played before in this session or on a resumed run

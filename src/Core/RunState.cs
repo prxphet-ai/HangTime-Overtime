@@ -17,6 +17,7 @@ namespace HangtimeOvertime.Core
         public static int Loop = 1;            // 1 = the normal tournament
         public static string Daily;            // an Infinite run that is that UTC day's daily run (null: a normal one)
         public static bool DailyCounts;        // it's that day's first run
+        public static string Draft;            // a draft cup: the drafted team's id (the bracket is seeded by Daily = "draft-<seed>")
 
         public static OvertimeSave Save = new OvertimeSave();
         private static string SavePath => Path.Combine(Application.persistentDataPath, "HangtimeOvertime.json");
@@ -92,14 +93,43 @@ namespace HangtimeOvertime.Core
             StatTracker.runTimer = 0f;
             TutorialManager.onTutorial = false;
             GameManager.gameNumber = 1;
+            Draft = null;
             DailyCounts = Core.Daily.Begin(Core.Daily.Key(Daily, true));
             Plugin.Log.LogInfo("Daily cup started (" + Daily + ")");
+        }
+
+        // the draft cup: the cup's machinery with a random seed, starting with the drafted team's perks and stat cards
+        public static void StartDraft()
+        {
+            var pick = Drafting.Pending;
+            int seed = Drafting.PendingSeed;
+            Drafting.Pending = null;
+            Core.Daily.Pending = null; Core.Daily.PendingCup = false;
+            Mode = RunMode.Normal;
+            Loop = 1;
+            Daily = Drafting.SeedKey(seed);
+            Draft = pick.Team.Id;
+            DailyCounts = false;
+            var gm = GameManager.Instance;
+            foreach (var stat in gm.playerStats.statUpgrades) stat.currentLevel = 0;
+            gm.playerStats.techniques.Clear();
+            Engine.StatCards.ResetRun();
+            LimitBreakEffects.ResetLimits();
+            GameManager.statOverload = false;
+            StatTracker.runTimer = 0f;
+            TutorialManager.onTutorial = false;
+            GameManager.gameNumber = 1;
+            foreach (var id in pick.Perks) { var t = PerkRegistry.Get(id); if (t != null) gm.playerStats.techniques.Add(t); }
+            foreach (var id in pick.Cards) { var c = Engine.StatCards.Get(id); if (c != null) Engine.StatCards.Take(c); }
+            Records.DraftStarted();
+            Plugin.Log.LogInfo($"Draft cup started: {pick.Team.Name} with {string.Join(", ", pick.Perks)} + {string.Join(", ", pick.Cards)} (power {pick.Power:F3}, seed {seed})");
         }
 
         // a daily cup ends: lost a match, or won the final (8)
         public static void EndCup(int won)
         {
             if (Daily == null || Mode != RunMode.Normal) return;
+            if (Draft != null) { if (won >= 8) Records.DraftWon(); return; }
             Core.Daily.Finish(Core.Daily.Key(Daily, true), DailyCounts, won);
             DailyCounts = false;
         }

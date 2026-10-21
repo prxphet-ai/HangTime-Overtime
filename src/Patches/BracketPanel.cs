@@ -192,14 +192,14 @@ namespace HangtimeOvertime.Patches
         private static class HoldGroups
         {
             [HarmonyPrefix]
-            private static bool Prefix() => !IsOpen;
+            private static bool Prefix() => !IsOpen && !CoopPick.IsOpen;
         }
 
         [HarmonyPatch(typeof(ButtonController), "Press")]
         private static class HoldButtons
         {
             [HarmonyPrefix]
-            private static bool Prefix() => !IsOpen;
+            private static bool Prefix() => !IsOpen && !CoopPick.IsOpen;
         }
 
         // the upgrade screen's skip (the pad's START) waits until the bracket is closed
@@ -207,7 +207,7 @@ namespace HangtimeOvertime.Patches
         private static class HoldSkip
         {
             [HarmonyPrefix]
-            private static bool Prefix() => !IsOpen;
+            private static bool Prefix() => !IsOpen && !CoopPick.IsOpen;
         }
 
         [HarmonyPatch(typeof(WinManager), "Start")]

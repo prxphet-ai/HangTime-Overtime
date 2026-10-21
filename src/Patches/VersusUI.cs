@@ -330,6 +330,7 @@ namespace HangtimeOvertime.Patches
         private int sel, endSel;
         private bool done;
         private float shownAt;
+        private Action afterPick;                     // the draft start: what comes after this side's pick (else the next round)
 
         private void Awake() => shownAt = Time.unscaledTime;
 
@@ -338,7 +339,7 @@ namespace HangtimeOvertime.Patches
             if (open != null) Destroy(open.gameObject);
             var go = new GameObject("Overtime Versus Overlay");
             open = go.AddComponent<VersusOverlay>();
-            if (!open.InitKit(200)) { Plugin.Log.LogWarning("Versus overlay: no camera/font; skipping to the next round"); Destroy(go); VersusFlow.NextRound(); return; }
+            if (!open.InitKit(300)) { Plugin.Log.LogWarning("Versus overlay: no camera/font; skipping to the next round"); Destroy(go); VersusFlow.NextRound(); return; }
             int loser = 1 - winner;
             if (!matchOver)
             {
@@ -352,6 +353,29 @@ namespace HangtimeOvertime.Patches
             Online.OnlineFlow.SendScreen(data);
         }
 
+        // the draft start (before round 1): a side's picker takes one of three drafted teams, then `then` runs
+        public static void ShowDraft(int side, int seed, Action then)
+        {
+            if (open != null) Destroy(open.gameObject);
+            var go = new GameObject("Overtime Versus Draft");
+            open = go.AddComponent<VersusOverlay>();
+            if (!open.InitKit(300)) { Destroy(go); then(); return; }
+            open.picker = side;
+            open.offers = VersusState.DraftOffer(side, seed);
+            open.pickerSlot = VersusState.Picker(side);
+            open.afterPick = then;
+            var setup = VersusState.Setup;
+            if (open.pickerSlot == null) { VersusState.Take(side, open.offers[0]); Destroy(go); then(); return; }   // an all-AI side drafts the first team
+            var data = RoundScreen.From(1 - side, false, open.offers, open.pickerSlot);
+            data.Head = $"DRAFT  ·  {setup.SideLabel(side)} PICKS A TEAM";
+            data.Score = $"{setup.SideLabel(0)}  VS  {setup.SideLabel(1)}";
+            data.Sub = "EACH TEAM COMES WITH THREE ABILITIES AND TWO STAT CARDS, DEALT TO BE ABOUT EQUALLY STRONG";
+            data.PickHead = $"P{open.pickerSlot.Number} DRAFTS FOR {setup.SideLabel(side)}  <size=70%>({open.pickerSlot.Input?.Label})</size>";
+            Plugin.Log.LogInfo($"Versus draft: P{open.pickerSlot.Number} ({setup.SideLabel(side)}) offered " + string.Join(" | ", open.offers.Select((o, i) => $"{i}: {o.Title}")));
+            open.Build(data);
+            Online.OnlineFlow.SendScreen(data);
+        }
+
         // an online client: the host's screen
         public static void ShowMirror(RoundScreen data)
         {
@@ -359,11 +383,14 @@ namespace HangtimeOvertime.Patches
             var go = new GameObject("Overtime Versus Overlay (online)");
             open = go.AddComponent<VersusOverlay>();
             open.mirror = true;
-            if (!open.InitKit(200)) { Destroy(go); open = null; return; }
+            MirrorSerial++;
+            if (!open.InitKit(300)) { Destroy(go); open = null; return; }
             open.Build(data);
         }
 
         public static bool IsMirror => open != null && open.mirror;
+        public static int MirrorSerial;                   // counts the host's screens shown here (a new one may follow at once)
+        public static bool Picking => open != null && !open.mirror && open.picker >= 0;
         public static bool MirrorMatchOver => IsMirror && open.endButtons.Count > 0;
 
         public static void MirrorSelection(int sel, int endSel)
@@ -429,7 +456,7 @@ namespace HangtimeOvertime.Patches
                     offerBoxes.Add(box);
                     var rarity = o.rarity == "epic" ? new Color(1f, 0.78f, 0.29f) : o.rarity == "rare" ? new Color(0.6f, 0.9f, 1f) : Color.white;
                     Text(o.title.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 2.4f), 0.8f, cw - 0.8f, Color.white, height: 3.6f, wrap: true);
-                    Text(o.kind + " · " + o.rarity.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 4.8f), 0.5f, cw - 0.6f, rarity);
+                    Text(o.kind + " · " + o.rarity.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 4.8f), 0.42f, cw - 0.6f, rarity, height: 1.8f, wrap: true);
                     Text(o.text, new Vector2(x, y - 2.2f), 0.6f, cw - 1.2f, Color.white, TextAlignmentOptions.Top, height: ch - 8f, wrap: true);
                 }
                 Text(d.PickHint, new Vector2(0f, -ph / 2f + 1.6f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
@@ -490,7 +517,8 @@ namespace HangtimeOvertime.Patches
                 {
                     done = true;
                     VersusState.Take(picker, offers[sel]);
-                    VersusFlow.NextRound();
+                    if (afterPick != null) { var next = afterPick; afterPick = null; Destroy(gameObject); next(); }
+                    else VersusFlow.NextRound();
                 }
                 return;
             }

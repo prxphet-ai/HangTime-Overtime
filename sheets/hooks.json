@@ -883,6 +883,36 @@
       "verified": "no"
     },
     {
+      "id": "coop_pick_after_perk",
+      "target_type": "TechniqueButton",
+      "target_method": "Click",
+      "kind": "postfix",
+      "patch_class": "CoopPick",
+      "purpose": "Co-op: player 1's perk is theirs, then player 2 gets an offer of their own",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "coop_pick_after_card",
+      "target_type": "UpgradeButton",
+      "target_method": "Click",
+      "kind": "postfix",
+      "patch_class": "CoopPick",
+      "purpose": "Co-op: after player 1's stat card, player 2 gets an offer of their own",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "coop_card_label",
+      "target_type": "TechniqueButton",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "CoopPick",
+      "purpose": "Co-op: a perk card says whether it becomes player 1's or is team-wide",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
       "id": "collection_perk_seen",
       "target_type": "TechniqueButton",
       "target_method": "Start",

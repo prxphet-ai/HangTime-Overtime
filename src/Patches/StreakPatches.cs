@@ -21,7 +21,7 @@ namespace HangtimeOvertime.Patches
         };
 
         private static string ModeKey() =>
-            RunState.Mode == RunMode.Infinite ? Records.Infinite : GameManager.Instance.numberOfPlayers == 2 ? Records.Coop : Records.Classic;
+            RunState.Mode == RunMode.Infinite ? Records.Infinite : RunState.Draft != null ? Records.Draft : GameManager.Instance.numberOfPlayers == 2 ? Records.Coop : Records.Classic;
 
         // the game's match end (Classic, Co-op, Loop, Infinite); Versus has its own round flow
         [HarmonyPatch(typeof(GameManager), "EndGame")]

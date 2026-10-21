@@ -193,6 +193,14 @@ namespace HangtimeOvertime.Debugging
                                    $"perks=[{string.Join(", ", gm.playerStats.techniques.Select(t => t.name))}] " +
                                    $"opponent=[{string.Join(", ", Engine.Engine.StatsOf(1)?.techniques.Select(t => t.name) ?? new string[0])}] " +
                                    $"cards=[{string.Join(", ", StatCards.Points.Select(kv => kv.Key + " " + kv.Value))}]");
+                // individual picks: who owns what, and whether each own-action perk would fire for each of the left side's characters
+                var team = Engine.Engine.Team(0).Select(c => c.Pc).Where(p => p != null).ToList();
+                foreach (var p in Engine.Engine.PerksOf(0))
+                {
+                    var trig = p.Def.Triggers.FirstOrDefault(Engine.Ownership.PersonalTriggers.Contains);
+                    Plugin.Log.LogInfo($"[own] {p.Def.Title}: owner P{Engine.Ownership.Of(0, p)}{(trig == null ? " (team-wide)" : "")}" +
+                                       (trig == null ? "" : " · " + string.Join(", ", team.Select(pc => $"{pc.name} = P{Engine.Ownership.NumberOf(pc)}: {(Engine.Ownership.Fires(p, trig, pc, 0) ? "fires" : "no")}"))));
+                }
             }
             if (kb.f9Key.wasPressedThisFrame && Plugin.DumpScenes.Value) { Dumps.PlayerParts(); Dumps.BodySprites(); }
             if (kb.f9Key.wasPressedThisFrame && kb.altKey.isPressed)

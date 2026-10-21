@@ -47,11 +47,17 @@ namespace HangtimeOvertime.Patches
             private static void Postfix(UpgradeButton __instance) => Collection.Pick(Collection.KeyOf(__instance.myPair));
         }
 
+        // the collection's name for the opponent: a new team's own name, the game's teams by their prefab name (the
+        // in-match name can be shorter: "Kozuki" is the prefab "Kozuki Dan")
+        private static string TeamName(GameManager gm) =>
+            TeamRoster.Current != null ? TeamRoster.Current.Name :
+            gm.currentTeam != null ? gm.currentTeam.name.Replace("(Clone)", "").Trim() : gm.opponentTeam?.teamName;
+
         // kick-off of a run match: the opponent is discovered
         public static void MatchStarted(GameManager gm)
         {
             if (RunState.Mode == RunMode.Versus || TutorialManager.onTutorial) return;
-            Collection.See(Collection.TeamKey(gm.opponentTeam?.teamName));
+            Collection.See(Collection.TeamKey(TeamName(gm)));
         }
 
         [HarmonyPatch(typeof(GameManager), "EndGame")]
@@ -61,7 +67,7 @@ namespace HangtimeOvertime.Patches
             private static void Prefix(GameManager __instance, string nextScene)
             {
                 if (__instance.done || VersusState.Active || TitleController.onTitle || TutorialManager.onTutorial || nextScene == "Lose") return;
-                Collection.Beat(Collection.TeamKey(__instance.opponentTeam?.teamName));
+                Collection.Beat(Collection.TeamKey(TeamName(__instance)));
             }
         }
     }

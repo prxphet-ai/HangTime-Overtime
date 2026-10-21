@@ -112,6 +112,7 @@ namespace HangtimeOvertime.Engine
         {
             if (Online.MatchSync.Mirroring) return 0f;                     // an online client mirrors the host's match: perks run there only
             int side = pc != null ? SideOf(pc) : 0;
+            if (!Ownership.Fires(perk, trigger, pc, side)) return 0f;     // another player's own perk
             if (checkConds && !Passes(perk, trigger, side, pc)) return 0f;
             StartCooldown(perk, trigger, side);
             float m = Synergy(side, perk, out var el);
