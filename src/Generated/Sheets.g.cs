@@ -1171,6 +1171,30 @@ namespace HangtimeOvertime.Generated
         public static readonly float[] PackageWin = new float[] { 0.812f, 0.81f, 0.797f, 0.789f, 0.799f, 0.822f, 0.799f, 0.815f, 0.813f, 0.824f, 0.788f, 0.789f, 0.816f, 0.801f, 0.817f, 0.815f, 0.824f, 0.815f, 0.792f, 0.822f, 0.81f, 0.818f, 0.792f, 0.816f, 0.815f, 0.818f, 0.819f, 0.813f, 0.804f, 0.818f, 0.823f, 0.792f, 0.824f, 0.811f, 0.82f, 0.822f, 0.791f, 0.821f, 0.806f, 0.803f, 0.822f, 0.801f, 0.814f, 0.783f, 0.788f, 0.792f, 0.818f, 0.812f, 0.806f, 0.791f, 0.812f, 0.786f, 0.824f, 0.823f, 0.802f, 0.82f, 0.781f, 0.814f, 0.814f, 0.814f, 0.806f, 0.807f, 0.816f, 0.796f, 0.817f, 0.811f, 0.807f, 0.797f, 0.819f, 0.799f, 0.801f, 0.806f, 0.824f, 0.801f, 0.808f, 0.807f, 0.824f, 0.79f, 0.812f, 0.815f, 0.811f, 0.82f, 0.82f, 0.821f, 0.789f, 0.814f, 0.807f, 0.825f, 0.805f, 0.782f, 0.795f, 0.802f, 0.819f, 0.797f, 0.823f, 0.775f, 0.816f, 0.814f, 0.785f, 0.807f, 0.798f, 0.82f };
     }
 
+    public sealed class RulePresetDef
+    {
+        public string Id, Name, MaxRarity;
+        public int Points, Rounds, Picks, Offer, StartPerks;
+        public bool Perks, Cards, DraftStart;
+        public string[] BannedElements, BannedPerks;
+    }
+
+    // VERSUS RULE PRESETS (sheets/rules.json); the first is the default.
+    public static class RulePresets
+    {
+        public static readonly RulePresetDef[] All =
+        {
+            new RulePresetDef { Id = "standard", Name = "STANDARD", MaxRarity = "epic", Points = 5, Rounds = 5, Picks = 1, Offer = 3, StartPerks = 0, Perks = true, Cards = true, DraftStart = false, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+            new RulePresetDef { Id = "quick", Name = "QUICK MATCH", MaxRarity = "epic", Points = 3, Rounds = 3, Picks = 1, Offer = 3, StartPerks = 0, Perks = true, Cards = true, DraftStart = false, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+            new RulePresetDef { Id = "marathon", Name = "MARATHON", MaxRarity = "epic", Points = 7, Rounds = 7, Picks = 1, Offer = 3, StartPerks = 0, Perks = true, Cards = true, DraftStart = false, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+            new RulePresetDef { Id = "pure", Name = "PURE SKILL", MaxRarity = "epic", Points = 5, Rounds = 5, Picks = 0, Offer = 3, StartPerks = 0, Perks = false, Cards = false, DraftStart = false, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+            new RulePresetDef { Id = "cards_only", Name = "STAT CARDS ONLY", MaxRarity = "epic", Points = 5, Rounds = 5, Picks = 1, Offer = 3, StartPerks = 0, Perks = false, Cards = true, DraftStart = false, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+            new RulePresetDef { Id = "commons", Name = "COMMONS ONLY", MaxRarity = "common", Points = 5, Rounds = 5, Picks = 1, Offer = 3, StartPerks = 0, Perks = true, Cards = true, DraftStart = false, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+            new RulePresetDef { Id = "chaos", Name = "CHAOS", MaxRarity = "epic", Points = 5, Rounds = 5, Picks = 2, Offer = 4, StartPerks = 3, Perks = true, Cards = true, DraftStart = false, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+            new RulePresetDef { Id = "draft", Name = "DRAFT", MaxRarity = "epic", Points = 5, Rounds = 5, Picks = 1, Offer = 3, StartPerks = 0, Perks = true, Cards = true, DraftStart = true, BannedElements = System.Array.Empty<string>(), BannedPerks = System.Array.Empty<string>() },
+        };
+    }
+
     // IN-MATCH CHAT (sheets/chat.json): quick chat and emote wheels (clockwise from the top), timings.
     public static class Chat
     {

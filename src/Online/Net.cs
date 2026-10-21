@@ -35,7 +35,7 @@ namespace HangtimeOvertime.Online
     // inputs. Hosting listens on Steam (a lobby others find in the browser, by code or by invite) and on direct IP.
     internal static class Net
     {
-        public const int Protocol = 5;               // 4: the match-end screen names the winner (streaks); 5: in-match chat, draft start
+        public const int Protocol = 6;               // 4: the match-end screen names the winner (streaks); 5: in-match chat, draft start; 6: lobby rules
 
         public static NetRole Role { get; private set; }
         public static bool IsHost => Role == NetRole.Host;

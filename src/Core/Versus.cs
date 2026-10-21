@@ -126,8 +126,9 @@ namespace HangtimeOvertime.Core
             RunState.Mode = RunMode.Versus;
             RoundWins[0] = RoundWins[1] = 0;
             Picks[0] = Picks[1] = 0;
-            Target = VersusRules.RoundsToWin;
+            Target = LobbyRules.Current.Rounds;
             Round = 1;
+            Patches.VersusOverlay.picksLeft = 0;
             LastWinner = -1;
             ResetBuilds();
             TutorialManager.onTutorial = false;
@@ -184,16 +185,18 @@ namespace HangtimeOvertime.Core
 
         public static List<VersusOffer> Offer(int side)
         {
+            var rules = LobbyRules.Current;
             var owned = new HashSet<Technique>(PerksOf(side));
             var perks = PerkRegistry.All.Cast<Technique>()
                 .Concat(Scaling.OpponentTechniques.Select(PerkRegistry.FindVanilla))
-                .Where(t => t != null && !owned.Contains(t)).Distinct().ToList();
-            var cards = StatCards.All.ToList();
+                .Where(t => t != null && !owned.Contains(t) && rules.Allows(t)).Distinct().ToList();
+            var cards = StatCards.All.Where(rules.Allows).ToList();
+            if (!rules.Upgrades || (perks.Count == 0 && cards.Count == 0)) return new List<VersusOffer>();
             int Weight(string rarity) => rarity == "epic" ? 1 : rarity == "rare" ? 2 : 3;
             var offer = new List<VersusOffer>();
-            for (int guard = 0; offer.Count < VersusRules.OfferSize && guard < 200; guard++)
+            for (int guard = 0; offer.Count < rules.Offer && guard < 200; guard++)
             {
-                bool card = Random.value < VersusRules.StatCardShare || perks.Count == 0;
+                bool card = cards.Count > 0 && (Random.value < VersusRules.StatCardShare || perks.Count == 0);
                 if (card)
                 {
                     var c = Pick(cards, x => Weight(x.Rarity));

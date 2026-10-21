@@ -132,6 +132,7 @@ namespace HangtimeOvertime.Online
             w.S(s.Team[0]).S(s.Team[1]).I(VersusState.Round).I(VersusState.RoundWins[0]).I(VersusState.RoundWins[1])
              .I(VersusState.Target).I(VersusState.Picks[0]).I(VersusState.Picks[1]).U8(GameManager.Instance.numberOfPlayers)
              .S(JsonUtility.ToJson(Look.Current));
+            LobbyRules.Current.Write(w);
             Net.Send(w);
             Plugin.Log.LogInfo($"Online: sent load {MatchSync.LoadSeq} (round {VersusState.Round}{(first ? ", new match" : "")})");
         }
@@ -185,6 +186,7 @@ namespace HangtimeOvertime.Online
             setup.Team[0] = r.S(); setup.Team[1] = r.S();
             int round = r.I(), w0 = r.I(), w1 = r.I(), target = r.I(), p0 = r.I(), p1 = r.I(), players = r.U8();
             try { HostLook = JsonUtility.FromJson<PlayerLook>(r.S()); } catch { HostLook = null; }
+            LobbyRules.Current = RuleSet.Read(r);
 
             if (first || VersusState.Setup == null) VersusState.NewMatch(setup);
             else VersusState.Setup = setup;
@@ -201,6 +203,7 @@ namespace HangtimeOvertime.Online
         // the session ended (any reason): a friend's PC in a match goes back to the title; the lobby screen closes
         private static void OnClosed(string reason)
         {
+            if (!Net.IsHost) LobbyRules.Restore();
             MatchSync.InMatch = false;
             PendingMessage = reason;
             if (!VersusState.Active) { VersusMenu.SessionEnded(reason); return; }

@@ -331,6 +331,9 @@ namespace HangtimeOvertime.Patches
         private bool done;
         private float shownAt;
         private Action afterPick;                     // the draft start: what comes after this side's pick (else the next round)
+        internal static int picksLeft;                // the lobby rules' upgrades per round still to take this round
+        private int winner;
+        private float autoNextAt = -1f;               // no upgrades this round (rules): the next round starts by itself
 
         private void Awake() => shownAt = Time.unscaledTime;
 
@@ -341,14 +344,23 @@ namespace HangtimeOvertime.Patches
             open = go.AddComponent<VersusOverlay>();
             if (!open.InitKit(300)) { Plugin.Log.LogWarning("Versus overlay: no camera/font; skipping to the next round"); Destroy(go); VersusFlow.NextRound(); return; }
             int loser = 1 - winner;
+            open.winner = winner;
+            if (!matchOver && picksLeft <= 0) picksLeft = LobbyRules.Current.Picks;
             if (!matchOver)
             {
                 open.picker = loser;
                 open.offers = VersusState.Offer(loser);
                 open.pickerSlot = VersusState.Picker(loser);
+                if (open.offers.Count == 0)
+                {
+                    open.picker = -1; picksLeft = 0;
+                    open.autoNextAt = Time.unscaledTime + 3.5f;
+                }
                 Plugin.Log.LogInfo($"Versus: P{open.pickerSlot?.Number} ({VersusState.Setup.SideLabel(loser)}) offered " + string.Join(" | ", open.offers.Select((o, i) => $"{i}: {o.Title} ({o.Kind})")));
             }
             var data = RoundScreen.From(winner, matchOver, open.offers, open.pickerSlot);
+            if (!matchOver && open.picker < 0) { data.PickHead = "NO UPGRADES THIS MATCH  <size=70%>(LOBBY RULES)</size>"; data.PickHint = "THE NEXT ROUND STARTS IN A MOMENT"; }
+            else if (!matchOver && LobbyRules.Current.Picks > 1) data.PickHead += $"  <size=70%>· PICK {LobbyRules.Current.Picks - picksLeft + 1} OF {LobbyRules.Current.Picks}</size>";
             open.Build(data);
             Online.OnlineFlow.SendScreen(data);
         }
@@ -445,7 +457,7 @@ namespace HangtimeOvertime.Patches
 
             if (!d.MatchOver)
             {
-                Text(d.PickHead, new Vector2(0f, top - 8.6f), 0.8f, pw * 0.42f, Color.white);
+                Text(d.PickHead, new Vector2(0f, top - 8.6f), 0.8f, pw * 0.42f, Color.white, height: 3f, wrap: true);
                 float cw = Mathf.Min(pw * 0.15f, 9f), ch = ph * 0.45f, gap = cw * 0.12f;
                 for (int i = 0; i < d.Offers.Count; i++)
                 {
@@ -502,6 +514,7 @@ namespace HangtimeOvertime.Patches
             if (done || mirror) return;
             var setup = VersusState.Setup;
             if (setup == null) return;
+            if (autoNextAt > 0f && Time.unscaledTime > autoNextAt) { done = true; VersusFlow.NextRound(); return; }
             if (picker >= 0)
             {
                 // only the losing side's picker chooses (a pair takes turns, round by round)
@@ -518,6 +531,7 @@ namespace HangtimeOvertime.Patches
                     done = true;
                     VersusState.Take(picker, offers[sel]);
                     if (afterPick != null) { var next = afterPick; afterPick = null; Destroy(gameObject); next(); }
+                    else if (--picksLeft > 0) ShowRound(winner, false);          // the rules give the side another pick
                     else VersusFlow.NextRound();
                 }
                 return;

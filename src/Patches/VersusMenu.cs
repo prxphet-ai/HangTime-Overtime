@@ -49,8 +49,9 @@ namespace HangtimeOvertime.Patches
         public static bool TitleReady => classicRef != null && classicRef.gameObject.activeInHierarchy;
 
         private string Format => VersusSetup.Formats[format];
-        public static bool DraftStart;                   // before round 1 each side drafts a team with a build (the draft cup's deal)
-        private SpriteRenderer draftButton;
+        // before round 1 each side drafts a team with a build (the draft cup's deal); one of the lobby rules
+        public static bool DraftStart { get => LobbyRules.Current.DraftStart; set => LobbyRules.Current.DraftStart = value; }
+        private TextMeshPro rulesLine;
         private (int side, string role)[] Seats => VersusSetup.Seats(Format);
         private int Count => Seats.Length;
         private int Leader(int side) => System.Array.FindIndex(Seats, x => x.side == side);   // seat that picks the side's team
@@ -129,7 +130,7 @@ namespace HangtimeOvertime.Patches
             float colW = area * (lobby ? 0.47f : 0.42f), colOff = area * (lobby ? 0.25f : 0.24f);
             heading = Text("VERSUS", new Vector2(centre, ph / 2f - 2f), lobby ? 1.1f : 1.4f, area - 2f, Color.white);
             if (lobby) info = Text("", new Vector2(centre, ph / 2f - 3.6f), 0.5f, area - 2f, new Color(1f, 0.85f, 0.35f));
-            else Text($"ROUNDS TO {Generated.VersusRules.PointsPerRound} POINTS · FIRST TO {Generated.VersusRules.RoundsToWin} ROUNDS · THE LOSING SIDE PICKS AN UPGRADE EACH ROUND",
+            else Text("THE LOSING SIDE OF EACH ROUND PICKS ITS UPGRADES  ·  RULES: SEE BELOW THE MODES",
                       new Vector2(0f, ph / 2f - 3.8f), 0.45f, pw - 2f, new Color(0.85f, 0.95f, 1f));
             // mode tabs (mouse, or player 1's DOWN key)
             float tw = area * 0.2f;
@@ -138,11 +139,9 @@ namespace HangtimeOvertime.Patches
                 int idx = i;
                 formatTabs[i] = Button(VersusSetup.Formats[i].Replace("v", " VS "), new Vector2(centre + (i - 1) * tw * 1.1f, ph / 2f - 6f), new Vector2(tw, 2.2f), () => SetFormat(idx), 0.6f);
             }
-            // the draft start (the host's choice online; a friend's PC shows nothing to click)
-            if (!Mirror)
-            {
-                draftButton = Toggle("DRAFT START", new Vector2(centre + area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.15f, 2.2f), () => DraftStart, v => DraftStart = v, 0.4f);
-            }
+            // the match rules (the host edits them online; a friend's PC sees them)
+            Button("RULES", new Vector2(centre + area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => RulesPanel.Open(), 0.55f);
+            rulesLine = Text("", new Vector2(centre, ph / 2f - 7.7f), 0.4f, area - 2f, new Color(1f, 0.85f, 0.35f));
             for (int side = 0; side < 2; side++)
             {
                 float x = centre + (side == 0 ? -1f : 1f) * colOff;
@@ -260,6 +259,7 @@ namespace HangtimeOvertime.Patches
             if (!(Net.IsHost && Net.HasFriends)) return;
             var w = new NetWriter(Msg.Menu).U8(format).I(team[0]).I(team[1]);
             for (int i = 0; i < MaxPlayers; i++) w.S(input[i]?.Label ?? "").B(ready[i]);
+            LobbyRules.Current.Write(w);
             string key = System.Convert.ToBase64String(w.Bytes());
             if (key == lastSent) return;
             lastSent = key;
@@ -276,6 +276,10 @@ namespace HangtimeOvertime.Patches
                 open.input[i] = label.Length > 0 ? new SlotInput { Kind = InputKind.Remote, Label = label } : null;
                 open.ready[i] = rd;
             }
+            var rules = RuleSet.Read(r);                          // the host's rules
+            if (!rules.SameAs(LobbyRules.Current)) Plugin.Log.LogInfo("Online: the host's rules: " + rules.Name + " · " + rules.Summary());
+            LobbyRules.Current = rules;
+            RulesPanel.Refresh();
             open.Refresh();
         }
 
@@ -341,8 +345,17 @@ namespace HangtimeOvertime.Patches
 
         private static string RoleName(string role) => role == "setter" ? "SETTER" : role == "partner" ? "PARTNER" : "HITTER";
 
+        // the rules changed (rules panel): everyone un-readies, friends get the new rules
+        public static void RulesChanged()
+        {
+            if (open == null || open.Mirror) return;
+            for (int i = 0; i < MaxPlayers; i++) open.ready[i] = false;
+            open.Refresh();
+        }
+
         private void Refresh()
         {
+            if (rulesLine != null) rulesLine.text = "RULES: " + (LobbyRules.MatchingPreset() is string pn ? pn + "  ·  " : "") + LobbyRules.Current.Summary();
             if (lobby) ShowPlayers();
             else heading.text = "VERSUS  <size=60%>" + Format.Replace("v", " VS ").ToUpperInvariant() + "</size>";
             for (int i = 0; i < 3; i++) formatTabs[i].color = i == format ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
@@ -385,7 +398,7 @@ namespace HangtimeOvertime.Patches
 
         private void Update()
         {
-            if (starting || Time.unscaledTime - openedAt < 0.3f) return;
+            if (starting || Time.unscaledTime - openedAt < 0.3f || RulesPanel.IsOpen || BanPanel.IsOpen) return;
             if (FieldKeys() || Typing) return;                                      // the keyboard is typing in the chat
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb != null && kb.escapeKey.wasPressedThisFrame) { if (lobby) LeaveLobby(); else Close(); return; }
@@ -461,6 +474,7 @@ namespace HangtimeOvertime.Patches
             starting = true;
             var setup = VersusSetup.Create(Format, input.Take(Count).ToList(), teams[0][team[0]], teams[1][team[1]]);
             VersusState.NewMatch(setup);
+            LobbyRules.GiveStartingPerks(System.Environment.TickCount);
             if (DraftStart)
             {
                 // both sides draft on top of the menu, then the match loads

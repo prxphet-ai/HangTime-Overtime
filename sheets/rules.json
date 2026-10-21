@@ -1,0 +1,30 @@
+{
+  "sheet": "rules",
+  "about": "Versus rule presets for the lobby rules panel (src/Patches/RulesPanel.cs). The first row is the default (the old fixed Versus rules). Players can change every value in the panel and save up to three custom presets (HangtimeOvertime_rules.json). Generates RulePresets in src/Generated/Sheets.g.cs.",
+  "columns": {
+    "id": "stable key",
+    "name": "the preset's name in the panel",
+    "points": "points to win a round (1-15)",
+    "rounds": "round wins to win the match (1-9)",
+    "perks": "perks can be offered (yes / no)",
+    "cards": "stat cards can be offered (yes / no)",
+    "picks": "upgrades the losing side takes each round (0-3; 0 = no upgrades)",
+    "offer": "choices on each pick screen (2-4)",
+    "max_rarity": "common | rare | epic: nothing rarer is offered",
+    "start_perks": "random perks each side starts the match with (0-5)",
+    "draft_start": "each side drafts a team with a build before round 1 (yes / no)",
+    "banned_elements": "elements.json ids never offered (perks of that element)",
+    "banned_perks": "perks.json ids never offered",
+    "verified": "how it was seen in game, or 'no'"
+  },
+  "rows": [
+    { "id": "standard", "name": "STANDARD", "points": 5, "rounds": 5, "perks": "yes", "cards": "yes", "picks": 1, "offer": 3, "max_rarity": "epic", "start_perks": 0, "draft_start": "no", "banned_elements": [], "banned_perks": [], "verified": "no" },
+    { "id": "quick", "name": "QUICK MATCH", "points": 3, "rounds": 3, "perks": "yes", "cards": "yes", "picks": 1, "offer": 3, "max_rarity": "epic", "start_perks": 0, "draft_start": "no", "banned_elements": [], "banned_perks": [], "verified": "no" },
+    { "id": "marathon", "name": "MARATHON", "points": 7, "rounds": 7, "perks": "yes", "cards": "yes", "picks": 1, "offer": 3, "max_rarity": "epic", "start_perks": 0, "draft_start": "no", "banned_elements": [], "banned_perks": [], "verified": "no" },
+    { "id": "pure", "name": "PURE SKILL", "points": 5, "rounds": 5, "perks": "no", "cards": "no", "picks": 0, "offer": 3, "max_rarity": "epic", "start_perks": 0, "draft_start": "no", "banned_elements": [], "banned_perks": [], "verified": "no" },
+    { "id": "cards_only", "name": "STAT CARDS ONLY", "points": 5, "rounds": 5, "perks": "no", "cards": "yes", "picks": 1, "offer": 3, "max_rarity": "epic", "start_perks": 0, "draft_start": "no", "banned_elements": [], "banned_perks": [], "verified": "no" },
+    { "id": "commons", "name": "COMMONS ONLY", "points": 5, "rounds": 5, "perks": "yes", "cards": "yes", "picks": 1, "offer": 3, "max_rarity": "common", "start_perks": 0, "draft_start": "no", "banned_elements": [], "banned_perks": [], "verified": "no" },
+    { "id": "chaos", "name": "CHAOS", "points": 5, "rounds": 5, "perks": "yes", "cards": "yes", "picks": 2, "offer": 4, "max_rarity": "epic", "start_perks": 3, "draft_start": "no", "banned_elements": [], "banned_perks": [], "verified": "no" },
+    { "id": "draft", "name": "DRAFT", "points": 5, "rounds": 5, "perks": "yes", "cards": "yes", "picks": 1, "offer": 3, "max_rarity": "epic", "start_perks": 0, "draft_start": "yes", "banned_elements": [], "banned_perks": [], "verified": "no" }
+  ]
+}

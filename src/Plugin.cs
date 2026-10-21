@@ -49,6 +49,7 @@ namespace HangtimeOvertime
             ChatMuteOthers = Config.Bind("Chat", "MuteOthers", false, "Online: other PCs' chat lines and emotes are not shown. Also in SETTINGS.");
             Patches.TitleBar.Init();
             Patches.SettingsMenu.Init();
+            Core.LobbyRules.LoadLast();
 
             PerkRegistry.Build();
             Engine.Vfx.Init();

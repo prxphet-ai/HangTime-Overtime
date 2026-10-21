@@ -944,7 +944,27 @@ Modes:
   (host + client on this PC, `-ovt-chat`): every line and emote on both PCs above the right characters and in both logs;
   mute on: each PC showed only its own; bubbles off: none. 0 errors.
 
+### Feature 14 — lobby rules panel (done)
+- **RULES** (next to the Versus / lobby screen's mode tabs, `src/Patches/RulesPanel.cs`, `src/Core/LobbyRules.cs`):
+  points per round (1-15), rounds to win (1-9), upgrades per round (0-3; 0 = none), choices offered (2-4), perks on / off,
+  stat cards on / off, rarity up to common / rare / epic, starting perks (0-5 random allowed perks per side), draft start,
+  banned elements (one switch each) and banned perks (EDIT LIST: pages of perks by element). The line under the mode tabs
+  sums them up ("RULES: QUICK MATCH · ROUNDS TO 3 POINTS · ...").
+- **Presets**: `sheets/rules.json` (STANDARD = the old fixed rules, QUICK MATCH, MARATHON, PURE SKILL, STAT CARDS ONLY,
+  COMMONS ONLY, CHAOS, DRAFT) plus three custom slots (SAVE AS CUSTOM 1-3), in `HangtimeOvertime_rules.json` with the
+  rules last used (a new session starts with them). DRAFT START moved into the rules.
+- **Online**: only the host edits; friends open RULES read-only. The rules go to every PC with the lobby screen (and
+  each round load), a change un-readies everyone, and a friend's PC goes back to its own rules when the session ends.
+  Protocol 6.
+- **How they apply**: points -> the game's match length, rounds -> the target; offers skip what the rules forbid; with
+  several upgrades per round the losing side picks again ("PICK 2 OF 2"; in 2v2 the partner takes the next pick); with no
+  upgrades the round screen says so and the next round starts by itself.
+- **Tested**: local 1v1 with QUICK MATCH + 2 upgrades: round won 3-0, "FIRST TO 3 ROUNDS", P2 took two picks, round 2
+  loaded. PURE SKILL: "NO UPGRADES THIS MATCH", next round by itself. Rules kept after a restart. Online (`-ovt-rules
+  chaos`, dev flag): the client logged the host's CHAOS rules, both sides started with 3 perks. The friend's read-only
+  view wasn't clicked (two copies of the game on one PC can't both take the mouse). 0 errors.
+
 ## Session status (2026-10-21)
-- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-13.
-- Not started: 14 lobby rules, 15 replays, 16 party tournament, 17 spectators.
+- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-14.
+- Not started: 15 replays, 16 party tournament, 17 spectators.
 - Open questions: co-op now gets two picks per screen with personal perks for one character each; is co-op still the right difficulty? (the simulator can't model two humans); should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).

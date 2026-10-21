@@ -69,7 +69,7 @@ namespace HangtimeOvertime.Online
 
         public static void SetupMirror(GameManager gm, GameObject team)
         {
-            gm.matchLength = Generated.VersusRules.PointsPerRound;
+            gm.matchLength = Core.LobbyRules.Current.Points;
             foreach (var ai in Object.FindObjectsByType<SpikerInput>(FindObjectsInactive.Include, FindObjectsSortMode.None)) ai.enabled = false;
             foreach (var ai in Object.FindObjectsByType<SetterInput>(FindObjectsInactive.Include, FindObjectsSortMode.None)) ai.enabled = false;
             foreach (var pc in Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None))

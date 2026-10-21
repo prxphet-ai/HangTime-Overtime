@@ -19,9 +19,9 @@ GAME = os.environ.get("HANGTIME_DIR", r"C:\Program Files (x86)\Steam\steamapps\c
 ASM = os.path.join(GAME, "Hangtime!_Data", "Managed", "Assembly-CSharp.dll")
 DECOMP = os.environ.get("HANGTIME_DECOMP", os.path.join(os.path.dirname(ROOT), "hangtime-decomp"))
 
-NAMES = ("perks", "triggers", "effects", "elements", "stats", "statcards", "teams", "hooks", "modes", "scaling", "ui", "saves", "draft", "chat")
+NAMES = ("perks", "triggers", "effects", "elements", "stats", "statcards", "teams", "hooks", "modes", "scaling", "ui", "saves", "draft", "chat", "rules")
 GAME_STATS = ["Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe"]
-EMPTY_OK = {"conds", "params", "text_params", "stages"}
+EMPTY_OK = {"conds", "params", "text_params", "stages", "banned_elements", "banned_perks"}
 TEXT_RULES = {
     "color": lambda v: re.fullmatch(r"[0-9A-Fa-f]{6}", v) is not None,
     "at": lambda v: v in ("ball", "owner", "enemy"),
@@ -370,6 +370,23 @@ def preflight():
             "over_start", "over_per_round", "over_max", "reach_min_mult", "reach_max_mult", "move_per_round", "move_max", "perks_base", "perks_per_round", "perks_boss_bonus",
             "perks_max", "rare_from", "epic_from", "theme_weight", "player_power_weight", "player_power_ratio_min", "player_power_ratio_max",
             "expected_power_base", "expected_power_per_round"}
+    el_ids = {e["id"] for e in S["elements"]["rows"]}
+    for r in S["rules"]["rows"]:
+        rid = r["id"]
+        for c, lo, hi in (("points", 1, 15), ("rounds", 1, 9), ("picks", 0, 3), ("offer", 2, 4), ("start_perks", 0, 5)):
+            if not (isinstance(r[c], int) and lo <= r[c] <= hi):
+                errors.append(f"rules.{rid}.{c}: {lo}-{hi}")
+        for c in ("perks", "cards", "draft_start"):
+            if r[c] not in ("yes", "no"):
+                errors.append(f"rules.{rid}.{c}: yes or no")
+        if r["max_rarity"] not in ("common", "rare", "epic"):
+            errors.append(f"rules.{rid}.max_rarity: common, rare or epic")
+        for e in r["banned_elements"]:
+            if e not in el_ids:
+                errors.append(f"rules.{rid}.banned_elements: no element '{e}'")
+        for pid in r["banned_perks"]:
+            if pid not in perks:
+                errors.append(f"rules.{rid}.banned_perks: no perk '{pid}'")
     for r in S["chat"]["rows"]:
         if r["kind"] not in ("quick", "emote"):
             errors.append(f"chat.{r['id']}.kind: quick or emote")
@@ -657,6 +674,25 @@ def generate(S):
           "        public static readonly string[][] PackageCards = new string[][] { " + ", ".join(arr(pk["cards"]) for pk in pks) + " };",
           f"        public static readonly float[] PackageWin = new float[] {{ {', '.join(fl(pk['sim_win']) for pk in pks)} }};",
           "    }", ""]
+
+    # RULES (sheets/rules.json): Versus rule presets
+    L += ["    public sealed class RulePresetDef",
+          "    {",
+          "        public string Id, Name, MaxRarity;",
+          "        public int Points, Rounds, Picks, Offer, StartPerks;",
+          "        public bool Perks, Cards, DraftStart;",
+          "        public string[] BannedElements, BannedPerks;",
+          "    }", "",
+          "    // VERSUS RULE PRESETS (sheets/rules.json); the first is the default.",
+          "    public static class RulePresets", "    {", "        public static readonly RulePresetDef[] All =", "        {"]
+    for r in S["rules"]["rows"]:
+        yn = lambda v: "true" if v == "yes" else "false"
+        L.append("            new RulePresetDef { " + ", ".join([
+            f"Id = {cs(r['id'])}", f"Name = {cs(r['name'])}", f"MaxRarity = {cs(r['max_rarity'])}",
+            f"Points = {int(r['points'])}", f"Rounds = {int(r['rounds'])}", f"Picks = {int(r['picks'])}", f"Offer = {int(r['offer'])}",
+            f"StartPerks = {int(r['start_perks'])}", f"Perks = {yn(r['perks'])}", f"Cards = {yn(r['cards'])}", f"DraftStart = {yn(r['draft_start'])}",
+            f"BannedElements = {arr(r['banned_elements'])}", f"BannedPerks = {arr(r['banned_perks'])}"]) + " },")
+    L += ["        };", "    }", ""]
 
     # CHAT (sheets/chat.json): the wheels and timings
     cst = S["chat"]["settings"]

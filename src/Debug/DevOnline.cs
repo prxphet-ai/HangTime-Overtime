@@ -20,6 +20,7 @@ namespace HangtimeOvertime.Debugging
     //   -ovt-end N           client: on the match-end screen, step right N times then confirm (1 = REMATCH)
     //   -ovt-fx              host: fires a random perk with visual effects every 3 s (both sides), to compare screens
     //   -ovt-draft           host: the match starts with DRAFT START (each side drafts a team)
+    //   -ovt-rules ID        host: plays with that rules preset (sheets/rules.json id; not saved)
     //   -ovt-chat            in matches, this copy's first player chats every 4 s (quick, emote, typed in turn)
     // The window title gets HOST / CLIENT so screenshots can tell the two apart.
     internal class DevOnline : MonoBehaviour
@@ -56,6 +57,8 @@ namespace HangtimeOvertime.Debugging
             d.steamCheck = Array.IndexOf(args, "-ovt-steamcheck") >= 0;
             if (h && Array.IndexOf(args, "-ovt-draft") >= 0) Patches.VersusMenu.DraftStart = true;
             d.chat = Array.IndexOf(args, "-ovt-chat") >= 0;
+            var preset = Generated.RulePresets.All.FirstOrDefault(x => x.Id == Arg("-ovt-rules"));
+            if (h && preset != null) Core.LobbyRules.Current = Core.RuleSet.From(preset);   // not saved
             Plugin.Log.LogInfo($"Dev online: {(h ? "host" : "client")} {d.format}, {d.seats} seat(s){(d.auto ? ", autopilot" : "")}");
         }
 

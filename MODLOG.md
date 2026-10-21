@@ -110,3 +110,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Chat: `sheets/chat.json` -> `Generated.Chat`; `src/Patches/ChatHud.cs` (HUD spawned from NetRunner per Game scene;
   PlayerController SetXInput / UpInputPressed / DownInputPressed and PauseController.Pause_Unpause prefixes); online
   `Msg.MatchChat` 73, protocol 5. Config `[Chat] Bubbles / MuteOthers`. Dev: `-ovt-chat`.
+- Lobby rules: `sheets/rules.json` -> `Generated.RulePresets`; `src/Core/LobbyRules.cs` (RuleSet, presets, custom slots,
+  wire format, starting perks), `src/Patches/RulesPanel.cs` (+ BanPanel); `Msg.Menu` and `Msg.Load` carry the rules
+  (protocol 6). Dev: `-ovt-rules <preset id>` (host).

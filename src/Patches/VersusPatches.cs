@@ -24,7 +24,7 @@ namespace HangtimeOvertime.Patches
         {
             var setup = VersusState.Setup;
             if (Online.Net.IsClient) { DressLeft(setup); Online.MatchSync.SetupMirror(gm, team); return; }   // an online client mirrors the host
-            gm.matchLength = Generated.VersusRules.PointsPerRound;
+            gm.matchLength = LobbyRules.Current.Points;
 
             // equal footing: the right team uses the player's own stat tables, from level 0, without built-in abilities;
             // builds come only from the picks between rounds
