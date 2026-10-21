@@ -22,6 +22,7 @@ namespace HangtimeOvertime.Patches
             if (scene.name == "Upgrade") RunSaves.SaveUpgradeScreen();
             else if (scene.name == "Lose") RunSaves.ClearCurrent();
             else if (scene.name == "Win" && RunState.Mode == RunMode.Normal) RunSaves.ClearCurrent();   // LOOP 2 saves again at its first match
+            if ((scene.name == "Lose" || scene.name == "Win") && Daily.Cup) RunState.Daily = null;          // the cup is over; TRY AGAIN / LOOP 2 are normal runs
             if (scene.name != "Game" || TitleController.onTitle) return;
             if (RunState.Mode == RunMode.Infinite)
             {
@@ -47,7 +48,7 @@ namespace HangtimeOvertime.Patches
                 TeamRoster.ClearChoice();
                 int slot = GameManager.gameNumber;
                 if (TitleController.onTitle || slot < 1 || slot > 8) return;
-                if (RunState.Mode == RunMode.Normal && TeamRoster.ResumeKey == null) return;   // Classic: the game's own bracket
+                if (RunState.Mode == RunMode.Normal && TeamRoster.ResumeKey == null && !Daily.Cup) return;   // Classic: the game's own bracket
                 var prefab = TeamRoster.Choose(slot);
                 switch (slot)
                 {
@@ -137,6 +138,7 @@ namespace HangtimeOvertime.Patches
             [HarmonyPrefix]
             private static void Prefix(GameManager __instance, ref string nextScene)
             {
+                if (!__instance.done && Daily.Cup && (nextScene == "Lose" || nextScene == "Win")) RunState.EndCup(nextScene == "Win" ? 8 : GameManager.gameNumber - 1);
                 if (__instance.done || RunState.Mode == RunMode.Normal) return;
                 if (nextScene == "Win") nextScene = "Upgrade";     // the bracket repeats instead of ending
                 if (RunState.Mode != RunMode.Infinite) return;
@@ -159,6 +161,12 @@ namespace HangtimeOvertime.Patches
             private static bool Prefix(TitleCard __instance)
             {
                 Bracket.RememberTitles(__instance.MatchTitles);
+                if (Daily.Cup && !TutorialManager.onTutorial)
+                {
+                    int gc = Mathf.Clamp(GameManager.gameNumber, 0, __instance.MatchTitles.Count - 1);
+                    __instance.TextSlide("Daily Cup - " + __instance.MatchTitles[gc]);
+                    return false;
+                }
                 if (RunState.Mode == RunMode.Normal || TutorialManager.onTutorial) return true;
                 int g = Mathf.Clamp(GameManager.gameNumber, 0, __instance.MatchTitles.Count - 1);
                 string text = RunState.ModeDef.Banner

@@ -57,6 +57,7 @@ namespace HangtimeOvertime.Core
         // Loop draws every slot at kick-off
         private static string Upcoming(int g)
         {
+            if (Daily.Cup) return Engine.TeamRoster.CupName(g);
             var gm = GameManager.Instance;
             if (gm == null || RunState.Mode != RunMode.Normal || g == 7) return "???";
             GameObject prefab = null;
@@ -77,7 +78,7 @@ namespace HangtimeOvertime.Core
         public static BracketModel Classic(int won)
         {
             var m = new BracketModel();
-            string mode = RunState.Mode == RunMode.Loop ? $"LOOP {RunState.Loop}" : GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2 ? "CO-OP" : "CLASSIC";
+            string mode = Daily.Cup ? "DAILY CUP " + RunState.Daily : RunState.Mode == RunMode.Loop ? $"LOOP {RunState.Loop}" : GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2 ? "CO-OP" : "CLASSIC";
             m.Champion = won >= 8;
             m.Title = m.Champion ? "CHAMPIONS!" : $"{mode}  ·  BRACKET";
             for (int g = 1; g <= 8; g++)

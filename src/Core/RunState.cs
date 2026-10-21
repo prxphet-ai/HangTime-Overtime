@@ -53,10 +53,10 @@ namespace HangtimeOvertime.Core
         // A fresh run, as the game's own practice match would do it, then straight into match 1.
         public static void StartInfinite()
         {
-            // the title's DAILY starts the day's run; trying again after a daily run is another run of today's
-            if (Core.Daily.Pending != null) { Daily = Core.Daily.Pending; Core.Daily.Pending = null; }
+            // the DAILY menu starts the day's run; trying again after a daily run is another run of today's
+            if (Core.Daily.Pending != null && !Core.Daily.PendingCup) { Daily = Core.Daily.Pending; Core.Daily.Pending = null; }
             else if (Daily != null) Daily = Core.Daily.Today;
-            if (Daily != null) DailyCounts = Core.Daily.Begin(Daily);
+            if (Daily != null) DailyCounts = Core.Daily.Begin(Core.Daily.Key(Daily, false));
             Mode = RunMode.Infinite;
             InfiniteMatch = 1;
             InfiniteWins = 0;
@@ -76,9 +76,37 @@ namespace HangtimeOvertime.Core
             Plugin.Log.LogInfo(Daily != null ? "Infinite run started (daily " + Daily + ")" : "Infinite run started");
         }
 
+        // the daily cup: a Classic-style bracket from match 1 (no practice match), opponents and offers seeded by the day
+        public static void StartCup()
+        {
+            Daily = Core.Daily.Pending ?? Core.Daily.Today;
+            Core.Daily.Pending = null; Core.Daily.PendingCup = false;
+            Mode = RunMode.Normal;
+            Loop = 1;
+            var gm = GameManager.Instance;
+            foreach (var stat in gm.playerStats.statUpgrades) stat.currentLevel = 0;
+            gm.playerStats.techniques.Clear();
+            Engine.StatCards.ResetRun();
+            LimitBreakEffects.ResetLimits();
+            GameManager.statOverload = false;
+            StatTracker.runTimer = 0f;
+            TutorialManager.onTutorial = false;
+            GameManager.gameNumber = 1;
+            DailyCounts = Core.Daily.Begin(Core.Daily.Key(Daily, true));
+            Plugin.Log.LogInfo("Daily cup started (" + Daily + ")");
+        }
+
+        // a daily cup ends: lost a match, or won the final (8)
+        public static void EndCup(int won)
+        {
+            if (Daily == null || Mode != RunMode.Normal) return;
+            Core.Daily.Finish(Core.Daily.Key(Daily, true), DailyCounts, won);
+            DailyCounts = false;
+        }
+
         public static void EndInfinite()
         {
-            if (Daily != null) { Core.Daily.Finish(Daily, DailyCounts, InfiniteWins); DailyCounts = false; return; }   // its own records
+            if (Daily != null) { Core.Daily.Finish(Core.Daily.Key(Daily, false), DailyCounts, InfiniteWins); DailyCounts = false; return; }   // its own records
             if (InfiniteWins > Save.bestInfiniteWins) Save.bestInfiniteWins = InfiniteWins;
             WriteSave();
             Plugin.Log.LogInfo($"Infinite run over: {InfiniteWins} wins (best {Save.bestInfiniteWins})");

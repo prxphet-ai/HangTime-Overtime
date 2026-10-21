@@ -72,7 +72,7 @@ namespace HangtimeOvertime.Patches
             string[] head = { "DAY", "FIRST RUN", "BEST", "RUNS" };
             for (int i = 0; i < head.Length; i++) Text(head[i], new Vector2(cx[i], y), 0.45f, pw * 0.25f, new Color(1f, 0.85f, 0.35f));
             y -= 1.5f;
-            var hist = Daily.History().Take(8).ToList();
+            var hist = Daily.History(false).Take(8).ToList();
             if (hist.Count == 0) Text("NO DAILY RUNS YET", new Vector2(0f, y - 1f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
             foreach (var (d, f, b, r) in hist)
             {
@@ -83,11 +83,11 @@ namespace HangtimeOvertime.Patches
                 Text(r.ToString(), new Vector2(cx[3], y), 0.48f, pw * 0.2f, col);
                 y -= 1.3f;
             }
-            var all = Daily.History().Where(h => h.first >= 0).ToList();
+            var all = Daily.History(false).Where(h => h.first >= 0).ToList();
             if (all.Count > 0)
             {
                 var top1 = all.OrderByDescending(h => h.first).First();
-                Text($"BEST DAILY: {top1.first} WINS ({top1.date})  ·  DAYS PLAYED: {Daily.History().Count()}", new Vector2(0f, -ph / 2f + 4f), 0.45f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+                Text($"BEST DAILY: {top1.first} WINS ({top1.date})  ·  DAYS PLAYED: {Daily.History(false).Count()}", new Vector2(0f, -ph / 2f + 4f), 0.45f, pw - 2f, new Color(1f, 0.85f, 0.35f));
             }
             Button("BACK", new Vector2(0f, -ph / 2f + 1.7f), new Vector2(pw * 0.3f, 2.2f), () => Destroy(gameObject), 0.6f);
             PadHint("A: CHOOSE   ·   B: BACK", new Vector2(0f, -ph / 2f + 3f), pw - 2f);

@@ -122,6 +122,7 @@ namespace HangtimeOvertime.Patches
                 ContinueMenu.Bypass = false;
                 if (Daily.Pending == null) RunState.Daily = null;           // INFINITE / CLASSIC from the title: a normal run
                 if (infinite) RunState.StartInfinite();
+                else if (Daily.Pending != null && Daily.PendingCup) RunState.StartCup();
                 else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); }
                 return true;
             }

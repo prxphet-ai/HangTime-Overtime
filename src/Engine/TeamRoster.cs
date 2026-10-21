@@ -58,6 +58,7 @@ namespace HangtimeOvertime.Engine
             var pool = PoolFor(slot);
             (string key, TeamDef def) pick;
             if (RunState.Daily != null && RunState.Mode == RunMode.Infinite) pick = DailyPick(RunState.InfiniteMatch);
+            else if (Core.Daily.Cup) pick = CupPick(slot);
             else
             {
                 var fresh = pool.Where(p => !recent.Contains(p.key)).ToList();
@@ -80,6 +81,26 @@ namespace HangtimeOvertime.Engine
                 .Concat(Generated.Teams.All.Where(t => t.Slot == cls && prefabs.ContainsKey(t.Base)).Select(t => (key: t.Id, def: t)))
                 .ToList();
         }
+
+        // the daily cup: one team per slot of the day's bracket, no team twice
+        private static (string key, TeamDef def) CupPick(int slot)
+        {
+            if (prefabs.Count == 0) CollectPrefabs();
+            var used = new HashSet<string>();
+            (string key, TeamDef def) pick = default;
+            for (int g = 1; g <= slot && g <= 8; g++)
+            {
+                var pool = PoolFor(g);
+                var fresh = pool.Where(p => !used.Contains(p.key)).ToList();
+                var from = fresh.Count > 0 ? fresh : pool;
+                pick = from[Core.Daily.Mix(RunState.Daily, 9, g) % from.Count];
+                used.Add(pick.key);
+            }
+            return pick;
+        }
+
+        // the cup's team in a slot, by name (the bracket shows it before it's played)
+        public static string CupName(int slot) { var p = CupPick(slot); return p.def != null ? p.def.Name : p.key; }
 
         // the daily run: the day's whole sequence up to this match (no repeats within 3), so it doesn't depend on what
         // was played before in this session or on a resumed run

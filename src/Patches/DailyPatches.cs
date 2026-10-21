@@ -10,7 +10,7 @@ namespace HangtimeOvertime.Patches
     // first unowned ones in the day's order (Daily.Pick), given to the card buttons as they appear. Rallies stay random.
     internal static class DailyPatches
     {
-        private static bool Active => RunState.Daily != null && RunState.Mode == RunMode.Infinite && !TitleController.onTitle;
+        private static bool Active => RunState.Daily != null && (RunState.Mode == RunMode.Infinite || RunState.Mode == RunMode.Normal) && !TitleController.onTitle;
 
         [HarmonyPatch(typeof(GameManager), "OnStart")]
         private static class SeedKickOff
@@ -20,7 +20,7 @@ namespace HangtimeOvertime.Patches
             private static void Prefix(out bool __state)
             {
                 __state = Active;
-                if (__state) Daily.Push(1, RunState.InfiniteMatch);
+                if (__state) Daily.Push(1, Daily.MatchIndex);
             }
 
             [HarmonyPriority(Priority.Last)]
@@ -39,7 +39,7 @@ namespace HangtimeOvertime.Patches
             {
                 __state = Active;
                 Daily.PerkOffer.Clear(); Daily.CardOffer.Clear();
-                if (__state) Daily.Push(2, RunState.InfiniteMatch);
+                if (__state) Daily.Push(2, Daily.MatchIndex);
             }
 
             // after the reward pools are built (UpgradePatches.Pool): the day's two perks and three stat cards
@@ -60,7 +60,7 @@ namespace HangtimeOvertime.Patches
                     foreach (var p in Daily.Pick(pairs, p => Collection.KeyOf(p) ?? p.title, p => true, 3, 2))
                         Daily.CardOffer.Enqueue(p);
                 Daily.Pop();
-                Plugin.Log.LogInfo($"Daily offers (match {RunState.InfiniteMatch}): perks {string.Join(", ", System.Linq.Enumerable.Select(Daily.PerkOffer, c => c.title))}; cards {string.Join(", ", System.Linq.Enumerable.Select(Daily.CardOffer, p => p.title))}");
+                Plugin.Log.LogInfo($"Daily offers (match {Daily.MatchIndex}): perks {string.Join(", ", System.Linq.Enumerable.Select(Daily.PerkOffer, c => c.title))}; cards {string.Join(", ", System.Linq.Enumerable.Select(Daily.CardOffer, p => p.title))}");
             }
         }
 

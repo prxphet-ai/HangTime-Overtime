@@ -854,3 +854,13 @@ Modes:
   (log and screen agree), picked; match 2 Hoshikuzu Stargazers; quit; CONTINUE resumed at match 2 (still the daily slot);
   quit; PRACTICE RUN ended the first run at 1 win and started run 2: match 1 Hinode Sparks again, the same offers. The
   normal Infinite (round 6) and Classic saves were unchanged. Saves restored. 0 errors.
+
+### Feature 10 — daily seeded tournaments (partly done, NOT tested)
+- Code is in, but there's no button for it yet, so players can't reach it: `RunState.StartCup/EndCup`, `Daily.Cup`, run slot `cup`, `TeamRoster.CupPick/CupName` (one seeded team per bracket slot, no repeats), kick-off and offers seeded as in feature 9, Classic difficulty (no player-power scaling), title card "Daily Cup - ...", bracket shows the whole seeded lineup, results under "cup <date>".
+- Left: RUN / CUP tabs in `DailyMenu` (start presses the CLASSIC title button with `Daily.Pending` + `Daily.PendingCup`), then test start / lose / win / continue.
+
+## Session status (2026-10-21)
+- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-9.
+- Partly done: 10 (backend only, untested, no menu entry).
+- Not started: 11 draft tournament, 12 individual picks, 13 chat / emotes, 14 lobby rules, 15 replays, 16 party tournament, 17 spectators.
+- Open questions: should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).

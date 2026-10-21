@@ -24,7 +24,13 @@ namespace HangtimeOvertime.Core
     {
         public static string Today => DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         public static TimeSpan UntilNext => DateTime.UtcNow.Date.AddDays(1) - DateTime.UtcNow;
-        public static string Pending;                     // the title's DAILY: the next Infinite start is this day's run
+        public static string Pending;                     // the DAILY menu: the next run start is this day's run / cup
+        public static bool PendingCup;
+        public static bool Cup => RunState.Daily != null && RunState.Mode == RunMode.Normal;   // the daily cup is a Classic-style bracket
+        // the key results are kept under: the run by its date, the cup as "cup <date>"
+        public static string Key(string date, bool cup) => cup ? "cup " + date : date;
+        // which match of the run this is (offers and kick-offs are seeded by it)
+        public static int MatchIndex => RunState.Mode == RunMode.Infinite ? RunState.InfiniteMatch : GameManager.gameNumber;
 
         // FNV-1a over the date: the same number on every PC
         public static uint Seed(string date)
@@ -49,7 +55,7 @@ namespace HangtimeOvertime.Core
         public static void Push(int purpose, int n)
         {
             saved.Push(UnityEngine.Random.state);
-            UnityEngine.Random.InitState(Mix(RunState.Daily, purpose, n));
+            UnityEngine.Random.InitState(Mix(RunState.Daily, purpose + (Cup ? 100 : 0), n));
         }
 
         public static void Pop() { if (saved.Count > 0) UnityEngine.Random.state = saved.Pop(); }
@@ -104,7 +110,7 @@ namespace HangtimeOvertime.Core
             data.runs[i]++;
             Save();
             bool counts = data.runs[i] == 1;
-            Plugin.Log.LogInfo($"Daily run {date} started (run {data.runs[i]}, {(counts ? "counts" : "practice")}, seed {Seed(date)})");
+            Plugin.Log.LogInfo($"Daily {date} started (run {data.runs[i]}, {(counts ? "counts" : "practice")})");
             return counts;
         }
 
@@ -115,12 +121,14 @@ namespace HangtimeOvertime.Core
             if (counts) data.first[i] = wins;
             data.best[i] = Math.Max(data.best[i], wins);
             Save();
-            Plugin.Log.LogInfo($"Daily run {date} over: {wins} wins ({(counts ? "counts" : "practice")}; best that day {data.best[i]})");
+            Plugin.Log.LogInfo($"Daily {date} over: {wins} wins ({(counts ? "counts" : "practice")}; best that day {data.best[i]})");
         }
 
         // newest first
-        public static IEnumerable<(string date, int first, int best, int runs)> History() =>
-            Data.dates.Select((d, i) => (d, data.first[i], data.best[i], data.runs[i])).OrderByDescending(x => x.d, StringComparer.Ordinal);
+        public static IEnumerable<(string date, int first, int best, int runs)> History(bool cup) =>
+            Data.dates.Select((d, i) => (d: d, f: data.first[i], b: data.best[i], r: data.runs[i]))
+                .Where(x => x.d.StartsWith("cup ") == cup).Select(x => (cup ? x.d.Substring(4) : x.d, x.f, x.b, x.r))
+                .OrderByDescending(x => x.Item1, StringComparer.Ordinal);
 
         // ------------------------------------------------------------ the day's card offers
 
@@ -131,7 +139,7 @@ namespace HangtimeOvertime.Core
         // times (the game's rarity weighting) comes early k times as often (exponential sort keys)
         public static List<T> Pick<T>(IEnumerable<T> cards, Func<T, string> key, Func<T, bool> ok, int count, int purpose)
         {
-            int n = RunState.InfiniteMatch;
+            int n = MatchIndex + (Cup ? 500 : 0);
             return cards.Where(c => c != null).GroupBy(key).Select(g => (c: g.First(), w: g.Count()))
                 .OrderBy(x => -Math.Log((Mix(RunState.Daily, purpose * 1000 + n, (int)(StableHash(key(x.c)) & 0x7FFFFFFF)) + 1.0) / 2147483649.0) / x.w)
                 .Select(x => x.c).Where(ok).Take(count).ToList();
