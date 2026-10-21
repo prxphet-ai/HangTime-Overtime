@@ -15,6 +15,8 @@ namespace HangtimeOvertime.Core
         public static int InfiniteMatch = 1;   // 1-based match number in an infinite run
         public static int InfiniteWins;
         public static int Loop = 1;            // 1 = the normal tournament
+        public static string Daily;            // an Infinite run that is that UTC day's daily run (null: a normal one)
+        public static bool DailyCounts;        // it's that day's first run
 
         public static OvertimeSave Save = new OvertimeSave();
         private static string SavePath => Path.Combine(Application.persistentDataPath, "HangtimeOvertime.json");
@@ -51,6 +53,10 @@ namespace HangtimeOvertime.Core
         // A fresh run, as the game's own practice match would do it, then straight into match 1.
         public static void StartInfinite()
         {
+            // the title's DAILY starts the day's run; trying again after a daily run is another run of today's
+            if (Core.Daily.Pending != null) { Daily = Core.Daily.Pending; Core.Daily.Pending = null; }
+            else if (Daily != null) Daily = Core.Daily.Today;
+            if (Daily != null) DailyCounts = Core.Daily.Begin(Daily);
             Mode = RunMode.Infinite;
             InfiniteMatch = 1;
             InfiniteWins = 0;
@@ -65,13 +71,14 @@ namespace HangtimeOvertime.Core
             TutorialManager.onTutorial = false;
             if (gm.tournamentLineUps != null) gm.tournamentLineUps.NewLineUp();
             GameManager.gameNumber = InfiniteSlot;
-            Save.infiniteRuns++;
+            if (Daily == null) Save.infiniteRuns++;
             WriteSave();
-            Plugin.Log.LogInfo("Infinite run started");
+            Plugin.Log.LogInfo(Daily != null ? "Infinite run started (daily " + Daily + ")" : "Infinite run started");
         }
 
         public static void EndInfinite()
         {
+            if (Daily != null) { Core.Daily.Finish(Daily, DailyCounts, InfiniteWins); DailyCounts = false; return; }   // its own records
             if (InfiniteWins > Save.bestInfiniteWins) Save.bestInfiniteWins = InfiniteWins;
             WriteSave();
             Plugin.Log.LogInfo($"Infinite run over: {InfiniteWins} wins (best {Save.bestInfiniteWins})");

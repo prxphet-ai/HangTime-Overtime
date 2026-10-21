@@ -215,6 +215,9 @@ namespace HangtimeOvertime.Patches
 
         // ------------------------------------------------------------ resuming
 
+        // the DAILY menu resumes its own saved run the same way
+        public static void Resume(TitleButton from, RunSnapshot snap) => Continue(from, snap);
+
         private static void Continue(TitleButton from, RunSnapshot snap)
         {
             if (!RunSaves.Apply(snap, out var problem)) { Close(from); return; }

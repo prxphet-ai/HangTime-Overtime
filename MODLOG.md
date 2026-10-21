@@ -97,3 +97,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   `UpgradeManager.LoadGame` does `gameNumber++`; `TitleCard.MatchTitles[gameNumber]` are the round names.
 - Panel kit (`OvertimePanel.InitKit`): fixed layout height 36 (panel scaled by view/36), the title label's font kept for
   other scenes. Upgrade scene camera view 32, win scene 17.
+- Daily runs: `src/Core/Daily.cs` (seed, Random push/pop, offers, HangtimeOvertime_daily.json), `src/Patches/DailyPatches.cs`,
+  `src/Patches/DailyMenu.cs`; `RunState.Daily` / `DailyCounts`; run slot `daily`; `TeamRoster.DailyPick`. Game facts: the
+  upgrade cards are drawn in the `UpgradeManager.CreateUpgrade` coroutine (Random across yields), button `Start` runs later.

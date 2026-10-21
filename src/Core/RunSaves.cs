@@ -30,6 +30,8 @@ namespace HangtimeOvertime.Core
         public string opponentName;
         public string[] opponentPerks = new string[0];
         public string savedAt;
+        public string daily = "";                         // the UTC day of a daily run ("" = a normal run)
+        public bool dailyCounts;
     }
 
     // On disk each slot is its own JSON object (Unity's JsonUtility won't nest custom classes from a mod assembly).
@@ -39,6 +41,7 @@ namespace HangtimeOvertime.Core
         public int version = RunSaves.Version;
         public string infinite = "";
         public string classic = "";
+        public string daily = "";
         public string[] titleClasses = new string[0];      // the game's card titles, see PerkRegistry.KnownTitles
         public string[] titleNames = new string[0];
         public string[] descClasses = new string[0];       // and their card descriptions (Versus offers show them)
@@ -49,6 +52,7 @@ namespace HangtimeOvertime.Core
     {
         public RunSnapshot infinite = new RunSnapshot();
         public RunSnapshot classic = new RunSnapshot();
+        public RunSnapshot daily = new RunSnapshot();
     }
 
     internal static class RunSaves
@@ -60,6 +64,7 @@ namespace HangtimeOvertime.Core
 
         public static RunSnapshot Infinite => file.infinite;
         public static RunSnapshot Classic => file.classic;
+        public static RunSnapshot DailyRun => file.daily;
         public static bool Has(bool infinite) => (infinite ? file.infinite : file.classic).has;
 
         // ------------------------------------------------------------ file
@@ -94,7 +99,7 @@ namespace HangtimeOvertime.Core
             for (int i = 0; f.descClasses != null && f.descTexts != null && i < f.descClasses.Length && i < f.descTexts.Length; i++)
                 PerkRegistry.KnownDescriptions[f.descClasses[i]] = f.descTexts[i];
             RunSnapshot Read(string json) => string.IsNullOrEmpty(json) ? new RunSnapshot() : JsonUtility.FromJson<RunSnapshot>(json) ?? new RunSnapshot();
-            return new RunSlots { infinite = Read(f.infinite), classic = Read(f.classic) };
+            return new RunSlots { infinite = Read(f.infinite), classic = Read(f.classic), daily = Read(f.daily) };
         }
 
         public static void Flush()
@@ -106,6 +111,7 @@ namespace HangtimeOvertime.Core
                 {
                     infinite = file.infinite.has ? JsonUtility.ToJson(file.infinite) : "",
                     classic = file.classic.has ? JsonUtility.ToJson(file.classic) : "",
+                    daily = file.daily.has ? JsonUtility.ToJson(file.daily) : "",
                     titleClasses = PerkRegistry.KnownTitles.Keys.ToArray(),
                     titleNames = PerkRegistry.KnownTitles.Values.ToArray(),
                     descClasses = PerkRegistry.KnownDescriptions.Keys.ToArray(),
@@ -119,6 +125,8 @@ namespace HangtimeOvertime.Core
         }
 
         private static bool InfiniteSlot => RunState.Mode == RunMode.Infinite;
+        private static bool DailySlot => RunState.Mode == RunMode.Infinite && RunState.Daily != null;
+        private static RunSnapshot Current => DailySlot ? file.daily : InfiniteSlot ? file.infinite : file.classic;
 
         // runs worth saving: one player, past the tutorial
         private static bool Saving =>
@@ -131,7 +139,14 @@ namespace HangtimeOvertime.Core
             Plugin.Log.LogInfo($"Saved {(infinite ? "Infinite" : "Classic")} run cleared");
         }
 
-        public static void ClearCurrent() { if (RunState.Mode != RunMode.Versus && GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 1) Clear(InfiniteSlot); }
+        public static void ClearDaily() { file.daily = new RunSnapshot(); Flush(); Plugin.Log.LogInfo("Saved daily run cleared"); }
+
+        public static void ClearCurrent()
+        {
+            if (RunState.Mode == RunMode.Versus || GameManager.Instance == null || GameManager.Instance.numberOfPlayers != 1) return;
+            if (DailySlot) { file.daily = new RunSnapshot(); Flush(); Plugin.Log.LogInfo("Saved daily run cleared"); }
+            else Clear(InfiniteSlot);
+        }
 
         // ------------------------------------------------------------ capture
 
@@ -148,7 +163,7 @@ namespace HangtimeOvertime.Core
         public static void SaveUpgradeScreen()
         {
             if (!Saving) return;
-            var last = InfiniteSlot ? file.infinite : file.classic;
+            var last = Current;
             var s = Capture("upgrade");
             s.opponentKey = last.opponentKey;
             s.opponentName = last.opponentName;
@@ -165,9 +180,9 @@ namespace HangtimeOvertime.Core
 
         private static void Store(RunSnapshot s)
         {
-            if (InfiniteSlot) file.infinite = s; else file.classic = s;
+            if (DailySlot) file.daily = s; else if (InfiniteSlot) file.infinite = s; else file.classic = s;
             Flush();
-            Plugin.Log.LogInfo($"Run saved ({(InfiniteSlot ? "Infinite" : "Classic")}, {s.stage}): {Summary(s)}");
+            Plugin.Log.LogInfo($"Run saved ({(DailySlot ? "Daily" : InfiniteSlot ? "Infinite" : "Classic")}, {s.stage}): {Summary(s)}");
         }
 
         private static RunSnapshot Capture(string stage)
@@ -194,6 +209,8 @@ namespace HangtimeOvertime.Core
                                  LimitBreakEffects.limitSpinServe, LimitBreakEffects.limitFloatServe, LimitBreakEffects.limitBlock },
                 statOverload = GameManager.statOverload,
                 savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+                daily = RunState.Daily ?? "",
+                dailyCounts = RunState.DailyCounts,
             };
         }
 
@@ -239,6 +256,8 @@ namespace HangtimeOvertime.Core
             RunState.InfiniteMatch = Math.Max(1, s.infiniteMatch);
             RunState.InfiniteWins = s.infiniteWins;
             RunState.Loop = Math.Max(1, s.loop);
+            RunState.Daily = string.IsNullOrEmpty(s.daily) ? null : s.daily;
+            RunState.DailyCounts = s.dailyCounts;
             GameManager.gameNumber = s.gameNumber;
             TournamentLineUps.currentLineUp = s.lineUp;
             StatTracker.runTimer = s.runTimer;

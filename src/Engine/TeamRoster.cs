@@ -55,18 +55,48 @@ namespace HangtimeOvertime.Engine
                 if (forced != null && prefabs.ContainsKey(forced.Base)) { Current = forced; currentKey = forced.Id; return prefabs[forced.Base]; }
             }
             string cls = slot >= 1 && slot <= 8 ? Generated.Teams.SlotClass[slot] : "regular";
-            var vanilla = cls == "boss" ? Generated.Teams.VanillaBoss : cls == "combo" ? Generated.Teams.VanillaCombo : Generated.Teams.VanillaRegular;
-            var pool = vanilla.Where(prefabs.ContainsKey).Select(n => (key: n, def: (TeamDef)null))
-                .Concat(Generated.Teams.All.Where(t => t.Slot == cls && prefabs.ContainsKey(t.Base)).Select(t => (key: t.Id, def: t)))
-                .ToList();
-            var fresh = pool.Where(p => !recent.Contains(p.key)).ToList();
-            var pick = (fresh.Count > 0 ? fresh : pool)[Random.Range(0, (fresh.Count > 0 ? fresh : pool).Count)];
+            var pool = PoolFor(slot);
+            (string key, TeamDef def) pick;
+            if (RunState.Daily != null && RunState.Mode == RunMode.Infinite) pick = DailyPick(RunState.InfiniteMatch);
+            else
+            {
+                var fresh = pool.Where(p => !recent.Contains(p.key)).ToList();
+                pick = (fresh.Count > 0 ? fresh : pool)[Random.Range(0, (fresh.Count > 0 ? fresh : pool).Count)];
+            }
             recent.Enqueue(pick.key);
             while (recent.Count > 3) recent.Dequeue();
             Current = pick.def;
             currentKey = pick.key;
             Plugin.Log.LogInfo($"Opponent for slot {slot} ({cls}): {(pick.def != null ? pick.def.Name + " (new, on " + pick.def.Base + ")" : pick.key)} from {pool.Count} teams");
             return prefabs[pick.def != null ? pick.def.Base : pick.key];
+        }
+
+        // the slot's pool in a fixed order (the sheets' order, the same on every PC)
+        private static List<(string key, TeamDef def)> PoolFor(int slot)
+        {
+            string cls = slot >= 1 && slot <= 8 ? Generated.Teams.SlotClass[slot] : "regular";
+            var vanilla = cls == "boss" ? Generated.Teams.VanillaBoss : cls == "combo" ? Generated.Teams.VanillaCombo : Generated.Teams.VanillaRegular;
+            return vanilla.Where(prefabs.ContainsKey).Select(n => (key: n, def: (TeamDef)null))
+                .Concat(Generated.Teams.All.Where(t => t.Slot == cls && prefabs.ContainsKey(t.Base)).Select(t => (key: t.Id, def: t)))
+                .ToList();
+        }
+
+        // the daily run: the day's whole sequence up to this match (no repeats within 3), so it doesn't depend on what
+        // was played before in this session or on a resumed run
+        private static (string key, TeamDef def) DailyPick(int match)
+        {
+            var last = new Queue<string>();
+            (string key, TeamDef def) pick = default;
+            for (int m = 1; m <= match; m++)
+            {
+                var pool = PoolFor((m - 1) % 8 + 1);
+                var fresh = pool.Where(p => !last.Contains(p.key)).ToList();
+                var from = fresh.Count > 0 ? fresh : pool;
+                pick = from[Core.Daily.Mix(RunState.Daily, 7, m) % from.Count];
+                last.Enqueue(pick.key);
+                while (last.Count > 3) last.Dequeue();
+            }
+            return pick;
         }
 
         // a resumed upgrade screen: which new team (if any) was just beaten, for its comment line

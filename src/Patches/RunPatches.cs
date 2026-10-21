@@ -165,6 +165,7 @@ namespace HangtimeOvertime.Patches
                     .Replace("{n}", (RunState.Mode == RunMode.Versus ? VersusState.Round : RunState.InfiniteMatch).ToString())
                     .Replace("{loop}", RunState.Loop.ToString())
                     .Replace("{bracket}", __instance.MatchTitles[g]);
+                if (RunState.Daily != null && RunState.Mode == RunMode.Infinite) text = text.Replace("Infinite", "Daily");
                 __instance.TextSlide(text);
                 return false;
             }

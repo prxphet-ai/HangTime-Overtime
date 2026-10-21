@@ -832,3 +832,25 @@ Modes:
   A closed it and the upgrade screen carried on (stats, cards); F8 + F6 -> "NEXT: FINALS · VS SHIROGANE"; final won ->
   CHAMPIONS on the win screen, A closed it and the win screen stayed. Title panels (collection, versus) unchanged. Co-op
   takes the same path (RunMode.Normal) but wasn't run. Saves restored. 0 errors.
+
+### Feature 9 — daily seeded Infinite runs (done)
+- **DAILY RUN** (title bar, `src/Patches/DailyMenu.cs`): the UTC date, a countdown to the next one, today's state, START
+  TODAY'S RUN (then PRACTICE RUN), CONTINUE a saved daily run, the last 8 days (first run, best, runs), best daily and days
+  played. (A title-menu button sat behind the title screen's player, so it's in the bar.)
+- **Rule chosen: the first run counts.** Every run that day is allowed; only the first sets the day's result, the rest
+  only raise "best". Starting another run while the counting run is saved ends it with the wins it has (the menu says so).
+  A daily run left unfinished can be continued after midnight and still counts for its own day.
+- **What's seeded** (`src/Core/Daily.cs`, `src/Patches/DailyPatches.cs`): seed = FNV-1a of the date. Opponents: the day's
+  whole sequence is computed from match 1 (no repeats within 3), so it doesn't depend on earlier play or on resuming.
+  The kick-off (`GameManager.OnStart`: the game's opponent level-ups, the mod's opponent perks) and the upgrade screen's pool
+  building run with Unity's random state seeded by day + match, then the old state comes back (rallies stay random).
+  Offers: the first 2 unowned perks / 3 stat cards in the day's order for that match (weighted like the game's pool),
+  handed to the card buttons as they appear. **Not identical for everyone**: offers skip what you own, and the mod's
+  opponent scaling follows the player's power, so different picks give different later offers / opponent stats.
+- **Saves**: a third run slot `daily` in HangtimeOvertime_runs.json (the normal Infinite run is never touched); results in
+  `HangtimeOvertime_daily.json`; daily runs don't change the Infinite best or run count. The title card says "Daily -
+  Match n".
+- **Tested**: started today's run (seed 2624177733, counts): match 1 Hinode Sparks; F6 -> offers Tectonic Slam / Skyhook
+  (log and screen agree), picked; match 2 Hoshikuzu Stargazers; quit; CONTINUE resumed at match 2 (still the daily slot);
+  quit; PRACTICE RUN ended the first run at 1 win and started run 2: match 1 Hinode Sparks again, the same offers. The
+  normal Infinite (round 6) and Classic saves were unchanged. Saves restored. 0 errors.

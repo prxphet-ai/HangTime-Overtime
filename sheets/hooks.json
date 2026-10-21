@@ -763,6 +763,66 @@
       "verified": "no"
     },
     {
+      "id": "daily_seed_kickoff",
+      "target_type": "GameManager",
+      "target_method": "OnStart",
+      "kind": "prefix",
+      "patch_class": "DailyPatches",
+      "purpose": "Daily run: the game's random numbers seeded by the day and match for the kick-off (opponent level-ups and perks)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "daily_seed_kickoff_end",
+      "target_type": "GameManager",
+      "target_method": "OnStart",
+      "kind": "postfix",
+      "patch_class": "DailyPatches",
+      "purpose": "Daily run: the random state from before the kick-off comes back (rallies stay random)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "daily_seed_pools",
+      "target_type": "UpgradeManager",
+      "target_method": "Start",
+      "kind": "prefix",
+      "patch_class": "DailyPatches",
+      "purpose": "Daily run: the upgrade screen's card pools are built with the day's seed",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "daily_offers",
+      "target_type": "UpgradeManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "DailyPatches",
+      "purpose": "Daily run: picks the day's two perks / three stat cards (first unowned in the day's order) and restores the random state",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "daily_perk_button",
+      "target_type": "TechniqueButton",
+      "target_method": "Start",
+      "kind": "prefix",
+      "patch_class": "DailyPatches",
+      "purpose": "Daily run: a perk card button shows the day's offer (not the Limit Break card)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "daily_card_button",
+      "target_type": "UpgradeButton",
+      "target_method": "Start",
+      "kind": "prefix",
+      "patch_class": "DailyPatches",
+      "purpose": "Daily run: a stat card button shows the day's offer",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
       "id": "bracket_between_matches",
       "target_type": "UpgradeManager",
       "target_method": "Start",
