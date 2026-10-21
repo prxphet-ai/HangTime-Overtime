@@ -35,7 +35,7 @@ namespace HangtimeOvertime.Online
     // inputs. Hosting listens on Steam (a lobby others find in the browser, by code or by invite) and on direct IP.
     internal static class Net
     {
-        public const int Protocol = 4;               // 4: the match-end screen names the winner (streaks)
+        public const int Protocol = 5;               // 4: the match-end screen names the winner (streaks); 5: in-match chat, draft start
 
         public static NetRole Role { get; private set; }
         public static bool IsHost => Role == NetRole.Host;
@@ -449,6 +449,7 @@ namespace HangtimeOvertime.Online
                 int key = KeyOf(d);
                 if (!ClientPads.TryGetValue(key, out var p)) ClientPads[key] = p = new ClientPad { Input = d };
                 var s = overrides.TryGetValue(key, out var o) ? o : VersusInput.Read(d);
+                if (Patches.ChatHud.DeviceBusy(key)) s = new PadState { Connected = true };   // its player is chatting
                 p.X = s.X;
                 if (s.Up) p.Count[0]++;
                 if (s.Down) p.Count[1]++;
@@ -478,6 +479,7 @@ namespace HangtimeOvertime.Online
         {
             Lobbies.Hook();
             Net.EarlyUpdate();
+            Patches.ChatHud.Tick();
             OnlineFlow.TitleTick();
             PingHud.Tick();
             TitleBar.Tick();

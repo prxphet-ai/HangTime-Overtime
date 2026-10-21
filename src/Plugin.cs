@@ -22,6 +22,7 @@ namespace HangtimeOvertime
         internal static ConfigEntry<string> OnlineJoin, OnlineBind;
         internal static ConfigEntry<float> OnlineTimeout;
         internal static ConfigEntry<bool> SkipTutorial, CheckForUpdates;
+        internal static ConfigEntry<bool> ChatBubbles, ChatMuteOthers;
 
         // Perk/mode trigger log, only with DumpScenes on (development).
         internal static void Trace(string msg) { if (DumpScenes != null && DumpScenes.Value) Log.LogInfo("[trace] " + msg); }
@@ -44,6 +45,8 @@ namespace HangtimeOvertime
 
             SkipTutorial = Config.Bind("General", "SkipTutorial", false, "Never start the game's tutorial (the pause menu's TUTORIAL still plays it). Also in the title screen's SETTINGS.");
             CheckForUpdates = Config.Bind("General", "CheckForUpdates", true, "On launch, ask GitHub whether a newer Overtime release exists and say so on the title screen (nothing about you is sent). Also in SETTINGS.");
+            ChatBubbles = Config.Bind("Chat", "Bubbles", true, "In matches, chat lines and emotes show as a bubble above the player (the chat log in the corner always shows them). Also in SETTINGS.");
+            ChatMuteOthers = Config.Bind("Chat", "MuteOthers", false, "Online: other PCs' chat lines and emotes are not shown. Also in SETTINGS.");
             Patches.TitleBar.Init();
             Patches.SettingsMenu.Init();
 

@@ -107,3 +107,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   `RunState.Draft`; Versus DRAFT START (`VersusOverlay.ShowDraft`, `VersusOffer.Draft`). Dev: `-ovt-draft` (host).
 - Individual picks: `src/Engine/Ownership.cs` (checked in `Engine.FirePerk`), `src/Patches/CoopPick.cs`. Co-op characters
   = `LocalInputManager.player1` / `player2`; Versus = `VersusDriver.Current.Players`. F9 logs ownership.
+- Chat: `sheets/chat.json` -> `Generated.Chat`; `src/Patches/ChatHud.cs` (HUD spawned from NetRunner per Game scene;
+  PlayerController SetXInput / UpInputPressed / DownInputPressed and PauseController.Pause_Unpause prefixes); online
+  `Msg.MatchChat` 73, protocol 5. Config `[Chat] Bubbles / MuteOthers`. Dev: `-ovt-chat`.

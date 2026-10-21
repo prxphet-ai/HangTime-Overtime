@@ -1,0 +1,151 @@
+{
+  "sheet": "chat",
+  "about": "In-match chat (src/Patches/ChatHud.cs): the quick chat wheel's lines, the emote wheel, and timings. A wheel shows its rows clockwise from the top (the first row is up). Typed chat has no rows: settings.max_length limits a line. Generates Chat in src/Generated/Sheets.g.cs.",
+  "columns": {
+    "id": "stable key (sent online by its index in this sheet, per kind)",
+    "kind": "quick | emote",
+    "text": "what the bubble says (quick) or the emote's symbol (emote)",
+    "label": "the wheel's label",
+    "color": "hex colour of the bubble's text",
+    "verified": "how it was seen in game, or 'no'"
+  },
+  "settings": {
+    "max_length": 60,
+    "bubble_seconds": 4.5,
+    "emote_seconds": 2.2,
+    "log_lines": 6,
+    "log_seconds": 10,
+    "cooldown": 1.2,
+    "typed_cooldown": 2.0
+  },
+  "rows": [
+    {
+      "id": "nice",
+      "kind": "quick",
+      "text": "Nice!",
+      "label": "NICE!",
+      "color": "FFFFFF",
+      "verified": "2026-10-21: in the quick chat wheel; sent by keyboard / pad and shown (bubble, log), also online"
+    },
+    {
+      "id": "mine",
+      "kind": "quick",
+      "text": "Mine!",
+      "label": "MINE!",
+      "color": "FFFFFF",
+      "verified": "2026-10-21: in the quick chat wheel; sent by keyboard / pad and shown (bubble, log), also online"
+    },
+    {
+      "id": "yours",
+      "kind": "quick",
+      "text": "Yours!",
+      "label": "YOURS!",
+      "color": "FFFFFF",
+      "verified": "2026-10-21: in the quick chat wheel; sent by keyboard / pad and shown (bubble, log), also online"
+    },
+    {
+      "id": "sorry",
+      "kind": "quick",
+      "text": "Sorry!",
+      "label": "SORRY!",
+      "color": "FFFFFF",
+      "verified": "2026-10-21: in the quick chat wheel; sent by keyboard / pad and shown (bubble, log), also online"
+    },
+    {
+      "id": "gg",
+      "kind": "quick",
+      "text": "Good game!",
+      "label": "GOOD GAME",
+      "color": "FFD95A",
+      "verified": "2026-10-21: in the quick chat wheel"
+    },
+    {
+      "id": "close",
+      "kind": "quick",
+      "text": "So close!",
+      "label": "SO CLOSE",
+      "color": "FFFFFF",
+      "verified": "2026-10-21: in the quick chat wheel"
+    },
+    {
+      "id": "one_more",
+      "kind": "quick",
+      "text": "One more!",
+      "label": "ONE MORE",
+      "color": "FFFFFF",
+      "verified": "2026-10-21: in the quick chat wheel; sent by keyboard / pad and shown (bubble, log), also online"
+    },
+    {
+      "id": "wow",
+      "kind": "quick",
+      "text": "What a spike!",
+      "label": "WHAT A SPIKE",
+      "color": "FF8A5A",
+      "verified": "2026-10-21: in the quick chat wheel"
+    },
+    {
+      "id": "excl",
+      "kind": "emote",
+      "text": "!",
+      "label": "!",
+      "color": "FFD95A",
+      "verified": "2026-10-21: sent and shown (bubble, log)"
+    },
+    {
+      "id": "question",
+      "kind": "emote",
+      "text": "?",
+      "label": "?",
+      "color": "9FE8FF",
+      "verified": "no"
+    },
+    {
+      "id": "happy",
+      "kind": "emote",
+      "text": ":D",
+      "label": ":D",
+      "color": "A8FFC8",
+      "verified": "2026-10-21: sent and shown (bubble, log)"
+    },
+    {
+      "id": "sad",
+      "kind": "emote",
+      "text": ":(",
+      "label": ":(",
+      "color": "8AB4FF",
+      "verified": "2026-10-21: sent and shown (bubble, log)"
+    },
+    {
+      "id": "fire",
+      "kind": "emote",
+      "text": "HOT!",
+      "label": "HOT!",
+      "color": "FF6A2A",
+      "verified": "2026-10-21: sent and shown (bubble, log)"
+    },
+    {
+      "id": "sleep",
+      "kind": "emote",
+      "text": "Zzz",
+      "label": "ZZZ",
+      "color": "C8B8FF",
+      "verified": "no"
+    },
+    {
+      "id": "wave",
+      "kind": "emote",
+      "text": "o/",
+      "label": "O/",
+      "color": "FFFFFF",
+      "verified": "no"
+    },
+    {
+      "id": "gg_emote",
+      "kind": "emote",
+      "text": "GG",
+      "label": "GG",
+      "color": "FFD95A",
+      "verified": "no"
+    }
+  ]
+}

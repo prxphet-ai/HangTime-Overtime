@@ -19,7 +19,7 @@ GAME = os.environ.get("HANGTIME_DIR", r"C:\Program Files (x86)\Steam\steamapps\c
 ASM = os.path.join(GAME, "Hangtime!_Data", "Managed", "Assembly-CSharp.dll")
 DECOMP = os.environ.get("HANGTIME_DECOMP", os.path.join(os.path.dirname(ROOT), "hangtime-decomp"))
 
-NAMES = ("perks", "triggers", "effects", "elements", "stats", "statcards", "teams", "hooks", "modes", "scaling", "ui", "saves", "draft")
+NAMES = ("perks", "triggers", "effects", "elements", "stats", "statcards", "teams", "hooks", "modes", "scaling", "ui", "saves", "draft", "chat")
 GAME_STATS = ["Spike", "Jump", "Block", "Bump", "SpinServe", "ServeJump", "FloatServe"]
 EMPTY_OK = {"conds", "params", "text_params", "stages"}
 TEXT_RULES = {
@@ -370,6 +370,15 @@ def preflight():
             "over_start", "over_per_round", "over_max", "reach_min_mult", "reach_max_mult", "move_per_round", "move_max", "perks_base", "perks_per_round", "perks_boss_bonus",
             "perks_max", "rare_from", "epic_from", "theme_weight", "player_power_weight", "player_power_ratio_min", "player_power_ratio_max",
             "expected_power_base", "expected_power_per_round"}
+    for r in S["chat"]["rows"]:
+        if r["kind"] not in ("quick", "emote"):
+            errors.append(f"chat.{r['id']}.kind: quick or emote")
+        if not TEXT_RULES["color"](r["color"]):
+            errors.append(f"chat.{r['id']}.color: 6-digit hex")
+    for kind in ("quick", "emote"):
+        n = sum(1 for r in S["chat"]["rows"] if r["kind"] == kind)
+        if not 2 <= n <= 8:
+            errors.append(f"chat: a wheel holds 2 to 8 {kind} rows ({n})")
     card_ids = {c["id"] for c in S["statcards"]["rows"]}
     for r in S["draft"]["rows"]:
         if r["kind"] not in ("perk", "card"):
@@ -647,6 +656,22 @@ def generate(S):
           "        public static readonly string[][] PackagePerks = new string[][] { " + ", ".join(arr(pk["perks"]) for pk in pks) + " };",
           "        public static readonly string[][] PackageCards = new string[][] { " + ", ".join(arr(pk["cards"]) for pk in pks) + " };",
           f"        public static readonly float[] PackageWin = new float[] {{ {', '.join(fl(pk['sim_win']) for pk in pks)} }};",
+          "    }", ""]
+
+    # CHAT (sheets/chat.json): the wheels and timings
+    cst = S["chat"]["settings"]
+    cq = [r for r in S["chat"]["rows"] if r["kind"] == "quick"]
+    ce = [r for r in S["chat"]["rows"] if r["kind"] == "emote"]
+    L += ["    // IN-MATCH CHAT (sheets/chat.json): quick chat and emote wheels (clockwise from the top), timings.",
+          "    public static class Chat", "    {",
+          f"        public const int MaxLength = {int(cst['max_length'])}, LogLines = {int(cst['log_lines'])};",
+          f"        public const float BubbleSeconds = {fl(cst['bubble_seconds'])}, EmoteSeconds = {fl(cst['emote_seconds'])}, LogSeconds = {fl(cst['log_seconds'])}, Cooldown = {fl(cst['cooldown'])}, TypedCooldown = {fl(cst['typed_cooldown'])};",
+          f"        public static readonly string[] QuickText = {arr([r['text'] for r in cq])};",
+          f"        public static readonly string[] QuickLabel = {arr([r['label'] for r in cq])};",
+          f"        public static readonly string[] QuickColor = {arr([r['color'] for r in cq])};",
+          f"        public static readonly string[] EmoteText = {arr([r['text'] for r in ce])};",
+          f"        public static readonly string[] EmoteLabel = {arr([r['label'] for r in ce])};",
+          f"        public static readonly string[] EmoteColor = {arr([r['color'] for r in ce])};",
           "    }", ""]
 
     L += ["    public readonly struct UiDef",

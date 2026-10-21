@@ -116,6 +116,10 @@ namespace HangtimeOvertime.Patches
                 () => Plugin.SkipTutorial.Value, v => { Plugin.SkipTutorial.Value = v; if (v) TutorialManager.onTutorial = false; }));
             Toggles.Add(("CHECK FOR UPDATES", "ON LAUNCH, ASK GITHUB IF A NEWER OVERTIME IS OUT (NOTHING ABOUT YOU IS SENT)",
                 () => Plugin.CheckForUpdates.Value, v => { Plugin.CheckForUpdates.Value = v; if (!v) { TitleBar.Notice = null; } else UpdateCheck.Start(); }));
+            Toggles.Add(("CHAT BUBBLES", "IN MATCHES, CHAT AND EMOTES SHOW ABOVE THE PLAYER (OFF: ONLY THE CHAT LOG IN THE CORNER)",
+                () => Plugin.ChatBubbles.Value, v => Plugin.ChatBubbles.Value = v));
+            Toggles.Add(("MUTE OTHERS' CHAT", "ONLINE: HIDE OTHER PLAYERS' CHAT LINES AND EMOTES",
+                () => Plugin.ChatMuteOthers.Value, v => Plugin.ChatMuteOthers.Value = v));
         }
 
         public static void Open()

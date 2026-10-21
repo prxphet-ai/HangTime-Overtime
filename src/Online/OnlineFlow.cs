@@ -41,6 +41,7 @@ namespace HangtimeOvertime.Online
                 else AddLine(r.S());                                                     // the host's relay: name included
             });
             Net.On(Msg.ToLobby, r => { if (Net.IsClient) GoToLobby(); });
+            Net.On(Msg.MatchChat, (r, p) => { if (Net.IsHost) Patches.ChatHud.Received(r, p.Id); else Patches.ChatHud.ReceivedRelay(r); });
             Net.OnClosed += OnClosed;
             Net.OnPeerJoined += p =>
             {

@@ -921,7 +921,30 @@ Modes:
 - **Balance note**: in co-op a personal perk now helps one character instead of both, while each player picks every
   screen, so the team gets twice the cards. Not run in the simulator (it models one player per team). Open question below.
 
+### Feature 13 — quick chat wheel, emotes and typed chat (done)
+- **Wheels** (`src/Patches/ChatHud.cs`, lines and emotes in `sheets/chat.json`): each player's QUICK CHAT / EMOTE key
+  (key set 1: Q / E; see CONTROLS) or their gamepad's D-pad up / down opens a wheel of 8 next to their character.
+  Keyboard: LEFT / RIGHT choose, JUMP sends, RECEIVE / Esc / the same key close (the other key switches wheels). Pad:
+  the stick or D-pad points at a line, A sends, B closes. Local players can have wheels open at the same time.
+- **Typed chat**: the CHAT key (Enter) opens a box at the bottom; Enter sends, Esc cancels (and doesn't pause). A
+  gamepad's TYPED CHAT button (Select) opens the on-screen keyboard. 60 characters at most; long lines wrap in the bubble.
+- **While chatting** that player's character takes no gameplay input (the three calls every player goes through), and
+  typing keeps the key sets' keys out of play (the letters don't move anyone or open wheels). Online, a client's device
+  sends nothing to the host while its player chats.
+- **Showing**: a bubble above the character (pops in, fades; emotes are a big bouncing symbol), and a chat log in the
+  bottom-left corner on a dark backdrop (6 lines, fading after 10 s; all lines while typing). Cooldowns: 1.2 s, typed
+  2 s. A one-line hint of the keys shows at the first match of a session.
+- **Online**: `Msg.MatchChat` (protocol 5). A client sends to the host; the host relays to every PC (the sender's too) with
+  the sender's PC id; characters are named by MatchSync's player index (the same on every PC). Labels: "NAME (P2)".
+- **Settings** (SETTINGS, stored in the BepInEx config `[Chat]`): CHAT BUBBLES (off: only the log), MUTE OTHERS' CHAT
+  (online: other PCs' lines and emotes aren't shown).
+- **Tested**: solo match by keyboard (wheel, Q + D + W -> "Mine!" bubble while the player stood still; emote; typed "hi
+  there"; Enter + A + Esc: nothing sent, no pause) and by the virtual gamepad (stick right -> "Yours!", emote, Select ->
+  on-screen keyboard -> "SS"). Local Versus: P1 (WASD) and P2 (IJKL) with wheels open together, both lines sent. Online
+  (host + client on this PC, `-ovt-chat`): every line and emote on both PCs above the right characters and in both logs;
+  mute on: each PC showed only its own; bubbles off: none. 0 errors.
+
 ## Session status (2026-10-21)
-- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-12.
-- Not started: 13 chat / emotes, 14 lobby rules, 15 replays, 16 party tournament, 17 spectators.
+- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-13.
+- Not started: 14 lobby rules, 15 replays, 16 party tournament, 17 spectators.
 - Open questions: co-op now gets two picks per screen with personal perks for one character each; is co-op still the right difficulty? (the simulator can't model two humans); should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).

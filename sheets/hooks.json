@@ -913,6 +913,46 @@
       "verified": "no"
     },
     {
+      "id": "chat_hold_move",
+      "target_type": "PlayerController",
+      "target_method": "SetXInput",
+      "kind": "prefix",
+      "patch_class": "ChatHud",
+      "purpose": "Chat: a character whose player has a chat wheel or the chat box open doesn't move",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "chat_hold_up",
+      "target_type": "PlayerController",
+      "target_method": "UpInputPressed",
+      "kind": "prefix",
+      "patch_class": "ChatHud",
+      "purpose": "Chat: ... nor jump / hit",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "chat_hold_down",
+      "target_type": "PlayerController",
+      "target_method": "DownInputPressed",
+      "kind": "prefix",
+      "patch_class": "ChatHud",
+      "purpose": "Chat: ... nor receive",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "chat_hold_pause",
+      "target_type": "PauseController",
+      "target_method": "Pause_Unpause",
+      "kind": "prefix",
+      "patch_class": "ChatHud",
+      "purpose": "Chat: Esc / START that closes the chat box or a wheel (or finishes the on-screen keyboard) doesn't pause",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
       "id": "collection_perk_seen",
       "target_type": "TechniqueButton",
       "target_method": "Start",
