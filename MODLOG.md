@@ -78,3 +78,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   the BepInEx config. Tutorial skip = `[General] SkipTutorial` (GameManager.Awake postfix).
 - Update checker (`src/Patches/UpdateCheck.cs`): GitHub releases/latest on title load, notice in the title bar; `[General]
   CheckForUpdates`. Needs `UnityEngine.UnityWebRequestModule` (referenced in the csproj).
+- Report bug (`src/Patches/BugReport.cs`): preview -> GitHub new-issue link or clipboard; scrubbed of names/paths/IPs.
+  Pause menu button = clone of the pause menu's lowest button (PauseController.Start postfix). Needs
+  `UnityEngine.IMGUIModule` (clipboard).

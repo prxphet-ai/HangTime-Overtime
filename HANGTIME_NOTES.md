@@ -705,3 +705,20 @@ Modes:
 - **Tested**: installed 0.3.1 vs latest v0.3.0 -> "up to date"; dev `-ovt-pretendversion 0.2.0` -> notice shown on the
   title; dev `-ovt-updateurl http://127.0.0.1:9/none` -> "no answer after 2.0 s ... nothing shown". 0 errors.
 - Note: the check compares release tags, so publish releases with tags like `v0.3.1`.
+
+### Feature 3 — report bug button (done)
+- **Where**: title bar -> REPORT BUG, and the pause menu (REPORT BUG under TUTORIAL; cloned from the game's own pause
+  button, added to its button group). `src/Patches/BugReport.cs`.
+- **What it does**: a preview panel shows the whole report first: a template for the player's description ("What
+  happened?", steps), mod version, game version (+ Unity), current mode (e.g. "Versus 1v1, round 2 (online host, 2 PCs)"),
+  OS family and resolution, and the last 60 lines of the newest BepInEx log. **OPEN ON GITHUB** opens
+  `github.com/prxphet-ai/HangTime-Overtime/issues/new` with title and body filled in (the player writes the description
+  and submits; needs a GitHub account; long logs lose lines from the top to keep the link under ~7800 characters).
+  **COPY** puts the same text on the clipboard (for people without GitHub). **CANCEL** / Esc closes it.
+- **Privacy**: before anything is shown, the report is scrubbed: `C:\Users\<name>` paths -> `<user>`, this PC's Windows
+  user name, the Steam name and everyone in the online session -> `<player>`, IPv4 addresses (with ports) -> `<ip>`
+  (version numbers like "BepInEx 5.4.23.5" kept), Steam ids -> `<steam id>`, e-mail addresses -> `<email>`.
+- **Tested**: title bar and pause menu both open it (pause: in a Versus match); the dev scrub test turned a line with the
+  user path, names, a LAN IP with port, a Steam id and an e-mail into placeholders; COPY put 1640 characters on the
+  clipboard without the Windows user name; the issue link is built (2605 characters). OPEN ON GITHUB not clicked in tests
+  (it opens the browser). 0 errors.

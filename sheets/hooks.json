@@ -771,6 +771,16 @@
       "purpose": "The SkipTutorial setting: the tutorial never starts at launch (the game's save is not touched)",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "pause_report_bug",
+      "target_type": "PauseController",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "BugReport",
+      "purpose": "Adds REPORT BUG under the pause menu's last button",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }
