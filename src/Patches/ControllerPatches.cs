@@ -1,5 +1,6 @@
 using HangtimeOvertime.Engine;
 using HarmonyLib;
+using UnityEngine;
 
 namespace HangtimeOvertime.Patches
 {
@@ -70,6 +71,32 @@ namespace HangtimeOvertime.Patches
                 if (box.size.y < 1f) box.size = new UnityEngine.Vector2(box.size.x, 1f);
                 float bottom = box.offset.y - box.size.y / 2f;
                 if (bottom < floor) box.offset = new UnityEngine.Vector2(box.offset.x, box.offset.y + (floor - bottom));
+            }
+        }
+
+        // The invisible wall over the net only reaches y 19.3; a boosted jump went over it onto the other side. Above the
+        // wall, a player is held at the line the wall would have stopped them at (their own side of the net).
+        [HarmonyPatch(typeof(PlayerController), "FixedUpdate")]
+        private static class OwnSide
+        {
+            private static readonly AccessTools.FieldRef<PlayerController, Rigidbody2D> rbOf = AccessTools.FieldRefAccess<PlayerController, Rigidbody2D>("rb");
+            private const float WallHalf = 0.5f;
+
+            [HarmonyPostfix]
+            private static void Postfix(PlayerController __instance)
+            {
+                if (TitleController.onTitle || Online.MatchSync.Mirroring || BallPatches.Arena.Off) return;
+                var rb = rbOf(__instance);
+                if (rb == null) return;
+                float side = __instance.attackDirection;                    // +1 left team, -1 right team
+                var col = __instance.GetComponent<Collider2D>();
+                float half = col != null ? col.bounds.extents.x : 0.5f;
+                float limit = WallHalf + half;
+                float x = __instance.transform.position.x;
+                if (side > 0f ? x <= -limit : x >= limit) return;
+                __instance.transform.position = new Vector3(-side * limit, __instance.transform.position.y, __instance.transform.position.z);
+                rb.position = new Vector2(-side * limit, rb.position.y);
+                if (rb.linearVelocityX * side > 0f) rb.linearVelocity = new Vector2(0f, rb.linearVelocityY);
             }
         }
 

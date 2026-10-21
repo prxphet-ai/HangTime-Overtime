@@ -10,7 +10,8 @@ namespace HangtimeOvertime.Debugging
     // Test shortcuts, only when DevKeys is enabled in the config (off for players).
     //  F1 fire the lab perk's effects now (Shift: as the opponent)   F2 lab: next perk (Shift: previous), given alone from the next match
     //  F3 force the next opponent (cycles new teams, then random)   F4 player 1 serves now   F5 rally point to player (Shift: opponent) via the game's own scoring
-    //  F6 win this match   F7 lose this match   F8 next win leads to the final match   F9 log state (Ctrl+F9: force player 1 block 66/58/50/40/30, auto-blocking)
+    //  F6 win this match   F7 lose this match   F8 next win leads to the final match   F9 log state (Ctrl+F9: force player 1 block 66/58/50/40/30, auto-blocking; Shift+F9: court colliders)
+    //  Ctrl+1 launch player 1 over the net wall   Ctrl+2 throw the ball over a side wall   Ctrl+0 turn those two fixes off/on
     //  F10 give every Overtime perk (Ctrl+F10: player 2 jumps right after every serve, logs if it blocked)   F11 perk screens show only Overtime perks   F12 next infinite match one tier harder
     internal class DevKeys : MonoBehaviour
     {
@@ -46,6 +47,16 @@ namespace HangtimeOvertime.Debugging
         }
 
         private bool serveProbe;
+        private float wallProbeUntil, wallMaxX = -99f, wallMaxY = -99f, ballProbeUntil;
+        private bool ballThrowPending;
+
+        // the wall probe: player 1 keeps holding toward the net through the jump (after the Versus driver's input)
+        private void LateUpdate()
+        {
+            if (wallProbeUntil <= 0f) return;
+            var p1 = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).FirstOrDefault(Engine.Look.IsPlayerOne);
+            p1?.SetXInput(1f);
+        }
         private float serveJumpAt = -10f;
 
         // development (Ctrl+F10): the right spiker jumps as soon as the other side has served; logs whether it blocked
@@ -137,6 +148,42 @@ namespace HangtimeOvertime.Debugging
             if (blockTest > 0 && inMatch) BlockProbe();
             if (kb.f10Key.wasPressedThisFrame && kb.ctrlKey.isPressed) { serveProbe = !serveProbe; Plugin.Log.LogInfo($"Dev: serve-block probe {(serveProbe ? "on" : "off")}"); }
             if (serveProbe && inMatch) ServeProbe();
+            // Ctrl+1: player 1 launched over the net's invisible wall; Ctrl+2: the ball thrown over a side wall; Ctrl+0: those fixes off/on
+            if (kb.ctrlKey.isPressed && kb.digit0Key.wasPressedThisFrame) { Patches.BallPatches.Arena.Off = !Patches.BallPatches.Arena.Off; Plugin.Log.LogInfo($"Dev: arena fixes {(Patches.BallPatches.Arena.Off ? "OFF" : "on")}"); }
+            if (kb.ctrlKey.isPressed && kb.digit1Key.wasPressedThisFrame && inMatch)
+            {
+                var p1 = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).FirstOrDefault(Engine.Look.IsPlayerOne);
+                if (p1 != null) { var rb = p1.GetComponent<Rigidbody2D>(); p1.transform.position = new Vector3(-3f, -7f, 0f); rb.position = new Vector2(-3f, -7f); rb.linearVelocity = new Vector2(12f, 160f); wallProbeUntil = Time.time + 3f; wallMaxX = -99f; Plugin.Log.LogInfo("Dev: player 1 launched at the net"); }
+            }
+            if (wallProbeUntil > 0f)
+            {
+                var p1 = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).FirstOrDefault(Engine.Look.IsPlayerOne);
+                if (p1 != null) { wallMaxX = Mathf.Max(wallMaxX, p1.transform.position.x); wallMaxY = Mathf.Max(wallMaxY, p1.transform.position.y); }
+                if (Time.time > wallProbeUntil) { wallProbeUntil = 0f; Plugin.Log.LogInfo($"[wall] player 1 got to x {wallMaxX:F2} (net at 0), top y {wallMaxY:F1}, ended at x {p1?.transform.position.x:F2}"); wallMaxY = -99f; }
+            }
+            if (kb.ctrlKey.isPressed && kb.digit2Key.wasPressedThisFrame && inMatch)
+            {
+                var b = FindFirstObjectByType<BallMovement>();
+                if (b != null) ballThrowPending = true;
+            }
+            if (ballThrowPending && inMatch)
+            {
+                var b = FindFirstObjectByType<BallMovement>();
+                if (b != null && !BallMovement.rallyDone && b.GetServeTimer() < -0.5f)
+                {
+                    ballThrowPending = false;
+                    var brb = b.GetComponent<Rigidbody2D>();
+                    b.transform.position = new Vector3(60f, 80f, 0f); brb.position = new Vector2(60f, 80f); brb.linearVelocity = new Vector2(45f, 70f);
+                    Plugin.Log.LogInfo($"Dev: ball thrown over the right wall in free flight (score {gm.playerPoints}-{gm.opponentPoints})");
+                    ballProbeUntil = Time.time + 6f;
+                }
+            }
+            if (ballProbeUntil > 0f && Time.time > ballProbeUntil)
+            {
+                ballProbeUntil = 0f;
+                var b = FindFirstObjectByType<BallMovement>();
+                Plugin.Log.LogInfo($"[ballprobe] 6 s later: ball at ({b?.transform.position.x:F0}, {b?.transform.position.y:F0}), score {gm.playerPoints}-{gm.opponentPoints}, camera size {Camera.main?.orthographicSize:F1}");
+            }
             if (kb.f9Key.wasPressedThisFrame && !kb.ctrlKey.isPressed)
             {
                 var s0 = Engine.Engine.Sides[0];
@@ -148,6 +195,14 @@ namespace HangtimeOvertime.Debugging
                                    $"cards=[{string.Join(", ", StatCards.Points.Select(kv => kv.Key + " " + kv.Value))}]");
             }
             if (kb.f9Key.wasPressedThisFrame && Plugin.DumpScenes.Value) { Dumps.PlayerParts(); Dumps.BodySprites(); }
+            if (kb.f9Key.wasPressedThisFrame && shift)
+            {
+                // development: the court's colliders (floor, walls, the net and its invisible wall)
+                foreach (var c in FindObjectsByType<Collider2D>(FindObjectsSortMode.None).Where(c => c.enabled && c.attachedRigidbody == null || (c.attachedRigidbody != null && c.attachedRigidbody.bodyType == RigidbodyType2D.Static)))
+                    Plugin.Log.LogInfo($"[collider] {c.name} tag {c.tag} layer {LayerMask.LayerToName(c.gameObject.layer)} trigger {c.isTrigger} bounds x {c.bounds.min.x:F1}..{c.bounds.max.x:F1} y {c.bounds.min.y:F1}..{c.bounds.max.y:F1}");
+                var b = FindFirstObjectByType<BallMovement>();
+                if (b != null) Plugin.Log.LogInfo($"[collider] ball rb detection {b.GetComponent<Rigidbody2D>().collisionDetectionMode} radius {b.GetComponent<Collider2D>()?.bounds.extents.x:F2}");
+            }
             if (kb.f10Key.wasPressedThisFrame)
             {
                 foreach (var p in perks) if (!gm.playerStats.techniques.Contains(p)) gm.playerStats.techniques.Add(p);

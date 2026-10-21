@@ -69,3 +69,9 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   `MatchSync.cs` (host snapshots + timed events; the client's mirror and the record/hold-back hooks), `OnlineFlow.cs`
   (join screen, round loads, between-round screens, notices, session end). Config: `[Online]` in the BepInEx config.
   Dev harness: `src/Debug/DevOnline.cs` (`-ovt-host` / `-ovt-join` / `-ovt-auto` ..., DevKeys on).
+
+## Feature batch (2026-10-20)
+- Bugs: `ControllerPatches.OwnSide` (players stay on their side above the net's invisible wall, top y 19.3);
+  `BallPatches.Arena` (a ball that leaves the arena ends the rally as out; it used to fall forever past x 100 and pin the
+  camera zoomed in). Court: floor x -100..100 top -10, side walls |x| 70..80 to y 88.
+

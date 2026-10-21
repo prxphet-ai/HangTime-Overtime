@@ -663,3 +663,22 @@ Modes:
   prefix: in that window the press is an ordinary jump). Checked with Ctrl+F10 (player 2 jumps right after each serve):
   "blocking False" every time; blocks later in a rally are unchanged.
 - **Same serve line**: a person on the right now serves from player 1's line (COURT_SIZE 33.5; the AI teams' is 30).
+
+## Feature batch (2026-10-20): known bugs first, then features 1-17 in order
+
+### Bugs: jumping over the net, ball lost off the court, camera stuck zoomed in
+- **Court geometry** (dev Shift+F9 dump): floor x -100..100 (top y -10); side walls |x| 70..80 up to y 88 (tagged Ground,
+  so a ball hitting them is out); the net's invisible player wall x -0.5..0.5 only up to y 19.3; the ball already uses
+  continuous collision (it doesn't tunnel).
+- **Over the net**: boosted jumps (Jump cards, jump perks) reach well above y 19.3 and the player crossed onto the other
+  side. Fix (`ControllerPatches.OwnSide`, PlayerController.FixedUpdate postfix): a player is held at the line the wall
+  would stop them at (0.5 + their half width from the net). Normal play never reaches that line, so nothing else changes.
+- **Ball lost / camera stuck**: one cause. A boosted ball (sky serve, lifts, speed-ups; reported on serves) clears a side
+  wall (top y 88); past x 100 there is no floor, so it fell forever: the rally never ended, and the game's camera, which
+  sizes itself from the ball's height, stayed fully zoomed in. Fix (`BallPatches.Arena`): a ball past the floor's ends,
+  under the floor, above y 400 or with an invalid position for 0.25 s ends the rally as an out ball through the game's own
+  point routine (point against the side that touched it last), host only online.
+- **Reproduced and fixed in game** (local Versus, dev Ctrl+0 fixes off/on, Ctrl+1 launches player 1 at the net holding
+  toward it, Ctrl+2 throws the ball over a side wall in free flight): fixes off, player 1 crossed to the other side and the
+  ball fell to y -717 with the score frozen; turning the fix on scored that ball as out (it was at y -6127); fixes on,
+  player 1 stayed at x -1.44 and the thrown ball was scored out at (109, 92) and play went on. 0 errors.

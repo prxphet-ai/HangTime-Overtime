@@ -751,6 +751,16 @@
       "purpose": "Versus only: restores the free-ball flag after that press",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "own_side_of_net",
+      "target_type": "PlayerController",
+      "target_method": "FixedUpdate",
+      "kind": "postfix",
+      "patch_class": "ControllerPatches",
+      "purpose": "A player above the net's invisible wall (y 19.3) can't cross to the other side",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

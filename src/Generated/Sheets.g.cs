@@ -1052,6 +1052,7 @@ namespace HangtimeOvertime.Generated
             new HookDef("versus_mirrored_aim_post", "BallMovement", "Spike", "postfix", "VersusPatches"),
             new HookDef("versus_no_serve_block", "PlayerController", "UpInputPressed", "prefix", "VersusPatches"),
             new HookDef("versus_no_serve_block_post", "PlayerController", "UpInputPressed", "postfix", "VersusPatches"),
+            new HookDef("own_side_of_net", "PlayerController", "FixedUpdate", "postfix", "ControllerPatches"),
         };
     }
 
