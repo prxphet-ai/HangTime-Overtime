@@ -55,7 +55,7 @@ namespace HangtimeOvertime.Patches
             Box("Preview", new Vector2(0f, -1.4f), new Vector2(pw - 2.4f, ph - 12.4f), new Color(0.02f, 0.2f, 0.34f, 1f), 2);
             // the preview: the whole report (the log part is cut to what fits; the full text is what gets sent)
             var lines = body.Replace("\r", "").Split('\n');
-            string shown = string.Join("\n", lines.Take(34)) + (lines.Length > 34 ? $"\n... ({lines.Length - 34} more lines)" : "");
+            string shown = string.Join("\n", lines.Take(26)) + (lines.Length > 26 ? $"\n... ({lines.Length - 26} more lines, all sent)" : "");
             Text("<noparse>" + "TITLE: " + title + "\n\n" + shown + "</noparse>", new Vector2(0f, -1.4f), 0.44f, pw - 4f, Color.white, TextAlignmentOptions.TopLeft, height: ph - 13.2f, wrap: true);
             float by = -ph / 2f + 1.7f;
             Button("OPEN ON GITHUB", new Vector2(-pw * 0.26f, by), new Vector2(pw * 0.24f, 2.3f), OpenIssue, 0.6f);
