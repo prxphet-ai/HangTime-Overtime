@@ -1057,6 +1057,8 @@ namespace HangtimeOvertime.Generated
             new HookDef("pause_report_bug", "PauseController", "Start", "postfix", "BugReport"),
             new HookDef("streak_match_end", "GameManager", "EndGame", "prefix", "StreakPatches"),
             new HookDef("streak_lose_line", "LoseController", "HandleLoss", "postfix", "StreakPatches"),
+            new HookDef("controls_game_actions", "InputManager", "Start", "postfix", "ControlsApply"),
+            new HookDef("controls_coop_keys", "ManualInputRouter", "Update", "prefix", "ControlsApply"),
         };
     }
 

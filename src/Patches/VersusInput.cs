@@ -14,28 +14,26 @@ namespace HangtimeOvertime.Patches
         public bool Up, Down;                             // jump/hit/spin serve, receive/float serve (this frame)
         public bool Left, Right;                          // menu steps (this frame)
         public bool Confirm, Back;                        // menu confirm / back (this frame)
+        public bool QuickChat, Emote, Chat;               // quick-chat wheel, emote wheel, typed chat (this frame)
         public bool Connected;
     }
 
     internal static class VersusInput
     {
-        // the keyboard sets: left, right, up (jump/hit), down (receive), and an extra confirm key for menus
-        private static (KeyControl l, KeyControl r, KeyControl u, KeyControl d, KeyControl ok)? Keys(InputKind k, Keyboard kb)
+        private static readonly InputKind[] SetKinds = { InputKind.KeysWASD, InputKind.KeysArrows, InputKind.KeysIJKL, InputKind.KeysNumpad };
+        public static int SetOf(InputKind k) => System.Array.IndexOf(SetKinds, k);
+
+        // a keyboard set's keys (the saved bindings, Controls): left, right, up (jump/hit), down (receive), menu OK
+        private static (KeyControl l, KeyControl r, KeyControl u, KeyControl d, KeyControl ok, KeyControl qc, KeyControl em)? Keys(InputKind k, Keyboard kb)
         {
-            switch (k)
-            {
-                case InputKind.KeysWASD: return (kb.aKey, kb.dKey, kb.wKey, kb.sKey, kb.spaceKey);
-                case InputKind.KeysArrows: return (kb.leftArrowKey, kb.rightArrowKey, kb.upArrowKey, kb.downArrowKey, kb.enterKey);
-                case InputKind.KeysIJKL: return (kb.jKey, kb.lKey, kb.iKey, kb.kKey, kb.hKey);
-                case InputKind.KeysNumpad: return (kb.numpad4Key, kb.numpad6Key, kb.numpad8Key, kb.numpad5Key, kb.numpadEnterKey);
-                default: return null;
-            }
+            int set = SetOf(k);
+            if (set < 0) return null;
+            KeyControl C(KeyAct a) => Controls.Control(kb, set, a);
+            return (C(KeyAct.Left), C(KeyAct.Right), C(KeyAct.Jump), C(KeyAct.Receive), C(KeyAct.Confirm), C(KeyAct.QuickChat), C(KeyAct.Emote));
         }
 
-        public static readonly (InputKind kind, string label)[] KeyboardSets =
-        {
-            (InputKind.KeysWASD, "W A S D"), (InputKind.KeysArrows, "ARROW KEYS"), (InputKind.KeysIJKL, "I J K L"), (InputKind.KeysNumpad, "NUMPAD 8 4 5 6"),
-        };
+        // the four keyboard sets with their labels from the current bindings ("W A S D")
+        public static (InputKind kind, string label)[] KeyboardSets => SetKinds.Select((k, i) => (k, Controls.SetLabel(i))).ToArray();
 
         public static Gamepad PadOf(SlotInput b) =>
             b != null && b.Kind == InputKind.Gamepad ? Gamepad.all.FirstOrDefault(g => g.deviceId == b.DeviceId) : null;
@@ -56,20 +54,24 @@ namespace HangtimeOvertime.Patches
                 if (g.dpad.left.isPressed) x = -1f;
                 if (g.dpad.right.isPressed) x = 1f;
                 s.X = Mathf.Clamp(x * 1.6f, -1f, 1f);
-                s.Up = g.buttonSouth.wasPressedThisFrame || g.rightTrigger.wasPressedThisFrame;
-                s.Down = g.buttonWest.wasPressedThisFrame || g.leftTrigger.wasPressedThisFrame;
+                int slot = Controls.SlotOf(g);
+                bool P(PadAct a) { var c = Controls.Button(g, slot, a); return c != null && c.wasPressedThisFrame; }
+                s.Up = P(PadAct.Jump) || P(PadAct.JumpAlt);
+                s.Down = P(PadAct.Receive) || P(PadAct.ReceiveAlt);
                 s.Left = g.dpad.left.wasPressedThisFrame || g.leftStick.left.wasPressedThisFrame;
                 s.Right = g.dpad.right.wasPressedThisFrame || g.leftStick.right.wasPressedThisFrame;
-                s.Confirm = g.buttonSouth.wasPressedThisFrame || g.startButton.wasPressedThisFrame;
-                s.Back = g.buttonEast.wasPressedThisFrame;
+                s.Confirm = P(PadAct.Confirm) || g.startButton.wasPressedThisFrame;
+                s.Back = P(PadAct.Back);
+                s.QuickChat = P(PadAct.QuickChat); s.Emote = P(PadAct.Emote); s.Chat = P(PadAct.Chat);
                 return s;
             }
             if (kb == null) return s;
             if (OvertimePanel.Typing && kind != InputKind.Gamepad) { s.Connected = true; return s; }   // the keys are typing
             var keys = Keys(kind, kb);
             if (keys == null) return s;
-            var (l, r, u, d, ok) = keys.Value;
+            var (l, r, u, d, ok, qc, em) = keys.Value;
             s.Connected = true;
+            s.QuickChat = qc.wasPressedThisFrame; s.Emote = em.wasPressedThisFrame;
             s.X = (r.isPressed ? 1f : 0f) - (l.isPressed ? 1f : 0f);
             s.Up = u.wasPressedThisFrame;
             s.Down = d.wasPressedThisFrame;
@@ -94,16 +96,22 @@ namespace HangtimeOvertime.Patches
                         return new SlotInput { Kind = kind, Label = label };
                 }
             foreach (var g in Gamepad.all)
-                if (g.buttonSouth.wasPressedThisFrame || g.startButton.wasPressedThisFrame)
+                if (PadOk(g))
                     return new SlotInput { Kind = InputKind.Gamepad, DeviceId = g.deviceId, Label = "GAMEPAD " + (Gamepad.all.ToList().IndexOf(g) + 1) };
             return null;
+        }
+
+        private static bool PadOk(Gamepad g)
+        {
+            var ok = Controls.Button(g, Controls.SlotOf(g), PadAct.Confirm);
+            return (ok != null && ok.wasPressedThisFrame) || g.startButton.wasPressedThisFrame;
         }
 
         // A gamepad's button press from a pad nobody uses (to take over a disconnected player's slot).
         public static SlotInput FreePadPressed(IEnumerable<SlotInput> taken)
         {
             foreach (var g in Gamepad.all)
-                if ((g.buttonSouth.wasPressedThisFrame || g.startButton.wasPressedThisFrame) && !taken.Any(t => t != null && t.Kind == InputKind.Gamepad && t.DeviceId == g.deviceId))
+                if (PadOk(g) && !taken.Any(t => t != null && t.Kind == InputKind.Gamepad && t.DeviceId == g.deviceId))
                     return new SlotInput { Kind = InputKind.Gamepad, DeviceId = g.deviceId, Label = "GAMEPAD " + (Gamepad.all.ToList().IndexOf(g) + 1) };
             return null;
         }

@@ -801,6 +801,26 @@
       "purpose": "Win streaks: the streak line on the lose screen",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "controls_game_actions",
+      "target_type": "InputManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "ControlsApply",
+      "purpose": "The saved controls as binding overrides on the game's Gameplay actions",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "controls_coop_keys",
+      "target_type": "ManualInputRouter",
+      "target_method": "Update",
+      "kind": "prefix",
+      "patch_class": "ControlsApply",
+      "purpose": "Co-op's keyboard split follows the saved key sets 2 (player 1) and 1 (player 2)",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

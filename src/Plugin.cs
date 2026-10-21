@@ -59,7 +59,8 @@ namespace HangtimeOvertime
             StreakPatches.Init();
             MenuPatches.Init();
             if (DumpScenes.Value) Debugging.SceneDumper.Hook();
-            if (DevKeys.Value) { gameObject.AddComponent<Debugging.DevKeys>(); Debugging.DevOnline.Hook(gameObject); }
+            if (DevKeys.Value) { gameObject.AddComponent<Debugging.DevKeys>(); Debugging.DevOnline.Hook(gameObject); Debugging.DevPad.Hook(gameObject); }
+            Patches.ControlsApply.Init();
             gameObject.AddComponent<Online.NetRunner>();
             Online.OnlineFlow.Init();
             new Harmony(Guid).PatchAll(typeof(Plugin).Assembly);

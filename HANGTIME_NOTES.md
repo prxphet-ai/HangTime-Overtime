@@ -739,3 +739,25 @@ Modes:
 - **Tested**: Infinite win -> card line, loss -> banner (layout clear of TRY AGAIN); local Versus 5-0 for P1 -> "WIN
   STREAK 1 · BEST 1"; online match between two copies -> host "Versus (online) loss", friend "win, streak 1", friend chose
   LOBBY and both returned to the lobby. 0 errors. Test stats file deleted and saves restored afterwards.
+
+### Feature 5 — key rebinding (done)
+- **CONTROLS** (title bar) -> `src/Patches/ControlsMenu.cs`: tabs KEYS 1-4 (the four keyboard sets), PAD 1-4 (gamepad slots =
+  the 1st-4th connected pad) and CHAT. Click a binding, press the new key / button (Esc cancels). A key already used
+  elsewhere is accepted with a warning ("J IS ALSO USED FOR KEYS 3 · LEFT: BOTH WILL TRIGGER") and the row shows it in
+  red; MENU OK / BACK may share buttons with play (never used at the same time). RESET TAB, RESET ALL.
+- **Actions**: key sets: LEFT, RIGHT, JUMP / HIT, RECEIVE, MENU OK, QUICK CHAT, EMOTE (defaults: WASD+Space/Q/E;
+  arrows+Enter/RShift/RCtrl; IJKL+H/U/O; numpad 4 6 8 5 + NumEnter/Num7/Num9). Pads: JUMP (A) + 2nd (RT), RECEIVE (B) +
+  2nd (RB), MENU OK (A), BACK (B), QUICK CHAT (D-pad up), EMOTE (D-pad down), TYPED CHAT (Select). Typed chat key
+  (keyboard): Enter. Saved in `HangtimeOvertime_controls.json` (`src/Core/Controls.cs`).
+- **Where they apply**: Versus / online read them directly (a player plays with the set or pad slot they joined with;
+  labels follow the keys, e.g. "G A J D"). Classic / Infinite: binding overrides on the game's own actions (key set 2
+  replaces its arrow keys, key set 1 its WASD, pad slots 1/2 its gamepad buttons). Co-op: the game's keyboard split reads
+  key set 2 (player 1) and key set 1 (player 2). **Decision**: the Versus gamepad receive button now matches the game's
+  (B / RB instead of X / LT).
+- **Dev virtual gamepad** (`src/Debug/DevPad.cs`, DevKeys + `-ovt-devpad <file>`): commands written to the file ("tap
+  south", "hold rightTrigger 300", "stick -1 0 500", "wait 200") drive a virtual pad, for gamepad tests without a controller.
+- **Tested**: rebound KEYS 1 jump -> G and receive -> J (conflict warning with KEYS 3 left), PAD 1 emote -> Y with the
+  virtual pad; the game's actions showed `UpP3: <Keyboard>/g`, `DownP3: <Keyboard>/j`; Versus: joined with G ("G A J D")
+  and with the virtual pad (GAMEPAD 1), player 2 walked with the pad's stick and jumped with A, player 1 jumped with G;
+  bindings survived a restart; RESET ALL restored the defaults. 0 errors. Test bindings deleted afterwards.
+- Quick chat / emote / typed chat actions are read already (PadState) and get used in feature 13.

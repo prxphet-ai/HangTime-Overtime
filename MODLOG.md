@@ -83,3 +83,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   `UnityEngine.IMGUIModule` (clipboard).
 - Win streaks: `src/Core/Records.cs` (HangtimeOvertime_stats.json) + `src/Patches/StreakPatches.cs` (EndGame prefix,
   lose banner, upgrade-card line, Versus via VersusFlow / the online Screen message). Online protocol 4.
+- Controls: `src/Core/Controls.cs` (HangtimeOvertime_controls.json), `src/Patches/ControlsMenu.cs` (CONTROLS screen),
+  `src/Patches/ControlsApply.cs` (game action overrides at InputManager.Start; co-op split keys). Game actions: MoveP1/UpP1/
+  DownP1 = arrows + pad, MoveP3/UpP3/DownP3 = WASD, P2 = WASD + pad (co-op). Dev virtual gamepad: `src/Debug/DevPad.cs`.

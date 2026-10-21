@@ -150,7 +150,7 @@ namespace HangtimeOvertime.Patches
                 swatch[side] = Box("Team colour", new Vector2(x, -ph * 0.25f), new Vector2(colW * 0.72f, 2.6f), Color.white, 3);
                 teamText[side] = Text("", new Vector2(x, -ph * 0.25f), 0.7f, colW * 0.72f, Color.white);
             }
-            Text("JOIN: PRESS A KEY ON  W A S D,  ARROWS,  I J K L,  NUMPAD 8 4 5 6  OR  A ON A GAMEPAD   ·   LEFT / RIGHT: TEAM (EACH SIDE'S FIRST PLAYER)   ·   JUMP: READY   ·   DOWN (P1): MODE" +
+            Text("JOIN: PRESS A KEY ON  " + string.Join(",  ", VersusInput.KeyboardSets.Select(k => k.label)) + "  OR  A ON A GAMEPAD   ·   LEFT / RIGHT: TEAM (EACH SIDE'S FIRST PLAYER)   ·   JUMP: READY   ·   DOWN (P1): MODE" +
                  (lobby ? "   ·   T: CHAT" : "   ·   ESC: BACK"),
                 new Vector2(centre, -ph / 2f + 3.8f), 0.4f, area - 2f, new Color(0.85f, 0.95f, 1f), height: 2.4f, wrap: true);
             status = Text("", new Vector2(centre, -ph / 2f + 5.8f), 0.5f, area - 4f, new Color(1f, 0.85f, 0.35f));

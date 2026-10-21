@@ -22,6 +22,7 @@ namespace HangtimeOvertime.Patches
         {
             if (Buttons.Count > 0) return;
             Buttons.Add(("SETTINGS", () => SettingsMenu.Open()));
+            Buttons.Add(("CONTROLS", () => ControlsMenu.Open()));
             Buttons.Add(("REPORT BUG", () => BugReport.Open()));
         }
 
@@ -42,7 +43,7 @@ namespace HangtimeOvertime.Patches
         }
 
         // any full-screen panel of the mod
-        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || BugReport.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
+        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
         public static int PanelCount;                     // other menus register themselves while open
 
         private void Build()

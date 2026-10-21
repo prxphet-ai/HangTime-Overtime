@@ -195,6 +195,15 @@ namespace HangtimeOvertime.Debugging
                                    $"cards=[{string.Join(", ", StatCards.Points.Select(kv => kv.Key + " " + kv.Value))}]");
             }
             if (kb.f9Key.wasPressedThisFrame && Plugin.DumpScenes.Value) { Dumps.PlayerParts(); Dumps.BodySprites(); }
+            if (kb.f9Key.wasPressedThisFrame && kb.altKey.isPressed)
+            {
+                // development: the game's own input actions and their bindings (Alt+F9)
+                var im = GameManager.Instance.inputManager;
+                foreach (var map in new[] { im.Gameplay, im.menus })
+                    if (map != null)
+                        foreach (var a in map.actions)
+                            Plugin.Log.LogInfo($"[input] {map.name}/{a.name}: " + string.Join(" | ", a.bindings.Select(bd => (bd.isComposite ? "[" + bd.name + "]" : bd.isPartOfComposite ? bd.name + "=" : "") + bd.effectivePath)));
+            }
             if (kb.f9Key.wasPressedThisFrame && shift)
             {
                 // development: the court's colliders (floor, walls, the net and its invisible wall)
