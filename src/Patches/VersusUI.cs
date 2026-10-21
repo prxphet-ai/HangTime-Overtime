@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 namespace HangtimeOvertime.Patches
 {
     // Shared building blocks for the mod's full-screen panels: rounded boxes, text in the game's font, buttons.
-    internal abstract class OvertimePanel : MonoBehaviour
+    internal abstract partial class OvertimePanel : MonoBehaviour
     {
         protected int layer, order;
         protected TextMeshPro fontSource;
@@ -119,6 +119,7 @@ namespace HangtimeOvertime.Patches
             w.Box = box; w.Normal = normal; w.Hover = new Color(0.05f, 0.3f, 0.48f, 1f); w.OnClick = () => Focus(f);
             f.Text = Text("", at, 0.55f, size.x - 0.8f, Color.white, TextAlignmentOptions.Left, o: 9);
             ShowField(f);
+            AddStop(box, () => Focus(f), f);
             if (!textHooked && UnityEngine.InputSystem.Keyboard.current != null)
             {
                 textHooked = true;
@@ -213,7 +214,7 @@ namespace HangtimeOvertime.Patches
             TextMeshPro t = null;
             SpriteRenderer box = null;
             void Show() { bool v = get(); if (t != null) t.text = $"{label}  <color={(v ? "#7CFF8A" : "#FF8A7C")}>{(v ? "ON" : "OFF")}</color>"; }
-            box = Button("", at, size, () => { set(!get()); Show(); }, textSize);
+            box = Button("", at, size, () => { set(!get()); Show(); }, textSize);   // Button() already made it a stop
             t = Text("", at, textSize, size.x, Color.white, o: 9);
             Show();
             return box;
@@ -228,6 +229,7 @@ namespace HangtimeOvertime.Patches
             var w = sr.gameObject.AddComponent<CreatorWidget>();
             w.Box = sr; w.Normal = normal; w.Hover = new Color(0.4f, 0.8f, 1f, 1f); w.OnClick = act;
             Text(label, at, textSize, size.x, Color.white);
+            AddStop(sr, act);
             return sr;
         }
     }

@@ -1053,6 +1053,7 @@ namespace HangtimeOvertime.Generated
             new HookDef("versus_no_serve_block", "PlayerController", "UpInputPressed", "prefix", "VersusPatches"),
             new HookDef("versus_no_serve_block_post", "PlayerController", "UpInputPressed", "postfix", "VersusPatches"),
             new HookDef("own_side_of_net", "PlayerController", "FixedUpdate", "postfix", "ControllerPatches"),
+            new HookDef("held_group_guard", "ButtonGroup", "Select", "prefix", "TitleBar"),
             new HookDef("tutorial_skip", "GameManager", "Awake", "postfix", "TitleBar"),
             new HookDef("pause_report_bug", "PauseController", "Start", "postfix", "BugReport"),
             new HookDef("streak_match_end", "GameManager", "EndGame", "prefix", "StreakPatches"),

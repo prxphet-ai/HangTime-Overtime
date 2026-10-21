@@ -761,3 +761,28 @@ Modes:
   and with the virtual pad (GAMEPAD 1), player 2 walked with the pad's stick and jumped with A, player 1 jumped with G;
   bindings survived a restart; RESET ALL restored the defaults. 0 errors. Test bindings deleted afterwards.
 - Quick chat / emote / typed chat actions are read already (PadState) and get used in feature 13.
+
+### Feature 6 — gamepad support in the mod's menus (done)
+- **Shared navigation** (`src/Patches/PanelNav.cs`, part of `OvertimePanel`): every Button / Toggle / TextField a panel
+  makes is a stop. D-pad / left stick move a yellow frame to the next stop that way (in line first, then a 45° cone; up /
+  down may fall back to anything below, so a tab row reaches the rows under it), A (the pad's MENU OK) activates, B (BACK)
+  goes back, LB / RB switch tabs. Held directions repeat (0.35 s, then 0.12 s). Panels that don't share keys with players
+  also take arrow keys + Enter. Prompt lines ("A: CHOOSE · B: BACK ...") only show while a gamepad was the last thing used.
+- **On-screen keyboard** for text boxes (A on a text box with a pad): letters, digits, symbols, SPACE / DELETE / OK; X
+  deletes, START finishes (and submits like Enter: a lobby name creates the lobby), B cancels. Enter on a keyboard still
+  just types into the box.
+- **Per menu**: title bar: SELECT puts the frame on SETTINGS / CONTROLS / REPORT BUG ("SELECT: THIS BAR" hint), B gives
+  the title menu back. SETTINGS, CONTROLS (rebind with A, then the new button; START cancels, and B cancels a key
+  capture), REPORT BUG, the lobby browser (LB / RB scroll the list), the versus / lobby screen (LB / RB change format, Y
+  invites, SELECT opens the on-screen keyboard for chat, B leaves the seat then the screen). The title's VERSUS /
+  CUSTOMIZE / ONLINE buttons are in the game's own button group (stick + A), CUSTOMIZE and the continue popup already had
+  pad support.
+- **Fix found while testing**: the game's `ButtonGroup` subscribes to the pad's A one frame after being enabled, from a
+  coroutine that survives being disabled again; a panel that released and re-held the title menu in one frame (title bar
+  -> CONTROLS) left the hidden title menu pressing CLASSIC. `ButtonGroup.Select` now does nothing while the group is
+  disabled (hook `held_group_guard`).
+- **Tested gamepad-only** (virtual pad, no keyboard or mouse): title bar -> CONTROLS, tabs with LB / RB, rebound PAD 1
+  RECEIVE to Y then X (conflict line), RESET ALL, BACK; SETTINGS toggles both ways; REPORT BUG preview, move, cancel;
+  title menu -> ONLINE, the on-screen keyboard typed "SDD", DELETE, START -> lobby "SD" created (direct IP, Steam off), B
+  out; VERSUS: joined with A, team with the D-pad, RB to 1v2, ready, un-ready, leave, back. Keyboard / mouse after the
+  change: arrows + Enter in the browser and settings, Enter on the lobby name typed "AB", Esc closed. 0 errors.

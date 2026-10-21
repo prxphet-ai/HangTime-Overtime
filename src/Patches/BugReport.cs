@@ -62,7 +62,12 @@ namespace HangtimeOvertime.Patches
             Button("COPY", new Vector2(0f, by), new Vector2(pw * 0.18f, 2.3f), Copy, 0.6f);
             Button("CANCEL", new Vector2(pw * 0.26f, by), new Vector2(pw * 0.18f, 2.3f), () => Destroy(gameObject), 0.6f);
             status = Text("", new Vector2(0f, by + 2f), 0.45f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+            PadHint("A: CHOOSE   ·   B: CANCEL", new Vector2(0f, by - 1.6f), pw - 2f);
+            navKeys = true;
+            focus = 0;
         }
+
+        protected override void OnNavBack() => Destroy(gameObject);
 
         private void OpenIssue()
         {
@@ -79,6 +84,7 @@ namespace HangtimeOvertime.Patches
 
         private void Update()
         {
+            if (NavUpdate()) return;
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb != null && kb.escapeKey.wasPressedThisFrame) Destroy(gameObject);
         }

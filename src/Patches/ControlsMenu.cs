@@ -35,7 +35,10 @@ namespace HangtimeOvertime.Patches
 
         private void Build()
         {
+            int keep = focus;
             foreach (Transform t in transform) Destroy(t.gameObject);
+            ClearStops();
+            navKeys = true;
             Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
             float pw = W * 0.8f, ph = H * 0.88f, top = ph / 2f;
             Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
@@ -61,7 +64,9 @@ namespace HangtimeOvertime.Patches
             Button("RESET TAB", new Vector2(-pw * 0.27f, by), new Vector2(pw * 0.2f, 2.3f), ResetTab, 0.6f);
             Button("RESET ALL", new Vector2(0f, by), new Vector2(pw * 0.2f, 2.3f), () => { Controls.ResetAll(); warning = "EVERYTHING IS BACK TO THE DEFAULTS"; Build(); }, 0.6f);
             Button("BACK", new Vector2(pw * 0.27f, by), new Vector2(pw * 0.2f, 2.3f), () => Destroy(gameObject), 0.6f);
-            status = Text(captureKey != null ? "PRESS THE NEW KEY  (ESC CANCELS)" : capturePad != null ? "PRESS THE NEW BUTTON ON ANY GAMEPAD  (ESC CANCELS)" : warning,
+            PadHint("A: REBIND   ·   B: BACK   ·   LB / RB: TABS", new Vector2(0f, top - 7.3f), pw - 2f);
+            focus = keep >= 0 && keep < stops.Count ? keep : Tabs.Length;   // first row
+            status = Text(captureKey != null ? "PRESS THE NEW KEY  (ESC / B / START CANCELS)" : capturePad != null ? "PRESS THE NEW BUTTON ON ANY GAMEPAD  (ESC / START CANCELS)" : warning,
                           new Vector2(0f, by + 1.85f), 0.5f, pw - 2f, new Color(1f, 0.85f, 0.35f));
         }
 
@@ -129,7 +134,9 @@ namespace HangtimeOvertime.Patches
             if (captureKey != null || capturePad != null)
             {
                 if (Time.unscaledTime - captureFrom < 0.15f) return;          // the click that started it
-                if (kb != null && kb.escapeKey.wasPressedThisFrame) { captureKey = null; capturePad = null; warning = "CANCELLED"; Build(); return; }
+                // START cancels; so does B while waiting for a key (a pad button can't be a key binding)
+                bool padCancel = Gamepad.all.Any(g => g.startButton.wasPressedThisFrame || (captureKey != null && g.buttonEast.wasPressedThisFrame));
+                if ((kb != null && kb.escapeKey.wasPressedThisFrame) || padCancel) { captureKey = null; capturePad = null; warning = "CANCELLED"; Build(); return; }
                 if (captureKey != null && kb != null)
                 {
                     var key = kb.allKeys.FirstOrDefault(k => k.wasPressedThisFrame && k.keyCode != Key.Escape);
@@ -145,8 +152,12 @@ namespace HangtimeOvertime.Patches
                         }
                 return;
             }
+            if (NavUpdate()) return;
             if (kb != null && kb.escapeKey.wasPressedThisFrame) Destroy(gameObject);
         }
+
+        protected override void OnNavBack() => Destroy(gameObject);
+        protected override void OnNavTab(int dir) { tab = (tab + dir + Tabs.Length) % Tabs.Length; warning = ""; focus = -1; Build(); }
 
         protected override void OnDestroy() { base.OnDestroy(); if (open == this) open = null; }
     }

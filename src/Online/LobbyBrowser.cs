@@ -96,6 +96,9 @@ namespace HangtimeOvertime.Online
             Button("JOIN BY IP", new Vector2(left + pw * 0.46f, iy), new Vector2(pw * 0.17f, 2.2f), JoinIp, 0.6f);
             Button("BACK", new Vector2(pw / 2f - pw * 0.1f, iy), new Vector2(pw * 0.15f, 2.2f), () => Close(), 0.6f);
 
+            PadHint("A: CHOOSE (A ON A TEXT BOX: KEYBOARD)   ·   B: BACK   ·   LB / RB: SCROLL", new Vector2(0f, top - 2.9f), pw - 2f);
+            navKeys = true;
+            focus = 0;
             if (OnlineFlow.PendingMessage != null) { status.text = OnlineFlow.PendingMessage; OnlineFlow.PendingMessage = null; }
             Show();
             if (Lobbies.Available) Refresh(null, keepStatus: status.text.Length > 0);
@@ -184,7 +187,7 @@ namespace HangtimeOvertime.Online
 
         private void Update()
         {
-            bool typed = FieldKeys();
+            bool typed = FieldKeys() || NavUpdate();
             // in a session: the lobby screen takes over
             if (Net.IsHost || (Net.IsClient && Net.Connected)) { Close(); VersusMenu.OpenLobby(); return; }
             if (joining)
@@ -212,6 +215,9 @@ namespace HangtimeOvertime.Online
             open = null;
             Destroy(gameObject);
         }
+
+        protected override void OnNavBack() => Close();
+        protected override void OnNavTab(int dir) => Scroll(dir * Rows);
 
         protected override void OnDestroy() { base.OnDestroy(); if (open == this) open = null; }
     }

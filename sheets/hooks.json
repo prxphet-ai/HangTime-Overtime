@@ -763,6 +763,16 @@
       "verified": "no"
     },
     {
+      "id": "held_group_guard",
+      "target_type": "ButtonGroup",
+      "target_method": "Select",
+      "kind": "prefix",
+      "patch_class": "TitleBar",
+      "purpose": "A disabled button group (the title menu held behind a mod panel) doesn't press its buttons on gamepad A",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
       "id": "tutorial_skip",
       "target_type": "GameManager",
       "target_method": "Awake",

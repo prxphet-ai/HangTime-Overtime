@@ -46,15 +46,37 @@ namespace HangtimeOvertime.Patches
         public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
         public static int PanelCount;                     // other menus register themselves while open
 
+        private bool barFocus;                           // a gamepad is driving the bar (SELECT), the title menu is held
+        private TMPro.TextMeshPro hint;
+
+        private void Update()
+        {
+            if (!visible) return;
+            if (!barFocus)
+            {
+                if (hint != null) hint.gameObject.SetActive(GamepadActive);
+                HideFocusFrame();
+                foreach (var g in UnityEngine.InputSystem.Gamepad.all)
+                    if (g.selectButton.wasPressedThisFrame) { barFocus = true; HoldTitle(); focus = 0; return; }
+                return;
+            }
+            if (hint != null) hint.gameObject.SetActive(false);
+            NavUpdate();
+        }
+
+        // B, or opening one of the bar's menus, gives the title menu back
+        protected override void OnNavBack() { barFocus = false; ReleaseTitle(); HideFocusFrame(); }
+
         private void Build()
         {
             float x = -W / 2f + 4.2f, y = H / 2f - 1.6f, w = 6.6f;
             foreach (var (label, open) in Buttons)
             {
-                var b = Button(label, new Vector2(x, y), new Vector2(w, 1.8f), () => open(), 0.5f);
+                var b = Button(label, new Vector2(x, y), new Vector2(w, 1.8f), () => { if (barFocus) OnNavBack(); open(); }, 0.5f);
                 parts.Add(b.gameObject);
                 x += w + 0.4f;
             }
+            hint = Text("SELECT: THIS BAR", new Vector2(x + 4f, y), 0.42f, 8f, new Color(0.7f, 1f, 0.75f), TextAlignmentOptions.Left);
             notice = Text("", new Vector2(-W / 2f + 1f + 11f, y - 2.1f), 0.5f, 22f, new Color(1f, 0.85f, 0.35f), TextAlignmentOptions.Left);
             var nb = notice.gameObject.AddComponent<BoxCollider2D>();
             nb.size = new Vector2(22f / notice.transform.lossyScale.x * 0.02f, 1.4f / notice.transform.lossyScale.y * 0.02f);
@@ -68,6 +90,7 @@ namespace HangtimeOvertime.Patches
             if (notice != null) notice.text = Notice ?? "";
             if (v == visible) return;
             visible = v;
+            if (!v && barFocus) { barFocus = false; ReleaseTitle(); }
             foreach (Transform t in transform) t.gameObject.SetActive(v);
         }
 
@@ -116,11 +139,16 @@ namespace HangtimeOvertime.Patches
                 y -= 4.4f;
             }
             Button("BACK", new Vector2(0f, -ph / 2f + 1.8f), new Vector2(pw * 0.3f, 2.4f), Close, 0.7f);
+            PadHint("A: CHANGE   ·   B: BACK", new Vector2(0f, -ph / 2f + 3.6f), pw - 2f);
+            navKeys = true;
+            focus = 0;
         }
+
+        protected override void OnNavBack() => Close();
 
         private void Update()
         {
-            if (FieldKeys()) return;
+            if (FieldKeys() || NavUpdate()) return;
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb != null && kb.escapeKey.wasPressedThisFrame) Close();
         }
@@ -144,6 +172,19 @@ namespace HangtimeOvertime.Patches
                 if (Plugin.SkipTutorial.Value && TutorialManager.onTutorial) { TutorialManager.onTutorial = false; Plugin.Log.LogInfo("Tutorial skipped (setting)"); }
                 Plugin.Log.LogInfo($"Tutorial at launch: {(TutorialManager.onTutorial ? "plays" : "off")} (skip setting {(Plugin.SkipTutorial.Value ? "on" : "off")})");
             }
+        }
+    }
+
+    // A button group subscribes to the pad's A one frame after it's enabled, from a coroutine that keeps running when the
+    // group is disabled again in between: a panel that releases the title menu and holds it again in the same frame (the
+    // title bar opening CONTROLS) left the hidden menu pressing its buttons. A disabled group presses nothing.
+    internal static class HeldGroupGuard
+    {
+        [HarmonyPatch(typeof(ButtonGroup), "Select")]
+        private static class Guard
+        {
+            [HarmonyPrefix]
+            private static bool Prefix(ButtonGroup __instance) => __instance.isActiveAndEnabled;
         }
     }
 }

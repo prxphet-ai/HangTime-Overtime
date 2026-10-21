@@ -86,3 +86,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Controls: `src/Core/Controls.cs` (HangtimeOvertime_controls.json), `src/Patches/ControlsMenu.cs` (CONTROLS screen),
   `src/Patches/ControlsApply.cs` (game action overrides at InputManager.Start; co-op split keys). Game actions: MoveP1/UpP1/
   DownP1 = arrows + pad, MoveP3/UpP3/DownP3 = WASD, P2 = WASD + pad (co-op). Dev virtual gamepad: `src/Debug/DevPad.cs`.
+- Gamepad menus: `src/Patches/PanelNav.cs` (stops, focus frame, pad prompts, `OnScreenKeyboard`). Game gotcha:
+  `ButtonGroup.OnEnable` subscribes to A from a coroutine one frame later, even if the group was disabled meanwhile ->
+  `held_group_guard` (Select prefix: only while enabled).

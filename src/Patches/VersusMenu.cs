@@ -154,6 +154,8 @@ namespace HangtimeOvertime.Patches
                  (lobby ? "   ·   T: CHAT" : "   ·   ESC: BACK"),
                 new Vector2(centre, -ph / 2f + 3.8f), 0.4f, area - 2f, new Color(0.85f, 0.95f, 1f), height: 2.4f, wrap: true);
             status = Text("", new Vector2(centre, -ph / 2f + 5.8f), 0.5f, area - 4f, new Color(1f, 0.85f, 0.35f));
+            PadHint("PAD: A JOIN / READY  ·  D-PAD TEAM  ·  B LEAVE SEAT, THEN BACK  ·  LB / RB MODE" + (lobby ? "  ·  Y INVITE  ·  SELECT CHAT" : ""),
+                    new Vector2(centre, -ph / 2f + 4.8f), area - 2f);
             float by = -ph / 2f + 1.6f;
             if (!lobby)
             {
@@ -388,6 +390,7 @@ namespace HangtimeOvertime.Patches
                 if (Time.unscaledTime > nextPlayers) { nextPlayers = Time.unscaledTime + 0.5f; ShowPlayers(); }
                 if (status != null && status.text != Net.Status) status.text = Net.Status;
             }
+            if (PadExtras()) return;
             if (Mirror) return;                                                     // the host runs the seats; our keys travel to it
             var seats = Seats;
             for (int i = 0; i < Count; i++)
@@ -413,6 +416,28 @@ namespace HangtimeOvertime.Patches
                 int free = System.Array.FindIndex(input, x => x == null);
                 if (free >= 0 && free < Count) { input[free] = join; Plugin.Log.LogInfo($"Versus: P{free + 1} joined on {join.Label}"); Refresh(); }
             }
+        }
+
+        // gamepads, beyond their seat: LB / RB change the mode (host / local), Y invites and SELECT chats (lobby), and B from
+        // a pad that has no seat goes back (local: closes the screen; lobby: leaves it)
+        private bool PadExtras()
+        {
+            foreach (var g in UnityEngine.InputSystem.Gamepad.all)
+            {
+                if (!Mirror && (g.leftShoulder.wasPressedThisFrame || g.rightShoulder.wasPressedThisFrame))
+                {
+                    SetFormat((format + (g.leftShoulder.wasPressedThisFrame ? -1 : 1) + VersusSetup.Formats.Length) % VersusSetup.Formats.Length);
+                    return true;
+                }
+                if (lobby && g.buttonNorth.wasPressedThisFrame) { Lobbies.Invite(); return true; }
+                if (lobby && g.selectButton.wasPressedThisFrame && chatField != null) { OnScreenKeyboard.Open(chatField, this); return true; }
+                var back = Controls.Button(g, Controls.SlotOf(g), PadAct.Back);
+                bool seated = Mirror ? false : input.Any(x => x != null && x.Kind == InputKind.Gamepad && x.DeviceId == g.deviceId);
+                // a friend's PC: its pads' seats live on the host, so B leaves only with no seat shown for this PC's pads
+                if (Mirror) seated = input.Any(x => x != null && x.Label != null && x.Label.StartsWith("GAMEPAD"));
+                if (back != null && back.wasPressedThisFrame && !seated) { if (lobby) LeaveLobby(); else Close(); return true; }
+            }
+            return false;
         }
 
         // a gamepad player backs out: later players keep their numbers (the seat stays open for someone to join)

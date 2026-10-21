@@ -117,7 +117,7 @@ namespace HangtimeOvertime.Core
         };
 
         // the buttons a gamepad action can be bound to
-        public static readonly string[] PadControls = { "buttonSouth", "buttonEast", "buttonWest", "buttonNorth", "leftShoulder", "rightShoulder", "leftTrigger", "rightTrigger", "start", "select", "leftStickPress", "rightStickPress", "dpad/up", "dpad/down", "dpad/left", "dpad/right" };
+        public static readonly string[] PadControls = { "buttonSouth", "buttonEast", "buttonWest", "buttonNorth", "leftShoulder", "rightShoulder", "leftTrigger", "rightTrigger", "select", "leftStickPress", "rightStickPress", "dpad/up", "dpad/down", "dpad/left", "dpad/right" };
 
         // ------------------------------------------------------------ resetting
 
