@@ -786,3 +786,24 @@ Modes:
   title menu -> ONLINE, the on-screen keyboard typed "SDD", DELETE, START -> lobby "SD" created (direct IP, Steam off), B
   out; VERSUS: joined with A, team with the D-pad, RB to 1v2, ready, un-ready, leave, back. Keyboard / mouse after the
   change: arrows + Enter in the browser and settings, Enter on the lobby name typed "AB", Esc closed. 0 errors.
+
+### Feature 7 — collection screen (done)
+- **COLLECTION** (title bar, `src/Patches/CollectionMenu.cs`): tabs TEAMS / PERKS / STAT CARDS / STATS. A 5x7 grid per page
+  (< > pages): found entries in their element colour with a rarity (or class) strip, the rest as ???. Filters cycle on
+  click / A: RARITY (teams: CLASS regular / combo / boss; stat cards add GAME), ELEMENT (stat cards: STYLE boost /
+  playstyle / tradeoff / game), SHOW all / found / locked, SORT name / rarity / element / most picked (teams: most faced
+  / most beaten). The detail pane follows the highlight: title, rarity, element, rules text, stat changes or signature
+  perks, flavour, OFFERED n · PICKED n (teams: FACED n · BEATEN n). Locked entries show only their rarity and how to find them.
+- **STATS page**: wins, losses, win % and current / best streak per mode (Records), Classic runs won, highest Infinite
+  match won, best Infinite run, most faced / beaten team, completion per category, most picked card.
+- **What counts** (`src/Core/Collection.cs`, `HangtimeOvertime_collection.json`): a card shown on an upgrade screen is
+  found, taking it is a pick (also Versus offers / picks); a team is found when a Classic / Co-op / Infinite match against
+  it starts and beaten when that match is won (Versus teams are chosen, so they don't count). The lists: every sheet team
+  + the game's 10, every sheet perk + the game's 24 techniques (names from `scaling.json` vanilla_rarity, card titles once
+  seen), every sheet stat card + the game's own stat cards (catalogued from the first stat-card upgrade screen, a note says
+  so until then). Nothing from before this version counts (no history was kept).
+- **Tested**: empty collection (all ???); continued an Infinite run: Sunaumi High found at kick-off, F6 win -> beaten,
+  stat screen found Dominator / Setter Sync / Fortress (7 game stat cards catalogued), picked Setter Sync; next match
+  Hinotori Phoenix, perk screen found Afterburner / Radiant Guard, picked Afterburner. The screen showed 8 / 285 found,
+  details, filters (SHOW: FOUND -> 3 cards), the stats page; mouse, keyboard and pad (LB / RB tabs, B back). Saves restored
+  afterwards. 0 errors.

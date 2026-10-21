@@ -47,6 +47,9 @@ namespace HangtimeOvertime.Patches
                 }
                 cards.Capacity = cards.Count;   // the game picks with Random.Range(0, Capacity)
                 var statPool = t.Field("upgrades").GetValue<List<UpgradePair>>();
+                // the collection lists the game's own cards (as ??? until found)
+                foreach (var c in vanilla) Collection.CatalogPerk(PerkRegistry.TechniqueOf(c), c.title, c.description);
+                foreach (var p in statPool) Collection.CatalogCard(p);
                 StatCards.AddToPool(statPool);
                 // the game walks a static index through this list; keep it inside the new size
                 Traverse.Create(typeof(UpgradeManager)).Field("indexNum").SetValue(Random.Range(0, Mathf.Max(1, statPool.Count / 2)));

@@ -199,6 +199,7 @@ namespace HangtimeOvertime.Core
                     if (t != null && offer.All(o => o.Perk != t)) offer.Add(new VersusOffer { Perk = t });
                 }
             }
+            foreach (var o in offer) Collection.See(o.Card != null ? "card:" + o.Card.Id : Collection.KeyOf(o.Perk));
             return offer;
         }
 
@@ -221,6 +222,7 @@ namespace HangtimeOvertime.Core
         public static void Take(int side, VersusOffer o)
         {
             Picks[side]++;
+            Collection.Pick(o.Card != null ? "card:" + o.Card.Id : Collection.KeyOf(o.Perk));
             if (o.Card != null) StatCards.Take(o.Card, side);
             else if (o.Perk != null && !PerksOf(side).Contains(o.Perk)) PerksOf(side).Add(o.Perk);
             Plugin.Log.LogInfo($"Versus: {Setup.SideLabel(side)} took {o.Title} ({o.Kind})");

@@ -597,7 +597,12 @@ def generate(S):
           "        public static string VanillaRarity(string technique)", "        {"]
     for rar in ("common", "rare", "epic"):
         L.append(f"            if (System.Array.IndexOf({arr(S['scaling']['vanilla_rarity'][rar])}, technique) >= 0) return {cs(rar)};")
-    L += ["            return \"rare\";", "        }", "    }", ""]
+    L += ["            return \"rare\";", "        }"]
+    # every game technique with a rarity (the collection's list of the game's own perks)
+    vt = []
+    for rar in ("common", "rare", "epic"):
+        vt += [t for t in S['scaling']['vanilla_rarity'][rar] if t not in vt]
+    L += [f"        public static readonly string[] VanillaTechniques = {arr(vt)};", "    }", ""]
 
     L += ["    public readonly struct UiDef",
           "    {",

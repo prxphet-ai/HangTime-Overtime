@@ -1053,6 +1053,11 @@ namespace HangtimeOvertime.Generated
             new HookDef("versus_no_serve_block", "PlayerController", "UpInputPressed", "prefix", "VersusPatches"),
             new HookDef("versus_no_serve_block_post", "PlayerController", "UpInputPressed", "postfix", "VersusPatches"),
             new HookDef("own_side_of_net", "PlayerController", "FixedUpdate", "postfix", "ControllerPatches"),
+            new HookDef("collection_perk_seen", "TechniqueButton", "Start", "postfix", "CollectionPatches"),
+            new HookDef("collection_perk_pick", "TechniqueButton", "Click", "postfix", "CollectionPatches"),
+            new HookDef("collection_card_seen", "UpgradeButton", "Start", "postfix", "CollectionPatches"),
+            new HookDef("collection_card_pick", "UpgradeButton", "Click", "postfix", "CollectionPatches"),
+            new HookDef("collection_team_beaten", "GameManager", "EndGame", "prefix", "CollectionPatches"),
             new HookDef("held_group_guard", "ButtonGroup", "Select", "prefix", "TitleBar"),
             new HookDef("tutorial_skip", "GameManager", "Awake", "postfix", "TitleBar"),
             new HookDef("pause_report_bug", "PauseController", "Start", "postfix", "BugReport"),
@@ -1128,6 +1133,7 @@ namespace HangtimeOvertime.Generated
             if (System.Array.IndexOf(new[] { "Speedster", "AbsoluteBlock", "TrickShot", "LimitBreak" }, technique) >= 0) return "epic";
             return "rare";
         }
+        public static readonly string[] VanillaTechniques = new[] { "LowTip", "TopSpinTip", "ToolTip", "DeadSet", "CounterBump", "Pipe", "LastStand", "SpinSpike", "MomentumSpike", "FallingSpike", "StrongQuick", "SpeedStrike", "ComeBack", "BlockBoost", "PerfectBump", "RiskySet", "SneakAttack", "HybridServe", "SkyServe", "LineCreep", "Speedster", "AbsoluteBlock", "TrickShot", "LimitBreak" };
     }
 
     public readonly struct UiDef

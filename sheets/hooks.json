@@ -763,6 +763,56 @@
       "verified": "no"
     },
     {
+      "id": "collection_perk_seen",
+      "target_type": "TechniqueButton",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "CollectionPatches",
+      "purpose": "Collection: a perk card on an upgrade screen is discovered (and the game's own card titles catalogued)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "collection_perk_pick",
+      "target_type": "TechniqueButton",
+      "target_method": "Click",
+      "kind": "postfix",
+      "patch_class": "CollectionPatches",
+      "purpose": "Collection: counts a perk pick",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "collection_card_seen",
+      "target_type": "UpgradeButton",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "CollectionPatches",
+      "purpose": "Collection: a stat card on an upgrade screen is discovered (and the game's own cards catalogued)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "collection_card_pick",
+      "target_type": "UpgradeButton",
+      "target_method": "Click",
+      "kind": "postfix",
+      "patch_class": "CollectionPatches",
+      "purpose": "Collection: counts a stat card pick (also runs after the Overtime card prefix that skips the game's Click)",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "collection_team_beaten",
+      "target_type": "GameManager",
+      "target_method": "EndGame",
+      "kind": "prefix",
+      "patch_class": "CollectionPatches",
+      "purpose": "Collection: the opponent of a won run match counts as beaten",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
       "id": "held_group_guard",
       "target_type": "ButtonGroup",
       "target_method": "Select",

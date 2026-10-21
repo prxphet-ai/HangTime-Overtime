@@ -99,6 +99,7 @@ namespace HangtimeOvertime.Patches
                 Engine.Engine.FirePassives();
                 Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} round={OpponentScaling.Round} " +
                                    $"infiniteMatch={RunState.InfiniteMatch} loop={RunState.Loop} vs {__instance.opponentTeam?.teamName}");
+                CollectionPatches.MatchStarted(__instance);
                 if (Plugin.DumpScenes.Value) { Debugging.Dumps.Opponent(team); Debugging.Dumps.PlayerParts(); }
             }
         }

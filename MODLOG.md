@@ -89,3 +89,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Gamepad menus: `src/Patches/PanelNav.cs` (stops, focus frame, pad prompts, `OnScreenKeyboard`). Game gotcha:
   `ButtonGroup.OnEnable` subscribes to A from a coroutine one frame later, even if the group was disabled meanwhile ->
   `held_group_guard` (Select prefix: only while enabled).
+- Collection: `src/Core/Collection.cs` (HangtimeOvertime_collection.json: keys team:/perk:/vperk:/card:/vcard: with seen,
+  picked, beaten; catalog of the game's own card titles), `src/Patches/CollectionPatches.cs` (TechniqueButton / UpgradeButton
+  Start + Click, EndGame), `src/Patches/CollectionMenu.cs`. `Scaling.VanillaTechniques` is generated from scaling.json.
