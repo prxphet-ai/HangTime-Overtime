@@ -100,3 +100,5 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Daily runs: `src/Core/Daily.cs` (seed, Random push/pop, offers, HangtimeOvertime_daily.json), `src/Patches/DailyPatches.cs`,
   `src/Patches/DailyMenu.cs`; `RunState.Daily` / `DailyCounts`; run slot `daily`; `TeamRoster.DailyPick`. Game facts: the
   upgrade cards are drawn in the `UpgradeManager.CreateUpgrade` coroutine (Random across yields), button `Start` runs later.
+- Daily cup: `RunState.StartCup/EndCup`, `Daily.Cup` (Normal mode + Daily), run slot `cup`, `TeamRoster.CupPick/CupName`;
+  DAILY RUN menu RUN / CUP tabs.

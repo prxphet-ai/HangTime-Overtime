@@ -36,6 +36,7 @@ namespace HangtimeOvertime.Core
         private static readonly string[] played = new string[9];
         private static readonly List<string> titles = new List<string>();
         public static int LastSlot;           // the slot of the latest match
+        private static string cupDay;         // the daily cup being played (kept until its win screen, where the run has already ended)
 
         public static void RememberTitles(List<string> t) { if (t != null && t.Count > 0 && titles.Count == 0) titles.AddRange(t); }
 
@@ -47,6 +48,7 @@ namespace HangtimeOvertime.Core
             if (slot == 1) for (int g = 1; g <= 8; g++) played[g] = null;
             played[slot] = opponent;
             LastSlot = slot;
+            cupDay = Daily.Cup ? RunState.Daily : null;
         }
 
         private static string Title(int g) => g < titles.Count && !string.IsNullOrEmpty(titles[g]) ? titles[g].ToUpperInvariant() : $"MATCH {g}";
@@ -57,7 +59,7 @@ namespace HangtimeOvertime.Core
         // Loop draws every slot at kick-off
         private static string Upcoming(int g)
         {
-            if (Daily.Cup) return Engine.TeamRoster.CupName(g);
+            if (cupDay != null) return Engine.TeamRoster.CupName(g, cupDay);
             var gm = GameManager.Instance;
             if (gm == null || RunState.Mode != RunMode.Normal || g == 7) return "???";
             GameObject prefab = null;
@@ -78,7 +80,7 @@ namespace HangtimeOvertime.Core
         public static BracketModel Classic(int won)
         {
             var m = new BracketModel();
-            string mode = Daily.Cup ? "DAILY CUP " + RunState.Daily : RunState.Mode == RunMode.Loop ? $"LOOP {RunState.Loop}" : GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2 ? "CO-OP" : "CLASSIC";
+            string mode = cupDay != null ? "DAILY CUP " + cupDay : RunState.Mode == RunMode.Loop ? $"LOOP {RunState.Loop}" : GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2 ? "CO-OP" : "CLASSIC";
             m.Champion = won >= 8;
             m.Title = m.Champion ? "CHAMPIONS!" : $"{mode}  ·  BRACKET";
             for (int g = 1; g <= 8; g++)

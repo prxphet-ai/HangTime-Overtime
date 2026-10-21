@@ -855,12 +855,28 @@ Modes:
   quit; PRACTICE RUN ended the first run at 1 win and started run 2: match 1 Hinode Sparks again, the same offers. The
   normal Infinite (round 6) and Classic saves were unchanged. Saves restored. 0 errors.
 
-### Feature 10 — daily seeded tournaments (partly done, NOT tested)
-- Code is in, but there's no button for it yet, so players can't reach it: `RunState.StartCup/EndCup`, `Daily.Cup`, run slot `cup`, `TeamRoster.CupPick/CupName` (one seeded team per bracket slot, no repeats), kick-off and offers seeded as in feature 9, Classic difficulty (no player-power scaling), title card "Daily Cup - ...", bracket shows the whole seeded lineup, results under "cup <date>".
-- Left: RUN / CUP tabs in `DailyMenu` (start presses the CLASSIC title button with `Daily.Pending` + `Daily.PendingCup`), then test start / lose / win / continue.
+### Feature 10 — daily seeded tournaments (done)
+- **Daily cup** = an 8-match Classic-style bracket seeded by the UTC date: DAILY RUN menu, **CUP** tab (LB / RB or click
+  switches RUN / CUP). The tab shows today's whole lineup; START TODAY'S CUP, then PRACTICE CUP; CONTINUE a saved cup;
+  history (first cup as "n / 8 WON" or CHAMPION, best, tries), best day and cups won.
+- **How**: `RunState.StartCup` (presses the 1-player CLASSIC title button with `Daily.Pending` + `PendingCup`; no practice
+  match, straight to match 1). `RunMode.Normal` + `RunState.Daily` = the cup (`Daily.Cup`). Opponents:
+  `TeamRoster.CupPick` gives one seeded team per slot from that slot's pool (regular / boss / combo), no team twice, so
+  the bracket screen and the menu show all 8 before they're played. Difficulty is Classic's (the game's own level-ups,
+  seeded at kick-off; no mod scaling), so opponents are the same for everyone whatever their build. Offers and kick-offs
+  are seeded as in feature 9 (cup seeds are offset from the run's). Title card "Daily Cup - <round>"; bracket title
+  "DAILY CUP <date>". Run slot `cup`; results under "cup <date>" in HangtimeOvertime_daily.json.
+- **Ends**: a lost match counts the matches won so far, the final counts 8 (champion bracket on the win screen). After
+  that TRY AGAIN / LOOP 2 are normal runs.
+- **Tested**: CUP tab lineup Raijin Tech > Fukurou Owls > Sunaumi High > Hinode Sparks > Kagaribi Flame > Oni Sakuen >
+  Hinotori Phoenix > Iwagami Golems; started (counts): match 1 Raijin Tech; F6 -> bracket with the same names, offers
+  Tectonic Slam / Lightning Reflex on screen and in the log; match 2 Fukurou Owls; quit, CONTINUE (MATCH 2) resumed it;
+  F7 -> "over: 1 wins (counts)", save cleared. Practice cup with F8 + F6: final vs Iwagami Golems (as listed), won ->
+  "over: 8 wins (practice)", CHAMPIONS bracket "DAILY CUP 2026-10-21". Saves restored. 0 errors.
+- Fixed while testing: the champions bracket said CLASSIC (the cup flag is cleared when the win screen loads); the
+  bracket now keeps the cup's day from kick-off.
 
 ## Session status (2026-10-21)
-- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-9.
-- Partly done: 10 (backend only, untested, no menu entry).
+- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-10.
 - Not started: 11 draft tournament, 12 individual picks, 13 chat / emotes, 14 lobby rules, 15 replays, 16 party tournament, 17 spectators.
 - Open questions: should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).
