@@ -70,6 +70,7 @@ namespace HangtimeOvertime.Patches
             float left = -W / 2f + 1f, bottom = -H / 2f + 1f;
             logText = Text("", new Vector2(left + 11f, bottom + 5f), 0.52f, 22f, Color.white, TextAlignmentOptions.BottomLeft, o: 20, height: 8f, wrap: true);
             logBack = Box("Log", new Vector2(left + 11f, bottom + 1f), new Vector2(23f, 1f), new Color(0.02f, 0.12f, 0.22f, 0.7f), 19);
+            logBack.enabled = false;
             field = TextField(new Vector2(0f, bottom + 0.4f), new Vector2(W * 0.5f, 1.6f), $"SAY SOMETHING  ({Controls.KeyName(Controls.ChatKey)}: SEND · ESC: CANCEL)", ChatDef.MaxLength, Submit);
             field.Box.gameObject.SetActive(false); field.Text.gameObject.SetActive(false);
             stops.Clear();                          // nothing here takes the pad's menu navigation

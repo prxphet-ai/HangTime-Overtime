@@ -26,8 +26,36 @@ namespace HangtimeOvertime.Core
         public string Title = "", Sub = "";
         public readonly List<BracketRound> Rounds = new List<BracketRound>();
         public string You = "YOU";            // the entry the marker follows
+        public string Marker = "YOU";         // the marker's text
         public int FromRound = -1, ToRound = -1;   // the marker's move this time (round indexes), -1: no move
         public bool Champion;
+    }
+
+    internal static class BracketWire
+    {
+        public static void Write(Online.NetWriter w, BracketModel m)
+        {
+            w.S(m.Title).S(m.Sub).S(m.You).S(m.Marker).I(m.FromRound).I(m.ToRound).B(m.Champion).U8(m.Rounds.Count);
+            foreach (var r in m.Rounds)
+            {
+                w.S(r.Name).U8(r.Matches.Count);
+                foreach (var x in r.Matches) w.S(x.A).S(x.B).I(x.Winner).S(x.Note);
+            }
+        }
+
+        public static BracketModel Read(Online.NetReader r)
+        {
+            var m = new BracketModel { Title = r.S(), Sub = r.S(), You = r.S(), Marker = r.S(), FromRound = r.I(), ToRound = r.I(), Champion = r.B() };
+            int n = r.U8();
+            for (int i = 0; i < n; i++)
+            {
+                var round = new BracketRound { Name = r.S() };
+                int k = r.U8();
+                for (int j = 0; j < k; j++) round.Matches.Add(new BracketMatch { A = r.S(), B = r.S(), Winner = r.I(), Note = r.S() });
+                m.Rounds.Add(round);
+            }
+            return m;
+        }
     }
 
     internal static class Bracket

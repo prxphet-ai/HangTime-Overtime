@@ -21,6 +21,7 @@ namespace HangtimeOvertime.Debugging
     //   -ovt-fx              host: fires a random perk with visual effects every 3 s (both sides), to compare screens
     //   -ovt-draft           host: the match starts with DRAFT START (each side drafts a team)
     //   -ovt-rules ID        host: plays with that rules preset (sheets/rules.json id; not saved)
+    //   -ovt-party           host: opens PARTY CUP once a friend is in, seats key set 1, starts when the friend's device joins
     //   -ovt-chat            in matches, this copy's first player chats every 4 s (quick, emote, typed in turn)
     // The window title gets HOST / CLIENT so screenshots can tell the two apart.
     internal class DevOnline : MonoBehaviour
@@ -57,6 +58,8 @@ namespace HangtimeOvertime.Debugging
             d.steamCheck = Array.IndexOf(args, "-ovt-steamcheck") >= 0;
             if (h && Array.IndexOf(args, "-ovt-draft") >= 0) Patches.VersusMenu.DraftStart = true;
             d.chat = Array.IndexOf(args, "-ovt-chat") >= 0;
+            d.party = h && Array.IndexOf(args, "-ovt-party") >= 0;
+            if (d.party) Patches.BracketPanel.AutoContinue = true;
             var preset = Generated.RulePresets.All.FirstOrDefault(x => x.Id == Arg("-ovt-rules"));
             if (h && preset != null) Core.LobbyRules.Current = Core.RuleSet.From(preset);   // not saved
             Plugin.Log.LogInfo($"Dev online: {(h ? "host" : "client")} {d.format}, {d.seats} seat(s){(d.auto ? ", autopilot" : "")}");
@@ -67,12 +70,17 @@ namespace HangtimeOvertime.Debugging
         private static void Press(InputKind k, bool up = false, bool right = false) =>
             Net.OverridePad((int)k, new PadState { Connected = true, Up = up, Confirm = up, Right = right });
 
-        private bool chat;
+        private bool chat, party, partyStarted;
         private float nextChat;
         private int chatN;
 
         private void Update()
         {
+            if (party && !partyStarted && Net.IsHost && Net.HasFriends && VersusMenu.IsOpen)
+            {
+                if (!PartyMenu.IsOpen) { PartyMenu.Open(); PartyMenu.DevJoin(new SlotInput { Kind = InputKind.KeysWASD, Label = "W A S D" }); }
+                else if (PartyMenu.DevCount >= 2) { partyStarted = true; Core.LobbyRules.Current.Rounds = 1; PartyMenu.DevStart(); }
+            }
             if (chat && MatchSync.InMatch && Time.unscaledTime > nextChat) { nextChat = Time.unscaledTime + 4f + (host ? 0f : 2f); Patches.ChatHud.DevSay(chatN++); }
             if (!titled && Time.unscaledTime > 3f)
             {
@@ -138,7 +146,7 @@ namespace HangtimeOvertime.Debugging
                         step = Time.unscaledTime + 0.6f;
                         if (seated >= seats) stage = 4;
                     }
-                    else if (VersusMenu.DevReadyWhenOthersAre()) stage = 4;
+                    else if (!party && VersusMenu.DevReadyWhenOthersAre()) stage = 4;
                     break;
             }
         }

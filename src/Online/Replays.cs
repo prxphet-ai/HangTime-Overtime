@@ -209,7 +209,7 @@ namespace HangtimeOvertime.Online
             LobbyRules.Current.Points = Mathf.Clamp(h.Points, 1, 15);
             Playing = true;
             Plugin.Log.LogInfo($"Replay: watching {h.Title} ({h.Seconds:F0} s)");
-            VersusMenu.StartReplayScene(h.Players);
+            VersusMenu.StartScene(h.Players);
         }
 
         public static void Stop()

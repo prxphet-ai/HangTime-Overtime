@@ -24,7 +24,7 @@ namespace HangtimeOvertime.Patches
             if (open != null) return;
             var go = new GameObject("Overtime Rules");
             open = go.AddComponent<RulesPanel>();
-            if (!open.InitKit(260)) { Destroy(go); open = null; return; }
+            if (!open.InitKit(290)) { Destroy(go); open = null; return; }
             open.readOnly = Online.Net.IsClient;
             open.Build();
         }
@@ -180,7 +180,7 @@ namespace HangtimeOvertime.Patches
             if (open != null) return;
             var go = new GameObject("Overtime Bans");
             open = go.AddComponent<BanPanel>();
-            if (!open.InitKit(280)) { Destroy(go); open = null; return; }
+            if (!open.InitKit(310)) { Destroy(go); open = null; return; }
             open.readOnly = readOnly; open.onClose = onClose;
             open.Build();
         }

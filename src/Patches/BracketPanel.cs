@@ -100,11 +100,11 @@ namespace HangtimeOvertime.Patches
             int fromR = model.FromRound >= 0 ? model.FromRound : model.ToRound >= 0 ? model.ToRound : n - 1;
             int toR = model.ToRound >= 0 ? model.ToRound : fromR;
             int fi = MatchOf(fromR), ti = MatchOf(toR);
-            if (fi >= 0 && ti >= 0)
+            if (fi >= 0 && ti >= 0 && !string.IsNullOrEmpty(model.You))
             {
                 var off = new Vector2(-boxW / 2f + 0.2f, boxH / 2f + 0.55f);
                 marker = Box("You", MatchAt(fromR, fi) + off, new Vector2(2.6f, 1.1f), new Color(0.96f, 0.55f, 0.12f, 1f), 10);
-                var label = Text("YOU", Vector2.zero, 0.45f, 2.6f, Color.white, o: 11);
+                var label = Text(model.Marker, Vector2.zero, 0.45f, 2.6f, Color.white, o: 11);
                 label.transform.SetParent(marker.transform, true);
                 label.transform.localPosition = new Vector3(0f, 0f, -0.01f);
                 markFrom = marker.transform.localPosition;
@@ -124,9 +124,12 @@ namespace HangtimeOvertime.Patches
             return winner == side ? $"<color=#FFD95A>{n}</color>" : $"<color=#7F93A8><s>{n}</s></color>";
         }
 
+        public static bool AutoContinue;               // development (-ovt-party): CONTINUE by itself after a few seconds
+
         private void Update()
         {
             float t = Time.unscaledTime - openedAt;
+            if (AutoContinue && t > 4f) { Close(); return; }
             if (marker != null)
             {
                 float k = Mathf.Clamp01((t - 0.6f) / 0.9f);

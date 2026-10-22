@@ -38,6 +38,7 @@ namespace HangtimeOvertime.Core
         public string Format = "1v1";
         public readonly List<VersusSlot> Slots = new List<VersusSlot>();
         public readonly string[] Team = new string[2];   // team key per side: "" = your own team (side 0), a new-team id or the game's prefab name
+        public readonly string[] Names = new string[2];  // the sides' names (a party cup's entrants), or null: P1, P2...
 
         public static readonly string[] Formats = { "1v1", "1v2", "2v2" };
 
@@ -72,6 +73,7 @@ namespace HangtimeOvertime.Core
         // "P1", "P1 & P2", "P1 + AI"
         public string SideLabel(int side)
         {
+            if (!string.IsNullOrEmpty(Names[side])) return Names[side];
             var names = Humans(side).Select(h => "P" + h.Number).ToList();
             return string.Join(" & ", names) + (names.Count == 1 && Format != "1v1" ? " + AI" : "");
         }

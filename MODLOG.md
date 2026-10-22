@@ -116,3 +116,5 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Replays: `src/Online/Replays.cs` (recorder, files, ReplayPlayer, ReplayHud), `src/Patches/ReplayMenu.cs`. `MatchSync.Emit`
   sends to friends and / or the replay; `Mirror.ReplayMode` + `ReplayTime`; `NetReader.Raw`. Runs start `HostSync` at
   kick-off when recording. Config `[Replays] Record`.
+- Party cup: `src/Core/Party.cs` (bracket, AI fill, forfeits), `src/Patches/PartyMenu.cs` (+ PartyFlow). Versus: an AI
+  right side keeps the game's SpikerInput; `VersusSetup.Names`; `Msg.PartyBracket` 74, protocol 7. Dev: `-ovt-party`.

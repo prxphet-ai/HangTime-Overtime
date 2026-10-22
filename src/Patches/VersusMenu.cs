@@ -141,6 +141,7 @@ namespace HangtimeOvertime.Patches
             }
             // the match rules (the host edits them online; a friend's PC sees them)
             Button("RULES", new Vector2(centre + area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => RulesPanel.Open(), 0.55f);
+            if (!Mirror) Button("PARTY CUP", new Vector2(centre - area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => PartyMenu.Open(), 0.48f);
             rulesLine = Text("", new Vector2(centre, ph / 2f - 7.7f), 0.4f, area - 2f, new Color(1f, 0.85f, 0.35f));
             for (int side = 0; side < 2; side++)
             {
@@ -398,7 +399,7 @@ namespace HangtimeOvertime.Patches
 
         private void Update()
         {
-            if (starting || Time.unscaledTime - openedAt < 0.3f || RulesPanel.IsOpen || BanPanel.IsOpen) return;
+            if (starting || Time.unscaledTime - openedAt < 0.3f || RulesPanel.IsOpen || BanPanel.IsOpen || PartyMenu.IsOpen) return;
             if (FieldKeys() || Typing) return;                                      // the keyboard is typing in the chat
             var kb = UnityEngine.InputSystem.Keyboard.current;
             if (kb != null && kb.escapeKey.wasPressedThisFrame) { if (lobby) LeaveLobby(); else Close(); return; }
@@ -486,9 +487,10 @@ namespace HangtimeOvertime.Patches
             LoadMatch();
         }
 
-        // a replay: its scene loads like a Versus round (Replays.Watch has set the match up)
-        public static void StartReplayScene(int players)
+        // a replay / a party cup's first match: its scene loads like a Versus round (the match is set up already)
+        public static void StartScene(int players, bool closeMenu = false)
         {
+            if (closeMenu && open != null) open.Close(keepMenuOff: true);
             var tb = classicRef;
             if (tb == null) return;
             var gm = GameManager.Instance;

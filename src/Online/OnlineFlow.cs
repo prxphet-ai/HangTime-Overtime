@@ -41,6 +41,8 @@ namespace HangtimeOvertime.Online
                 else AddLine(r.S());                                                     // the host's relay: name included
             });
             Net.On(Msg.ToLobby, r => { if (Net.IsClient) GoToLobby(); });
+            Net.On(Msg.PartyBracket, r => { if (Net.IsClient) { VersusOverlay.Close(); BracketPanel.Show(BracketWire.Read(r), false); } });
+            Net.OnPeerLeft += PartyFlow.PeerLeft;
             Net.On(Msg.MatchChat, (r, p) => { if (Net.IsHost) Patches.ChatHud.Received(r, p.Id); else Patches.ChatHud.ReceivedRelay(r); });
             Net.OnClosed += OnClosed;
             Net.OnPeerJoined += p =>
@@ -117,6 +119,15 @@ namespace HangtimeOvertime.Online
         // every friend's PC has finished loading this round
         public static bool AllReady(int seq) => Net.Peers.Where(p => p.Welcomed).All(p => p.ReadySeq == seq);
 
+        // the party cup's bracket, between matches
+        public static void SendBracket(BracketModel m)
+        {
+            if (!Net.IsHost || !Net.HasFriends) return;
+            var w = new NetWriter(Msg.PartyBracket);
+            BracketWire.Write(w, m);
+            Net.Send(w);
+        }
+
         // the next round: everything a friend's PC needs to build the same scene
         public static void SendLoad(bool first)
         {
@@ -129,7 +140,7 @@ namespace HangtimeOvertime.Online
             var w = new NetWriter(Msg.Load).I(MatchSync.LoadSeq).B(first).S(s.Format).U8(s.Slots.Count);
             foreach (var x in s.Slots)
                 w.U8(x.Side).U8(x.Number).S(x.Role).U8((int)x.Control).U8((int)(x.Input?.Kind ?? InputKind.None)).I(x.Input?.DeviceId ?? 0).S(x.Input?.Label ?? "");
-            w.S(s.Team[0]).S(s.Team[1]).I(VersusState.Round).I(VersusState.RoundWins[0]).I(VersusState.RoundWins[1])
+            w.S(s.Team[0]).S(s.Team[1]).S(s.Names[0] ?? "").S(s.Names[1] ?? "").I(VersusState.Round).I(VersusState.RoundWins[0]).I(VersusState.RoundWins[1])
              .I(VersusState.Target).I(VersusState.Picks[0]).I(VersusState.Picks[1]).U8(GameManager.Instance.numberOfPlayers)
              .S(JsonUtility.ToJson(Look.Current));
             LobbyRules.Current.Write(w);
@@ -184,6 +195,8 @@ namespace HangtimeOvertime.Online
                 setup.Slots.Add(slot);
             }
             setup.Team[0] = r.S(); setup.Team[1] = r.S();
+            string n0 = r.S(), n1 = r.S();
+            setup.Names[0] = n0.Length > 0 ? n0 : null; setup.Names[1] = n1.Length > 0 ? n1 : null;
             int round = r.I(), w0 = r.I(), w1 = r.I(), target = r.I(), p0 = r.I(), p1 = r.I(), players = r.U8();
             try { HostLook = JsonUtility.FromJson<PlayerLook>(r.S()); } catch { HostLook = null; }
             LobbyRules.Current = RuleSet.Read(r);

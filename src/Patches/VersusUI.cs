@@ -287,8 +287,8 @@ namespace HangtimeOvertime.Patches
             if (!matchOver)
             {
                 string team = setup.Humans(loser).Count > 1 ? $" FOR {Name(loser)}" : "";
-                s.PickHead = $"P{picker?.Number} PICKS AN UPGRADE{team}  <size=70%>({picker?.Input?.Label})</size>";
-                s.PickHint = $"P{picker?.Number}: LEFT / RIGHT TO CHOOSE, JUMP TO TAKE IT";
+                s.PickHead = picker == null ? $"{Name(loser)} (AI) PICKS AN UPGRADE" : $"P{picker.Number} PICKS AN UPGRADE{team}  <size=70%>({picker.Input?.Label})</size>";
+                s.PickHint = picker == null ? "THE AI IS CHOOSING..." : $"P{picker.Number}: LEFT / RIGHT TO CHOOSE, JUMP TO TAKE IT";
                 foreach (var o in offers) s.Offers.Add((o.Title, o.Kind, o.Rarity, o.Text));
             }
             s.ContinueLabel = $"CONTINUE  <size=60%>(FIRST TO {VersusState.Target + VersusRules.ContinueRounds})</size>";
@@ -343,6 +343,7 @@ namespace HangtimeOvertime.Patches
             var go = new GameObject("Overtime Versus Overlay");
             open = go.AddComponent<VersusOverlay>();
             if (!open.InitKit(300)) { Plugin.Log.LogWarning("Versus overlay: no camera/font; skipping to the next round"); Destroy(go); VersusFlow.NextRound(); return; }
+            if (matchOver && Party.Active) { Destroy(go); open = null; PartyFlow.MatchOver(winner); return; }   // a party cup: the bracket, then its next match
             int loser = 1 - winner;
             open.winner = winner;
             if (!matchOver && picksLeft <= 0) picksLeft = LobbyRules.Current.Picks;
@@ -515,6 +516,15 @@ namespace HangtimeOvertime.Patches
             var setup = VersusState.Setup;
             if (setup == null) return;
             if (autoNextAt > 0f && Time.unscaledTime > autoNextAt) { done = true; VersusFlow.NextRound(); return; }
+            // the AI's side (a party cup) picks for itself after a moment
+            if (picker >= 0 && pickerSlot == null && offers.Count > 0)
+            {
+                if (Time.unscaledTime - shownAt < 2f) return;
+                done = true;
+                VersusState.Take(picker, offers[UnityEngine.Random.Range(0, offers.Count)]);
+                if (--picksLeft > 0) ShowRound(winner, false); else VersusFlow.NextRound();
+                return;
+            }
             if (picker >= 0)
             {
                 // only the losing side's picker chooses (a pair takes turns, round by round)
@@ -569,6 +579,9 @@ namespace HangtimeOvertime.Patches
             yield return new WaitForSeconds(1.3f);
             VersusOverlay.ShowRound(winner, over);
         }
+
+        // a new match from inside a match scene (a party cup's next match)
+        public static void StartNewMatch() => Runner.Instance.StartCoroutine(Reload(false));
 
         public static void NextRound()
         {

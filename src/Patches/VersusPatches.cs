@@ -55,7 +55,8 @@ namespace HangtimeOvertime.Patches
 
             // a human on the right replaces that player's AI. The spiker's AI would also have registered it as the right
             // side's server; a human setter becomes a full player like the left side's co-op partner (normal jump, no auto-set).
-            if (rightHitter != null)
+            // no player on the right (a party cup's AI entrant): the game's own AI team plays it
+            if (rightHitter != null && setup.Human(1) != null)
             {
                 var ai = rightHitter.GetComponent<SpikerInput>();
                 if (ai != null) ai.enabled = false;

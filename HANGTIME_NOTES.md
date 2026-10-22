@@ -989,7 +989,27 @@ Modes:
   effects) don't replay. Playback isn't offered while online (leaving a replay ends the Versus state, which would end a
   session).
 
+### Feature 16 — party tournament (done)
+- **PARTY CUP** (the Versus / lobby screen's left button, `src/Patches/PartyMenu.cs`, `src/Core/Party.cs`): players join
+  one by one (JUMP on a key set, A on a gamepad, a friend's device online), RECEIVE / B leaves; bracket of 4 or 8; the
+  AI fills the open places (named after teams); RULES opens the lobby rules (every match uses them). START.
+- **The cup**: single elimination, players spread across the bracket so they don't meet in round 1. Each match is a
+  1v1 Versus match (each entrant with a sheet team). Two AI entrants settle their match at once (a coin weighted by the
+  teams' strength offsets); a player against the AI plays the game's own AI team on the right (the AI side makes its own
+  upgrade picks). Between matches the bracket screen (knockout tree, NEXT marker, results), then CHAMPION and back to
+  the Versus screen / lobby. Builds don't carry from match to match.
+- **Online**: the host runs it; entrants come from every PC. **Spectating while waiting**: the PCs not playing a match
+  watch it live (the normal mirror) and get the bracket between matches (`Msg.PartyBracket`, protocol 7; the side names
+  travel with each round load).
+- **Disconnects (chosen)**: a player whose PC drops out forfeits the match in progress, and the AI plays their later
+  matches under their name ("... (AI)") so the bracket keeps its shape.
+- **Tested**: local cup of 4 (P1, P2 + 2 AI) with 1-round matches: brackets, both semi-finals, the AI final settled,
+  CHAMPION, back to the menu; the player moves and plays against the AI side. Online (`-ovt-party`, dev): the friend's
+  device joined, the friend's PC watched match 1 and got each bracket; killing the friend's game during their match ->
+  forfeit, "(AI)", the cup finished. 0 errors.
+- The dev autopilot loses to the game's AI teams (it was written for player-vs-player); that's the harness, not the cup.
+
 ## Session status (2026-10-21)
-- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-15.
-- Not started: 16 party tournament, 17 spectators.
+- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-16.
+- Not started: 17 spectators.
 - Open questions: co-op now gets two picks per screen with personal perks for one character each; is co-op still the right difficulty? (the simulator can't model two humans); should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).
