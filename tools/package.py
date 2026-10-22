@@ -16,17 +16,30 @@ INSTALL
    You should end up with BepInEx/plugins/HangtimeOvertime/HangtimeOvertime.dll
 3. Start the game - the title screen reads HangTime! OVERTIME.
 
+TITLE SCREEN BAR (top left; on a gamepad press SELECT to reach it)
+  SETTINGS     skip tutorial, update check, record replays, chat bubbles, mute others' chat
+  DAILY RUN    today's seeded Infinite run and 8-match cup: same opponents and offers for everyone
+  DRAFT        pick 1 of 3 teams (3 abilities + 2 stat cards each) and win an 8-match cup
+  COLLECTION   every team, perk and stat card you've found, plus your stats and streaks
+  REPLAYS      watch your last 10 matches (pause, speed, seek, cameras) and save the good ones
+  CONTROLS     rebind the 4 key sets, 4 gamepads and chat
+  REPORT BUG   opens a pre-filled GitHub issue (names and paths taken out; you see it first)
+
 VERSUS (title screen, 1V1 / 1V2 / 2V2, up to 4 players on one PC)
 Pick a mode at the top, then each player presses a key on their own set (or A on a gamepad) to join:
   W A S D (Space)   ARROW KEYS (Enter)   I J K L (H)   NUMPAD 8 4 5 6 (Numpad Enter)   or a gamepad
 Left/right = move (and team on the join screen), up = jump / hit / ready, down = receive.
-1V2 is one player plus an AI setter against two players; 2V2 is two a side.
+RULES: points, rounds, upgrades, perks / cards on or off, bans, draft start, presets.
+PARTY CUP: a knockout cup for 2-8 players, the AI fills the bracket.
+
+IN A MATCH: Q quick chat, E emotes, Enter type (key set 1; other sets and pads: see CONTROLS).
 
 ONLINE (everyone needs this same Overtime version; start the game from Steam)
 Title screen -> ONLINE opens the lobby browser:
   - click a lobby to join it, or type a friend's lobby code and SEARCH (finds private lobbies too)
   - CREATE LOBBY: name it, PUBLIC on/off, 2-4 PCs; then INVITE (STEAM) to invite friends directly
-In the lobby everyone takes a seat with their own keys (1v1, 1v2, 2v2), T to chat, the host presses START.
+In the lobby everyone takes a seat with their own keys (1v1, 1v2, 2v2), T to chat, the host sets the RULES and presses
+START. WATCH ONLY lets a PC just spectate; joining while a match is on also makes you a spectator.
 After a match, LOBBY takes everyone back to the lobby.
 Without Steam: type the host's IP under JOIN BY IP (the host forwards UDP port 27515 on their router).
 

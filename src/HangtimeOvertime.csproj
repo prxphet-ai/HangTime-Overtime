@@ -9,6 +9,8 @@
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- the DLL records its debug-symbol path: keep the builder's folders (and Windows user name) out of it -->
+    <PathMap>$(MSBuildProjectDirectory)=/overtime/src</PathMap>
     <!-- Game install; override with -p:GameDir=... -->
     <GameDir Condition="'$(GameDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Hangtime!</GameDir>
     <Managed>$(GameDir)\Hangtime!_Data\Managed</Managed>

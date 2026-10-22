@@ -10,7 +10,7 @@ dozens of new abilities and teams, a character creator and run saves — all bui
 - **Infinite mode** — an endless run from the title screen. Opponents are picked at random and get stronger every round
   (better stats, then their own abilities), with a difficulty setting if you want it harder.
 - **Loops** — beat the Classic final and keep going with LOOP 2, 3, ...
-- **144 new abilities** — elemental and supernatural style perks with their own visuals: blazing spikes, freezing blocks, shadow clones, lightning chains and more.
+- **154 abilities (144 brand new)** — elemental and supernatural style perks with their own visuals: blazing spikes, freezing blocks, shadow clones, lightning chains and more.
 - **47 stat cards** — boosts, playstyle cards and big-risk trade-offs.
 - **34 new teams** — each with its own colours, hand-drawn banner emblem, voice lines, play style and signature abilities.
   Opponents announce their abilities at the start of a match.
@@ -22,6 +22,25 @@ dozens of new abilities and teams, a character creator and run saves — all bui
   (worldwide), search by code, or create your own (name, public or private, 2-4 PCs). A lobby has seats, a players list
   with pings, chat and Steam invites; after a match everyone goes back to it. Up to four PCs (2v2 with everyone on their
   own PC), or several players per PC. JOIN BY IP works without Steam. Everyone needs the same Overtime version.
+- **Daily run and daily cup** — a seeded Infinite run and an 8-match cup each day (UTC), with the same opponents and card
+  offers for everyone; your first try counts, with a history of past days.
+- **Draft cup** — pick one of three teams, each with three abilities and two stat cards (balanced with the match
+  simulator), then win an 8-match bracket against teams that drafted too. Versus can start with a draft as well.
+- **Party cup** — a knockout tournament for 2-8 players, locally or online; the AI fills the bracket, and online the
+  players waiting watch the match being played.
+- **Lobby rules** — points, rounds, upgrades per round, perks / stat cards on or off, rarity limit, starting perks,
+  banned elements and perks; presets and three custom slots. Online the host's rules apply to everyone.
+- **Chat** — quick chat and emote wheels and typed chat in matches, as bubbles above the player and a chat log,
+  locally and online.
+- **Replays** — every match and Versus round is recorded (the last 10, or save one): pause, speed, seek and three
+  camera views.
+- **Spectators** — watch an online lobby's matches without playing, or join one that's already running.
+- **Individual picks** — in co-op and two-player Versus sides each player picks their own upgrades; a perk works for
+  the player who picked it, team-wide ones for both.
+- **Collection and stats** — every team, perk and stat card you've found (the rest stay ???), win streaks per mode,
+  and a bracket screen between Classic matches.
+- **Quality of life** — full gamepad support in the mod's menus (with an on-screen keyboard), key rebinding for four
+  keyboard sets and four gamepads, skip the tutorial, an update notice, and a REPORT BUG button.
 - **Run saves** — close the game mid-run (Infinite or Classic) and pick up where you left off with CONTINUE on the title screen.
 - **Character creator** — hair style and colour, skin tone, jersey and shorts colours, number, build, headband, wristbands,
   knee pads and shoes. Cosmetic only.
@@ -45,10 +64,14 @@ To uninstall, delete the `BepInEx/plugins/HangtimeOvertime` folder.
 | Setting | Default | What it does |
 |---|---|---|
 | `[Infinite] Difficulty` | `0` | Opponents play as if it were this many rounds later (`-4` to `10`). Try `2` if the start feels easy. |
+| `[General] SkipTutorial` | `false` | Never start the game's tutorial. Also in SETTINGS. |
+| `[General] CheckForUpdates` | `true` | Ask GitHub for a newer release on launch (nothing about you is sent). Also in SETTINGS. |
+| `[Replays] Record` | `true` | Keep replays of your matches. Also in SETTINGS. |
+| `[Chat] Bubbles`, `[Chat] MuteOthers` | `true`, `false` | Chat bubbles above players; hide other PCs' chat online. Also in SETTINGS. |
 | `[Debug] DevKeys` | `false` | Test shortcuts on F1–F12 (for development). |
 | `[Debug] DumpScenes` | `false` | Detailed logging (for development). |
 
-Saves (runs and your character's look) live next to the game's own save in
+Saves (runs, your character's look, controls, collection, stats, daily results, rules presets and replays) live next to the game's own save in
 `%USERPROFILE%\AppData\LocalLow\LeoLanglois\Hangtime!\`. The mod never writes the game's own `save.json`.
 
 ## Building from source
