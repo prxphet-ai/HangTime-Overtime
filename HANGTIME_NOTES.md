@@ -1009,7 +1009,39 @@ Modes:
   forfeit, "(AI)", the cup finished. 0 errors.
 - The dev autopilot loses to the game's AI teams (it was written for player-vs-player); that's the harness, not the cup.
 
-## Session status (2026-10-21)
-- Done: known bugs (net wall, perk zoom stuck, ball lost on serve), features 1-16.
-- Not started: 17 spectators.
-- Open questions: co-op now gets two picks per screen with personal perks for one character each; is co-op still the right difficulty? (the simulator can't model two humans); should a daily run count only the first attempt (as built) or allow one attempt? Bracket online sync waits for online tournaments (16).
+### Feature 17 — spectators (done)
+- **Joining as a spectator**: a friend who joins while a match is running is no longer refused: they come in as a
+  spectator (the host's roster says "(WATCHING)") and see the match from its next round. In the lobby, a friend's PC
+  has **WATCH ONLY** (where the host has PARTY CUP): on, its devices can't take a seat (the host frees any it had); off,
+  it plays again. A spectator never holds a round up (the host doesn't wait for its loading).
+- **What a spectator sees** (`src/Online/Spectator.cs`): the match through the normal mirror, a bar with both sides,
+  round wins, the points and the target; C / Y cycles the camera (GAME, WHOLE COURT, FOLLOW BALL: the same
+  `CameraModes` as the replay viewer); B / X shows both builds (from the host's last between-rounds screen); Tab /
+  Select shows the party cup's bracket (the bracket also shows by itself between party matches).
+- **Chat and emotes only**: a spectator's quick chat, emotes and typed lines go to every PC's chat log labelled
+  "NAME (WATCHING)", with no bubble (no character). Its devices can't touch the match.
+- **Tested**: three copies on this PC (host + player + spectator joining mid-match, protocol 8): the spectator was let
+  in as PC 3, mirrored round 2 with the score bar, its emote and typed line reached the host's log, the host's rounds
+  started "every PC ready" without waiting for it; the camera views and the builds panel stepped through (dev flag
+  `-ovt-watchdemo`). The WATCH ONLY switch wasn't clicked (three copies can't share the mouse); it sends the same
+  message the join path uses. 0 errors.
+
+## Session status (2026-10-22)
+- **Done**: the three known bugs (net wall, perk zoom stuck, ball lost on serve) and features 1-17, each built,
+  deployed, tested (keyboard, gamepad through the dev virtual pad, local multiplayer; online with two or three copies of
+  the game on this PC where online was touched; the simulator for the draft) and committed.
+- **Partly done**: nothing. Limits worth knowing are in each feature's notes (replays show what the host drew; the
+  bracket for Classic is local only; spectators join from the next round).
+- **Not tested with real people / devices**: everything online ran as copies on one PC over 127.0.0.1 (not Steam, not
+  across the internet), and gamepads were the virtual dev pad. A real two-PC session and a real controller are the next
+  checks.
+- **Open questions**:
+  1. Co-op now gets two picks per screen, with personal perks helping one character each. Is co-op still the right
+     difficulty? (The simulator models one player per team.)
+  2. Daily runs: the first run of the day counts and more are practice (as built). Or allow only one attempt?
+  3. Draft: packages are balanced to an 80% early-match win rate in the simulator. Is that the right strength for the
+     draft cup, whose opponents also draft?
+  4. Party cup: two AI entrants settle their match with a weighted coin instead of playing it. Watch it instead?
+  5. Protocol is 8 now: every player needs this build to play online together.
+- Settings restored after testing: DevKeys off, DumpScenes off, SkipTutorial off, CheckForUpdates on, ListenAddress
+  0.0.0.0, JoinAddress 127.0.0.1; the mod's saves restored to their state before the session; save.json untouched.

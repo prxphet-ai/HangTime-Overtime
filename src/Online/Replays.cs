@@ -295,8 +295,6 @@ namespace HangtimeOvertime.Online
     {
         public static float SpeedNow => ReplayPlayer.Current == null ? 1f : ReplayPlayer.Current.Paused ? 0f : ReplayPlayer.Current.Speed;
         private static readonly float[] Speeds = { 0.25f, 0.5f, 1f, 2f, 4f };
-        public static int CameraMode;                              // 0 the game's, 1 the whole court, 2 follow the ball
-        private static readonly string[] Cams = { "GAME", "WHOLE COURT", "FOLLOW BALL" };
         private TextMeshPro time, info;
         private SpriteRenderer bar, fill;
         private float barW;
@@ -354,14 +352,14 @@ namespace HangtimeOvertime.Online
             if (faster) p.Speed = Speeds[Mathf.Min(Speeds.Length - 1, si + 1)];
             if (back) p.Seek(p.Position - 5f);
             if (fwd) p.Seek(p.Position + 5f);
-            if (cam) CameraMode = (CameraMode + 1) % Cams.Length;
+            if (cam) CameraModes.Next();
             float k = p.Length > 0f ? p.Position / p.Length : 0f;
             fill.size = new Vector2(Mathf.Max(0.1f, barW * k), 0.35f);
             fill.transform.localPosition = new Vector3(-barW / 2f + barW * k / 2f, fill.transform.localPosition.y, fill.transform.localPosition.z);
             time.text = $"{(p.Paused ? "<color=#FFD95A>PAUSED</color>" : "PLAYING")}  {Clock(p.Position)} / {Clock(p.Length)}  ·  {p.Speed:0.##}X";
             bool pad = GamepadActive;
-            info.text = pad ? $"A PLAY / PAUSE · LB / RB SPEED · D-PAD SEEK 5 S · Y CAMERA: {Cams[CameraMode]} · SELECT RESTART · B EXIT"
-                            : $"SPACE PLAY / PAUSE · [ ] SPEED · ARROWS SEEK 5 S · C CAMERA: {Cams[CameraMode]} · R RESTART · ESC EXIT";
+            info.text = pad ? $"A PLAY / PAUSE · LB / RB SPEED · D-PAD SEEK 5 S · Y CAMERA: {CameraModes.Names[CameraModes.Mode]} · SELECT RESTART · B EXIT"
+                            : $"SPACE PLAY / PAUSE · [ ] SPEED · ARROWS SEEK 5 S · C CAMERA: {CameraModes.Names[CameraModes.Mode]} · R RESTART · ESC EXIT";
         }
 
         private static string Clock(float s) => $"{(int)(s / 60)}:{(int)(s % 60):00}";
@@ -369,25 +367,7 @@ namespace HangtimeOvertime.Online
         // the camera modes (after the game's camera has moved this frame)
         protected override void LateUpdate()
         {
-            var cam = Camera.main;
-            if (cam != null && CameraMode != 0)
-            {
-                var ball = FindFirstObjectByType<BallMovement>();
-                // the floor (y -10) sits about a quarter up the screen, above the controls
-                if (CameraMode == 1)
-                {
-                    float size = 118f / Mathf.Max(0.5f, cam.aspect) / 2f;
-                    cam.orthographicSize = size;
-                    cam.transform.position = new Vector3(0f, -10f + size * 0.5f, cam.transform.position.z);
-                }
-                else if (ball != null)
-                {
-                    float size = 24f;
-                    cam.orthographicSize = size;
-                    var b = ball.transform.position;
-                    cam.transform.position = new Vector3(Mathf.Clamp(b.x, -80f, 80f), Mathf.Max(-10f + size * 0.6f, b.y - size * 0.3f), cam.transform.position.z);
-                }
-            }
+            CameraModes.Apply();
             base.LateUpdate();
         }
     }

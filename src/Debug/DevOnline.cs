@@ -21,6 +21,7 @@ namespace HangtimeOvertime.Debugging
     //   -ovt-fx              host: fires a random perk with visual effects every 3 s (both sides), to compare screens
     //   -ovt-draft           host: the match starts with DRAFT START (each side drafts a team)
     //   -ovt-rules ID        host: plays with that rules preset (sheets/rules.json id; not saved)
+    //   -ovt-watchdemo       a spectator: steps through the camera views and the builds by itself
     //   -ovt-party           host: opens PARTY CUP once a friend is in, seats key set 1, starts when the friend's device joins
     //   -ovt-chat            in matches, this copy's first player chats every 4 s (quick, emote, typed in turn)
     // The window title gets HOST / CLIENT so screenshots can tell the two apart.
@@ -59,6 +60,7 @@ namespace HangtimeOvertime.Debugging
             if (h && Array.IndexOf(args, "-ovt-draft") >= 0) Patches.VersusMenu.DraftStart = true;
             d.chat = Array.IndexOf(args, "-ovt-chat") >= 0;
             d.party = h && Array.IndexOf(args, "-ovt-party") >= 0;
+            if (Array.IndexOf(args, "-ovt-watchdemo") >= 0) SpectatorHud.DevDemo = true;
             if (d.party) Patches.BracketPanel.AutoContinue = true;
             var preset = Generated.RulePresets.All.FirstOrDefault(x => x.Id == Arg("-ovt-rules"));
             if (h && preset != null) Core.LobbyRules.Current = Core.RuleSet.From(preset);   // not saved

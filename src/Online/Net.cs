@@ -21,6 +21,7 @@ namespace HangtimeOvertime.Online
         public bool Welcomed;
         public float LastHeard, PingMs;
         public int ReadySeq = -1;          // the round load it has finished
+        public bool Spectator;             // watches only: its devices take no seat, the host doesn't wait for it
     }
 
     internal class LobbyOptions
@@ -35,7 +36,7 @@ namespace HangtimeOvertime.Online
     // inputs. Hosting listens on Steam (a lobby others find in the browser, by code or by invite) and on direct IP.
     internal static class Net
     {
-        public const int Protocol = 7;               // 4: the match-end screen names the winner (streaks); 5: in-match chat, draft start; 6: lobby rules; 7: party cup
+        public const int Protocol = 8;               // 4: the match-end screen names the winner (streaks); 5: in-match chat, draft start; 6: lobby rules; 7: party cup; 8: spectators
 
         public static NetRole Role { get; private set; }
         public static bool IsHost => Role == NetRole.Host;
@@ -45,6 +46,7 @@ namespace HangtimeOvertime.Online
         public static bool Connected => IsHost || (IsClient && HostPeer != null && HostPeer.Welcomed);
         public static bool HasFriends => IsHost && Peers.Any(p => p.Welcomed);
         public static int MyId { get; private set; }  // 0 = host
+        public static bool ImSpectator;                // a friend's PC: this PC only watches
         public static string MyName { get; private set; } = "";
         public static string Status = "";             // one line for the menus
         public static readonly LobbyOptions Lobby = new LobbyOptions();
@@ -272,12 +274,13 @@ namespace HangtimeOvertime.Online
                 case Msg.Hello when IsHost:
                 {
                     int proto = r.I(); string ver = r.S(); string name = r.S();
+                    bool watch = false;
                     string refuse = null;
                     if (proto != Protocol || ver != Plugin.Version)
                         refuse = ver == Plugin.Version ? $"DIFFERENT OVERTIME {ver} BUILDS: EVERYONE NEEDS THE NEWEST ZIP"
                                                        : $"VERSION MISMATCH: THE HOST HAS OVERTIME {Plugin.Version}, YOU HAVE {ver}";
                     else if (!from.Welcomed && Peers.Count(p => p.Welcomed) >= Lobby.MaxPCs - 1) refuse = "THE LOBBY IS FULL";
-                    else if (!from.Welcomed && OnlineFlow.MatchRunning) refuse = "A MATCH IS IN PROGRESS: TRY AGAIN WHEN IT ENDS";
+                    else if (!from.Welcomed && OnlineFlow.MatchRunning) watch = true;                      // a match is on: they watch it
                     if (refuse != null)
                     {
                         SendTo(from, new NetWriter(Msg.Reject).S(refuse));
@@ -292,6 +295,7 @@ namespace HangtimeOvertime.Online
                         from.Id = Enumerable.Range(1, 3).First(i => Peers.All(p => p == from || p.Id != i));
                     }
                     SendTo(from, new NetWriter(Msg.Welcome).S(MyName).U8(from.Id).S(Lobby.Name).S(Lobby.Code).B(Lobby.Public).U8(Lobby.MaxPCs));
+                    if (fresh && watch) { from.Spectator = true; SendTo(from, new NetWriter(Msg.Spectate).B(true)); }
                     if (fresh)
                     {
                         Plugin.Log.LogInfo($"Online: {name} joined as PC {from.Id + 1} ({from.T.Kind})");
@@ -353,7 +357,7 @@ namespace HangtimeOvertime.Online
             if (!IsHost) return;
             Roster.Clear();
             Roster[0] = (MyName, 0);
-            foreach (var p in Peers.Where(p => p.Welcomed)) Roster[p.Id] = (p.Name, Mathf.RoundToInt(p.PingMs));
+            foreach (var p in Peers.Where(p => p.Welcomed)) Roster[p.Id] = (p.Name + (p.Spectator ? " (WATCHING)" : ""), Mathf.RoundToInt(p.PingMs));
             var w = new NetWriter(Msg.Roster).U8(Roster.Count);
             foreach (var kv in Roster) w.U8(kv.Key).S(kv.Value.name).I(kv.Value.ping);
             Send(w);
@@ -413,7 +417,7 @@ namespace HangtimeOvertime.Online
                 if (!(p.Edge(0) || p.Edge(1) || p.Edge(2) || p.Edge(3) || p.Edge(4))) continue;
                 if (taken.Any(t => t != null && t.Kind == InputKind.Remote && t.DeviceId == kv.Key)) continue;
                 var pc = PeerById(PcOf(kv.Key));
-                if (pc == null) continue;
+                if (pc == null || pc.Spectator) continue;                                // a spectator's devices take no seat
                 return new SlotInput { Kind = InputKind.Remote, DeviceId = kv.Key, Label = $"{p.Label} ({pc.Name.ToUpperInvariant()})" };
             }
             return null;
@@ -480,6 +484,7 @@ namespace HangtimeOvertime.Online
             Lobbies.Hook();
             Net.EarlyUpdate();
             Patches.ChatHud.Tick();
+            SpectatorHud.Tick();
             OnlineFlow.TitleTick();
             PingHud.Tick();
             TitleBar.Tick();

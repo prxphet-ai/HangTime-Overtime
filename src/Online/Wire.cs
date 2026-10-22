@@ -27,6 +27,7 @@ namespace HangtimeOvertime.Online
         Roster = 70,      // host -> all: who is in the session, with pings
         Chat = 71,        // client -> host: a line; host -> all: name + line
         ToLobby = 72,     // host -> all: the match is over, back to the lobby screen
+        Spectate = 75,    // client -> host: watch only (or play again); host -> client: you're watching
         PartyBracket = 74, // host -> all: the party cup's bracket between matches
         MatchChat = 73,   // client -> host: a quick chat / emote / typed line; host -> all: the same with the sender's PC
     }

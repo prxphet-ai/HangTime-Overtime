@@ -29,6 +29,7 @@ namespace HangtimeOvertime.Online
             {
                 if (!Net.IsClient) return;
                 var screen = RoundScreen.Read(r);
+                SpectatorHud.LastScreen = screen;
                 if (screen.MatchOver) StreakPatches.RecordVersus(screen.Winner);      // this PC's own streak
                 VersusOverlay.ShowMirror(screen);
             });
@@ -41,7 +42,17 @@ namespace HangtimeOvertime.Online
                 else AddLine(r.S());                                                     // the host's relay: name included
             });
             Net.On(Msg.ToLobby, r => { if (Net.IsClient) GoToLobby(); });
-            Net.On(Msg.PartyBracket, r => { if (Net.IsClient) { VersusOverlay.Close(); BracketPanel.Show(BracketWire.Read(r), false); } });
+            Net.On(Msg.PartyBracket, r => { if (Net.IsClient) { var m = BracketWire.Read(r); SpectatorHud.LastBracket = m; VersusOverlay.Close(); BracketPanel.Show(m, false); } });
+            Net.On(Msg.Spectate, (r, p) =>
+            {
+                bool watch = r.B();
+                if (Net.IsClient) { Net.ImSpectator = watch; AddLine(watch ? "YOU ARE WATCHING: NO SEAT FOR YOUR DEVICES (A MATCH IN PROGRESS SHOWS FROM ITS NEXT ROUND)" : "YOU PLAY AGAIN: JOIN A SEAT"); VersusMenu.PeerJoined(); return; }
+                p.Spectator = watch;
+                if (watch) VersusMenu.PeerLeft(p.Id);                               // its seats are free again
+                Net.SendTo(p, new NetWriter(Msg.Spectate).B(watch));
+                OnlineFlow.SystemChat($"{p.Name.ToUpperInvariant()} {(watch ? "IS WATCHING" : "PLAYS AGAIN")}");
+                Plugin.Log.LogInfo($"Online: {p.Name} {(watch ? "watches" : "plays")}");
+            });
             Net.OnPeerLeft += PartyFlow.PeerLeft;
             Net.On(Msg.MatchChat, (r, p) => { if (Net.IsHost) Patches.ChatHud.Received(r, p.Id); else Patches.ChatHud.ReceivedRelay(r); });
             Net.OnClosed += OnClosed;
@@ -117,7 +128,7 @@ namespace HangtimeOvertime.Online
         }
 
         // every friend's PC has finished loading this round
-        public static bool AllReady(int seq) => Net.Peers.Where(p => p.Welcomed).All(p => p.ReadySeq == seq);
+        public static bool AllReady(int seq) => Net.Peers.Where(p => p.Welcomed && !p.Spectator).All(p => p.ReadySeq == seq);   // spectators don't hold a round up
 
         // the party cup's bracket, between matches
         public static void SendBracket(BracketModel m)
@@ -209,7 +220,7 @@ namespace HangtimeOvertime.Online
             MatchSync.InMatch = false;
             GameManager.Instance.numberOfPlayers = players;
             Plugin.Log.LogInfo($"Online: loading round {round} (load {seq})");
-            if (first && VersusMenu.StartFromHost()) return;
+            if ((first || TitleController.onTitle) && VersusMenu.StartFromHost()) return;     // a spectator who joined mid-match starts here too
             VersusFlow.ReloadRound();
         }
 

@@ -118,3 +118,5 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   kick-off when recording. Config `[Replays] Record`.
 - Party cup: `src/Core/Party.cs` (bracket, AI fill, forfeits), `src/Patches/PartyMenu.cs` (+ PartyFlow). Versus: an AI
   right side keeps the game's SpikerInput; `VersusSetup.Names`; `Msg.PartyBracket` 74, protocol 7. Dev: `-ovt-party`.
+- Spectators: `src/Online/Spectator.cs` (SpectatorHud, CameraModes); `Peer.Spectator`, `Net.ImSpectator`, `Msg.Spectate`
+  75, protocol 8; a join during a match becomes a spectator; `AllReady` skips spectators. Dev: `-ovt-watchdemo`.

@@ -141,6 +141,8 @@ namespace HangtimeOvertime.Patches
             }
             // the match rules (the host edits them online; a friend's PC sees them)
             Button("RULES", new Vector2(centre + area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => RulesPanel.Open(), 0.55f);
+            if (Mirror) Toggle("WATCH ONLY", new Vector2(centre - area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f),
+                               () => Net.ImSpectator, v => Net.Send(new NetWriter(Msg.Spectate).B(v)), 0.42f);
             if (!Mirror) Button("PARTY CUP", new Vector2(centre - area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => PartyMenu.Open(), 0.48f);
             rulesLine = Text("", new Vector2(centre, ph / 2f - 7.7f), 0.4f, area - 2f, new Color(1f, 0.85f, 0.35f));
             for (int side = 0; side < 2; side++)

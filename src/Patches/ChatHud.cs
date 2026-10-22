@@ -124,6 +124,13 @@ namespace HangtimeOvertime.Patches
                         Add(ch, label, mine >= 1000 ? new SlotInput { Kind = InputKind.Gamepad, DeviceId = mine - 1000 } : new SlotInput { Kind = (InputKind)mine });
                     }
                 }
+                // a spectator: chat and emotes from key set 1 or any gamepad, to the log only (no player to put a bubble on)
+                if (locals.Count == 0 && Net.IsClient)
+                {
+                    string me = $"{Net.MyName} (WATCHING)";
+                    Add(NoChar, me, new SlotInput { Kind = InputKind.KeysWASD });
+                    foreach (var g in Gamepad.all) Add(NoChar, me, new SlotInput { Kind = InputKind.Gamepad, DeviceId = g.deviceId });
+                }
                 return;
             }
             // runs: co-op is player 1 on key set 2 + the 1st gamepad, player 2 on key set 1 + the 2nd; solo is player 1 on everything
@@ -306,6 +313,7 @@ namespace HangtimeOvertime.Patches
         // ------------------------------------------------------------ sending and showing
 
         private const int KindQuick = 0, KindEmote = 1, KindText = 2;
+        private const int NoChar = 255;                           // a spectator's line: the log only
 
         private void Say(Local l, int kind, int index, string text)
         {
@@ -324,7 +332,7 @@ namespace HangtimeOvertime.Patches
             int ch = r.U8(); string label = r.S(); int kind = r.U8(); int index = r.U8(); string text = r.S(); r.U8();
             if (label.Length > 40) label = label.Substring(0, 40);
             if (text.Length > ChatDef.MaxLength) text = text.Substring(0, ChatDef.MaxLength);
-            if (ch > 3 || kind > 2) return;
+            if ((ch > 3 && ch != NoChar) || kind > 2) return;
             Net.Send(new NetWriter(Msg.MatchChat).U8(ch).S(label).U8(kind).U8(index).S(text).U8(fromPc));
             current?.Show(ch, label, kind, index, text, false);
         }
@@ -346,7 +354,7 @@ namespace HangtimeOvertime.Patches
             else return;
             string safe = "<noparse>" + body.Replace("</noparse>", "") + "</noparse>";
             AddLog($"<color=#FFD95A><noparse>{label}</noparse>:</color> <color=#{color}>{safe}</color>");
-            if (Plugin.ChatBubbles.Value) MakeBubble(ch, safe, color, kind == KindEmote);
+            if (Plugin.ChatBubbles.Value && ch != NoChar) MakeBubble(ch, safe, color, kind == KindEmote);
             Plugin.Log.LogInfo($"Chat: {label} ({(kind == KindQuick ? "quick" : kind == KindEmote ? "emote" : "typed")}): {body}");
         }
 
