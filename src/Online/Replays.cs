@@ -176,7 +176,7 @@ namespace HangtimeOvertime.Online
             {
                 Kind = "versus", Format = s.Format, Team0 = s.Team[0] ?? "", Team1 = s.Team[1] ?? "", Look = look ?? "", GameNumber = 1,
                 Players = GameManager.Instance.numberOfPlayers, Points = LobbyRules.Current.Points, Left = Side(0), Right = Side(1),
-                Title = $"VERSUS {s.Format.Replace("v", " VS ").ToUpperInvariant()}  ·  ROUND {VersusState.Round}" + (Net.Online ? "  ·  ONLINE" : ""),
+                Title = (VersusState.Coop ? $"CO-OP INFINITE  ·  MATCH {VersusState.Round}" : $"VERSUS {VersusSetup.Label(s.Format)}  ·  ROUND {VersusState.Round}") + (Net.Online ? "  ·  ONLINE" : ""),
             };
         }
 

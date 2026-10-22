@@ -264,7 +264,7 @@ namespace HangtimeOvertime.Patches
     {
         public bool MatchOver;
         public int Winner;
-        public string Head = "", Score = "", Sub = "", PickHead = "", PickHint = "", ContinueLabel = "";
+        public string Head = "", Score = "", Sub = "", PickHead = "", PickHint = "", ContinueLabel = "", RematchLabel = "REMATCH";
         public readonly string[] SideTitle = new string[2];
         public readonly List<string>[] Builds = { new List<string>(), new List<string>() };
         public readonly List<(string title, string kind, string rarity, string text)> Offers = new List<(string, string, string, string)>();
@@ -297,7 +297,7 @@ namespace HangtimeOvertime.Patches
 
         public void Write(Online.NetWriter w)
         {
-            w.B(MatchOver).U8(Winner).S(Head).S(Score).S(Sub).S(PickHead).S(PickHint).S(ContinueLabel).S(SideTitle[0]).S(SideTitle[1]);
+            w.B(MatchOver).U8(Winner).S(Head).S(Score).S(Sub).S(PickHead).S(PickHint).S(ContinueLabel).S(RematchLabel).S(SideTitle[0]).S(SideTitle[1]);
             for (int side = 0; side < 2; side++) { w.I(Builds[side].Count); foreach (var b in Builds[side]) w.S(b); }
             w.I(Offers.Count);
             foreach (var o in Offers) w.S(o.title).S(o.kind).S(o.rarity).S(o.text);
@@ -305,7 +305,7 @@ namespace HangtimeOvertime.Patches
 
         public static RoundScreen Read(Online.NetReader r)
         {
-            var s = new RoundScreen { MatchOver = r.B(), Winner = r.U8(), Head = r.S(), Score = r.S(), Sub = r.S(), PickHead = r.S(), PickHint = r.S(), ContinueLabel = r.S() };
+            var s = new RoundScreen { MatchOver = r.B(), Winner = r.U8(), Head = r.S(), Score = r.S(), Sub = r.S(), PickHead = r.S(), PickHint = r.S(), ContinueLabel = r.S(), RematchLabel = r.S() };
             s.SideTitle[0] = r.S(); s.SideTitle[1] = r.S();
             for (int side = 0; side < 2; side++) { int n = r.I(); for (int i = 0; i < n; i++) s.Builds[side].Add(r.S()); }
             int k = r.I();
@@ -344,9 +344,10 @@ namespace HangtimeOvertime.Patches
             open = go.AddComponent<VersusOverlay>();
             if (!open.InitKit(300)) { Plugin.Log.LogWarning("Versus overlay: no camera/font; skipping to the next round"); Destroy(go); VersusFlow.NextRound(); return; }
             if (matchOver && Party.Active) { Destroy(go); open = null; PartyFlow.MatchOver(winner); return; }   // a party cup: the bracket, then its next match
-            int loser = 1 - winner;
+            bool coop = VersusState.Coop;
+            int loser = coop ? 0 : 1 - winner;                 // co-op: the players pick after every win
             open.winner = winner;
-            if (!matchOver && picksLeft <= 0) picksLeft = LobbyRules.Current.Picks;
+            if (!matchOver && picksLeft <= 0) picksLeft = coop ? Mathf.Max(1, VersusState.Setup.Humans(0).Count) : LobbyRules.Current.Picks;
             if (!matchOver)
             {
                 open.picker = loser;
@@ -361,9 +362,26 @@ namespace HangtimeOvertime.Patches
             }
             var data = RoundScreen.From(winner, matchOver, open.offers, open.pickerSlot);
             if (!matchOver && open.picker < 0) { data.PickHead = "NO UPGRADES THIS MATCH  <size=70%>(LOBBY RULES)</size>"; data.PickHint = "THE NEXT ROUND STARTS IN A MOMENT"; }
-            else if (!matchOver && LobbyRules.Current.Picks > 1) data.PickHead += $"  <size=70%>· PICK {LobbyRules.Current.Picks - picksLeft + 1} OF {LobbyRules.Current.Picks}</size>";
+            else if (!matchOver && !coop && LobbyRules.Current.Picks > 1) data.PickHead += $"  <size=70%>· PICK {LobbyRules.Current.Picks - picksLeft + 1} OF {LobbyRules.Current.Picks}</size>";
+            if (coop) CoopScreen(data, matchOver, open.pickerSlot);
             open.Build(data);
             Online.OnlineFlow.SendScreen(data);
+        }
+
+        // co-op Infinite's texts: the run so far, whose pick it is, the opponent's perks
+        private static void CoopScreen(RoundScreen d, bool over, VersusSlot picker)
+        {
+            int wins = VersusState.RoundWins[0];
+            d.Head = over ? $"RUN OVER  ·  {wins} {(wins == 1 ? "WIN" : "WINS")}" : $"MATCH {VersusState.Round} WON!";
+            d.Score = over ? $"BEST CO-OP RUN: {Records.Data.coopInfiniteBest} WINS" : $"{wins} {(wins == 1 ? "WIN" : "WINS")} IN A ROW";
+            int next = VersusState.Round + 1, slot = (next - 1) % 8 + 1;
+            d.Sub = over ? "" : $"NEXT: MATCH {next}" + (slot == 3 || slot == 6 || slot == 8 ? " (BOSS)" : slot == 7 ? " (COMBO)" : "");
+            if (!over && picker != null) d.PickHead = $"P{picker.Number} PICKS AN UPGRADE  <size=70%>({picker.Input?.Label})</size>";
+            d.SideTitle[1] = "THE OPPONENT";
+            d.Builds[1].Clear();
+            d.Builds[1].AddRange(OpponentScaling.LastGiven.Select(t => t is DataPerk p ? p.Def.Title : PerkRegistry.VanillaTitle(t)));
+            d.ContinueLabel = "";
+            d.RematchLabel = "TRY AGAIN";
         }
 
         // the draft start (before round 1): a side's picker takes one of three drafted teams, then `then` runs
@@ -443,7 +461,7 @@ namespace HangtimeOvertime.Patches
             float top = ph / 2f;
             Text(d.Head, new Vector2(0f, top - 2f), 1.3f, pw - 2f, Color.white);
             Text(d.Score, new Vector2(0f, top - 4.6f), 1.6f, pw - 2f, new Color(1f, 0.85f, 0.35f));
-            Text(d.MatchOver && StreakPatches.VersusLine != null ? StreakPatches.VersusLine : d.Sub, new Vector2(0f, top - 6.6f), 0.6f, pw - 2f,
+            Text(d.MatchOver && StreakPatches.VersusLine != null && !VersusState.Coop ? StreakPatches.VersusLine : d.Sub, new Vector2(0f, top - 6.6f), 0.6f, pw - 2f,
                  d.MatchOver ? new Color(1f, 0.85f, 0.35f) : new Color(0.85f, 0.95f, 1f));
 
             // both builds, left and right
@@ -478,9 +496,9 @@ namespace HangtimeOvertime.Patches
             else
             {
                 float by = -ph / 2f + 2.6f, bw = pw * 0.22f;
-                AddEnd(d.ContinueLabel, new Vector2(-bw * 1.15f, by), bw, () => VersusFlow.ContinueMatch());
-                AddEnd("REMATCH", new Vector2(0f, by), bw, () => VersusFlow.Rematch());
-                AddEnd(Online.Net.Online ? "LOBBY" : "MENU", new Vector2(bw * 1.15f, by), bw, () => { if (Online.Net.IsHost) Online.OnlineFlow.BackToLobby(); else VersusFlow.ToMenu(); });
+                if (d.ContinueLabel.Length > 0) AddEnd(d.ContinueLabel, new Vector2(-bw * 1.15f, by), bw, () => VersusFlow.ContinueMatch());
+                AddEnd(d.RematchLabel, new Vector2(d.ContinueLabel.Length > 0 ? 0f : -bw * 0.6f, by), bw, () => VersusFlow.Rematch());
+                AddEnd(Online.Net.Online ? "LOBBY" : "MENU", new Vector2(d.ContinueLabel.Length > 0 ? bw * 1.15f : bw * 0.6f, by), bw, () => { if (Online.Net.IsHost) Online.OnlineFlow.BackToLobby(); else VersusFlow.ToMenu(); });
                 endSel = 0;
             }
             Refresh();
@@ -573,9 +591,10 @@ namespace HangtimeOvertime.Patches
             if (VersusDriver.Current != null) VersusDriver.Current.Frozen = true;
             VersusState.RoundWins[winner]++;
             VersusState.LastWinner = winner;
-            bool over = VersusState.RoundWins[winner] >= VersusState.Target;
+            bool over = VersusState.Coop ? winner == 1 : VersusState.RoundWins[winner] >= VersusState.Target;
+            if (VersusState.Coop) StreakPatches.RecordCoop(VersusState.Round, winner == 0, VersusState.RoundWins[0]);
             Plugin.Log.LogInfo($"Versus: round {VersusState.Round} to {VersusState.Setup.SideLabel(winner)} ({gm.playerPoints}-{gm.opponentPoints}); rounds {VersusState.RoundWins[0]}-{VersusState.RoundWins[1]}{(over ? ", match over" : "")}");
-            if (over) StreakPatches.RecordVersus(winner);
+            if (over && !VersusState.Coop) StreakPatches.RecordVersus(winner);
             yield return new WaitForSeconds(1.3f);
             VersusOverlay.ShowRound(winner, over);
         }
@@ -614,6 +633,7 @@ namespace HangtimeOvertime.Patches
         {
             var gm = GameManager.Instance;
             Online.MatchSync.InMatch = false;
+            if (!toTitle && VersusState.Coop && !Online.Net.IsClient) VersusState.PickCoopOpponent();
             if (!toTitle && Online.Net.IsHost) Online.OnlineFlow.SendLoad(false);
             gm.transition.Play();
             yield return new WaitForSecondsRealtime(0.5f);

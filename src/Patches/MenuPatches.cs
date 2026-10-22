@@ -113,7 +113,10 @@ namespace HangtimeOvertime.Patches
             private static bool Prefix(TitleButton __instance)
             {
                 if (RunState.Mode == RunMode.Versus) VersusState.Leave();   // nothing of a Versus match carries into a run
-                bool infinite = ContinueMenu.IsInfinite(__instance);
+                // CO-OP asks CLASSIC or INFINITE first
+                if (!ContinueMenu.Bypass && ContinueMenu.Players(__instance) == 2) { ContinueMenu.ShowCoop(__instance); return false; }
+                bool infinite = ContinueMenu.IsInfinite(__instance) || ContinueMenu.CoopInfinite;
+                ContinueMenu.CoopInfinite = false;
                 if (!ContinueMenu.Bypass && ContinueMenu.Players(__instance) == 1 && RunSaves.Has(infinite))
                 {
                     ContinueMenu.Show(__instance, infinite);     // CONTINUE / NEW RUN / BACK
@@ -177,7 +180,7 @@ namespace HangtimeOvertime.Patches
             private static void Postfix(RestartButton __instance)
             {
                 if (__instance.GetComponent<LoopContinueMarker>()) return;
-                if (RunState.Mode == RunMode.Infinite && !__instance.toTitle && !__instance.toTutorial) RunState.StartInfinite();
+                if (RunState.Mode == RunMode.Infinite && !__instance.toTitle && !__instance.toTutorial) RunState.StartInfinite();   // co-op too: numberOfPlayers stays 2
                 else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); }
             }
         }

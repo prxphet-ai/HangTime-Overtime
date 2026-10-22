@@ -21,7 +21,7 @@ namespace HangtimeOvertime.Patches
         };
 
         private static string ModeKey() =>
-            RunState.Mode == RunMode.Infinite ? Records.Infinite : RunState.Draft != null ? Records.Draft : GameManager.Instance.numberOfPlayers == 2 ? Records.Coop : Records.Classic;
+            RunState.Mode == RunMode.Infinite ? (GameManager.Instance.numberOfPlayers == 2 ? Records.CoopInfinite : Records.Infinite) : RunState.Draft != null ? Records.Draft : GameManager.Instance.numberOfPlayers == 2 ? Records.Coop : Records.Classic;
 
         // the game's match end (Classic, Co-op, Loop, Infinite); Versus has its own round flow
         [HarmonyPatch(typeof(GameManager), "EndGame")]
@@ -66,6 +66,16 @@ namespace HangtimeOvertime.Patches
         }
 
         // a Versus match ended: this PC's side (local: player 1's; online: wherever this PC's own players are)
+        // co-op Infinite (lobby): each match once (a friend's PC sees several screens per match)
+        private static int coopRecorded = -1;
+        public static void RecordCoop(int round, bool won, int wins)
+        {
+            if (round == coopRecorded) return;
+            coopRecorded = round;
+            Records.Record(Records.CoopInfinite, won);
+            if (!won) { Records.CoopInfiniteRun(wins); coopRecorded = -1; }
+        }
+
         public static void RecordVersus(int winner)
         {
             VersusLine = null;

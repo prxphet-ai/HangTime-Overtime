@@ -168,6 +168,7 @@ namespace HangtimeOvertime.Patches
             private static bool Prefix(TitleCard __instance)
             {
                 Bracket.RememberTitles(__instance.MatchTitles);
+                if (VersusState.Coop && !TutorialManager.onTutorial) { __instance.TextSlide($"Co-op Infinite - Match {VersusState.Round}"); return false; }
                 if (Daily.Cup && !TutorialManager.onTutorial)
                 {
                     int gc = Mathf.Clamp(GameManager.gameNumber, 0, __instance.MatchTitles.Count - 1);
@@ -181,6 +182,7 @@ namespace HangtimeOvertime.Patches
                     .Replace("{loop}", RunState.Loop.ToString())
                     .Replace("{bracket}", __instance.MatchTitles[g]);
                 if (RunState.Daily != null && RunState.Mode == RunMode.Infinite) text = text.Replace("Infinite", "Daily");
+                else if (RunState.Mode == RunMode.Infinite && GameManager.Instance.numberOfPlayers == 2) text = text.Replace("Infinite", "Co-op Infinite");
                 __instance.TextSlide(text);
                 return false;
             }

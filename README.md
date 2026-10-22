@@ -7,7 +7,8 @@ dozens of new abilities and teams, a character creator and run saves — all bui
 
 ## Features
 
-- **Infinite mode** — an endless run from the title screen. Opponents are picked at random and get stronger every round
+- **Infinite mode** — an endless run from the title screen (also in **co-op**: CO-OP > INFINITE, or online with the
+  lobby's CO-OP INFINITE mode). Opponents are picked at random and get stronger every round
   (better stats, then their own abilities), with a difficulty setting if you want it harder.
 - **Loops** — beat the Classic final and keep going with LOOP 2, 3, ...
 - **154 abilities (144 brand new)** — elemental and supernatural style perks with their own visuals: blazing spikes, freezing blocks, shadow clones, lightning chains and more.

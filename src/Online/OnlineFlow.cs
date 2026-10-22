@@ -30,7 +30,8 @@ namespace HangtimeOvertime.Online
                 if (!Net.IsClient) return;
                 var screen = RoundScreen.Read(r);
                 SpectatorHud.LastScreen = screen;
-                if (screen.MatchOver) StreakPatches.RecordVersus(screen.Winner);      // this PC's own streak
+                if (VersusState.Coop) StreakPatches.RecordCoop(VersusState.Round, screen.Winner == 0, VersusState.RoundWins[0] + (screen.Winner == 0 ? 1 : 0));
+                else if (screen.MatchOver) StreakPatches.RecordVersus(screen.Winner);      // this PC's own streak
                 VersusOverlay.ShowMirror(screen);
             });
             Net.On(Msg.ScreenSel, r => VersusOverlay.MirrorSelection(r.I(), r.I()));

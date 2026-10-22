@@ -31,6 +31,9 @@ Pick a mode at the top, then each player presses a key on their own set (or A on
 Left/right = move (and team on the join screen), up = jump / hit / ready, down = receive.
 RULES: points, rounds, upgrades, perks / cards on or off, bans, draft start, presets.
 PARTY CUP: a knockout cup for 2-8 players, the AI fills the bracket.
+CO-OP INFINITE (lobby tab): two players together against Infinite's opponents, online too.
+
+CO-OP on the title screen: CLASSIC or INFINITE for two players on one PC.
 
 IN A MATCH: Q quick chat, E emotes, Enter type (key set 1; other sets and pads: see CONTROLS).
 

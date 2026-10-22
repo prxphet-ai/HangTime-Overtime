@@ -68,6 +68,40 @@ namespace HangtimeOvertime.Patches
             UnityEngine.Object.Destroy(t.gameObject, 8f);
         }
 
+        // ------------------------------------------------------------ co-op: CLASSIC or INFINITE
+
+        public static bool CoopInfinite;              // the next co-op start is an Infinite run
+
+        public static void ShowCoop(TitleButton from)
+        {
+            var snap = RunSaves.CoopRun;
+            int best = Records.Data.coopInfiniteBest;
+            Build(from, "CO-OP\n<size=70%>TWO PLAYERS ON ONE PC</size>",
+                ("CLASSIC", "THE TOURNAMENT", () => { Close(from); Bypass = true; CoopInfinite = false; from.Click(); }),
+                ("INFINITE", snap.has ? "CONTINUE · " + RunSaves.Where(snap) : best > 0 ? $"BEST: {best} WINS" : "ENDLESS, TOGETHER", () => CoopInfiniteChoice(from)),
+                ("BACK", "-", () => Close(from)));
+        }
+
+        private static void CoopInfiniteChoice(TitleButton from)
+        {
+            var snap = RunSaves.CoopRun;
+            if (!snap.has) { StartCoopInfinite(from); return; }
+            Build(from, $"SAVED CO-OP INFINITE RUN\n<size=70%>{RunSaves.Summary(snap).ToUpperInvariant()}\n{RunSaves.PerkCount(snap)} ABILITIES · {snap.savedAt}</size>",
+                ("CONTINUE", "-", () => Continue(from, snap)),
+                ("NEW RUN", "-", () => Build(from, $"START A NEW CO-OP INFINITE RUN?\n<size=70%>THIS DELETES THE SAVED ONE:\n{RunSaves.Summary(snap).ToUpperInvariant()}</size>",
+                    ("START OVER", "-", () => { RunSaves.ClearCoop(); StartCoopInfinite(from); }),
+                    ("NO, KEEP IT", "-", () => CoopInfiniteChoice(from)))),
+                ("BACK", "-", () => ShowCoop(from)));
+        }
+
+        private static void StartCoopInfinite(TitleButton from)
+        {
+            Close(from);
+            CoopInfinite = true;
+            Bypass = true;
+            from.Click();
+        }
+
         // ------------------------------------------------------------ the choice panel
 
         public static void Show(TitleButton from, bool infinite)
@@ -224,7 +258,7 @@ namespace HangtimeOvertime.Patches
             if (problem != null) Plugin.Log.LogWarning(problem);
             DestroyPopup();
             var gm = GameManager.Instance;
-            gm.numberOfPlayers = 1;
+            gm.numberOfPlayers = Math.Max(1, snap.players);
             var title = titleOf(from);
             if (title != null) from.StartCoroutine(title.StartGame());
             gm.ResetGame();

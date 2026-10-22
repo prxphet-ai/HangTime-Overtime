@@ -15,7 +15,7 @@ namespace HangtimeOvertime.Patches
         public static void Init() => SceneManager.sceneLoaded += (scene, _) =>
         {
             if (scene.name != "Game" || TitleController.onTitle || !VersusState.Active) return;
-            GameManager.gameNumber = Online.Replays.Playing ? Online.Replays.Current.GameNumber : 1;   // a regular gym (a replay: its own)
+            GameManager.gameNumber = Online.Replays.Playing ? Online.Replays.Current.GameNumber : VersusState.Coop ? VersusState.CoopSlot : 1;   // a regular gym (a replay / co-op: its own)
             TeamRoster.ResumeKey = VersusState.Setup.Team[1];             // player 2's team spawns on the right
         };
 
@@ -24,8 +24,15 @@ namespace HangtimeOvertime.Patches
         {
             var setup = VersusState.Setup;
             if (Online.Net.IsClient || Online.Replays.Playing) { DressLeft(setup); Online.MatchSync.SetupMirror(gm, team); return; }   // an online client mirrors the host; a replay mirrors its file
-            gm.matchLength = LobbyRules.Current.Points;
+            if (!setup.Format.Equals("coop")) gm.matchLength = LobbyRules.Current.Points;   // co-op Infinite: the game's own match length
+            if (VersusState.Coop) OpponentScaling.Apply(team, TeamRoster.Current, VersusState.CoopSlot);
+            else EqualFooting(gm, team);
+            CommonSetup(gm, team, setup);
+        }
 
+        // Versus: the right team uses the player's own stat tables from level 0 and only the perks picked between rounds
+        private static void EqualFooting(GameManager gm, GameObject team)
+        {
             // equal footing: the right team uses the player's own stat tables, from level 0, without built-in abilities;
             // builds come only from the picks between rounds
             var stats = team.GetComponent<PlayerStats>();
@@ -42,7 +49,10 @@ namespace HangtimeOvertime.Patches
                 ab.canSpikeFreeBalls = ab.blockBoost = ab.perfectBump = ab.absoluteBlock = false;
                 ab.skyServe = ab.riskySet = ab.hybridServe = false;
             }
+        }
 
+        private static void CommonSetup(GameManager gm, GameObject team, VersusSetup setup)
+        {
             var all = Object.FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             var leftHitter = all.FirstOrDefault(Look.IsPlayerOne);
             var leftPartner = Object.FindFirstObjectByType<LocalInputManager>()?.player2;                        // the game's co-op player 2
@@ -50,8 +60,11 @@ namespace HangtimeOvertime.Patches
             var rightHitter = team.GetComponentsInChildren<PlayerController>(true).FirstOrDefault(p => !p.setter);
             var rightSetter = team.GetComponentsInChildren<PlayerController>(true).FirstOrDefault(p => p.setter);
             var ball = Object.FindFirstObjectByType<BallMovement>();
-            if (leftHitter != null && rightHitter != null) rightHitter.moveSpeed = leftHitter.moveSpeed;
-            if (leftSetter != null && rightSetter != null) rightSetter.moveSpeed = leftSetter.moveSpeed;
+            if (!VersusState.Coop)
+            {
+                if (leftHitter != null && rightHitter != null) rightHitter.moveSpeed = leftHitter.moveSpeed;
+                if (leftSetter != null && rightSetter != null) rightSetter.moveSpeed = leftSetter.moveSpeed;
+            }
 
             // a human on the right replaces that player's AI. The spiker's AI would also have registered it as the right
             // side's server; a human setter becomes a full player like the left side's co-op partner (normal jump, no auto-set).

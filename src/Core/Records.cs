@@ -16,12 +16,13 @@ namespace HangtimeOvertime.Core
         public int[] streak = new int[0], best = new int[0], wins = new int[0], losses = new int[0];
         public int classicRunsWon, infiniteBestRound, versusMatches;
         public int draftsPlayed, draftCupsWon;
+        public int coopInfiniteBest;                 // most wins in one co-op Infinite run (local or online)
     }
 
     internal static class Records
     {
         // mode keys (also the labels on the stats page)
-        public const string Classic = "Classic", Coop = "Co-op", Infinite = "Infinite", VersusLocal = "Versus (local)", VersusOnline = "Versus (online)", Draft = "Draft";
+        public const string Classic = "Classic", Coop = "Co-op", Infinite = "Infinite", VersusLocal = "Versus (local)", VersusOnline = "Versus (online)", Draft = "Draft", CoopInfinite = "Co-op Infinite";
 
         private static RecordsData data;
         private static string PathOf => Path.Combine(Application.persistentDataPath, "HangtimeOvertime_stats.json");
@@ -78,6 +79,12 @@ namespace HangtimeOvertime.Core
 
         public static void InfiniteRound(int round) { if (round > Data.infiniteBestRound) { data.infiniteBestRound = round; Save(); } }
         public static void ClassicRunWon() { Data.classicRunsWon++; Save(); }
+        public static void CoopInfiniteRun(int wins)
+        {
+            if (wins > Data.coopInfiniteBest) { data.coopInfiniteBest = wins; Save(); }
+            Plugin.Log.LogInfo($"Co-op Infinite run over: {wins} wins (best {data.coopInfiniteBest})");
+        }
+
         public static void DraftStarted() { Data.draftsPlayed++; Save(); }
         public static void DraftWon() { Data.draftCupsWon++; Save(); }
 

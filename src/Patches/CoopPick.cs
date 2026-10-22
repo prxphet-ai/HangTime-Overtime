@@ -135,6 +135,7 @@ namespace HangtimeOvertime.Patches
                 Collection.Pick(Collection.KeyOf(p));
                 Plugin.Log.LogInfo($"Co-op: player 2 took {p.title}");
             }
+            RunSaves.SaveAfterPick();                           // the saved run has player 2's pick too
             Destroy(gameObject);
         }
 

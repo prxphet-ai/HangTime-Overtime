@@ -40,12 +40,14 @@ namespace HangtimeOvertime.Core
         public readonly string[] Team = new string[2];   // team key per side: "" = your own team (side 0), a new-team id or the game's prefab name
         public readonly string[] Names = new string[2];  // the sides' names (a party cup's entrants), or null: P1, P2...
 
-        public static readonly string[] Formats = { "1v1", "1v2", "2v2" };
+        public static readonly string[] Formats = { "1v1", "1v2", "2v2", "coop" };
+        public static string Label(string format) => format == "coop" ? "CO-OP INFINITE" : format.Replace("v", " VS ").ToUpperInvariant();
 
         // Which slot each joining player takes, in join order: (side, role).
         public static (int side, string role)[] Seats(string format) =>
             format == "1v2" ? new[] { (0, "hitter"), (1, "hitter"), (1, "setter") } :
             format == "2v2" ? new[] { (0, "hitter"), (0, "partner"), (1, "hitter"), (1, "setter") } :
+            format == "coop" ? new[] { (0, "hitter"), (0, "partner") } :                  // co-op Infinite: the AI's teams on the right
                               new[] { (0, "hitter"), (1, "hitter") };
 
         // 1v1: a human hitter and an AI setter per side. 1v2: player 1 and the AI setter vs two humans (the right setter
@@ -118,6 +120,20 @@ namespace HangtimeOvertime.Core
         public static int LastWinner = -1;
         public static readonly List<Technique> RightPerks = new List<Technique>();   // the left side's are the game's playerStats.techniques
         public static bool Active => RunState.Mode == RunMode.Versus && Setup != null;
+        // co-op Infinite (the lobby's CO-OP INFINITE): two players on the left against Infinite's scaling opponents;
+        // Round is the match number, RoundWins[0] the wins in a row; one lost match ends the run
+        public static bool Coop => Active && Setup.Format == "coop";
+        public static int CoopSlot => (Round - 1) % 8 + 1;
+
+        // the host picks the next opponent before the round load goes out (the friends' PCs spawn the same team)
+        public static void PickCoopOpponent()
+        {
+            TeamRoster.ResumeKey = null;
+            TeamRoster.Choose(CoopSlot);
+            Setup.Team[1] = TeamRoster.CurrentKey;
+            TeamRoster.ClearChoice();
+            Plugin.Log.LogInfo($"Co-op Infinite: match {Round} (slot {CoopSlot}) against {Setup.Team[1]}");
+        }
 
         public static List<Technique> PerksOf(int side) => side == 0 ? GameManager.Instance.playerStats.techniques : RightPerks;
 

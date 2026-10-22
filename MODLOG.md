@@ -120,3 +120,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   right side keeps the game's SpikerInput; `VersusSetup.Names`; `Msg.PartyBracket` 74, protocol 7. Dev: `-ovt-party`.
 - Spectators: `src/Online/Spectator.cs` (SpectatorHud, CameraModes); `Peer.Spectator`, `Net.ImSpectator`, `Msg.Spectate`
   75, protocol 8; a join during a match becomes a spectator; `AllReady` skips spectators. Dev: `-ovt-watchdemo`.
+- Co-op Infinite: local via `ContinueMenu.ShowCoop` (title CO-OP), run slot `coop` (`players`, `owners`); online as
+  Versus format `coop` (`VersusState.Coop`, `CoopSlot`, `PickCoopOpponent`; `VersusPatches.SetupMatch` scales instead of
+  equal footing; `VersusOverlay.CoopScreen`). `RoundScreen.RematchLabel`; protocol 9. Dev: `-ovt-winfirst N` (host).

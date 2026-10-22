@@ -72,7 +72,8 @@ namespace HangtimeOvertime.Core
             TutorialManager.onTutorial = false;
             if (gm.tournamentLineUps != null) gm.tournamentLineUps.NewLineUp();
             GameManager.gameNumber = InfiniteSlot;
-            if (Daily == null) Save.infiniteRuns++;
+            if (Daily == null && gm.numberOfPlayers == 1) Save.infiniteRuns++;
+            Engine.Ownership.Clear();
             WriteSave();
             Plugin.Log.LogInfo(Daily != null ? "Infinite run started (daily " + Daily + ")" : "Infinite run started");
         }
@@ -137,6 +138,7 @@ namespace HangtimeOvertime.Core
         public static void EndInfinite()
         {
             if (Daily != null) { Core.Daily.Finish(Core.Daily.Key(Daily, false), DailyCounts, InfiniteWins); DailyCounts = false; return; }   // its own records
+            if (GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2) { Records.CoopInfiniteRun(InfiniteWins); return; }
             if (InfiniteWins > Save.bestInfiniteWins) Save.bestInfiniteWins = InfiniteWins;
             WriteSave();
             Plugin.Log.LogInfo($"Infinite run over: {InfiniteWins} wins (best {Save.bestInfiniteWins})");

@@ -33,7 +33,7 @@ namespace HangtimeOvertime.Patches
         private readonly TextMeshPro[,] rows = new TextMeshPro[2, 2];
         private readonly SpriteRenderer[,] rowBoxes = new SpriteRenderer[2, 2];
         private readonly TextMeshPro[] teamText = new TextMeshPro[2], sideTitle = new TextMeshPro[2];
-        private readonly SpriteRenderer[] swatch = new SpriteRenderer[2], formatTabs = new SpriteRenderer[3];
+        private readonly SpriteRenderer[] swatch = new SpriteRenderer[2], formatTabs = new SpriteRenderer[4];
         private TextMeshPro heading, status, info, playersText, chatText;
         private Field chatField;
         private float openedAt, nextPlayers, nextState;
@@ -133,11 +133,11 @@ namespace HangtimeOvertime.Patches
             else Text("THE LOSING SIDE OF EACH ROUND PICKS ITS UPGRADES  ·  RULES: SEE BELOW THE MODES",
                       new Vector2(0f, ph / 2f - 3.8f), 0.45f, pw - 2f, new Color(0.85f, 0.95f, 1f));
             // mode tabs (mouse, or player 1's DOWN key)
-            float tw = area * 0.2f;
-            for (int i = 0; i < 3; i++)
+            float tw = area * 0.155f;
+            for (int i = 0; i < VersusSetup.Formats.Length; i++)
             {
                 int idx = i;
-                formatTabs[i] = Button(VersusSetup.Formats[i].Replace("v", " VS "), new Vector2(centre + (i - 1) * tw * 1.1f, ph / 2f - 6f), new Vector2(tw, 2.2f), () => SetFormat(idx), 0.6f);
+                formatTabs[i] = Button(VersusSetup.Label(VersusSetup.Formats[i]), new Vector2(centre + (i - 1.5f) * tw * 1.1f, ph / 2f - 6f), new Vector2(tw, 2.2f), () => SetFormat(idx), i == 3 ? 0.42f : 0.6f);
             }
             // the match rules (the host edits them online; a friend's PC sees them)
             Button("RULES", new Vector2(centre + area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => RulesPanel.Open(), 0.55f);
@@ -219,7 +219,7 @@ namespace HangtimeOvertime.Patches
             playersText.text = string.Join("\n", lines);
             if (info != null)
                 info.text = $"CODE <color=#FFFFFF>{Net.Lobby.Code}</color>  ·  {(Net.Lobby.Public ? "PUBLIC" : "PRIVATE")}  ·  {Mathf.Max(1, Net.Roster.Count)}/{Net.Lobby.MaxPCs} PCS";
-            heading.text = Net.Lobby.Name.Replace("<", "‹").ToUpperInvariant() + "  <size=60%>" + Format.Replace("v", " VS ").ToUpperInvariant() + "</size>";
+            heading.text = Net.Lobby.Name.Replace("<", "‹").ToUpperInvariant() + "  <size=60%>" + VersusSetup.Label(Format) + "</size>";
         }
 
         protected override void OnDestroy()
@@ -358,10 +358,11 @@ namespace HangtimeOvertime.Patches
 
         private void Refresh()
         {
-            if (rulesLine != null) rulesLine.text = "RULES: " + (LobbyRules.MatchingPreset() is string pn ? pn + "  ·  " : "") + LobbyRules.Current.Summary();
+            if (rulesLine != null && Format == "coop") rulesLine.text = "CO-OP INFINITE: THE GAME'S MATCH LENGTH · EACH PLAYER PICKS AN UPGRADE AFTER EVERY WIN · ONE LOSS ENDS THE RUN";
+            else if (rulesLine != null) rulesLine.text = "RULES: " + (LobbyRules.MatchingPreset() is string pn ? pn + "  ·  " : "") + LobbyRules.Current.Summary();
             if (lobby) ShowPlayers();
-            else heading.text = "VERSUS  <size=60%>" + Format.Replace("v", " VS ").ToUpperInvariant() + "</size>";
-            for (int i = 0; i < 3; i++) formatTabs[i].color = i == format ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
+            else heading.text = "VERSUS  <size=60%>" + VersusSetup.Label(Format) + "</size>";
+            for (int i = 0; i < formatTabs.Length; i++) formatTabs[i].color = i == format ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
             var seats = Seats;
             for (int side = 0; side < 2; side++)
             {
@@ -388,6 +389,13 @@ namespace HangtimeOvertime.Patches
                     rowBoxes[side, r].color = box;
                 }
                 if (team[side] >= teams[side].Count) team[side] = 0;
+                if (Leader(side) < 0)                                               // co-op Infinite: the AI's side
+                {
+                    swatch[side].enabled = false;
+                    teamText[side].text = "<size=80%>A NEW OPPONENT EVERY MATCH</size>";
+                    rows[side, 0].text = "AI  <size=70%>INFINITE'S TEAMS</size>\n<size=80%>THEY GET STRONGER EVERY MATCH</size>";
+                    continue;
+                }
                 bool joined = input[Leader(side)] != null;
                 swatch[side].enabled = joined;
                 teamText[side].text = joined ? "<  " + TeamLabel(side) + "  >" : "";
@@ -477,6 +485,7 @@ namespace HangtimeOvertime.Patches
             starting = true;
             var setup = VersusSetup.Create(Format, input.Take(Count).ToList(), teams[0][team[0]], teams[1][team[1]]);
             VersusState.NewMatch(setup);
+            if (VersusState.Coop) { setup.Names[1] = "THE OPPONENT"; VersusState.PickCoopOpponent(); LoadMatch(); return; }
             LobbyRules.GiveStartingPerks(System.Environment.TickCount);
             if (DraftStart)
             {
@@ -508,7 +517,7 @@ namespace HangtimeOvertime.Patches
         private void LoadMatch()
         {
             var gm = GameManager.Instance;
-            gm.numberOfPlayers = Format == "2v2" ? 2 : 1;     // 2v2: the game's own co-op pair on the left
+            gm.numberOfPlayers = Format == "2v2" || Format == "coop" ? 2 : 1;     // 2v2 / co-op: the game's own co-op pair on the left
             OnlineFlow.SendLoad(true);
             var title = titleOf(classic);
             if (title != null) classic.StartCoroutine(title.StartGame());

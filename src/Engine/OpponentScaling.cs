@@ -12,6 +12,7 @@ namespace HangtimeOvertime.Engine
     internal static class OpponentScaling
     {
         public static int Round =>
+            VersusState.Coop ? VersusState.Round :
             RunState.Mode == RunMode.Infinite ? RunState.InfiniteMatch :
             RunState.Mode == RunMode.Loop ? 8 * (RunState.Loop - 1) + GameManager.gameNumber : 0;
 

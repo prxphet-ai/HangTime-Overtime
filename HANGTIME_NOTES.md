@@ -1026,6 +1026,27 @@ Modes:
   `-ovt-watchdemo`). The WATCH ONLY switch wasn't clicked (three copies can't share the mouse); it sends the same
   message the join path uses. 0 errors.
 
+### Co-op Infinite, local and online (v0.4.1)
+- **Local** (the game's own flow): the title's CO-OP now asks CLASSIC or INFINITE. Co-op Infinite is Infinite with the
+  game's co-op pair: the same scaling opponents, the upgrade screen with individual picks (player 1 on the game's screen,
+  then player 2's own offer), saved in its own run slot (CONTINUE / NEW RUN; player count and who owns which perk are
+  saved), title card "Co-op Infinite - Match n", its own streaks and best run (stats page). Solo Infinite's best and
+  run count aren't touched.
+- **Online** (a lobby mode, `VersusSetup` format `coop`): the lobby's 5th tab **CO-OP INFINITE**. Two players on the left
+  (any PCs: the host's P1 and a friend's P2, or both on one PC) against Infinite's opponents on the right, run on the
+  Versus online system (host plays, friends mirror; spectators, chat and replays work). The host picks each match's
+  opponent before the round load (`VersusState.PickCoopOpponent`, same pools and bosses every 8 as Infinite) and scales
+  it with `OpponentScaling` (round = match number). The game's own match length. After a win each player picks an
+  upgrade on the round screen (synced; personal perks are the picker's, the rest team-wide); one loss ends the run: RUN
+  OVER with the best co-op run, TRY AGAIN (a new run) or LOBBY. Lobby rules don't apply here except which perks / cards
+  can be offered. Protocol 9.
+- **Tested**: local: CO-OP > INFINITE started with both players, F6 -> upgrade screen, player 2 took Tidal Wall
+  (team-wide), quit, CO-OP > INFINITE > CONTINUE restored round 2 with 2 players and the owners (Splash Block = P1),
+  F7 -> run over, best recorded, slot cleared. Online (host + friend on this PC, `-ovt-format coop`, dev `-ovt-winfirst
+  1`): match 1 on both PCs, won -> "MATCH 1 WON!", P1 then the friend's P2 picked, match 2 against a new team on both,
+  lost -> RUN OVER on both, TRY AGAIN -> a new run at match 1, LOBBY -> both back in the lobby. Online 1v1 regression:
+  rounds and picks fine. 0 errors.
+
 ## Session status (2026-10-22)
 - **Done**: the three known bugs (net wall, perk zoom stuck, ball lost on serve) and features 1-17, each built,
   deployed, tested (keyboard, gamepad through the dev virtual pad, local multiplayer; online with two or three copies of

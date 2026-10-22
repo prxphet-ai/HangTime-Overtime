@@ -21,6 +21,7 @@ namespace HangtimeOvertime.Debugging
     //   -ovt-fx              host: fires a random perk with visual effects every 3 s (both sides), to compare screens
     //   -ovt-draft           host: the match starts with DRAFT START (each side drafts a team)
     //   -ovt-rules ID        host: plays with that rules preset (sheets/rules.json id; not saved)
+    //   -ovt-winfirst N      host: wins its first N matches / rounds 12 s after they start (the game's own scoring)
     //   -ovt-watchdemo       a spectator: steps through the camera views and the builds by itself
     //   -ovt-party           host: opens PARTY CUP once a friend is in, seats key set 1, starts when the friend's device joins
     //   -ovt-chat            in matches, this copy's first player chats every 4 s (quick, emote, typed in turn)
@@ -61,6 +62,7 @@ namespace HangtimeOvertime.Debugging
             d.chat = Array.IndexOf(args, "-ovt-chat") >= 0;
             d.party = h && Array.IndexOf(args, "-ovt-party") >= 0;
             if (Array.IndexOf(args, "-ovt-watchdemo") >= 0) SpectatorHud.DevDemo = true;
+            if (int.TryParse(Arg("-ovt-winfirst"), out var wf)) d.winFirst = wf;
             if (d.party) Patches.BracketPanel.AutoContinue = true;
             var preset = Generated.RulePresets.All.FirstOrDefault(x => x.Id == Arg("-ovt-rules"));
             if (h && preset != null) Core.LobbyRules.Current = Core.RuleSet.From(preset);   // not saved
@@ -73,11 +75,24 @@ namespace HangtimeOvertime.Debugging
             Net.OverridePad((int)k, new PadState { Connected = true, Up = up, Confirm = up, Right = right });
 
         private bool chat, party, partyStarted;
+        private int winFirst, wonRound = -1;
+        private float roundSince = -1f;
         private float nextChat;
         private int chatN;
 
         private void Update()
         {
+            if (winFirst > 0 && host && MatchSync.InMatch && VersusState.Active && !GameManager.Instance.done)
+            {
+                if (roundSince < 0f || wonRound == VersusState.Round - 1 && roundSince < 0f) roundSince = Time.unscaledTime;
+                if (wonRound != VersusState.Round && Time.unscaledTime - roundSince > 12f)
+                {
+                    wonRound = VersusState.Round; winFirst--; roundSince = -1f;
+                    GameManager.Instance.playerPoints = GameManager.Instance.matchLength;
+                    Plugin.Log.LogInfo($"[dev] host wins round {VersusState.Round}");
+                }
+            }
+            else if (!MatchSync.InMatch) roundSince = -1f;
             if (party && !partyStarted && Net.IsHost && Net.HasFriends && VersusMenu.IsOpen)
             {
                 if (!PartyMenu.IsOpen) { PartyMenu.Open(); PartyMenu.DevJoin(new SlotInput { Kind = InputKind.KeysWASD, Label = "W A S D" }); }
