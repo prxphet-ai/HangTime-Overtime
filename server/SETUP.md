@@ -34,9 +34,10 @@ own game keeps (the server stores only its hash), and the server checks and rate
    ```
    It prints the address, like `https://overtime-community.<your-name>.workers.dev`.
 7. Check it: open `<that address>/v1/health` in a browser. It should say `{"ok":true,"server":"overtime",...}`.
-8. Tell Claude the address (or set it yourself): it goes in `src/Plugin.cs` as the default for `[Community] Server`,
-   so every player's game uses it. Until then each player can paste it into `BepInEx/config/melty.hangtime.overtime.cfg`
-   under `[Community]` → `Server = https://...`.
+8. Put the address in `src/Online/Community.cs` (`DefaultServer`) so every player's game uses it (done for
+   `https://overtime-community.hangtimeovertime.workers.dev`). A player's `[Community] Server` setting overrides it
+   (another address, or `off`). A brand-new workers.dev subdomain can take a few minutes to get its certificate: until
+   then https requests to it fail with an SSL / TLS error.
 
 After that, the leaderboards and the tournament browser work for everyone with that version of the mod.
 

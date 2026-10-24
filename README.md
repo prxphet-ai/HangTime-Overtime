@@ -43,7 +43,7 @@ dozens of new abilities and teams, a character creator and run saves — all bui
   a difficulty rating from the match simulator. Beat it yourself, then share it as a code or publish it to the online
   browser (sort, filter, ratings, fastest clears, reports).
 - **Leaderboards** — CLASSIC SPEEDRUN and INFINITE (most rounds) for each mod version, with your rank, an offline queue
-  and basic cheat checks. Needs the community server to be set up (see below); turn submitting off in SETTINGS.
+  and basic cheat checks. Turn submitting off in SETTINGS.
 - **Collection and stats** — every team, perk and stat card you've found (the rest stay ???), win streaks per mode,
   and a bracket screen between Classic matches.
 - **Quality of life** — full gamepad support in the mod's menus (with an on-screen keyboard), key rebinding for four
@@ -75,7 +75,7 @@ To uninstall, delete the `BepInEx/plugins/HangtimeOvertime` folder.
 | `[General] CheckForUpdates` | `true` | Ask GitHub for a newer release on launch (nothing about you is sent). Also in SETTINGS. |
 | `[Replays] Record` | `true` | Keep replays of your matches. Also in SETTINGS. |
 | `[Chat] Bubbles`, `[Chat] MuteOthers` | `true`, `false` | Chat bubbles above players; hide other PCs' chat online. Also in SETTINGS. |
-| `[Community] Server` | (empty) | The community server's address for leaderboards and the tournament browser. Empty: offline (results wait). |
+| `[Community] Server` | (empty) | Empty: the mod's own server for leaderboards and the tournament browser. Another address: that server. `off`: offline (results wait). |
 | `[Community] Submit` | `true` | Send your qualifying results to the leaderboards. Also in SETTINGS. |
 | `[Debug] DevKeys` | `false` | Test shortcuts on F1–F12 (for development). |
 | `[Debug] DumpScenes` | `false` | Detailed logging (for development). |

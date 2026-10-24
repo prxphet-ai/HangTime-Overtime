@@ -48,7 +48,7 @@ namespace HangtimeOvertime
             CheckForUpdates = Config.Bind("General", "CheckForUpdates", true, "On launch, ask GitHub whether a newer Overtime release exists and say so on the title screen (nothing about you is sent). Also in SETTINGS.");
             ChatBubbles = Config.Bind("Chat", "Bubbles", true, "In matches, chat lines and emotes show as a bubble above the player (the chat log in the corner always shows them). Also in SETTINGS.");
             RecordReplays = Config.Bind("Replays", "Record", true, "Keep a replay of every match / Versus round (the last 10; SAVE keeps one for good). Also in SETTINGS.");
-            CommunityServer = Config.Bind("Community", "Server", "", "The community server for leaderboards and shared tournaments (https://...). Empty: not connected (results wait in a queue).");
+            CommunityServer = Config.Bind("Community", "Server", "", "The community server for leaderboards and shared tournaments. Empty: the mod's own server. Another https://... address: that server (testing). off: not connected (results wait in a queue).");
             CommunitySubmit = Config.Bind("Community", "Submit", true, "Send qualifying Classic and Infinite results to the global leaderboards. Also in SETTINGS.");
             ChatMuteOthers = Config.Bind("Chat", "MuteOthers", false, "Online: other PCs' chat lines and emotes are not shown. Also in SETTINGS.");
             Patches.TitleBar.Init();

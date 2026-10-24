@@ -8,4 +8,4 @@ compatibility_date = "2026-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "overtime"
-database_id = "PASTE-YOUR-DATABASE-ID-HERE"
+database_id = "c53d0e4d-de67-4952-b411-c959a65b850b"

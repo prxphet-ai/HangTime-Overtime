@@ -113,7 +113,16 @@ namespace HangtimeOvertime.Online
     // the community server's address and the requests to it (UnityWebRequest; failures come back as an error message)
     internal static class Community
     {
-        public static string Server => (Plugin.CommunityServer.Value ?? "").Trim().TrimEnd('/');
+        // the mod's own server (server/SETUP.md); [Community] Server overrides it with another address, or "off"
+        public const string DefaultServer = "https://overtime-community.hangtimeovertime.workers.dev";
+        public static string Server
+        {
+            get
+            {
+                var v = (Plugin.CommunityServer.Value ?? "").Trim().TrimEnd('/');
+                return v.Length == 0 ? DefaultServer : v.Equals("off", StringComparison.OrdinalIgnoreCase) ? "" : v;
+            }
+        }
         public static bool Configured => Server.StartsWith("http://") || Server.StartsWith("https://");
         public static string LastError;
         public static bool Reachable = true;              // the last request got an answer
