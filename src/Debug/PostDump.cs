@@ -39,6 +39,13 @@ namespace HangtimeOvertime.Debugging
                 Plugin.Log.LogInfo($"[post] camera {cam.name}: renderPostProcessing={dt.GetProperty("renderPostProcessing")?.GetValue(data)} renderType={dt.GetProperty("renderType")?.GetValue(data)} volumeLayerMask={dt.GetProperty("volumeLayerMask")?.GetValue(data)} cullingMask={cam.cullingMask} hdr={cam.allowHDR}");
             }
             Plugin.Log.LogInfo($"[post] colorSpace={QualitySettings.activeColorSpace}");
+            // the title menu's buttons: what draws them
+            foreach (var b in Object.FindObjectsByType<ButtonController>(FindObjectsInactive.Include, FindObjectsSortMode.None).Where(b => b.gameObject.scene.IsValid()))
+            {
+                var parts = b.GetComponentsInChildren<Component>(true).Where(c => c is Renderer || c is TMPro.TMP_Text || c is Collider2D)
+                    .Select(c => $"{c.transform.name}:{c.GetType().Name}" + (c is SpriteRenderer sr ? $"({sr.sprite?.name},{sr.drawMode},{sr.size.x:F1}x{sr.size.y:F1},{sr.color},{sr.sortingLayerName}/{sr.sortingOrder},layer{sr.gameObject.layer})" : c is TMPro.TMP_Text t ? $"('{t.text}',{t.font?.name},{t.color})" : c is BoxCollider2D bc ? $"({bc.size.x:F1}x{bc.size.y:F1})" : ""));
+                Plugin.Log.LogInfo($"[post] button {b.name} (parent {b.transform.parent?.name}) scale {b.transform.localScale.x:F2} at {b.transform.position}: {string.Join(" | ", parts)}");
+            }
         }
     }
 }

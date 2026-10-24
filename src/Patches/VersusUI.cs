@@ -102,6 +102,37 @@ namespace HangtimeOvertime.Patches
             return sr;
         }
 
+        // a hand-drawn icon (UiArt, tools/ui_art.py) `size` layout units across; null when the art is missing
+        protected SpriteRenderer Icon(string name, Vector2 at, float size, Color color, int o = 7)
+        {
+            var sprite = UiArt.Icon(name);
+            if (sprite == null) return null;
+            var sr = new GameObject("Icon " + name).AddComponent<SpriteRenderer>();
+            sr.transform.SetParent(transform, false);
+            sr.transform.localPosition = new Vector3(at.x, at.y, -0.001f * o - 0.0002f);
+            UiArt.MakeUnlit(sr);
+            sr.sprite = sprite;
+            sr.transform.localScale = Vector3.one * (size / sprite.bounds.size.x);
+            sr.color = UiArt.Paint(color);
+            sr.sortingLayerID = layer;
+            sr.sortingOrder = order + o;
+            return sr;
+        }
+
+        // a picture (an emblem texture) `height` layout units tall, centred on `at`
+        protected SpriteRenderer Picture(Texture2D tex, Vector2 at, float height, int o = 7)
+        {
+            if (tex == null) return null;
+            var sr = new GameObject("Picture").AddComponent<SpriteRenderer>();
+            sr.transform.SetParent(transform, false);
+            sr.transform.localPosition = new Vector3(at.x, at.y, -0.001f * o - 0.0002f);
+            UiArt.MakeUnlit(sr);
+            sr.sprite = Engine.EmblemArt.SpriteOf(tex, tex.height / height);
+            sr.sortingLayerID = layer;
+            sr.sortingOrder = order + o;
+            return sr;
+        }
+
         // a drawn box's marker outline (in front) and drop shadow (behind, down and right)
         protected static void Decorate(SpriteRenderer box, float shadow)
         {

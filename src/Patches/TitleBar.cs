@@ -7,12 +7,13 @@ using UnityEngine;
 
 namespace HangtimeOvertime.Patches
 {
-    // The title screen's top-left bar: the mod's own buttons (SETTINGS, and later ones) and the update notice. It hides
-    // while any of the mod's menus is open or the title menu isn't showing.
+    // The title screen's top bar: the mod's menus as hand-drawn icon tiles in three groups (PLAY, COMMUNITY, GAME) on a
+    // drawn strip, a line under it saying whether the community server answers, and the update notice. It hides while any
+    // of the mod's menus is open or the title menu isn't showing. SELECT gives the bar to a gamepad.
     internal class TitleBar : OvertimePanel
     {
         private static TitleBar current;
-        internal static readonly List<(string label, Action open)> Buttons = new List<(string, Action)>();
+        internal static readonly List<(string group, string icon, string label, Action open)> Buttons = new List<(string, string, string, Action)>();
         private readonly List<GameObject> parts = new List<GameObject>();
         private TextMeshPro notice;
         public static string Notice;                      // a line under the buttons (the update checker's)
@@ -21,15 +22,15 @@ namespace HangtimeOvertime.Patches
         public static void Init()
         {
             if (Buttons.Count > 0) return;
-            Buttons.Add(("SETTINGS", () => SettingsMenu.Open()));
-            Buttons.Add(("DAILY RUN", () => DailyMenu.Open()));
-            Buttons.Add(("DRAFT", () => DraftMenu.Open()));
-            Buttons.Add(("TOURNAMENTS", () => TournamentMenu.Open()));
-            Buttons.Add(("COLLECTION", () => CollectionMenu.Open()));
-            Buttons.Add(("REPLAYS", () => ReplayMenu.Open()));
-            Buttons.Add(("LEADERBOARDS", () => LeaderboardMenu.Open()));
-            Buttons.Add(("CONTROLS", () => ControlsMenu.Open()));
-            Buttons.Add(("REPORT BUG", () => BugReport.Open()));
+            Buttons.Add(("PLAY", "sun", "DAILY", () => DailyMenu.Open()));
+            Buttons.Add(("PLAY", "cards", "DRAFT", () => DraftMenu.Open()));
+            Buttons.Add(("PLAY", "trophy", "TOURNEYS", () => TournamentMenu.Open()));
+            Buttons.Add(("COMMUNITY", "podium", "BOARDS", () => LeaderboardMenu.Open()));
+            Buttons.Add(("COMMUNITY", "film", "REPLAYS", () => ReplayMenu.Open()));
+            Buttons.Add(("COMMUNITY", "book", "COLLECTION", () => CollectionMenu.Open()));
+            Buttons.Add(("GAME", "gear", "SETTINGS", () => SettingsMenu.Open()));
+            Buttons.Add(("GAME", "pad", "CONTROLS", () => ControlsMenu.Open()));
+            Buttons.Add(("GAME", "bug", "REPORT BUG", () => BugReport.Open()));
         }
 
         // NetRunner: one per title scene
@@ -74,21 +75,57 @@ namespace HangtimeOvertime.Patches
         // B, or opening one of the bar's menus, gives the title menu back
         protected override void OnNavBack() { barFocus = false; ReleaseTitle(); HideFocusFrame(); }
 
+        private TextMeshPro status;
+        private SpriteRenderer statusIcon;
+
+        // the layout of the overhaul's mockup (1600 x 900 px = 64 x 36 layout units, 25 px a unit)
         private void Build()
         {
-            float w = 5.5f, x = -W / 2f + 0.5f + w / 2f, y = H / 2f - 1.6f;
-            foreach (var (label, open) in Buttons)
+            float top = H / 2f, left = -W / 2f;
+            Box("Panel", new Vector2(0f, top - 2.24f), new Vector2(W - 0.8f, 3.84f), new Color(UiArt.Navy.r, UiArt.Navy.g, UiArt.Navy.b, 0.96f), 0, true);
+            const float tileW = 5.52f, tileH = 2.48f, step = 5.84f, groupGap = 1.6f;
+            float x = left + 1.36f, ty = top - 2.6f;
+            string lastGroup = null;
+            foreach (var (group, icon, label, open) in Buttons)
             {
-                var b = Button(label, new Vector2(x, y), new Vector2(w, 1.8f), () => { if (barFocus) OnNavBack(); open(); }, label.Length > 10 ? 0.37f : 0.43f);
+                if (group != lastGroup)
+                {
+                    if (lastGroup != null) x += groupGap;
+                    Text(group, new Vector2(x + 4f, top - 0.95f), 0.42f, 8f, UiArt.Gold, TextAlignmentOptions.Left);
+                    lastGroup = group;
+                }
+                var act = open;
+                var b = Button("", new Vector2(x + tileW / 2f, ty), new Vector2(tileW, tileH), () => { if (barFocus) OnNavBack(); act(); }, 0.5f);
+                Icon(icon, new Vector2(x + 1.05f, ty), 1.5f, UiArt.Ink, 8);
+                Text(label, new Vector2(x + 3.5f, ty), label.Length > 8 ? 0.42f : 0.5f, 3.3f, UiArt.Ink);
                 parts.Add(b.gameObject);
-                x += w + 0.2f;
+                x += step;
             }
-            hint = Text("SELECT: THIS BAR", new Vector2(x + 4f, y), 0.42f, 8f, new Color(0.7f, 1f, 0.75f), TextAlignmentOptions.Left);
-            notice = Text("", new Vector2(-W / 2f + 1f + 11f, y - 2.1f), 0.5f, 22f, new Color(1f, 0.85f, 0.35f), TextAlignmentOptions.Left);
+            hint = Text("SELECT: THIS BAR", new Vector2(top > 0 ? W / 2f - 3.4f : 0f, ty), 0.42f, 5.6f, new Color(0.7f, 1f, 0.75f));
+            // the community server line
+            Box("Status", new Vector2(left + 11.4f, top - 5.5f), new Vector2(21.4f, 1.5f), new Color(UiArt.Dark.r, UiArt.Dark.g, UiArt.Dark.b, 0.8f), 0);
+            statusIcon = Icon("globe", new Vector2(left + 1.7f, top - 5.5f), 1.0f, new Color(0.49f, 0.9f, 0.47f), 2);
+            status = Text("", new Vector2(left + 12.5f, top - 5.5f), 0.42f, 19.5f, UiArt.Ink, TextAlignmentOptions.Left, 3);
+            CheckServer();
+            notice = Text("", new Vector2(left + 12.5f, top - 7.1f), 0.48f, 22f, UiArt.Gold, TextAlignmentOptions.Left);
             var nb = notice.gameObject.AddComponent<BoxCollider2D>();
             nb.size = new Vector2(22f / notice.transform.lossyScale.x * 0.02f, 1.4f / notice.transform.lossyScale.y * 0.02f);
             var w2 = notice.gameObject.AddComponent<CreatorWidget>();
             w2.OnClick = () => NoticeClick?.Invoke();
+        }
+
+        // asks the community server once per title screen whether it's there
+        private void CheckServer()
+        {
+            void Show(string text, Color c) { if (status != null) status.text = text; if (statusIcon != null) statusIcon.color = UiArt.Paint(c); }
+            if (!Online.Community.Configured) { Show("OFFLINE  ·  COMMUNITY FEATURES ARE OFF (SETTINGS FILE)", new Color(0.7f, 0.75f, 0.8f)); return; }
+            Show("CONNECTING TO THE COMMUNITY SERVER...", UiArt.Gold);
+            Online.Community.Get("/v1/health", (text, err) =>
+            {
+                if (this == null) return;
+                if (err == null) Show("ONLINE  ·  LEADERBOARDS AND TOURNAMENT BROWSER CONNECTED", new Color(0.49f, 0.9f, 0.47f));
+                else Show("OFFLINE  ·  RESULTS WAIT AND SEND WHEN THE SERVER CAN BE REACHED", UiArt.Orange);
+            });
         }
 
         private bool visible = true;

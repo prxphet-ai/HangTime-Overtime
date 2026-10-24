@@ -66,6 +66,7 @@ namespace HangtimeOvertime
             RunPatches.Init();
             StreakPatches.Init();
             MenuPatches.Init();
+            SignSkin.Init();
             if (DumpScenes.Value) Debugging.SceneDumper.Hook();
             if (DevKeys.Value) { gameObject.AddComponent<Debugging.DevKeys>(); Debugging.DevOnline.Hook(gameObject); Debugging.DevPad.Hook(gameObject); }
             Patches.ControlsApply.Init();

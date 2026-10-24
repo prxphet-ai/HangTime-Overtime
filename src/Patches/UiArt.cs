@@ -16,7 +16,7 @@ namespace HangtimeOvertime.Patches
 
         // the menus' colours (the mockup's palette), as they look on screen (the menus' sprites are unlit: see Unlit)
         private static Color Screen(float r, float g, float b, float a = 1f) => new Color(r, g, b, a);
-        public static readonly Color Navy = Screen(0.055f, 0.17f, 0.30f, 0.96f);
+        public static readonly Color Navy = Screen(0.055f, 0.17f, 0.30f);
         public static readonly Color Blue = Screen(0.12f, 0.34f, 0.56f);
         public static readonly Color BlueHover = Screen(0.2f, 0.47f, 0.72f);
         public static readonly Color Inner = Screen(0.03f, 0.11f, 0.2f);
@@ -62,7 +62,7 @@ namespace HangtimeOvertime.Patches
         // emblems and logo use, made into a dynamic TextMeshPro font at runtime; null (the game's own font) if that fails
         private static TMPro.TMP_FontAsset lettering;
         private static bool letteringTried;
-        public const float LetteringScale = 1.0f;          // its size against the game's menu font at the same setting
+        public const float LetteringScale = 1.2f;          // its size against the game's menu font at the same setting
         public static TMPro.TMP_FontAsset Lettering
         {
             get
