@@ -1233,6 +1233,35 @@ Modes:
 - **Found and fixed while testing**: the tab buttons both opened MY TOURNAMENTS (a loop variable captured by the click);
   with `-ovt-profile` the tournament list and result queue now get their own files too (two test identities on one PC).
 
+## UI overhaul (2026-10-24)
+- **Look**: every menu in the style of the approved mockups and the tournaments screen: hand-drawn panel shapes with a
+  marker outline and a drop shadow (`tools/ui_art.py` -> `assets/ui`: three panel variants, sliced, and 24 icons), the
+  navy / blue / gold / orange palette, a gold title ribbon, folder tabs, cards, badges, gold "main action" signs, icon
+  buttons, a pulsing white-gold focus ring for keys / pads, and Bangers lettering (SIL OFL, shipped as `ui/Bangers-Regular.ttf`
+  with its licence, made into a TextMeshPro font at runtime).
+- **Logo A**: the game's own HangTime! logo kept, moved over the gap between the VERSUS column and CLASSIC; under it OVERTIME
+  on a folded orange ribbon with a stopwatch and the credit on a dark tag (`tools/title_logo.py`). The title menu moved down.
+- **Title bar**: PLAY / COMMUNITY / GAME groups of icon tiles, a line that asks the community server whether it's there.
+- **The game's own buttons** (title menu, pause, lose, win, upgrade screen, and the mod's buttons cloned from them) are
+  painted signs (`SignSkin`): same buttons, same hover and animations; CLASSIC and the "go again" buttons gold.
+- **Rebuilt screens**: tournaments (cards with emblems and flame meters, a poster with the match ladder), settings (toggle
+  cards), leaderboards (medals, a YOU panel), customize (stage with the live player, option rows), draft cup (team cards with
+  emblems), Versus and the lobby, the round / draft-pick overlay, the CO-OP and saved-run popups, daily, collection, replays,
+  controls, report bug, the lobby browser, the tournament editor and picker, rules, party cup, the bracket.
+- **Why colours had washed out**: the game tone-maps and lights its picture (a 50% grey showed at 73%). The menus are now
+  drawn by their own overlay camera without post-processing (`UiCamera`, an unused layer the main camera stops drawing),
+  with URP's unlit sprite shader; measured with a dev colour card (`-ovt-colortest`): every swatch shows its exact value.
+- **Fixed on the way**: the leaderboards / daily screen flashed the title for a frame when switching tabs (menu objects were
+  made on the normal layer for a frame): they go on the menus' layer as they're made (180 recorded frames of tab switches:
+  none bright). The title camera could stay centred on the court after a rally ended on the title screen: it keeps the menu
+  framing. The customize screen let the title signs show through (it wasn't a kit panel): rebuilt on the kit. A menu opening
+  another in the same frame could hand the title menu back (one shared hold).
+- **Dev helpers** (dev keys only): `-ovt-open NAME` opens a menu for screenshots (creator, versus, coop, continue, lobby,
+  browser, party, rules, bracket, editor, or a title-bar label), `-ovt-colortest`, `-ovt-uidebug`, `-ovt-nosigns`.
+- **Tested**: every screen above captured in the game at 1600 x 900 (keyboard and mouse; the virtual pad for the title
+  menu and customize); the leaderboard filled from a local test server; a Versus draft pick and an Infinite match, pause and
+  upgrade screen; mouse clicks on painted game buttons checked with and without the signs. Not captured: the win and lose
+  screens after the change (same painted buttons as the pause menu) and online with two PCs.
 ## Session status (2026-10-24): leaderboards and community tournaments, v0.5.0
 - **Finished** (each built, deployed, tested and committed; details in sections 0-4 above):
   0. Backend chosen and built: Cloudflare Workers + D1 (`server/`), no keys in the game or the repo, a local copy for

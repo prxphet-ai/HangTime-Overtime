@@ -90,8 +90,8 @@ namespace HangtimeOvertime.Patches
             foreach (Transform t in transform) Destroy(t.gameObject);
             ClearStops();
             nameField = descField = null; preview = null;
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            Box("Panel", Vector2.zero, new Vector2(W * 0.96f, H * 0.94f), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
+            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0.024f, 0.086f, 0.17f, 0.72f), 0);
+            Box("Panel", new Vector2(0f, -0.3f), new Vector2(W * 0.96f, H * 0.92f), UiArt.Navy, 1);
             if (pageNo >= work.teams.Length) pageNo = -2;
             if (pageNo == -2) TournamentPage();
             else if (pageNo == -1) LoadoutPage();
@@ -106,7 +106,7 @@ namespace HangtimeOvertime.Patches
         private void TournamentPage()
         {
             float pw = PW, top = Top;
-            Text(entry == null ? "NEW TOURNAMENT" : "EDIT TOURNAMENT", new Vector2(0f, top - 1.6f), 1.0f, pw - 2f, Color.white);
+            RibbonAt(entry == null ? "NEW TOURNAMENT" : "EDIT TOURNAMENT", top - 0.8f);
             float lx = -pw * 0.25f, lw = pw * 0.45f, y = top - 4.2f;
             Text("NAME", new Vector2(lx - lw / 2f + 2.2f, y), 0.45f, 4f, Pale);
             nameField = TextField(new Vector2(lx + 2f, y), new Vector2(lw - 4.5f, 1.8f), "TOURNAMENT NAME", Rules.TournamentNameMax, v => { Pull(); Build(); }, work.name);
@@ -174,7 +174,7 @@ namespace HangtimeOvertime.Patches
         {
             var tm = work.teams[k];
             float pw = PW, top = Top;
-            Text($"MATCH {k + 1} OF {work.teams.Length}{(k == work.teams.Length - 1 ? " (FINAL)" : "")}", new Vector2(0f, top - 1.5f), 0.9f, pw - 2f, Color.white);
+            RibbonAt($"MATCH {k + 1} OF {work.teams.Length}{(k == work.teams.Length - 1 ? " · FINAL" : "")}", top - 0.8f, 1.0f);
 
             // left: identity, look, emblem
             float lx = -pw * 0.34f, lw = pw * 0.28f, y = top - 3.8f, step = 1.95f;
@@ -249,8 +249,8 @@ namespace HangtimeOvertime.Patches
         {
             var p = work.player;
             float pw = PW, top = Top;
-            Text("YOUR TEAM (FIXED LOADOUT)", new Vector2(0f, top - 1.5f), 0.9f, pw - 2f, Color.white);
-            Text("WHAT THE PLAYER STARTS WITH AND KEEPS FOR THE WHOLE TOURNAMENT: NO NEW PERKS OR CARDS ON THE WAY.", new Vector2(0f, top - 3f), 0.4f, pw - 2f, Pale);
+            RibbonAt("YOUR TEAM", top - 0.8f);
+            Text("WHAT THE PLAYER STARTS WITH AND KEEPS FOR THE WHOLE TOURNAMENT: NO NEW PERKS OR CARDS ON THE WAY.", new Vector2(0f, top - 3.5f), 0.4f, pw - 2f, Pale);
             float lx = -pw * 0.3f, lw = pw * 0.3f, y = top - 5f;
             Text("STAT LEVELS (0-3)", new Vector2(lx, y), 0.45f, lw, Gold);
             y -= 1.7f;
@@ -271,7 +271,7 @@ namespace HangtimeOvertime.Patches
         private void Spin(string label, string value, Color? swatch, Vector2 at, float w, Action<int> step, float h = 1.7f)
         {
             float lw = w * 0.36f;
-            Text(label, new Vector2(at.x - w / 2f + lw / 2f, at.y), 0.4f, lw, Pale, TextAlignmentOptions.Left);
+            Text(label, new Vector2(at.x - w / 2f + lw / 2f, at.y), 0.5f, lw, Pale, TextAlignmentOptions.Left);
             float ax = at.x - w / 2f + lw + 0.9f, bx = at.x + w / 2f - 0.9f;
             float mid = (ax + bx) / 2f, span = bx - ax - 2f;
             var row = Box("Value", new Vector2(mid, at.y), new Vector2(bx - ax + 1.6f, h - 0.1f), new Color(0.02f, 0.2f, 0.34f, 1f), 4);
@@ -282,7 +282,7 @@ namespace HangtimeOvertime.Patches
                 stops.RemoveAll(s => s.Box == b);
             }
             if (swatch.HasValue) Box("Swatch", new Vector2(mid, at.y), new Vector2(span, h - 0.4f), swatch.Value, 6);
-            Text(value, new Vector2(mid, at.y), 0.45f, span, swatch.HasValue ? (swatch.Value.grayscale > 0.6f ? Color.black : Color.white) : Color.white);
+            Text(value, new Vector2(mid, at.y), 0.55f, span, swatch.HasValue ? (swatch.Value.grayscale > 0.6f ? Color.black : Color.white) : Color.white);
         }
 
         private void ColorSpin(string label, string hex, Vector2 at, float w, Action<string> set)
@@ -458,8 +458,8 @@ namespace HangtimeOvertime.Patches
             ClearStops(); cells.Clear(); shown = null;
             Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.05f, 0.12f, 0.75f), 0);
             float pw = W * 0.9f, ph = H * 0.9f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.04f, 0.33f, 0.55f, 0.99f), 1);
-            Text(cards ? "ADD A STAT CARD" : "ADD A PERK", new Vector2(0f, top - 1.5f), 0.9f, pw - 2f, Color.white);
+            Box("Panel", Vector2.zero, new Vector2(pw, ph), UiArt.Navy, 1);
+            RibbonAt(cards ? "ADD A STAT CARD" : "ADD A PERK", top);
             var fs = Filters;
             float fw = Mathf.Min(5.2f, (pw - 2f) / fs.Length - 0.2f), fx = -(fs.Length - 1) * (fw + 0.2f) / 2f;
             for (int i = 0; i < fs.Length; i++)

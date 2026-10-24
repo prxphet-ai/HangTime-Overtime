@@ -93,6 +93,9 @@ namespace HangtimeOvertime.Debugging
                 case "lobby": Patches.VersusMenu.OpenLobby(); break;
                 case "browser": Online.LobbyBrowser.Open(); break;
                 case "party": Patches.PartyMenu.Open(); break;
+                case "rules": Patches.RulesPanel.Open(); break;
+                case "editor": Patches.TournamentEditor.Open(System.Linq.Enumerable.FirstOrDefault(Core.Tournaments.All)); break;
+                case "bracket": Patches.BracketPanel.Show(Core.Bracket.Classic(3), false); break;
                 default:
                     foreach (var (_, _, label, open) in Patches.TitleBar.Buttons)
                         if (label.ToLowerInvariant().StartsWith(what)) { open(); break; }

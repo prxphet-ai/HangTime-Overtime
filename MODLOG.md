@@ -147,3 +147,4 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   identity, tournament list and pending queue files with `-ovt-profile`.
 - v0.5.0: leaderboards and community tournaments (sections 0-4 in HANGTIME_NOTES.md); the community server is not deployed yet
   (server/SETUP.md), so `[Community] Server` defaults to empty.
+- UI overhaul: `src/Patches/UiArt.cs` (art, palette, unlit material, Bangers font), `UiCamera.cs` (overlay camera without post-processing on a free layer; `Own` / `Adopt`), `SignSkin.cs` (game buttons as signs), kit helpers in `VersusUI.cs` (P/S/F mockup coordinates, Frame, Tabs, Badges, IconBtn, GoldSign, RibbonAt, Picture, Icon, Shade, `Stop.Adjust`). Art: `tools/ui_art.py`, `tools/title_logo.py`. Dev: `-ovt-open`, `-ovt-colortest`, `-ovt-uidebug`, `-ovt-nosigns` (src/Debug/ColorTest.cs, PostDump.cs).

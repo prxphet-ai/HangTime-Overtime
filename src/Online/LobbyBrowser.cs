@@ -22,7 +22,7 @@ namespace HangtimeOvertime.Online
         private TextMeshPro status, maxText;
         private List<LobbyEntry> lobbies = new List<LobbyEntry>();
         private int scroll;
-        private const int Rows = 8;
+        private const int Rows = 8;                      // rows of 58 px from y 290
         private readonly SpriteRenderer[] rowBoxes = new SpriteRenderer[Rows];
         private readonly TextMeshPro[,] cells = new TextMeshPro[Rows, 5];
         private bool searching, joining;
@@ -46,57 +46,46 @@ namespace HangtimeOvertime.Online
                 foreach (var b in titleGroup.buttons.Where(b => b != null))
                     foreach (var c in b.GetComponents<Collider2D>().Where(c => c.enabled)) { c.enabled = false; disabled.Add(c); }
             }
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.9f, ph = H * 0.88f, top = ph / 2f, left = -pw / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("MULTIPLAYER  <size=55%>ONLINE VERSUS</size>", new Vector2(0f, top - 1.8f), 1.2f, pw - 2f, Color.white);
-
-            // top row: refresh, filters, search by code
-            float y = top - 4.2f;
-            Button("REFRESH", new Vector2(left + pw * 0.08f, y), new Vector2(pw * 0.12f, 2f), () => Refresh(null), 0.55f);
-            Toggle("SAME VERSION", new Vector2(left + pw * 0.23f, y), new Vector2(pw * 0.16f, 2f), () => sameVersion, v => { sameVersion = v; Refresh(null); });
-            Toggle("SHOW FULL", new Vector2(left + pw * 0.38f, y), new Vector2(pw * 0.12f, 2f), () => showFull, v => { showFull = v; Refresh(null); });
-            codeField = TextField(new Vector2(left + pw * 0.66f, y), new Vector2(pw * 0.22f, 2f), "SEARCH BY CODE", 6, c => Refresh(c), upper: true);
-            Button("SEARCH", new Vector2(left + pw * 0.86f, y), new Vector2(pw * 0.14f, 2f), () => Refresh(codeField.Value), 0.55f);
-
-            // the list
-            float listTop = y - 2.4f;
-            float[] cx = { 0.05f, 0.45f, 0.6f, 0.72f, 0.88f };
+            Frame("ONLINE", () => Close());
+            // left: the lobbies
+            Rect("List", 70, 160, 1060, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            IconBtn("refresh", "REFRESH", 90, 176, 270, 222, () => Refresh(null), 20);
+            Toggle("SAME VERSION", P(380, 199), S(200, 46), () => sameVersion, v => { sameVersion = v; Refresh(null); }, F(18));
+            Toggle("SHOW FULL", P(580, 199), S(180, 46), () => showFull, v => { showFull = v; Refresh(null); }, F(18));
+            codeField = TextField(P(780, 199), S(190, 46), "CODE", 6, c => Refresh(c), upper: true);
+            IconBtn("globe", "FIND", 890, 176, 1040, 222, () => Refresh(codeField.Value), 20);
+            float[] cx = { 110, 640, 760, 880, 990 };
             string[] heads = { "LOBBY NAME", "VERSION", "MODE", "STATUS", "PCS" };
             for (int c = 0; c < 5; c++)
-                Text(heads[c], new Vector2(left + pw * cx[c] + (c == 0 ? pw * 0.17f : 0f), listTop), 0.5f, c == 0 ? pw * 0.36f : pw * 0.14f, new Color(0.85f, 0.95f, 1f), c == 0 ? TextAlignmentOptions.Left : TextAlignmentOptions.Center);
-            float rh = 2.1f;
+                if (c == 0) TL(heads[c], cx[c], 250, 20, UiArt.Gold, 400); else TC(heads[c], cx[c], 250, 20, UiArt.Gold, 120);
             for (int i = 0; i < Rows; i++)
             {
                 int row = i;
-                float ry = listTop - 2f - i * rh;
-                rowBoxes[i] = Button("", new Vector2(0f, ry), new Vector2(pw - 2f, rh - 0.2f), () => Pick(row), 0.5f);
+                float ry = 290f + i * 58f;
+                rowBoxes[i] = Shade(Btn("", 86, ry - 25, 1000, ry + 25, () => Pick(row)), new Color(0.094f, 0.275f, 0.46f, 1f));
                 for (int c = 0; c < 5; c++)
-                    cells[i, c] = Text("", new Vector2(left + pw * cx[c] + (c == 0 ? pw * 0.17f : 0f), ry), 0.5f, c == 0 ? pw * 0.36f : pw * 0.14f, Color.white,
-                                       c == 0 ? TextAlignmentOptions.Left : TextAlignmentOptions.Center, o: 9);
+                    cells[i, c] = c == 0 ? TL("", cx[c], ry, 24, UiArt.Ink, 500) : TC("", cx[c], ry, 22, UiArt.Ink, 120);
             }
-            float listBottom = listTop - 2f - Rows * rh;
-            Button("^", new Vector2(pw / 2f - 1.6f, listTop - 2f), new Vector2(1.6f, 1.8f), () => Scroll(-1), 0.6f);
-            Button("v", new Vector2(pw / 2f - 1.6f, listBottom + rh), new Vector2(1.6f, 1.8f), () => Scroll(1), 0.6f);
-            status = Text("", new Vector2(0f, listBottom + 0.6f), 0.55f, pw - 4f, new Color(1f, 0.85f, 0.35f));
+            Btn("^", 1010, 266, 1048, 312, () => Scroll(-1), 22);
+            Btn("v", 1010, 690, 1048, 736, () => Scroll(1), 22);
+            status = TC("", 565, 772, 22, UiArt.Gold, 940);
 
-            // create a lobby
-            float by = -ph / 2f + 4.4f;
-            Button("CREATE LOBBY", new Vector2(left + pw * 0.1f, by), new Vector2(pw * 0.17f, 2.2f), Create, 0.6f);
-            nameField = TextField(new Vector2(left + pw * 0.34f, by), new Vector2(pw * 0.28f, 2.2f), "LOBBY NAME", 28, n => Create());
-            Toggle("PUBLIC", new Vector2(left + pw * 0.57f, by), new Vector2(pw * 0.14f, 2.2f), () => makePublic, v => makePublic = v);
-            Button("<", new Vector2(left + pw * 0.67f, by), new Vector2(1.6f, 2.2f), () => SetMax(-1), 0.6f);
-            maxText = Text("", new Vector2(left + pw * 0.735f, by), 0.55f, pw * 0.1f, Color.white);
-            Button(">", new Vector2(left + pw * 0.80f, by), new Vector2(1.6f, 2.2f), () => SetMax(1), 0.6f);
+            // right: make a lobby, join by IP
+            Rect("Create", 1090, 160, 1530, 560, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            TC("CREATE A LOBBY", 1310, 196, 32, UiArt.Gold, 420);
+            nameField = TextField(P(1310, 256), S(400, 50), "LOBBY NAME", 28, n => Create());
+            Toggle("PUBLIC", P(1220, 326), S(220, 50), () => makePublic, v => makePublic = v, F(22));
+            Btn("<", 1340, 304, 1380, 348, () => SetMax(-1), 24);
+            maxText = TC("", 1427, 326, 24, UiArt.Ink, 90);
+            Btn(">", 1474, 304, 1514, 348, () => SetMax(1), 24);
             SetMax(0);
-
-            // join by IP, back
-            float iy = -ph / 2f + 1.7f;
-            ipField = TextField(new Vector2(left + pw * 0.2f, iy), new Vector2(pw * 0.3f, 2.2f), "HOST IP (ADDRESS OR ADDRESS:PORT)", 40, a => JoinIp(), Plugin.OnlineJoin.Value);
-            Button("JOIN BY IP", new Vector2(left + pw * 0.46f, iy), new Vector2(pw * 0.17f, 2.2f), JoinIp, 0.6f);
-            Button("BACK", new Vector2(pw / 2f - pw * 0.1f, iy), new Vector2(pw * 0.15f, 2.2f), () => Close(), 0.6f);
-
-            PadHint("A: CHOOSE (A ON A TEXT BOX: KEYBOARD)   ·   B: BACK   ·   LB / RB: SCROLL", new Vector2(0f, top - 2.9f), pw - 2f);
+            GoldSign("CREATE", 1130, 400, 1490, 470, Create, 36, "plus");
+            TW("PUBLIC LOBBIES SHOW IN EVERYONE'S LIST; PRIVATE ONES ARE JOINED BY CODE OR STEAM INVITE", 1310, 515, 17, new Color(0.78f, 0.88f, 1f), 400, 60);
+            Rect("Ip", 1090, 580, 1530, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            TC("JOIN BY IP", 1310, 614, 30, UiArt.Gold, 420);
+            ipField = TextField(P(1310, 672), S(400, 50), "ADDRESS OR ADDRESS:PORT", 40, a => JoinIp(), Plugin.OnlineJoin.Value);
+            IconBtn("play", "JOIN", 1200, 712, 1420, 762, JoinIp, 24);
+            PadHint("A: CHOOSE (A ON A TEXT BOX: KEYBOARD)   B: BACK   LB / RB: SCROLL", P(640, 869), 900 / 25f * KX);
             navKeys = true;
             focus = 0;
             if (OnlineFlow.PendingMessage != null) { status.text = OnlineFlow.PendingMessage; OnlineFlow.PendingMessage = null; }
@@ -150,7 +139,7 @@ namespace HangtimeOvertime.Online
                 for (int col = 0; col < 5; col++)
                 {
                     cells[i, col].text = has ? v[col].Replace("<", "‹").Replace(">", "›") : "";
-                    cells[i, col].color = UiArt.Paint(col == 3 && has && e.State != "LOBBY" ? new Color(1f, 0.85f, 0.35f) : c);
+                    cells[i, col].color = col == 3 && has && e.State != "LOBBY" ? UiArt.Gold : c;
                 }
             }
         }

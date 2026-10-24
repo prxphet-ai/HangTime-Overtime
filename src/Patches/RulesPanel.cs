@@ -40,7 +40,7 @@ namespace HangtimeOvertime.Patches
             Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
             float pw = W * 0.74f, ph = H * 0.92f, top = ph / 2f;
             Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("MATCH RULES", new Vector2(0f, top - 1.7f), 1.1f, pw - 2f, Color.white);
+            RibbonAt("MATCH RULES", top);
             string preset = LobbyRules.MatchingPreset();
             Text(readOnly ? "THE HOST'S RULES (ONLY THE HOST CAN CHANGE THEM)" : preset != null ? $"PRESET: {preset}" : "CUSTOM RULES (NOT SAVED)",
                  new Vector2(0f, top - 3.1f), 0.5f, pw - 2f, new Color(1f, 0.85f, 0.35f));
@@ -195,7 +195,7 @@ namespace HangtimeOvertime.Patches
             float pw = W * 0.86f, ph = H * 0.9f, top = ph / 2f;
             Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
             var r = LobbyRules.Current;
-            Text($"BANNED PERKS  ({r.BannedPerks.Length})", new Vector2(0f, top - 1.7f), 1f, pw - 2f, Color.white);
+            RibbonAt($"BANNED PERKS  ({r.BannedPerks.Length})", top);
             var els = new[] { "all" }.Concat(Elements.All.Select(e => e.Id)).ToArray();
             element = Mathf.Clamp(element, 0, els.Length - 1);
             Button($"ELEMENT: {els[element].ToUpperInvariant()}", new Vector2(-pw * 0.3f, top - 3.6f), new Vector2(pw * 0.25f, 1.7f), () => { element = (element + 1) % els.Length; page = 0; Build(); }, 0.45f);

@@ -38,7 +38,7 @@ namespace HangtimeOvertime.Patches
             Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.65f), 0);
             float pw = W * 0.7f, ph = H * 0.88f, top = ph / 2f;
             Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("PARTY CUP", new Vector2(0f, top - 1.8f), 1.1f, pw - 2f, Color.white);
+            RibbonAt("PARTY CUP", top);
             Text("A KNOCKOUT CUP OF 1 VS 1 VERSUS MATCHES (THE LOBBY RULES). JOIN: JUMP ON A KEY SET, A ON A GAMEPAD" + (Net.Online ? ", OR A FRIEND'S DEVICE" : "") +
                  ".  LEAVE: RECEIVE / B.  THE AI FILLS THE OPEN PLACES.", new Vector2(0f, top - 3.8f), 0.42f, pw - 3f, new Color(0.85f, 0.95f, 1f), height: 2.4f, wrap: true);
             Box("List", new Vector2(0f, top - 11f), new Vector2(pw - 4f, 11.5f), new Color(0.02f, 0.2f, 0.34f, 1f), 2);

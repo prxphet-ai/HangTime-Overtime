@@ -51,7 +51,7 @@ namespace HangtimeOvertime.Patches
         }
 
         // any full-screen panel of the mod
-        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || ReplayMenu.IsOpen || LeaderboardMenu.IsOpen || TournamentMenu.IsOpen || TournamentEditor.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
+        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || ReplayMenu.IsOpen || LeaderboardMenu.IsOpen || TournamentMenu.IsOpen || TournamentEditor.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || RulesPanel.IsOpen || BanPanel.IsOpen || PartyMenu.IsOpen || BracketPanel.IsOpen || TourPicker.IsOpen || PanelCount > 0;
         public static int PanelCount;                     // other menus register themselves while open
 
         private bool barFocus;                           // a gamepad is driving the bar (SELECT), the title menu is held

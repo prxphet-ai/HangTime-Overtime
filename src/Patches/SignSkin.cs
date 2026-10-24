@@ -24,6 +24,7 @@ namespace HangtimeOvertime.Patches
         public static void ApplyAll()
         {
             if (!UiArt.Ready) return;
+            if (Plugin.DevKeys.Value && System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-ovt-nosigns") >= 0) return;   // development
             int n = 0;
             foreach (var b in Object.FindObjectsByType<ButtonController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
                 if (b.gameObject.scene.IsValid() && Apply(b)) n++;

@@ -173,6 +173,15 @@ namespace HangtimeOvertime.Patches
             if (back != null) IconBtn("back", "BACK", 1420, 846, 1560, 892, back);
         }
 
+        // the gold title ribbon on a panel's top edge (layout y), for panels sized to their content
+        protected void RibbonAt(string title, float y, float textSize = 1.15f)
+        {
+            float w = Mathf.Clamp(title.Length * 1.15f + 4.8f, 14f, W * 0.7f);
+            var ribbon = Box("Ribbon", new Vector2(0f, y), new Vector2(w, 2.9f), UiArt.Gold, 3, true);
+            Tilt(ribbon, -1.5f);
+            Tilt(Text(title, new Vector2(0f, y - 0.05f), textSize, w - 1.6f, UiArt.Dark, o: 9), -1.5f);
+        }
+
         // little dark labels in a row ("FIXED", "3 MATCHES", ...)
         protected void Badges(float x, float y, params (string text, Color color)[] items)
         {

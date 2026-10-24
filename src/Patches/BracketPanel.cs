@@ -46,8 +46,8 @@ namespace HangtimeOvertime.Patches
             int maxMatches = model.Rounds.Max(r => r.Matches.Count);
             float pw = W * 0.94f, ph = Mathf.Min(H * 0.9f, 17f + maxMatches * 4.2f), top = ph / 2f, left = -pw / 2f;
             Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text(model.Title, new Vector2(0f, top - 2f), model.Champion ? 1.4f : 1.1f, pw - 2f, model.Champion ? new Color(1f, 0.85f, 0.3f) : Color.white);
-            Text($"<noparse>{model.Sub}</noparse>", new Vector2(0f, top - 4f), 0.55f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+            RibbonAt(model.Title, top, model.Champion ? 1.4f : 1.1f);
+            Text($"<noparse>{model.Sub}</noparse>", new Vector2(0f, top - 3.4f), 0.6f, pw - 2f, UiArt.Gold);
 
             int n = model.Rounds.Count;
             float colW = (pw - 2f) / n, boxW = colW - 1.3f, boxH = 3.8f;
@@ -76,7 +76,7 @@ namespace HangtimeOvertime.Patches
                     var at = MatchAt(r, i);
                     bool next = r == model.ToRound && (m.A == model.You || m.B == model.You);
                     if (next) pulse = Box("Next", at, new Vector2(boxW + 0.6f, boxH + 0.6f), new Color(1f, 0.85f, 0.25f, 0f), 2);
-                    Box("Match", at, new Vector2(boxW, boxH), m.Winner >= 0 ? new Color(0.03f, 0.22f, 0.38f, 1f) : new Color(0.02f, 0.17f, 0.3f, 1f), 3);
+                    Box("Match", at, new Vector2(boxW, boxH), m.Winner >= 0 ? new Color(0.094f, 0.275f, 0.46f, 1f) : new Color(0.06f, 0.17f, 0.29f, 1f), 3, true);
                     Box("Split", at, new Vector2(boxW - 0.6f, 0.08f), new Color(1f, 1f, 1f, 0.15f), 4);
                     Text(Row(m.A, m.Winner, 0), at + new Vector2(0f, boxH / 4f), 0.52f, boxW - 0.5f, Color.white);
                     if (m.EmblemB != null)
