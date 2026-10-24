@@ -38,6 +38,12 @@ dozens of new abilities and teams, a character creator and run saves — all bui
 - **Spectators** — watch an online lobby's matches without playing, or join one that's already running.
 - **Individual picks** — in co-op and two-player Versus sides each player picks their own upgrades; a perk works for
   the player who picked it, team-wide ones for both.
+- **Community tournaments** — build your own 1-8 match tournament: custom teams (name, colours, an emblem from the
+  emblem builder, stat levels, perks and stat cards), FIXED LOADOUT (you set the player's build too) or NORMAL DRAFT, with
+  a difficulty rating from the match simulator. Beat it yourself, then share it as a code or publish it to the online
+  browser (sort, filter, ratings, fastest clears, reports).
+- **Leaderboards** — CLASSIC SPEEDRUN and INFINITE (most rounds) for each mod version, with your rank, an offline queue
+  and basic cheat checks. Needs the community server to be set up (see below); turn submitting off in SETTINGS.
 - **Collection and stats** — every team, perk and stat card you've found (the rest stay ???), win streaks per mode,
   and a bracket screen between Classic matches.
 - **Quality of life** — full gamepad support in the mod's menus (with an on-screen keyboard), key rebinding for four
@@ -69,10 +75,13 @@ To uninstall, delete the `BepInEx/plugins/HangtimeOvertime` folder.
 | `[General] CheckForUpdates` | `true` | Ask GitHub for a newer release on launch (nothing about you is sent). Also in SETTINGS. |
 | `[Replays] Record` | `true` | Keep replays of your matches. Also in SETTINGS. |
 | `[Chat] Bubbles`, `[Chat] MuteOthers` | `true`, `false` | Chat bubbles above players; hide other PCs' chat online. Also in SETTINGS. |
+| `[Community] Server` | (empty) | The community server's address for leaderboards and the tournament browser. Empty: offline (results wait). |
+| `[Community] Submit` | `true` | Send your qualifying results to the leaderboards. Also in SETTINGS. |
 | `[Debug] DevKeys` | `false` | Test shortcuts on F1–F12 (for development). |
 | `[Debug] DumpScenes` | `false` | Detailed logging (for development). |
 
-Saves (runs, your character's look, controls, collection, stats, daily results, rules presets and replays) live next to the game's own save in
+Saves (runs, your character's look, controls, collection, stats, daily results, rules presets, replays, tournaments and
+your community identity) live next to the game's own save in
 `%USERPROFILE%\AppData\LocalLow\LeoLanglois\Hangtime!\`. The mod never writes the game's own `save.json`.
 
 ## Building from source
@@ -93,6 +102,8 @@ game. If the game isn't in the default Steam folder, pass `-p:GameDir="D:\path\t
 - `src/` — the plugin (C#): one generic engine runs every perk row for either team; Harmony patches hook the game.
 - `tools/` — build, the match simulator used for balancing (`python tools/sim.py --help`), emblem and title art generators.
 - `assets/` — the emblems and title art (drawn by `tools/emblems.py` and `tools/title_logo.py`).
+- `server/` — the community server (a Cloudflare Worker with a D1 database) for leaderboards and shared tournaments;
+  setup in [server/SETUP.md](server/SETUP.md), local testing with `node server/dev_server.mjs`.
 - `HANGTIME_NOTES.md` — design notes and balance history.
 
 ## License

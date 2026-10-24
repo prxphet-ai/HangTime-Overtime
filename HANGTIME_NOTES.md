@@ -1233,6 +1233,44 @@ Modes:
 - **Found and fixed while testing**: the tab buttons both opened MY TOURNAMENTS (a loop variable captured by the click);
   with `-ovt-profile` the tournament list and result queue now get their own files too (two test identities on one PC).
 
+## Session status (2026-10-24): leaderboards and community tournaments, v0.5.0
+- **Finished** (each built, deployed, tested and committed; details in sections 0-4 above):
+  0. Backend chosen and built: Cloudflare Workers + D1 (`server/`), no keys in the game or the repo, a local copy for
+     testing (`node server/dev_server.mjs`).
+  1. Leaderboards: CLASSIC SPEEDRUN and INFINITE per mod version line, names, auto-submit with an opt-out, offline queue,
+     run log checks and rate limits, gamepad.
+  2. Tournament creator: custom teams with the emblem builder, perks, stat cards and stat levels, FIXED / NORMAL DRAFT,
+     simulator difficulty, share codes, test play and the clear record.
+  3. Playing: FIXED / DRAFT runs, bracket with emblems, ability announcements, record per tournament, run saves, retry.
+  4. Browser: publish / update / remove, sort and filter, players, clear rate, ratings, fastest clears, reports.
+  Also: version 0.5.0 (the leaderboards use v0.5 boards; the online match protocol is unchanged at 9), README.
+- **Waiting on you**:
+  1. **The community server** (about 10 minutes, free, no card): follow `server/SETUP.md` (Cloudflare account, `npx
+     wrangler login`, create the database, paste its id into `server/wrangler.toml`, create the tables, deploy). Then give
+     me the `https://....workers.dev` address and I'll make it the default `[Community] Server` in `src/Plugin.cs`. Until
+     then leaderboards say NOT CONNECTED (results wait on each PC) and BROWSE ONLINE is off; share codes work without it.
+  2. Pushing: v0.4.1 (co-op Infinite) and everything since are committed locally, not pushed; nothing released.
+- **Not tested with real people / the real server**: the online parts ran against the local copy of the same worker on
+  this PC with two test identities one after the other (not two PCs, not Cloudflare). After you deploy, a quick check from
+  two PCs (submit a run, publish and play a tournament) is the next step.
+- **Open questions**:
+  1. Classic speedrun timing: real time from the first match's loading to the final point, upgrade screens and loading
+     included, pauses and the title excluded. Is that the definition you want (or match time only)?
+  2. Modified runs (dev keys, debug options, Infinite difficulty changed, launch options) don't submit at all, as asked
+     (no separate board). OK?
+  3. FIXED LOADOUT: "the player's team" is built as the player's stat levels, perks and stat cards (not their look or a
+     different squad). Should it also be able to put the player on one of the mod's teams (colours / banner)?
+  4. Community tournaments unlock no Steam achievements (a 1-match tournament would otherwise give "win the game"). Agree?
+  5. Difficulty is the simulator's estimate (about ±0.13 win chance per match against simulated play). Is a 1-10 number
+     with "estimated clear chance" the right way to show it, or would you rather have a hard power budget per team?
+  6. Cheating: the server rejects impossible results and checks run logs, but a rewritten game could still send a
+     believable fake (for the boards and for a tournament's clear record). Flagging / removing is manual (SETUP.md). Enough
+     for now?
+  7. Reports: three players' reports hide a tournament until you look at it. Is 3 the right number?
+- Settings restored after testing: DevKeys off, DumpScenes off, SkipTutorial off, ListenAddress 0.0.0.0, JoinAddress
+  127.0.0.1, `[Community] Server` empty; the mod's saves restored to their state before testing, test files (tournament
+  lists, test identities, queues, test replays) removed; save.json untouched.
+
 ## Session status (2026-10-22)
 - **Done**: the three known bugs (net wall, perk zoom stuck, ball lost on serve) and features 1-17, each built,
   deployed, tested (keyboard, gamepad through the dev virtual pad, local multiplayer; online with two or three copies of

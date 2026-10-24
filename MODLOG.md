@@ -145,3 +145,5 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   `Leaderboards.Queue` with a `_path` key), TournamentMenu tabs (BROWSE ONLINE), `TourEntry.published` (the hash online). Server:
   list returns `mods`, update resets plays / clears / tplays, results need the current `hash`. `Identity.Profile` suffixes the
   identity, tournament list and pending queue files with `-ovt-profile`.
+- v0.5.0: leaderboards and community tournaments (sections 0-4 in HANGTIME_NOTES.md); the community server is not deployed yet
+  (server/SETUP.md), so `[Community] Server` defaults to empty.
