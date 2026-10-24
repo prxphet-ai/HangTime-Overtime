@@ -13,21 +13,24 @@ own game keeps (the server stores only its hash), and the server checks and rate
 2. Install Node.js 18 or newer (<https://nodejs.org>), if it isn't installed already.
 3. Open a terminal in this repo's `server` folder and log in:
    ```bash
-   npx wrangler login
+   npx.cmd wrangler login
    ```
    (a browser window asks you to allow Wrangler, Cloudflare's own command-line tool)
+
+   The commands here use `npx.cmd` because Windows PowerShell blocks plain `npx` ("running scripts is disabled on this
+   system"). On a Mac or Linux, type `npx` instead.
 4. Create the database:
    ```bash
-   npx wrangler d1 create overtime
+   npx.cmd wrangler d1 create overtime
    ```
    It prints a `database_id`. Paste it into `server/wrangler.toml` in place of `PASTE-YOUR-DATABASE-ID-HERE`.
 5. Create the tables:
    ```bash
-   npx wrangler d1 execute overtime --remote --file=schema.sql
+   npx.cmd wrangler d1 execute overtime --remote --file=schema.sql
    ```
 6. Put the server online:
    ```bash
-   npx wrangler deploy
+   npx.cmd wrangler deploy
    ```
    It prints the address, like `https://overtime-community.<your-name>.workers.dev`.
 7. Check it: open `<that address>/v1/health` in a browser. It should say `{"ok":true,"server":"overtime",...}`.
@@ -40,22 +43,22 @@ After that, the leaderboards and the tournament browser work for everyone with t
 ## Updating the server later
 
 Edit `worker.js` (or regenerate `generated.js` with `python tools/sheets.py gen` after changing perks, cards or the
-community sheet), then run `npx wrangler deploy` again. New tables or columns: add them to `schema.sql` and run step 5
+community sheet), then run `npx.cmd wrangler deploy` again. New tables or columns: add them to `schema.sql` and run step 5
 again (the statements only create what's missing).
 
 ## Looking after it
 
 - **See the leaderboard / remove a cheated score:**
   ```bash
-  npx wrangler d1 execute overtime --remote --command "SELECT p.name, s.board, s.value, s.log FROM scores s JOIN players p ON p.id = s.player ORDER BY s.date DESC LIMIT 20"
-  npx wrangler d1 execute overtime --remote --command "UPDATE scores SET flagged = 1 WHERE player = '<player id>'"
+  npx.cmd wrangler d1 execute overtime --remote --command "SELECT p.name, s.board, s.value, s.log FROM scores s JOIN players p ON p.id = s.player ORDER BY s.date DESC LIMIT 20"
+  npx.cmd wrangler d1 execute overtime --remote --command "UPDATE scores SET flagged = 1 WHERE player = '<player id>'"
   ```
   A flagged score is hidden from the boards. Each score keeps its run log (every match's score and time) to check.
 - **Reported tournaments:** three different players' reports hide a tournament until you look at it:
   ```bash
-  npx wrangler d1 execute overtime --remote --command "SELECT t.id, t.name, t.description, r.reason FROM treports r JOIN tournaments t ON t.id = r.tid"
-  npx wrangler d1 execute overtime --remote --command "UPDATE tournaments SET hidden = 0, reports = 0 WHERE id = '<id>'"   -- keep it
-  npx wrangler d1 execute overtime --remote --command "DELETE FROM tournaments WHERE id = '<id>'"                       -- remove it
+  npx.cmd wrangler d1 execute overtime --remote --command "SELECT t.id, t.name, t.description, r.reason FROM treports r JOIN tournaments t ON t.id = r.tid"
+  npx.cmd wrangler d1 execute overtime --remote --command "UPDATE tournaments SET hidden = 0, reports = 0 WHERE id = '<id>'"   -- keep it
+  npx.cmd wrangler d1 execute overtime --remote --command "DELETE FROM tournaments WHERE id = '<id>'"                       -- remove it
   ```
 - **Usage:** the Cloudflare dashboard shows requests per day. A free account stops serving requests for the rest of the
   day at 100,000 (it doesn't start charging).
