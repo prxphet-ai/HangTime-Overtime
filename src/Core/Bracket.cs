@@ -13,6 +13,7 @@ namespace HangtimeOvertime.Core
         public string A = "", B = "";
         public int Winner = -1;               // 0 = A, 1 = B, -1 not played
         public string Note = "";              // a small tag under the match (BOSS, COMBO ...)
+        public Texture2D EmblemB;             // this PC only (not sent): B's emblem beside its name (community tournaments)
     }
 
     internal class BracketRound

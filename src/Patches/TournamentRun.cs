@@ -141,7 +141,7 @@ namespace HangtimeOvertime.Patches
             {
                 var tm = p.T.teams[i];
                 var r = new BracketRound { Name = i == p.Matches - 1 ? "FINAL" : $"MATCH {i + 1}" };
-                r.Matches.Add(new BracketMatch { A = m.You, B = tm.name, Winner = p.FirstSlot + i <= won ? 0 : -1, Note = $"{tm.perks.Length} PERKS · {tm.cards.Length} CARDS" });
+                r.Matches.Add(new BracketMatch { A = m.You, B = tm.name, Winner = p.FirstSlot + i <= won ? 0 : -1, Note = $"{tm.perks.Length} PERKS · {tm.cards.Length} CARDS", EmblemB = EmblemArt.Make(tm.emblem, tm.name) });
                 m.Rounds.Add(r);
             }
             int done = won - p.FirstSlot + 1;

@@ -138,3 +138,6 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   TeamRoster.Choose / Banner (custom ids `custom:<hash>:<i>`), RunPatches TeamSelect / MatchStart, StreakPatches, MenuPatches
   TitleMenu / Restart / WinScreen, run slot `community`. Rating: `tools/tournament_rating.py fit|check` -> `sheets/community.json`
   rating; `simlib.build_custom` / `apply_cards`. Panel kit: `Stop.Adjust` (value rows), `Shade`, one shared title hold.
+- Tournament play: `BracketMatch.EmblemB` (this PC only, not on the wire) drawn by BracketPanel; `TournamentRun.Bracket`
+  (one column per match), `Retry` (MenuPatches.Restart), `Cleared` / `Lost` (StreakPatches); TournamentMenu CONTINUE uses
+  `RunSaves.CommunityRun`. The game's lose screen says "Bracket: Semi Finals" etc. by slot (vanilla text).

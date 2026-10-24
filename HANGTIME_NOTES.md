@@ -1169,6 +1169,34 @@ Modes:
   MATCHES row couldn't be reached by keys / pad and its arrows didn't redraw: value rows are now one stop that left / right
   change.
 
+### 3. Playing a community tournament (done)
+- **The run**: the game's own Classic machinery from slot 9 - N up to the final (slot 8), so the last match is the game's
+  final with its gym, its win screen and CHAMPIONS; a 3-match tournament plays slots 6, 7, 8. Each opponent is spawned on
+  its squad's body and gets exactly the creator's stat levels (the squad's own stat tables at those levels, no round
+  scaling), perks (the squad's built-in ones are removed) and stat cards (as card points on the right team). Banner: the
+  emblem from the builder on the gym wall in the team's banner colour; jersey, shorts and hair dressed like the mod's teams.
+- **FIXED**: the player starts with the creator's levels, perks and cards and gets nothing new: after a win the upgrade
+  screen shows the recap and the bracket, its buttons are hidden, and the next match loads when the bracket is closed (the
+  pad's START skip is blocked so it can't load twice). **DRAFT**: the player starts with nothing and the normal upgrade
+  screens (perks / stat cards) come after every win, against the custom teams.
+- **Bracket** between matches: one column per match (MATCH 1 ... FINAL), each opponent with its emblem, name, and how many
+  perks / cards it has; "NEXT: VS TEAM · its first perks". CHAMPIONS on the win screen with the time.
+- **Opponents announce their abilities** at kick-off ("Our abilities: Frost Serve!", up to four, then "+n more"), and say
+  the creator's kick-off line as their intro.
+- **Record** per tournament (this PC): attempts (every start and TRY AGAIN), clears, fastest clear (the run clock: real
+  time, pauses don't count). Shown in the list and the detail. A loss ends the run; the lose screen's TRY AGAIN starts the
+  same tournament again from match 1 (a new attempt, loadout reset).
+- **Run save**: its own slot (`community`, with the tournament's hash), saved at each kick-off, upgrade screen and pick like
+  the other runs; TOURNAMENTS -> the tournament -> CONTINUE (MATCH k/N) or PLAY FROM THE START. A saved run whose
+  tournament was deleted can't be continued (deleting a tournament also drops its saved run).
+- **Kept apart from Classic**: no Classic speedrun submission, no Classic stats or "runs won", its own win-streak line
+  ("Community"), no LOOP 2 button on its win screen, no Steam achievements (a 1-match tournament is the game's final).
+- **Tested** (one copy, keyboard / mouse / virtual pad): FIXED 3 matches with the bracket and no picks (section 2); DRAFT 3
+  matches: won match 1 -> bracket with the three emblems -> the game's recap -> two perk cards offered -> took Cannonball
+  Serve -> match 2; lost it -> "Knocked Out" -> TRY AGAIN -> match 1 again (attempt 2) -> won -> pick -> match 2 started
+  with "Our abilities: Frost Serve!". Closed mid-run and continued (section 2). 0 errors in the log.
+- Not online: tournaments are single-player runs; nothing here talks to other PCs except the browser (section 4).
+
 ## Session status (2026-10-22)
 - **Done**: the three known bugs (net wall, perk zoom stuck, ball lost on serve) and features 1-17, each built,
   deployed, tested (keyboard, gamepad through the dev virtual pad, local multiplayer; online with two or three copies of

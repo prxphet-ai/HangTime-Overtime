@@ -79,7 +79,17 @@ namespace HangtimeOvertime.Patches
                     Box("Match", at, new Vector2(boxW, boxH), m.Winner >= 0 ? new Color(0.03f, 0.22f, 0.38f, 1f) : new Color(0.02f, 0.17f, 0.3f, 1f), 3);
                     Box("Split", at, new Vector2(boxW - 0.6f, 0.08f), new Color(1f, 1f, 1f, 0.15f), 4);
                     Text(Row(m.A, m.Winner, 0), at + new Vector2(0f, boxH / 4f), 0.52f, boxW - 0.5f, Color.white);
-                    Text(Row(m.B, m.Winner, 1), at - new Vector2(0f, boxH / 4f), 0.52f, boxW - 0.5f, Color.white);
+                    if (m.EmblemB != null)
+                    {
+                        float ih = boxH / 2f - 0.2f, iw = ih * m.EmblemB.width / m.EmblemB.height;
+                        var icon = new GameObject("Emblem").AddComponent<SpriteRenderer>();
+                        icon.transform.SetParent(transform, false);
+                        icon.transform.localPosition = new Vector3(at.x - boxW / 2f + 0.3f + iw / 2f, at.y - boxH / 4f, -0.06f);
+                        icon.sprite = Engine.EmblemArt.SpriteOf(m.EmblemB, m.EmblemB.width / iw);
+                        icon.sortingLayerID = layer; icon.sortingOrder = order + 6;
+                        Text(Row(m.B, m.Winner, 1), at + new Vector2(iw / 2f + 0.2f, -boxH / 4f), 0.52f, boxW - iw - 0.9f, Color.white);
+                    }
+                    else Text(Row(m.B, m.Winner, 1), at - new Vector2(0f, boxH / 4f), 0.52f, boxW - 0.5f, Color.white);
                     if (!string.IsNullOrEmpty(m.Note)) Text(m.Note, at - new Vector2(0f, boxH / 2f + 0.6f), 0.44f, boxW, new Color(1f, 0.78f, 0.29f));
                     // connector to the match this one feeds
                     if (r + 1 < n)
