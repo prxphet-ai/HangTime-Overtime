@@ -14,7 +14,7 @@ namespace HangtimeOvertime.Patches
         public static bool IsOpen => open != null;
         private List<Replays.Entry> list;
         private int page;
-        private const int Rows = 8;
+        private const int Rows = 6;
         private string note = "";
 
         public static void Open()
@@ -34,39 +34,39 @@ namespace HangtimeOvertime.Patches
             foreach (Transform t in transform) Destroy(t.gameObject);
             ClearStops();
             navKeys = true;
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.86f, ph = H * 0.9f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("REPLAYS", new Vector2(0f, top - 1.8f), 1.1f, pw - 2f, Color.white);
-            Text(Plugin.RecordReplays.Value ? $"THE LAST {Replays.KeepRecent} MATCHES AND VERSUS ROUNDS ARE KEPT; SAVE ONE TO KEEP IT FOR GOOD" : "RECORDING IS OFF (SETTINGS > RECORD REPLAYS)",
-                 new Vector2(0f, top - 3.3f), 0.45f, pw - 2f, new Color(0.85f, 0.95f, 1f));
+            Frame("REPLAYS", () => Destroy(gameObject));
+            TC(Plugin.RecordReplays.Value ? $"THE LAST {Replays.KeepRecent} MATCHES AND VERSUS ROUNDS ARE KEPT; SAVE ONE TO KEEP IT FOR GOOD" : "RECORDING IS OFF (SETTINGS > RECORD REPLAYS)",
+               800, 172, 22, new Color(0.78f, 0.88f, 1f), 1400);
             int pages = Mathf.Max(1, (list.Count + Rows - 1) / Rows);
             page = Mathf.Clamp(page, 0, pages - 1);
-            float y = top - 5.6f;
-            if (list.Count == 0) Text("NO REPLAYS YET: PLAY A MATCH", new Vector2(0f, y - 4f), 0.6f, pw - 2f, Color.white);
+            float y = 200f;
+            if (list.Count == 0)
+            {
+                Icon("film", P(800, 420), 4f, new Color(1f, 1f, 1f, 0.25f), 3);
+                TC("NO REPLAYS YET: PLAY A MATCH", 800, 520, 40, UiArt.Ink, 1000);
+            }
             foreach (var e in list.Skip(page * Rows).Take(Rows))
             {
                 var h = e.Header;
-                Box("Row", new Vector2(-pw * 0.12f, y), new Vector2(pw * 0.72f, 2.2f), e.Saved ? new Color(0.06f, 0.28f, 0.42f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f), 2);
-                Text($"<noparse>{h.Title}</noparse>", new Vector2(-pw * 0.12f, y + 0.45f), 0.48f, pw * 0.7f, Color.white, TextAlignmentOptions.Left);
-                Text($"{(e.Saved ? "<color=#FFD95A>SAVED</color> · " : "")}{h.Date} · {(int)(h.Seconds / 60)}:{(int)(h.Seconds % 60):00} · <noparse>{h.Left} {h.ScoreL} - {h.ScoreR} {h.Right}</noparse>",
-                     new Vector2(-pw * 0.12f, y - 0.5f), 0.38f, pw * 0.7f, new Color(0.85f, 0.95f, 1f), TextAlignmentOptions.Left);
                 var entry = e;
-                Button("WATCH", new Vector2(pw * 0.3f, y), new Vector2(pw * 0.09f, 1.9f), () => Watch(entry), 0.45f);
-                if (e.Saved) Button("DELETE", new Vector2(pw * 0.4f, y), new Vector2(pw * 0.09f, 1.9f), () => { Replays.Delete(entry); list = Replays.List(); note = "DELETED"; Build(); }, 0.42f);
-                else Button("SAVE", new Vector2(pw * 0.4f, y), new Vector2(pw * 0.09f, 1.9f), () => { Replays.Keep(entry); list = Replays.List(); note = "SAVED"; Build(); }, 0.45f);
-                y -= 2.5f;
+                Rect("Row", 90, y, 1510, y + 84, e.Saved ? new Color(0.16f, 0.36f, 0.55f, 1f) : new Color(0.094f, 0.275f, 0.46f, 1f), 3, true);
+                Icon("film", P(130, y + 42), 1.3f, e.Saved ? UiArt.Gold : UiArt.Ink, 7);
+                TL($"<noparse>{h.Title}</noparse>", 170, y + 28, 28, UiArt.Ink, 900);
+                TL($"{(e.Saved ? "<color=#FFD24A>SAVED</color>  ·  " : "")}{h.Date}  ·  {(int)(h.Seconds / 60)}:{(int)(h.Seconds % 60):00}  ·  <noparse>{h.Left} {h.ScoreL} - {h.ScoreR} {h.Right}</noparse>",
+                   170, y + 60, 20, new Color(0.78f, 0.88f, 1f), 900);
+                GoldSign("WATCH", 1110, y + 14, 1300, y + 70, () => Watch(entry), 28, "play");
+                if (e.Saved) IconBtn("bin", "DELETE", 1316, y + 18, 1490, y + 66, () => { Replays.Delete(entry); list = Replays.List(); note = "DELETED"; Build(); }, 20);
+                else IconBtn("check", "SAVE", 1316, y + 18, 1490, y + 66, () => { Replays.Keep(entry); list = Replays.List(); note = "SAVED"; Build(); }, 20);
+                y += 94f;
             }
-            float by = -ph / 2f + 1.7f;
             if (pages > 1)
             {
-                Button("<", new Vector2(-pw * 0.3f, by), new Vector2(2f, 1.8f), () => { page = (page - 1 + pages) % pages; Build(); }, 0.6f);
-                Text($"PAGE {page + 1} / {pages}", new Vector2(-pw * 0.2f, by), 0.45f, 8f, Color.white);
-                Button(">", new Vector2(-pw * 0.1f, by), new Vector2(2f, 1.8f), () => { page = (page + 1) % pages; Build(); }, 0.6f);
+                Btn("<", 640, 846, 690, 892, () => { page = (page - 1 + pages) % pages; Build(); }, 26);
+                TC($"PAGE {page + 1} / {pages}", 800, 869, 22, UiArt.Ink, 200);
+                Btn(">", 910, 846, 960, 892, () => { page = (page + 1) % pages; Build(); }, 26);
             }
-            Button("BACK", new Vector2(pw * 0.2f, by), new Vector2(pw * 0.18f, 2.2f), () => Destroy(gameObject), 0.6f);
-            Text(note, new Vector2(0f, by + 2.1f), 0.45f, pw - 2f, new Color(1f, 0.85f, 0.35f));
-            PadHint("A: CHOOSE · B: BACK · LB / RB: PAGES", new Vector2(pw * 0.2f, by + 1.9f), pw * 0.4f);
+            TL(note, 80, 869, 22, UiArt.Gold, 500);
+            PadHint("A: CHOOSE   B: BACK   LB / RB: PAGES", P(1180, 830), 520 / 25f * KX);
             focus = keep >= 0 && keep < stops.Count ? keep : 0;
         }
 

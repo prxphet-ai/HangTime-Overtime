@@ -44,25 +44,20 @@ namespace HangtimeOvertime.Patches
                 Plugin.Log.LogInfo("[report] scrub test: " + Scrub("C:\\Users\\" + me + "\\AppData path; " + me + " joined " + me.ToUpperInvariant() +
                                    "'s lobby; dialling 192.168.1.42:27515; id 76561198012345678; me@example.com; BepInEx 5.4.23.5"));
             }
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.75f), 0);
-            float pw = W * 0.86f, ph = H * 0.88f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.98f), 1);
-            Text("REPORT A BUG", new Vector2(0f, top - 1.8f), 1.1f, pw - 2f, Color.white);
-            Text("THIS IS EVERYTHING THAT WILL BE SENT. NAMES, YOUR WINDOWS USER NAME AND IP ADDRESSES HAVE BEEN TAKEN OUT.\n" +
-                 "OPEN ON GITHUB opens a new issue in your browser: describe the bug at the top and submit it (needs a GitHub account).\n" +
-                 "COPY puts the same text on your clipboard to paste anywhere (Discord, e-mail...).",
-                 new Vector2(0f, top - 4.2f), 0.42f, pw - 3f, new Color(0.85f, 0.95f, 1f), height: 3f, wrap: true);
-            Box("Preview", new Vector2(0f, -1.4f), new Vector2(pw - 2.4f, ph - 12.4f), new Color(0.02f, 0.2f, 0.34f, 1f), 2);
+            Frame("REPORT A BUG", null);
+            TW("THIS IS EVERYTHING THAT WILL BE SENT. NAMES, YOUR WINDOWS USER NAME AND IP ADDRESSES HAVE BEEN TAKEN OUT.\n" +
+               "OPEN ON GITHUB OPENS A NEW ISSUE IN YOUR BROWSER: DESCRIBE THE BUG AT THE TOP AND SUBMIT IT (NEEDS A GITHUB ACCOUNT). COPY PUTS THE SAME TEXT ON YOUR CLIPBOARD.",
+               800, 190, 20, new Color(0.78f, 0.88f, 1f), 1420, 70);
+            Rect("Preview", 80, 236, 1520, 790, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
             // the preview: the whole report (the log part is cut to what fits; the full text is what gets sent)
             var lines = body.Replace("\r", "").Split('\n');
-            string shown = string.Join("\n", lines.Take(26)) + (lines.Length > 26 ? $"\n... ({lines.Length - 26} more lines, all sent)" : "");
-            Text("<noparse>" + "TITLE: " + title + "\n\n" + shown + "</noparse>", new Vector2(0f, -1.4f), 0.44f, pw - 4f, Color.white, TextAlignmentOptions.TopLeft, height: ph - 13.2f, wrap: true);
-            float by = -ph / 2f + 1.7f;
-            Button("OPEN ON GITHUB", new Vector2(-pw * 0.26f, by), new Vector2(pw * 0.24f, 2.3f), OpenIssue, 0.6f);
-            Button("COPY", new Vector2(0f, by), new Vector2(pw * 0.18f, 2.3f), Copy, 0.6f);
-            Button("CANCEL", new Vector2(pw * 0.26f, by), new Vector2(pw * 0.18f, 2.3f), () => Destroy(gameObject), 0.6f);
-            status = Text("", new Vector2(0f, by + 2f), 0.45f, pw - 2f, new Color(1f, 0.85f, 0.35f));
-            PadHint("A: CHOOSE   ·   B: CANCEL", new Vector2(0f, by - 1.6f), pw - 2f);
+            string shown = string.Join("\n", lines.Take(24)) + (lines.Length > 24 ? $"\n... ({lines.Length - 24} more lines, all sent)" : "");
+            Text("<noparse>" + "TITLE: " + title + "\n\n" + shown + "</noparse>", P(800, 513), F(18), 1390 / 25f * KX, UiArt.Ink, TextAlignmentOptions.TopLeft, 8, 530 / 25f, true);
+            GoldSign("OPEN ON GITHUB", 70, 838, 450, 898, OpenIssue, 30, "globe");
+            IconBtn("share", "COPY", 470, 846, 700, 892, Copy, 26);
+            IconBtn("back", "CANCEL", 1360, 846, 1560, 892, () => Destroy(gameObject), 26);
+            status = TC("", 800, 814, 22, UiArt.Gold, 1400);
+            PadHint("A: CHOOSE   B: CANCEL", P(1030, 869), 400 / 25f * KX);
             navKeys = true;
             focus = 0;
         }

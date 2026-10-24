@@ -39,35 +39,32 @@ namespace HangtimeOvertime.Patches
             foreach (Transform t in transform) Destroy(t.gameObject);
             ClearStops();
             navKeys = true;
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.8f, ph = H * 0.88f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("CONTROLS", new Vector2(0f, top - 1.8f), 1.1f, pw - 2f, Color.white);
-            float tw = (pw - 2f) / Tabs.Length;
+            Frame("CONTROLS", () => Destroy(gameObject));
+            float tw = 1480f / Tabs.Length - 8f;
             for (int i = 0; i < Tabs.Length; i++)
             {
                 int idx = i;
-                var b = Button(Tabs[i], new Vector2(-pw / 2f + 1f + tw * (i + 0.5f), top - 4f), new Vector2(tw - 0.3f, 1.9f), () => { tab = idx; captureKey = null; capturePad = null; warning = ""; Build(); }, 0.48f);
-                b.color = UiArt.Paint(i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
+                float x0 = 60f + i * (tw + 8f);
+                Shade(Btn("", x0, i == tab ? 92 : 98, x0 + tw, 150, () => { tab = idx; captureKey = null; capturePad = null; warning = ""; Build(); }), i == tab ? UiArt.Navy : UiArt.Blue);
+                TC(Tabs[i], x0 + tw / 2f, 121, 22, i == tab ? UiArt.Gold : UiArt.Ink, tw - 10);
             }
-            Text(Help(), new Vector2(0f, top - 6.2f), 0.42f, pw - 3f, new Color(0.85f, 0.95f, 1f), height: 2f, wrap: true);
-            float y = top - 8.6f, rowH = 2.1f;
+            TW(Help(), 800, 186, 20, new Color(0.78f, 0.88f, 1f), 1400, 50);
+            float y = 226f;
             foreach (var (label, value, used, start) in Rows())
             {
-                Text(label, new Vector2(-pw * 0.24f, y), 0.55f, pw * 0.36f, Color.white, TextAlignmentOptions.Right);
-                var b = Button("", new Vector2(pw * 0.14f, y), new Vector2(pw * 0.36f, 1.95f), start, 0.55f);
-                Text(used != null ? $"<color=#FF8A7C>{value}</color>  <size=70%><color=#FFD95A>ALSO {used}</color></size>" : value,
-                     new Vector2(pw * 0.14f, y), 0.55f, pw * 0.36f, Color.white, o: 9);
-                y -= rowH;
+                Rect("Row", 260, y, 1340, y + 60, new Color(0.094f, 0.275f, 0.46f, 1f), 3);
+                TR(label, 700, y + 30, 28, UiArt.Ink, 420);
+                var b = Btn("", 740, y + 7, 1320, y + 53, start, 26);
+                Shade(b, new Color(0.03f, 0.11f, 0.2f, 1f));
+                TC(used != null ? $"<color=#FF8A7C>{value}</color>  <size=70%><color=#FFD24A>ALSO {used}</color></size>" : value, 1030, y + 30, 28, UiArt.Gold, 560);
+                y += 68f;
             }
-            float by = -ph / 2f + 1.7f;
-            Button("RESET TAB", new Vector2(-pw * 0.27f, by), new Vector2(pw * 0.2f, 2.3f), ResetTab, 0.6f);
-            Button("RESET ALL", new Vector2(0f, by), new Vector2(pw * 0.2f, 2.3f), () => { Controls.ResetAll(); warning = "EVERYTHING IS BACK TO THE DEFAULTS"; Build(); }, 0.6f);
-            Button("BACK", new Vector2(pw * 0.27f, by), new Vector2(pw * 0.2f, 2.3f), () => Destroy(gameObject), 0.6f);
-            PadHint("A: REBIND   ·   B: BACK   ·   LB / RB: TABS", new Vector2(0f, top - 7.3f), pw - 2f);
+            IconBtn("refresh", "RESET TAB", 70, 846, 330, 892, ResetTab, 24);
+            IconBtn("refresh", "RESET ALL", 350, 846, 610, 892, () => { Controls.ResetAll(); warning = "EVERYTHING IS BACK TO THE DEFAULTS"; Build(); }, 24);
+            PadHint("A: REBIND   B: BACK   LB / RB: TABS", P(1130, 869), 400 / 25f * KX);
             focus = keep >= 0 && keep < stops.Count ? keep : Tabs.Length;   // first row
-            status = Text(captureKey != null ? "PRESS THE NEW KEY  (ESC / B / START CANCELS)" : capturePad != null ? "PRESS THE NEW BUTTON ON ANY GAMEPAD  (ESC / START CANCELS)" : warning,
-                          new Vector2(0f, by + 1.85f), 0.5f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+            status = TC(captureKey != null ? "PRESS THE NEW KEY  (ESC / B / START CANCELS)" : capturePad != null ? "PRESS THE NEW BUTTON ON ANY GAMEPAD  (ESC / START CANCELS)" : warning,
+                        800, 806, 26, UiArt.Gold, 1400);
         }
 
         private string Help()

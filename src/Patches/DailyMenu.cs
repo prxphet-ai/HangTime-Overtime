@@ -37,84 +37,85 @@ namespace HangtimeOvertime.Patches
             string today = Daily.Today;
             shownDay = today;
             string key = Daily.Key(today, cup);
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.66f, ph = H * 0.9f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("DAILY", new Vector2(-pw / 2f + 5f, top - 1.8f), 1.1f, 9f, Color.white);
+            Frame("DAILY", () => Destroy(gameObject));
+            Tabs(60, 92, 300, new[] { "RUN (INFINITE)", "CUP (BRACKET)" }, new[] { "ball", "trophy" }, cup ? 1 : 0, i => SetTab(i == 1));
+            TL("LB / RB", 690, 120, 18, new Color(0.7f, 1f, 0.75f), 90);
             var date = DateTime.ParseExact(today, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            Text(date.ToString("dddd d MMMM yyyy", CultureInfo.InvariantCulture).ToUpperInvariant() + "  (UTC)", new Vector2(pw * 0.12f, top - 1.5f), 0.55f, pw * 0.7f, new Color(1f, 0.85f, 0.35f));
-            clock = Text("", new Vector2(pw * 0.12f, top - 2.6f), 0.45f, pw * 0.7f, new Color(0.85f, 0.95f, 1f));
-            string[] tabs = { "RUN (INFINITE)", "CUP (BRACKET)" };
-            for (int i = 0; i < 2; i++)
-            {
-                bool isCup = i == 1;
-                var b = Button(tabs[i], new Vector2((i - 0.5f) * pw * 0.32f, top - 4.4f), new Vector2(pw * 0.3f, 1.9f), () => SetTab(isCup), 0.5f);
-                b.color = UiArt.Paint(isCup == cup ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
-            }
-            Text(cup ? "AN 8-MATCH BRACKET WITH THE SAME TEAMS AND CARD OFFERS FOR EVERYONE TODAY, AT CLASSIC DIFFICULTY. YOUR FIRST CUP OF THE DAY COUNTS; MORE ARE PRACTICE."
-                     : "AN INFINITE RUN WITH THE SAME OPPONENTS AND CARD OFFERS FOR EVERYONE TODAY. YOUR FIRST RUN OF THE DAY COUNTS; MORE RUNS ARE PRACTICE (THEY ONLY COUNT FOR TODAY'S BEST).",
-                 new Vector2(0f, top - 6.4f), 0.42f, pw - 3f, new Color(0.85f, 0.95f, 1f), height: 2.4f, wrap: true);
-            float y0 = top - 8.2f;
+            TR(date.ToString("dddd d MMMM yyyy", CultureInfo.InvariantCulture).ToUpperInvariant() + "  (UTC)", 1530, 102, 26, UiArt.Gold, 600);
+            clock = TR("", 1530, 128, 20, new Color(0.78f, 0.88f, 1f), 600);
+
+            // left: today
+            Rect("Today", 70, 170, 760, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            TC("TODAY", 415, 206, 40, UiArt.Gold, 600);
+            TW(cup ? "AN 8-MATCH BRACKET WITH THE SAME TEAMS AND CARD OFFERS FOR EVERYONE TODAY, AT CLASSIC DIFFICULTY. YOUR FIRST CUP OF THE DAY COUNTS; MORE ARE PRACTICE."
+                   : "AN INFINITE RUN WITH THE SAME OPPONENTS AND CARD OFFERS FOR EVERYONE TODAY. YOUR FIRST RUN OF THE DAY COUNTS; MORE RUNS ARE PRACTICE (THEY ONLY COUNT FOR TODAY'S BEST).",
+               415, 266, 21, new Color(0.78f, 0.88f, 1f), 620, 80);
+            float y = 320f;
             if (cup)
             {
-                // today's bracket is known in advance
-                var names = Enumerable.Range(1, 8).Select(g => Engine.TeamRoster.CupName(g, today).ToUpperInvariant());
-                Text("<noparse>" + string.Join("  >  ", names) + "</noparse>", new Vector2(0f, y0), 0.38f, pw - 2.5f, Color.white, height: 2f, wrap: true);
-                y0 -= 1.4f;
+                // today's bracket is known in advance: the eight teams in order
+                for (int g = 1; g <= 8; g++)
+                {
+                    float x0 = 96f + (g - 1) % 4 * 160f, y0 = y + (g - 1) / 4 * 92f;
+                    Rect("Match", x0, y0, x0 + 150f, y0 + 82f, new Color(0.094f, 0.275f, 0.46f, 1f), 3);
+                    TC(g == 8 ? "FINAL" : $"MATCH {g}", x0 + 75f, y0 + 20f, 15, g == 3 || g == 6 || g == 8 ? UiArt.Gold : new Color(0.78f, 0.88f, 1f), 140);
+                    TW("<noparse>" + Engine.TeamRoster.CupName(g, today).ToUpperInvariant() + "</noparse>", x0 + 75f, y0 + 54f, 19, UiArt.Ink, 140, 44);
+                }
+                y += 196f;
             }
 
-            // today
             var snap = cup ? RunSaves.DailyCup : RunSaves.DailyRun;
             bool saved = snap.has && !string.IsNullOrEmpty(snap.daily);
             int runs = Daily.Runs(key), first = Daily.First(key), best = Daily.Best(key);
             string word = cup ? "CUP" : "RUN";
-            string state = runs == 0 ? "TODAY: NOT PLAYED YET"
-                : first < 0 && saved && snap.daily == today && snap.dailyCounts ? $"TODAY: YOUR {word} THAT COUNTS IS SAVED AT {RunSaves.Where(snap).ToUpperInvariant()}"
-                : first < 0 ? $"TODAY: YOUR FIRST {word} IS STILL GOING"
-                : $"TODAY: FIRST {word} {Result(first)}  ·  BEST {Result(best)}  ·  {runs} {(runs == 1 ? "TRY" : "TRIES")}";
-            float ty = y0 - 1.6f;
-            Box("Today", new Vector2(0f, ty), new Vector2(pw - 2f, 2f), new Color(0.02f, 0.2f, 0.34f, 1f), 2);
-            Text(state, new Vector2(0f, ty), 0.55f, pw - 3f, Color.white);
-
-            float by = ty - 2.7f;
+            string state = runs == 0 ? "NOT PLAYED YET"
+                : first < 0 && saved && snap.daily == today && snap.dailyCounts ? $"YOUR {word} THAT COUNTS IS SAVED AT {RunSaves.Where(snap).ToUpperInvariant()}"
+                : first < 0 ? $"YOUR FIRST {word} IS STILL GOING"
+                : $"FIRST {word} {Result(first)}  ·  BEST {Result(best)}  ·  {runs} {(runs == 1 ? "TRY" : "TRIES")}";
+            Rect("State", 96, y, 734, y + 70, new Color(0.094f, 0.275f, 0.46f, 1f), 3, true);
+            TW(state, 415, y + 35, 26, UiArt.Ink, 610, 64);
+            y += 96f;
             bool counts = runs == 0;
             string startLabel = counts ? $"START TODAY'S {word}" : $"PRACTICE {word}";
             if (saved)
             {
-                string label = snap.daily == today ? $"CONTINUE  ({RunSaves.Where(snap).ToUpperInvariant()})" : $"CONTINUE {snap.daily}";
-                Button(label, new Vector2(-pw * 0.22f, by), new Vector2(pw * 0.4f, 2.3f), () => Continue(snap), 0.55f);
-                Button(startLabel, new Vector2(pw * 0.22f, by), new Vector2(pw * 0.4f, 2.3f), () => StartRun(snap), 0.55f);
-                Text(snap.dailyCounts ? $"STARTING ANOTHER {word} ENDS THE SAVED ONE: IT COUNTS WITH THE WINS IT HAS" : $"STARTING ANOTHER {word} DROPS THE SAVED PRACTICE {word}",
-                     new Vector2(0f, by - 1.7f), 0.38f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+                string label = snap.daily == today ? $"CONTINUE ({RunSaves.Where(snap).ToUpperInvariant()})" : $"CONTINUE {snap.daily}";
+                GoldSign(label, 110, y, 720, y + 74, () => Continue(snap), 30);
+                IconBtn("refresh", startLabel, 160, y + 90, 670, y + 140, () => StartRun(snap), 24);
+                TW(snap.dailyCounts ? $"STARTING ANOTHER {word} ENDS THE SAVED ONE: IT COUNTS WITH THE WINS IT HAS" : $"STARTING ANOTHER {word} DROPS THE SAVED PRACTICE {word}",
+                   415, y + 168, 18, UiArt.Gold, 620, 40);
             }
-            else Button(startLabel, new Vector2(0f, by), new Vector2(pw * 0.45f, 2.3f), () => StartRun(null), 0.6f);
+            else GoldSign(startLabel, 110, y, 720, y + 80, () => StartRun(null), 36);
 
-            // history
-            float y = by - 3.5f;
-            float[] cx = { -pw * 0.3f, -pw * 0.05f, pw * 0.15f, pw * 0.32f };
+            // right: past days
+            Rect("History", 790, 170, 1530, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            TC("PAST DAYS", 1160, 206, 34, UiArt.Gold, 600);
+            float[] cx = { 920, 1130, 1300, 1450 };
             string[] head = { "DAY", "FIRST " + word, "BEST", "TRIES" };
-            for (int i = 0; i < head.Length; i++) Text(head[i], new Vector2(cx[i], y), 0.45f, pw * 0.25f, new Color(1f, 0.85f, 0.35f));
-            y -= 1.4f;
-            var hist = Daily.History(cup).Take(cup ? 6 : 7).ToList();
-            if (hist.Count == 0) Text($"NO DAILY {word}S YET", new Vector2(0f, y - 1f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
-            foreach (var (d, f, b, r) in hist)
+            for (int i = 0; i < head.Length; i++) TC(head[i], cx[i], 250, 20, UiArt.Gold, 200);
+            float hy = 292f;
+            var hist = Daily.History(cup).Take(9).ToList();
+            if (hist.Count == 0) TC($"NO DAILY {word}S YET", 1160, 420, 30, UiArt.Ink, 600);
+            int row = 0;
+            foreach (var (d, f, bb, r) in hist)
             {
-                var col = d == today ? Color.white : new Color(0.85f, 0.95f, 1f);
-                Text(d == today ? d + " (TODAY)" : d, new Vector2(cx[0], y), 0.48f, pw * 0.3f, col);
-                Text(f < 0 ? "..." : Result(f), new Vector2(cx[1], y), 0.48f, pw * 0.2f, col);
-                Text(Result(b), new Vector2(cx[2], y), 0.48f, pw * 0.2f, col);
-                Text(r.ToString(), new Vector2(cx[3], y), 0.48f, pw * 0.2f, col);
-                y -= 1.25f;
+                bool now = d == today;
+                Rect("Row", 806, hy - 21, 1514, hy + 21, now ? new Color(1f, 0.6f, 0.2f, 1f) : row % 2 == 0 ? new Color(0.094f, 0.275f, 0.46f, 1f) : new Color(0.07f, 0.2f, 0.35f, 1f), 3);
+                var col = now ? UiArt.Dark : UiArt.Ink;
+                TC(now ? d + " (TODAY)" : d, cx[0], hy + 1, 22, col, 240);
+                TC(f < 0 ? "..." : Result(f), cx[1], hy + 1, 22, now ? UiArt.Dark : UiArt.Gold, 200);
+                TC(Result(bb), cx[2], hy + 1, 22, col, 180);
+                TC(r.ToString(), cx[3], hy + 1, 22, col, 100);
+                hy += 48f; row++;
             }
             var all = Daily.History(cup).Where(h => h.first >= 0).ToList();
             if (all.Count > 0)
             {
                 var top1 = all.OrderByDescending(h => h.first).First();
                 string extra = cup ? $"CUPS WON: {all.Count(h => h.first >= 8)}  ·  " : "";
-                Text($"BEST: {Result(top1.first)} ({top1.date})  ·  {extra}DAYS PLAYED: {Daily.History(cup).Count()}", new Vector2(0f, -ph / 2f + 4.1f), 0.45f, pw - 2f, new Color(1f, 0.85f, 0.35f));
+                TC($"BEST: {Result(top1.first)} ({top1.date})  ·  {extra}DAYS PLAYED: {Daily.History(cup).Count()}", 1160, 770, 20, UiArt.Gold, 700);
             }
-            Button("BACK", new Vector2(0f, -ph / 2f + 1.7f), new Vector2(pw * 0.3f, 2.2f), () => Destroy(gameObject), 0.6f);
-            PadHint("A: CHOOSE   ·   B: BACK   ·   LB / RB: RUN / CUP", new Vector2(0f, -ph / 2f + 3f), pw - 2f);
+            PadHint("A: CHOOSE   B: BACK   LB / RB: RUN / CUP", P(700, 870), 600 / 25f * KX);
             focus = keep >= 0 && keep < stops.Count ? keep : 2;      // the first button under the tabs
         }
 

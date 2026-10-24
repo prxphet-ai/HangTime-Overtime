@@ -79,29 +79,19 @@ namespace HangtimeOvertime.Patches
             ClearStops();
             cellOf.Clear();
             navKeys = true;
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
+            Frame("COLLECTION", () => Destroy(gameObject));
             pw = W * 0.9f; ph = H * 0.9f;
-            float top = ph / 2f, left = -pw / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("COLLECTION", new Vector2(left + 7f, top - 1.7f), 1.1f, 12f, Color.white);
+            float top = 17.7f, left = -pw / 2f;                      // content below the shared panel's top edge (12.4)
             var teams = Collection.TeamEntries(); var perks = Collection.PerkEntries(); var cards = Collection.CardEntries();
             int found = teams.Count(e => e.Found) + perks.Count(e => e.Found) + cards.Count(e => e.Found);
             int total = teams.Count + perks.Count + cards.Count;
-            Text($"{found} / {total} FOUND  ·  TEAMS {teams.Count(e => e.Found)}/{teams.Count}  ·  PERKS {perks.Count(e => e.Found)}/{perks.Count}  ·  STAT CARDS {cards.Count(e => e.Found)}/{cards.Count}",
-                 new Vector2(pw * 0.12f, top - 1.7f), 0.5f, pw * 0.7f, new Color(1f, 0.85f, 0.35f), TextAlignmentOptions.Right);
-
-            float tw = pw * 0.6f / Tabs.Length;
-            for (int i = 0; i < Tabs.Length; i++)
-            {
-                int idx = i;
-                var b = Button(Tabs[i], new Vector2(-pw * 0.3f + tw * (i + 0.5f), top - 3.9f), new Vector2(tw - 0.3f, 1.9f), () => SetTab(idx), 0.55f);
-                b.color = UiArt.Paint(i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
-            }
-            PadHint("A: CHOOSE   ·   B: BACK   ·   LB / RB: TABS", new Vector2(0f, top - 5.4f), pw - 2f);
+            base.Tabs(60, 92, 230, Tabs, new[] { "people", "flame", "cards", "podium" }, tab, SetTab, 10f);
+            TR($"{found} / {total} FOUND", 1530, 106, 28, UiArt.Gold, 400);
+            TR($"TEAMS {teams.Count(e => e.Found)}/{teams.Count}  ·  PERKS {perks.Count(e => e.Found)}/{perks.Count}  ·  CARDS {cards.Count(e => e.Found)}/{cards.Count}", 1530, 134, 18, new Color(0.78f, 0.88f, 1f), 560);
+            PadHint("A: CHOOSE   B: BACK   LB / RB: TABS", P(700, 870), 600 / 25f * KX);
             if (tab == 3) BuildStats(top, left, teams, perks, cards);
             else BuildGrid(top, left);
-            Button("BACK", new Vector2(0f, -ph / 2f + 1.6f), new Vector2(pw * 0.18f, 2.2f), () => Destroy(gameObject), 0.6f);
-            focus = keep >= 0 && keep < stops.Count ? keep : tab == 3 ? stops.Count - 1 : Tabs.Length + 4;
+            focus = keep >= 0 && keep < stops.Count ? keep : tab == 3 ? 1 + tab : Tabs.Length + 5;
             lastFocus = -2;
         }
 
@@ -124,7 +114,7 @@ namespace HangtimeOvertime.Patches
             var entries = Shown(AllEntries());
             int perPage = Cols * Rows, pages = Mathf.Max(1, (entries.Count + perPage - 1) / perPage);
             page = Mathf.Clamp(page, 0, pages - 1);
-            float gw = pw * 0.62f, cw = gw / Cols, ch = 2.05f, gy = fy - 2.5f;
+            float gw = pw * 0.62f, cw = gw / Cols, ch = 2.6f, gy = fy - 2.6f;
             float gx = left + 1f;
             var pageEntries = entries.Skip(page * perPage).Take(perPage).ToList();
             if (selected == null || !pageEntries.Any(e => e.Key == selected)) selected = pageEntries.FirstOrDefault()?.Key;
@@ -137,7 +127,7 @@ namespace HangtimeOvertime.Patches
                 cell.color = UiArt.Paint(tint);
                 var w = cell.GetComponent<CreatorWidget>();
                 if (w != null) { w.Normal = tint; w.Hover = Color.Lerp(tint, Color.white, 0.25f); }
-                Text(e.Found ? e.Title.ToUpperInvariant() : "???", at + new Vector2(0f, 0.15f), 0.45f, cw - 0.6f, e.Found ? Color.white : new Color(0.6f, 0.7f, 0.8f), o: 9);
+                Text(e.Found ? e.Title.ToUpperInvariant() : "???", at + new Vector2(0f, 0.15f), 0.5f, cw - 0.6f, e.Found ? Color.white : new Color(0.6f, 0.7f, 0.8f), o: 9);
                 Box("Rarity", at + new Vector2(0f, -ch / 2f + 0.28f), new Vector2(cw - 1.2f, 0.18f), GroupColor(e.Group, e.Found), 9);
                 cellOf[cell] = e;
             }
