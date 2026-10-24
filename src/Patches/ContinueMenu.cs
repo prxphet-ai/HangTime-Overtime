@@ -24,7 +24,7 @@ namespace HangtimeOvertime.Patches
     {
         public static bool Bypass;                 // the next TitleButton click starts a fresh run
         private static GameObject popup;
-        public static bool IsOpen => popup != null;
+        public static bool IsOpen => ChoicePanel.IsOpen;
         private static readonly List<GameObject> popupButtons = new List<GameObject>();   // live next to the menu buttons (same scale)
         private static GameObject savedOpponent;
 
@@ -131,101 +131,17 @@ namespace HangtimeOvertime.Patches
                 foreach (var b in group.buttons.Where(b => b != null)) { b.interactable = true; b.wasClicked = false; }
         }
 
+        // the popup: a kit panel (ChoicePanel) with the header's first line on the ribbon, the rest under it, and the choices
         private static void Build(TitleButton from, string header, params (string text, string sub, Action act)[] buttons)
         {
             DestroyPopup();
-            var template = from.gameObject;
-            var baseSr = template.GetComponent<SpriteRenderer>();
-            var cam = Camera.main;
-            float z = template.transform.position.z - 0.3f;
-            var center = new Vector3(cam != null ? cam.transform.position.x : 0f, cam != null ? cam.transform.position.y : 0f, z);
-            popup = new GameObject("Overtime Continue");
-            popup.transform.position = center;
-            int order = baseSr.sortingOrder + 40;
-
-            SpriteRenderer Box(string name, Vector3 at, Vector2 size, Color color, int o)
-            {
-                var sr = new GameObject(name).AddComponent<SpriteRenderer>();
-                sr.transform.SetParent(popup.transform, false);
-                sr.transform.position = at;
-                sr.sprite = Rounded();
-                sr.drawMode = SpriteDrawMode.Sliced;
-                sr.size = size;
-                sr.color = color;
-                sr.sortingLayerID = baseSr.sortingLayerID;
-                sr.sortingOrder = o;
-                return sr;
-            }
-
-            float h = cam != null ? cam.orthographicSize * 2f : 60f, w = h * (cam != null ? cam.aspect : 1.8f);
-            Box("Dim", center, new Vector2(w * 1.2f, h * 1.2f), new Color(0f, 0.1f, 0.2f, 0.5f), order);
-
-            float step = 3.3f, headerH = 6f;
-            float panelH = headerH + buttons.Length * step + 1.2f, panelW = 20f;
-            float panelTop = center.y + panelH / 2f;
-            Box("Panel", center, new Vector2(panelW, panelH), new Color(0.05f, 0.42f, 0.66f, 0.97f), order + 1);
-
-            // header text, copied from the menu button label (the game font), at that label size in the world
-            var label = template.GetComponentsInChildren<TextMeshPro>(true).OrderBy(l => l.name).FirstOrDefault();
-            if (label != null)
-            {
-                var t = UnityEngine.Object.Instantiate(label.gameObject, popup.transform).GetComponent<TextMeshPro>();
-                t.name = "Header";
-                var ls = label.transform.lossyScale;
-                t.transform.localScale = ls;
-                t.transform.position = new Vector3(center.x, panelTop - headerH / 2f, z - 0.02f);
-                t.text = header;
-                t.margin = Vector4.zero;
-                t.alignment = TextAlignmentOptions.Center;
-                t.textWrappingMode = TextWrappingModes.Normal;
-                t.rectTransform.sizeDelta = new Vector2((panelW - 2f) / ls.x, (headerH - 1f) / ls.y);
-                t.enableAutoSizing = true;
-                t.fontSizeMin = label.fontSize * 0.3f;
-                t.fontSizeMax = label.fontSize * 0.9f;
-                var tr = t.GetComponent<Renderer>();
-                tr.sortingLayerID = baseSr.sortingLayerID;
-                tr.sortingOrder = order + 5;
-            }
-
-            var group = popup.AddComponent<ButtonGroup>();
-            group.buttons = new List<ButtonController>();
-            // the visible bar of a menu button is its child "Sprite"; the button's own renderer is a small square kept hidden behind it
-            var bar = template.GetComponentsInChildren<SpriteRenderer>(true).FirstOrDefault(r => r.name == "Sprite");
-            var bsize = bar != null ? bar.bounds.size : baseSr.bounds.size;
-            for (int i = 0; i < buttons.Length; i++)
-            {
-                var pos = new Vector3(center.x, panelTop - headerH - step * (i + 0.5f), z - 0.01f);
-                Box("Backing", pos, new Vector2(bsize.x, bsize.y), new Color(0.16f, 0.66f, 0.9f, 1f), order + 2);
-                var b = UnityEngine.Object.Instantiate(template, template.transform.parent);
-                popupButtons.Add(b);
-                b.name = "Overtime " + buttons[i].text;
-                b.transform.position = pos + new Vector3(0f, 0f, -0.01f);
-                foreach (var m in b.GetComponents<MonoBehaviour>().Where(m => m is TitleButton || m is InfiniteButtonMarker)) UnityEngine.Object.DestroyImmediate(m);
-                var click = b.AddComponent<PopupClick>();
-                click.Action = buttons[i].act;
-                var ctrl = b.GetComponent<ButtonController>();
-                onClickOf(ctrl) = click;
-                ctrl.interactable = true;
-                ctrl.wasClicked = false;
-                ctrl.group = group;
-                group.buttons.Add(ctrl);
-                MenuPatches.SetButtonLabels(b, buttons[i].text, buttons[i].sub);
-                foreach (var r in b.GetComponentsInChildren<Renderer>(true))
-                {
-                    r.sortingLayerID = baseSr.sortingLayerID;
-                    if (r.gameObject == b) r.enabled = false;            // the hidden square
-                    else r.sortingOrder = r is SpriteRenderer ? order + 3 : order + 6;
-                }
-            }
+            var lines = header.Split('\n');
+            string title = lines[0], sub = string.Join("\n", lines.Skip(1).Select(l => System.Text.RegularExpressions.Regex.Replace(l, "<[^>]+>", "")));
+            var back = buttons.FirstOrDefault(x => x.text == "BACK" || x.text.StartsWith("NO,")).act ?? (() => Close(from));
+            ChoicePanel.Show(title, sub, buttons, back);
         }
 
-        private static void DestroyPopup()
-        {
-            if (popup != null) UnityEngine.Object.Destroy(popup);
-            popup = null;
-            foreach (var b in popupButtons) if (b != null) UnityEngine.Object.Destroy(b);
-            popupButtons.Clear();
-        }
+        private static void DestroyPopup() => ChoicePanel.CloseNow();
 
         // a rounded box that stretches without blurring its corners (9-sliced)
         private static Sprite rounded;
@@ -292,5 +208,73 @@ namespace HangtimeOvertime.Patches
             if (savedOpponent != null) UnityEngine.Object.Destroy(savedOpponent);
             savedOpponent = null;
         }
+    }
+
+    // The title screen's choice popups (CO-OP: CLASSIC / INFINITE, a saved run: CONTINUE / NEW RUN, the confirmations) in the
+    // menus' look: the gold ribbon, the details under it, the first choice as the gold sign and the rest as buttons.
+    internal class ChoicePanel : OvertimePanel
+    {
+        private static ChoicePanel open;
+        public static bool IsOpen => open != null;
+        private Action back;
+
+        public static void Show(string title, string sub, (string text, string sub, Action act)[] buttons, Action back)
+        {
+            CloseNow();
+            var go = new GameObject("Overtime Choice");
+            open = go.AddComponent<ChoicePanel>();
+            if (!open.InitKit(240)) { Destroy(go); open = null; return; }
+            open.HoldTitle();
+            open.back = back;
+            open.Build(title, sub, buttons);
+        }
+
+        public static void CloseNow() { if (open != null) { var o = open; open = null; Destroy(o.gameObject); } }
+
+        private void Build(string title, string sub, (string text, string sub, Action act)[] buttons)
+        {
+            int n = buttons.Length;
+            int subLines = string.IsNullOrEmpty(sub) ? 0 : sub.Split('\n').Length;
+            float subH = subLines * 32f, h = 100f + subH + n * 100f, top = 450f - h / 2f;
+            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0.024f, 0.086f, 0.17f, 0.6f), 0);
+            Box("Panel", P(800, top + 20f + h / 2f), S(720, h), UiArt.Navy, 1);
+            float rw = Mathf.Clamp(title.Length * 28f + 120f, 360f, 760f);
+            var ribbon = Rect("Ribbon", 800 - rw / 2f, top - 30, 800 + rw / 2f, top + 44, UiArt.Gold, 2, true);
+            Tilt(ribbon, -1.5f);
+            Tilt(TC($"<noparse>{title}</noparse>", 800, top + 7, 40, UiArt.Dark, rw - 40f), -1.5f);
+            if (subLines > 0) TW($"<noparse>{sub}</noparse>", 800, top + 76 + subH / 2f, 24, new Color(0.78f, 0.88f, 1f), 660, subH + 10f);
+            float y = top + 80f + subH;
+            for (int i = 0; i < n; i++)
+            {
+                var (text, bsub, act) = buttons[i];
+                bool hasSub = !string.IsNullOrEmpty(bsub) && bsub != "-";
+                var a = act;
+                if (i == 0)
+                {
+                    GoldSign(hasSub ? "" : text, 540, y, 1060, y + 80, () => { a(); }, 40, text == "BACK" ? "back" : "play");
+                    if (hasSub) Tilt(TC(text, 810, y + 30, 38, UiArt.Dark, 420), -0.8f);
+                }
+                else
+                {
+                    Btn("", 560, y + 4, 1040, y + 76, () => { a(); });
+                    TC(text, 800, hasSub ? y + 28 : y + 40, 34, UiArt.Ink, 460);
+                }
+                if (hasSub) TC($"<noparse>{bsub.ToUpperInvariant()}</noparse>", 800, y + 60, 18, i == 0 ? UiArt.Dark : new Color(0.78f, 0.88f, 1f), 460);
+                y += 100f;
+            }
+            PadHint("A: CHOOSE   B: BACK", P(800, top + h + 40), 400 / 25f * KX);
+            navKeys = true;
+            focus = 0;
+        }
+
+        private void Update()
+        {
+            if (NavUpdate()) return;
+            var kb = UnityEngine.InputSystem.Keyboard.current;
+            if (kb != null && kb.escapeKey.wasPressedThisFrame) back?.Invoke();
+        }
+
+        protected override void OnNavBack() => back?.Invoke();
+        protected override void OnDestroy() { base.OnDestroy(); if (open == this) open = null; }
     }
 }

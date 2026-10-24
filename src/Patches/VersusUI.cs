@@ -620,67 +620,74 @@ namespace HangtimeOvertime.Patches
             public bool Show(string text)
             {
                 if (!InitKit(260)) return false;
-                Box("Notice", new Vector2(0f, 0f), new Vector2(W * 0.7f, 6f), new Color(0.6f, 0.12f, 0.12f, 0.95f), 0);
+                Box("Notice", new Vector2(0f, 0f), new Vector2(W * 0.7f, 6f), new Color(0.6f, 0.12f, 0.12f, 0.95f), 0, true);
                 Text(text, new Vector2(0f, 0f), 0.9f, W * 0.66f, Color.white, height: 5.5f, wrap: true);
                 return true;
             }
         }
 
+        // the tournaments screen's look: the head on the gold ribbon, the score under it, both builds in dark columns at the
+        // sides, the offers as cards in the middle (the chosen one orange), or the match's end buttons
+        private static readonly Color CardBlue = new Color(0.094f, 0.275f, 0.46f, 1f), Chosen = new Color(0.9f, 0.45f, 0.1f, 1f);
+
         private void Build(RoundScreen d)
         {
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.08f, 0.16f, 0.62f), 0);
-            float pw = W * 0.88f, ph = H * 0.86f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            float top = ph / 2f;
-            Text(d.Head, new Vector2(0f, top - 2f), 1.3f, pw - 2f, Color.white);
-            Text(d.Score, new Vector2(0f, top - 4.6f), 1.6f, pw - 2f, new Color(1f, 0.85f, 0.35f));
-            Text(d.MatchOver && StreakPatches.VersusLine != null && !VersusState.Coop ? StreakPatches.VersusLine : d.Sub, new Vector2(0f, top - 6.6f), 0.6f, pw - 2f,
-                 d.MatchOver ? new Color(1f, 0.85f, 0.35f) : new Color(0.85f, 0.95f, 1f));
+            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0.024f, 0.086f, 0.17f, 0.72f), 0);
+            Box("Panel", P(800, 470), S(1520, 720), UiArt.Navy, 1);
+            float rw = Mathf.Clamp(d.Head.Length * 26f + 120f, 420f, 1100f);
+            var ribbon = Rect("Ribbon", 800 - rw / 2f, 12, 800 + rw / 2f, 84, UiArt.Gold, 2, true);
+            Tilt(ribbon, -1.2f);
+            Tilt(TC(d.Head, 800, 48, 44, UiArt.Dark, rw - 40f), -1.2f);
+            TC(d.Score, 800, 150, 48, UiArt.Gold, 1400);
+            TC(d.MatchOver && StreakPatches.VersusLine != null && !VersusState.Coop ? StreakPatches.VersusLine : d.Sub, 800, 194, 22,
+               d.MatchOver ? UiArt.Gold : new Color(0.78f, 0.88f, 1f), 1400);
 
-            // both builds, left and right
+            // both builds
             for (int side = 0; side < 2; side++)
             {
-                float x = (side == 0 ? -1f : 1f) * pw * 0.36f;
-                Text(d.SideTitle[side], new Vector2(x, top - 8.6f), 0.7f, pw * 0.26f, Color.white);
+                float x0 = side == 0 ? 70f : 1170f, x1 = x0 + 360f, cx = (x0 + x1) / 2f;
+                Rect("Build", x0, 222, x1, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+                TW($"<noparse>{d.SideTitle[side]}</noparse>", cx, 258, 24, UiArt.Gold, 330, 60);
                 var build = d.Builds[side];
-                string list = build.Count == 0 ? "NO UPGRADES YET" : string.Join("\n", build.Take(12).Select(b => b.ToUpperInvariant())) + (build.Count > 12 ? $"\n+{build.Count - 12} MORE" : "");
-                Text(list, new Vector2(x, top - 8.6f - 1.4f - 7f), 0.68f, pw * 0.26f, new Color(0.85f, 0.95f, 1f), TextAlignmentOptions.Top, height: 14f, wrap: true);
+                string list = build.Count == 0 ? "NO UPGRADES YET" : string.Join("\n", build.Take(14).Select(x => x.ToUpperInvariant())) + (build.Count > 14 ? $"\n+{build.Count - 14} MORE" : "");
+                Text(list, P(cx, 520), F(22), 320 / 25f * KX, UiArt.Ink, TextAlignmentOptions.Top, 8, 460 / 25f, true);
             }
 
             if (!d.MatchOver)
             {
-                Text(d.PickHead, new Vector2(0f, top - 8.6f), 0.8f, pw * 0.42f, Color.white, height: 3f, wrap: true);
-                float cw = Mathf.Min(pw * 0.15f, 9f), ch = ph * 0.45f, gap = cw * 0.12f;
+                TW(d.PickHead, 800, 250, 28, UiArt.Ink, 700, 60);
+                int n = Mathf.Max(1, d.Offers.Count);
+                float gap = 20f, cw = Mathf.Min(220f, (690f - gap * (n - 1)) / n), total = n * cw + (n - 1) * gap, sx = 800f - total / 2f;
                 for (int i = 0; i < d.Offers.Count; i++)
                 {
-                    float x = (i - (d.Offers.Count - 1) / 2f) * (cw + gap);
-                    float y = -ph * 0.08f;
                     var o = d.Offers[i];
-                    var box = Box("Offer", new Vector2(x, y), new Vector2(cw, ch), new Color(0.16f, 0.6f, 0.86f, 1f), 4);
+                    float x0 = sx + i * (cw + gap), x1 = x0 + cw, cx = (x0 + x1) / 2f;
+                    var box = Rect("Offer", x0, 300, x1, 780, CardBlue, 4, true);
                     offerBoxes.Add(box);
-                    var rarity = o.rarity == "epic" ? new Color(1f, 0.78f, 0.29f) : o.rarity == "rare" ? new Color(0.6f, 0.9f, 1f) : Color.white;
-                    Text(o.title.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 2.4f), 0.8f, cw - 0.8f, Color.white, height: 3.6f, wrap: true);
-                    Text(o.kind + " · " + o.rarity.ToUpperInvariant(), new Vector2(x, y + ch / 2f - 4.8f), 0.42f, cw - 0.6f, rarity, height: 1.8f, wrap: true);
-                    Text(o.text, new Vector2(x, y - 2.2f), 0.6f, cw - 1.2f, Color.white, TextAlignmentOptions.Top, height: ch - 8f, wrap: true);
+                    var rarity = o.rarity == "epic" ? new Color(1f, 0.78f, 0.29f) : o.rarity == "rare" ? new Color(0.5f, 0.85f, 1f) : Color.white;
+                    TW(o.title.ToUpperInvariant(), cx, 358, 28, UiArt.Ink, cw - 24, 90);
+                    TW(o.kind + " · " + o.rarity.ToUpperInvariant(), cx, 418, 17, rarity, cw - 20, 40);
+                    Text(o.text, P(cx, 590), F(23), (cw - 30) / 25f * KX, UiArt.Ink, TextAlignmentOptions.Top, 8, 320 / 25f, true);
                 }
-                Text(d.PickHint, new Vector2(0f, -ph / 2f + 1.6f), 0.5f, pw - 2f, new Color(0.85f, 0.95f, 1f));
+                TC(d.PickHint, 800, 852, 24, new Color(0.78f, 0.88f, 1f), 1400);
                 sel = 0;
             }
             else
             {
-                float by = -ph / 2f + 2.6f, bw = pw * 0.22f;
-                if (d.ContinueLabel.Length > 0) AddEnd(d.ContinueLabel, new Vector2(-bw * 1.15f, by), bw, () => VersusFlow.ContinueMatch());
-                AddEnd(d.RematchLabel, new Vector2(d.ContinueLabel.Length > 0 ? 0f : -bw * 0.6f, by), bw, () => VersusFlow.Rematch());
-                AddEnd(Online.Net.Online ? "LOBBY" : "MENU", new Vector2(d.ContinueLabel.Length > 0 ? bw * 1.15f : bw * 0.6f, by), bw, () => { if (Online.Net.IsHost) Online.OnlineFlow.BackToLobby(); else VersusFlow.ToMenu(); });
+                int count = d.ContinueLabel.Length > 0 ? 3 : 2;
+                float bw = 320f, gap = 30f, sx = 800f - (count * bw + (count - 1) * gap) / 2f, x = sx;
+                if (d.ContinueLabel.Length > 0) { AddEnd(d.ContinueLabel, x, bw, () => VersusFlow.ContinueMatch()); x += bw + gap; }
+                AddEnd(d.RematchLabel, x, bw, () => VersusFlow.Rematch()); x += bw + gap;
+                AddEnd(Online.Net.Online ? "LOBBY" : "MENU", x, bw, () => { if (Online.Net.IsHost) Online.OnlineFlow.BackToLobby(); else VersusFlow.ToMenu(); });
                 endSel = 0;
             }
             Refresh();
         }
 
-        private void AddEnd(string label, Vector2 at, float width, Action act)
+        private void AddEnd(string label, float x0, float width, Action act)
         {
             endActions.Add(act);
-            endButtons.Add(Button(label, at, new Vector2(width, 2.8f), () => Choose(act), 0.7f));
+            endButtons.Add(Btn(label, x0, 830, x0 + width, 892, () => Choose(act), 30));
         }
 
         private void Choose(Action act)
@@ -694,10 +701,10 @@ namespace HangtimeOvertime.Patches
         {
             for (int i = 0; i < offerBoxes.Count; i++)
             {
-                offerBoxes[i].color = UiArt.Paint(i == sel ? new Color(0.45f, 0.82f, 1f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
-                offerBoxes[i].transform.localScale = Vector3.one * (i == sel ? 1.06f : 1f);
+                offerBoxes[i].color = UiArt.Paint(i == sel ? Chosen : CardBlue);
+                offerBoxes[i].transform.localScale = Vector3.one * (i == sel ? 1.04f : 1f);
             }
-            for (int i = 0; i < endButtons.Count; i++) endButtons[i].transform.localScale = Vector3.one * (i == endSel ? 1.08f : 1f);
+            for (int i = 0; i < endButtons.Count; i++) { endButtons[i].transform.localScale = Vector3.one * (i == endSel ? 1.08f : 1f); Shade(endButtons[i], i == endSel ? Chosen : UiArt.Blue); }
             if (!mirror) Online.OnlineFlow.SendSelection(sel, endSel);
         }
 

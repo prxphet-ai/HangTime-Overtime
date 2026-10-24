@@ -122,76 +122,80 @@ namespace HangtimeOvertime.Patches
             if (lobby && Net.IsHost && Net.Lobby.Code == lastCode) format = lastLobbyFormat;   // back from a match: same mode
             if (lobby) lastCode = Net.Lobby.Code;
 
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * (lobby ? 0.92f : 0.86f), ph = H * (lobby ? 0.88f : 0.84f);
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            // the seats: the whole panel, or its left part next to the lobby's players and chat
-            float area = lobby ? pw * 0.62f : pw, centre = lobby ? -pw * 0.18f : 0f;
-            float colW = area * (lobby ? 0.47f : 0.42f), colOff = area * (lobby ? 0.25f : 0.24f);
-            heading = Text("VERSUS", new Vector2(centre, ph / 2f - 2f), lobby ? 1.1f : 1.4f, area - 2f, Color.white);
-            if (lobby) info = Text("", new Vector2(centre, ph / 2f - 3.6f), 0.5f, area - 2f, new Color(1f, 0.85f, 0.35f));
-            else Text("THE LOSING SIDE OF EACH ROUND PICKS ITS UPGRADES  ·  RULES: SEE BELOW THE MODES",
-                      new Vector2(0f, ph / 2f - 3.8f), 0.45f, pw - 2f, new Color(0.85f, 0.95f, 1f));
-            // mode tabs (mouse, or player 1's DOWN key)
-            float tw = area * 0.155f;
-            for (int i = 0; i < VersusSetup.Formats.Length; i++)
+            // the tournaments screen's look: ribbon with the mode / lobby name, folder tabs for the modes, two side cards
+            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0.024f, 0.086f, 0.17f, 0.72f), 0);
+            float right = lobby ? 1090f : 1530f, mid = (70f + right) / 2f;
+            Box("Panel", P(lobby ? 580 : 800, 485), S(lobby ? 1060 : 1520, 690), UiArt.Navy, 1);
+            var ribbon = Rect("Ribbon", mid - 330, 18, mid + 330, 92, UiArt.Gold, 2, true);
+            Tilt(ribbon, -1.5f);
+            heading = TC("VERSUS", mid, 55, 46, UiArt.Dark, 620);
+            Tilt(heading, -1.5f);
+            if (lobby) info = TC("", mid, 170, 22, UiArt.Gold, right - 120);
+            // mode tabs (mouse, or player 1's DOWN key), the party cup / watch-only switch and the rules
+            int nf = VersusSetup.Formats.Length;
+            float tx = lobby ? 220f : 300f, tw = lobby ? 136f : 190f;
+            for (int i = 0; i < nf; i++)
             {
                 int idx = i;
-                formatTabs[i] = Button(VersusSetup.Label(VersusSetup.Formats[i]), new Vector2(centre + (i - 1.5f) * tw * 1.1f, ph / 2f - 6f), new Vector2(tw, 2.2f), () => SetFormat(idx), i == 3 ? 0.42f : 0.6f);
+                float x0 = tx + i * (tw + 10f);
+                formatTabs[i] = Btn("", x0, 96, x0 + tw, 150, () => SetFormat(idx));
+                string label = VersusSetup.Label(VersusSetup.Formats[i]);
+                TC(label, x0 + tw / 2f, 122, label.Length > 8 ? 19 : 25, UiArt.Ink, tw - 12);
             }
-            // the match rules (the host edits them online; a friend's PC sees them)
-            Button("RULES", new Vector2(centre + area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => RulesPanel.Open(), 0.55f);
-            if (Mirror) Toggle("WATCH ONLY", new Vector2(centre - area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f),
-                               () => Net.ImSpectator, v => Net.Send(new NetWriter(Msg.Spectate).B(v)), 0.42f);
-            if (!Mirror) Button("PARTY CUP", new Vector2(centre - area * 0.425f, ph / 2f - 6f), new Vector2(area * 0.13f, 2.2f), () => PartyMenu.Open(), 0.48f);
-            rulesLine = Text("", new Vector2(centre, ph / 2f - 7.7f), 0.4f, area - 2f, new Color(1f, 0.85f, 0.35f));
+            float sx = 70f, sw = tx - 80f;
+            if (Mirror) Toggle("WATCH", P(sx + sw / 2f, 122), S(sw, 54), () => Net.ImSpectator, v => Net.Send(new NetWriter(Msg.Spectate).B(v)), F(18));
+            else { Btn("", sx, 96, sx + sw, 150, () => PartyMenu.Open()); Icon("trophy", P(sx + 26, 123), 0.9f, UiArt.Gold, 7); TC("PARTY CUP", sx + sw / 2f + 14, 122, lobby ? 17 : 22, UiArt.Ink, sw - 44); }
+            float rx = tx + nf * (tw + 10f);
+            IconBtn("gear", "RULES", rx, 96, right, 150, () => RulesPanel.Open(), lobby ? 20 : 24);
+            if (!lobby) TC("THE LOSING SIDE OF EACH ROUND PICKS ITS UPGRADES", mid, 172, 21, new Color(0.78f, 0.88f, 1f), 1300);
+            rulesLine = TC("", mid, lobby ? 198 : 200, 20, UiArt.Gold, right - 120);
+
+            // the sides
+            float colW = (right - 70f - 60f) / 2f;
             for (int side = 0; side < 2; side++)
             {
-                float x = centre + (side == 0 ? -1f : 1f) * colOff;
-                Box("Column", new Vector2(x, -1.6f), new Vector2(colW, ph * 0.56f), new Color(0.03f, 0.3f, 0.5f, 1f), 2);
-                sideTitle[side] = Text(side == 0 ? "LEFT SIDE" : "RIGHT SIDE", new Vector2(x, ph * 0.17f), 0.8f, colW, Color.white);
+                float x0 = 90f + side * (colW + 20f), x1 = x0 + colW, cx = (x0 + x1) / 2f;
+                Rect("Side", x0, 222, x1, 650, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+                sideTitle[side] = TC(side == 0 ? "LEFT SIDE" : "RIGHT SIDE", cx, 254, 34, UiArt.Gold, colW - 20);
                 for (int r = 0; r < 2; r++)
                 {
-                    float y = ph * 0.06f - r * ph * 0.13f;
-                    rowBoxes[side, r] = Box("Seat", new Vector2(x, y), new Vector2(colW * 0.9f, ph * 0.11f), new Color(0.05f, 0.38f, 0.6f, 1f), 3);
-                    rows[side, r] = Text("", new Vector2(x, y), 0.55f, colW * 0.86f, Color.white, height: ph * 0.1f, wrap: true);
+                    float y0 = 284f + r * 116f;
+                    rowBoxes[side, r] = Rect("Seat", x0 + 24, y0, x1 - 24, y0 + 102, new Color(0.094f, 0.275f, 0.46f, 1f), 3, true);
+                    rows[side, r] = TW("", cx, y0 + 51, 26, UiArt.Ink, colW - 70, 96);
                 }
-                swatch[side] = Box("Team colour", new Vector2(x, -ph * 0.25f), new Vector2(colW * 0.72f, 2.6f), Color.white, 3);
-                teamText[side] = Text("", new Vector2(x, -ph * 0.25f), 0.7f, colW * 0.72f, Color.white);
+                swatch[side] = Rect("Team", x0 + 24, 530, x1 - 24, 626, Color.white, 3, true);
+                teamText[side] = TC("", cx, 578, 32, UiArt.Ink, colW - 70);
             }
-            Text("JOIN: PRESS A KEY ON  " + string.Join(",  ", VersusInput.KeyboardSets.Select(k => k.label)) + "  OR  A ON A GAMEPAD   ·   LEFT / RIGHT: TEAM (EACH SIDE'S FIRST PLAYER)   ·   JUMP: READY   ·   DOWN (P1): MODE" +
-                 (lobby ? "   ·   T: CHAT" : "   ·   ESC: BACK"),
-                new Vector2(centre, -ph / 2f + 3.8f), 0.4f, area - 2f, new Color(0.85f, 0.95f, 1f), height: 2.4f, wrap: true);
-            status = Text("", new Vector2(centre, -ph / 2f + 5.8f), 0.5f, area - 4f, new Color(1f, 0.85f, 0.35f));
-            PadHint("PAD: A JOIN / READY  ·  D-PAD TEAM  ·  B LEAVE SEAT, THEN BACK  ·  LB / RB MODE" + (lobby ? "  ·  Y INVITE  ·  SELECT CHAT" : ""),
-                    new Vector2(centre, -ph / 2f + 4.8f), area - 2f);
-            float by = -ph / 2f + 1.6f;
+            string keys = "JOIN: PRESS A KEY ON  " + string.Join(",  ", VersusInput.KeyboardSets.Select(k => k.label)) + "  OR  A ON A GAMEPAD   ·   LEFT / RIGHT: TEAM   ·   JUMP: READY   ·   DOWN (P1): MODE" + (lobby ? "   ·   T: CHAT" : "   ·   ESC: BACK");
+            TW(keys, mid, 704, 18, new Color(0.78f, 0.88f, 1f), right - 120, 50);
+            status = TC("", mid, 760, 24, UiArt.Gold, right - 140);
+            PadHint("PAD: A JOIN / READY  ·  D-PAD TEAM  ·  B LEAVE SEAT, THEN BACK  ·  LB / RB MODE" + (lobby ? "  ·  Y INVITE  ·  SELECT CHAT" : ""), P(mid, 800), (right - 120) / 25f * KX);
             if (!lobby)
             {
-                Button("BACK", new Vector2(-pw * 0.12f, by), new Vector2(pw * 0.18f, 2.4f), () => Close(), 0.7f);
-                Button("START", new Vector2(pw * 0.12f, by), new Vector2(pw * 0.18f, 2.4f), () => TryStart(), 0.7f);
+                IconBtn("back", "BACK", 70, 846, 330, 892, () => Close());
+                GoldSign("START", 1290, 838, 1540, 898, () => TryStart(), 38, "play");
             }
             else
             {
-                Button("LEAVE", new Vector2(centre - area * 0.3f, by), new Vector2(area * 0.26f, 2.4f), () => LeaveLobby(), 0.7f);
-                Button(Net.IsHost ? "START" : "HOST STARTS", new Vector2(centre + area * 0.02f, by), new Vector2(area * 0.3f, 2.4f), () => TryStart(), 0.7f);
-                if (Lobbies.CanInvite || Lobbies.Available)
-                    Button("INVITE (STEAM)", new Vector2(centre + area * 0.33f, by), new Vector2(area * 0.26f, 2.4f), () => Lobbies.Invite(), 0.6f);
-                BuildSidebar(pw, ph);
+                IconBtn("back", "LEAVE", 70, 846, 300, 892, () => LeaveLobby());
+                if (Lobbies.CanInvite || Lobbies.Available) IconBtn("people", "INVITE (STEAM)", 320, 846, 640, 892, () => Lobbies.Invite(), 22);
+                GoldSign(Net.IsHost ? "START" : "HOST STARTS", 790, 838, 1090, 898, () => TryStart(), Net.IsHost ? 38 : 28, "play");
+                BuildSidebar();
             }
             Refresh();
         }
 
         // the lobby's PCs (with pings) and its chat
-        private void BuildSidebar(float pw, float ph)
+        private void BuildSidebar()
         {
-            float x = pw * 0.31f, w = pw * 0.34f, top = ph / 2f;
-            Box("Sidebar", new Vector2(x, -0.3f), new Vector2(w, ph - 2.2f), new Color(0.03f, 0.3f, 0.5f, 1f), 2);
-            Text("PLAYERS", new Vector2(x, top - 2.2f), 0.7f, w - 1f, Color.white);
-            playersText = Text("", new Vector2(x, top - 5.2f), 0.5f, w - 1.6f, Color.white, TextAlignmentOptions.Top, height: 5f, wrap: true);
-            Text("CHAT", new Vector2(x, top - 9.4f), 0.7f, w - 1f, Color.white);
-            chatText = Text("", new Vector2(x, -ph * 0.08f), 0.45f, w - 1.6f, Color.white, TextAlignmentOptions.Bottom, height: ph * 0.48f, wrap: true);
-            chatField = TextField(new Vector2(x, -ph / 2f + 1.6f), new Vector2(w - 1.2f, 2.2f), "PRESS T OR CLICK TO CHAT", 120, t => { OnlineFlow.Say(t); SetField(chatField, ""); });
+            Box("Sidebar", P(1320, 485), S(420, 690), UiArt.Navy, 1, true);
+            Icon("people", P(1160, 175), 1.1f, UiArt.Gold, 7);
+            TL("PLAYERS", 1185, 176, 30, UiArt.Gold, 300);
+            playersText = Text("", P(1320, 270), F(22), 380 / 25f * KX, UiArt.Ink, TextAlignmentOptions.Top, 8, 150 / 25f, true);
+            Rect("ChatBox", 1130, 360, 1510, 760, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            TL("CHAT", 1150, 384, 26, UiArt.Gold, 200);
+            chatText = Text("", P(1320, 570), F(19), 350 / 25f * KX, UiArt.Ink, TextAlignmentOptions.Bottom, 8, 350 / 25f, true);
+            chatField = TextField(P(1320, 869), S(400, 46), "PRESS T OR CLICK TO CHAT", 120, t => { OnlineFlow.Say(t); SetField(chatField, ""); });
             OnlineFlow.ChatChanged += ShowChat;
             ShowChat();
             ShowPlayers();
@@ -219,7 +223,7 @@ namespace HangtimeOvertime.Patches
             playersText.text = string.Join("\n", lines);
             if (info != null)
                 info.text = $"CODE <color=#FFFFFF>{Net.Lobby.Code}</color>  ·  {(Net.Lobby.Public ? "PUBLIC" : "PRIVATE")}  ·  {Mathf.Max(1, Net.Roster.Count)}/{Net.Lobby.MaxPCs} PCS";
-            heading.text = Net.Lobby.Name.Replace("<", "‹").ToUpperInvariant() + "  <size=60%>" + VersusSetup.Label(Format) + "</size>";
+            heading.text = Net.Lobby.Name.Replace("<", "‹").ToUpperInvariant() + "  <size=55%>" + VersusSetup.Label(Format) + "</size>";
         }
 
         protected override void OnDestroy()
@@ -362,7 +366,7 @@ namespace HangtimeOvertime.Patches
             else if (rulesLine != null) rulesLine.text = "RULES: " + (LobbyRules.MatchingPreset() is string pn ? pn + "  ·  " : "") + LobbyRules.Current.Summary();
             if (lobby) ShowPlayers();
             else heading.text = "VERSUS  <size=60%>" + VersusSetup.Label(Format) + "</size>";
-            for (int i = 0; i < formatTabs.Length; i++) formatTabs[i].color = UiArt.Paint(i == format ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
+            for (int i = 0; i < formatTabs.Length; i++) if (formatTabs[i] != null) Shade(formatTabs[i], i == format ? new Color(1f, 0.6f, 0.2f, 1f) : UiArt.Blue);
             var seats = Seats;
             for (int side = 0; side < 2; side++)
             {
@@ -370,7 +374,7 @@ namespace HangtimeOvertime.Patches
                 for (int r = 0; r < 2; r++)
                 {
                     string text;
-                    Color box = new Color(0.05f, 0.38f, 0.6f, 1f);
+                    Color box = new Color(0.094f, 0.275f, 0.46f, 1f);
                     if (r < mine.Count)
                     {
                         int i = mine[r];
@@ -378,12 +382,12 @@ namespace HangtimeOvertime.Patches
                         text = input[i] == null ? $"{who}\n<size=80%>PRESS A BUTTON TO JOIN</size>" :
                                ready[i] ? $"{who}\n<size=80%>{input[i].Label} · <color=#FFD95A>READY!</color></size>" :
                                           $"{who}\n<size=80%>{input[i].Label} · JUMP WHEN READY</size>";
-                        if (ready[i]) box = new Color(0.1f, 0.45f, 0.35f, 1f);
+                        if (ready[i]) box = new Color(0.16f, 0.5f, 0.3f, 1f);
                     }
                     else
                     {
                         text = "AI  <size=70%>SETTER</size>\n<size=80%>COMPUTER</size>";
-                        box = new Color(0.04f, 0.27f, 0.42f, 1f);
+                        box = new Color(0.06f, 0.17f, 0.29f, 1f);
                     }
                     rows[side, r].text = text;
                     rowBoxes[side, r].color = UiArt.Paint(box);
@@ -391,14 +395,14 @@ namespace HangtimeOvertime.Patches
                 if (team[side] >= teams[side].Count) team[side] = 0;
                 if (Leader(side) < 0)                                               // co-op Infinite: the AI's side
                 {
-                    swatch[side].enabled = false;
+                    swatch[side].gameObject.SetActive(false);
                     teamText[side].text = "<size=80%>A NEW OPPONENT EVERY MATCH</size>";
                     rows[side, 0].text = "AI  <size=70%>INFINITE'S TEAMS</size>\n<size=80%>THEY GET STRONGER EVERY MATCH</size>";
                     continue;
                 }
                 bool joined = input[Leader(side)] != null;
-                swatch[side].enabled = joined;
-                teamText[side].text = joined ? "<  " + TeamLabel(side) + "  >" : "";
+                swatch[side].gameObject.SetActive(joined);
+                teamText[side].text = joined ? "<  " + TeamLabel(side) + "  >" : "<size=75%><color=#C8E1FF>JOIN TO CHOOSE A TEAM</color></size>";
                 var c = TeamColour(side);
                 swatch[side].color = UiArt.Paint(new Color(c.r * 0.7f, c.g * 0.7f, c.b * 0.7f, 1f));
             }
