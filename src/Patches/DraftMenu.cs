@@ -33,6 +33,8 @@ namespace HangtimeOvertime.Patches
         private static Color Hex(string hex) => ColorUtility.TryParseHtmlString("#" + hex, out var c) ? c : Color.white;
         private static Color ElementColor(string id) { var e = Elements.All.FirstOrDefault(x => x.Id == id); return e.Id != null && id != "none" ? Hex(e.Color) : new Color(0.8f, 0.85f, 0.9f); }
 
+        // three team cards like the tournaments screen: the team's emblem on its banner colour, badges, the three abilities
+        // (rarity / element colours) and two stat cards, a flame meter for the simulator's strength, a gold PICK
         private void Build()
         {
             if (dealSeed == 0) dealSeed = Math.Abs(Environment.TickCount ^ (int)(DateTime.UtcNow.Ticks & 0x7FFFFFFF)) | 1;
@@ -42,74 +44,79 @@ namespace HangtimeOvertime.Patches
                 countedSeed = dealSeed;
                 foreach (var o in options) { foreach (var id in o.Perks) Collection.See("perk:" + id); foreach (var id in o.Cards) Collection.See("card:" + id); }
             }
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.94f, ph = H * 0.92f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("DRAFT CUP", new Vector2(0f, top - 1.7f), 1.1f, pw - 2f, Color.white);
-            Text("PICK ONE OF THREE TEAMS. EVERY OPPONENT IN THE 8-MATCH BRACKET HAS DRAFTED TOO. THE THREE ARE DEALT TO BE ABOUT EQUALLY STRONG.",
-                 new Vector2(0f, top - 3.3f), 0.42f, pw - 3f, new Color(0.85f, 0.95f, 1f));
+            Frame("DRAFT CUP", () => Destroy(gameObject));
+            TC("PICK ONE OF THREE TEAMS. EVERY OPPONENT IN THE 8-MATCH BRACKET HAS DRAFTED TOO. THE THREE ARE DEALT TO BE ABOUT EQUALLY STRONG.", 800, 170, 21, new Color(0.78f, 0.88f, 1f), 1460);
 
-            float cw = (pw - 3f) / 3f, cardTop = top - 4.6f, ch = ph - 11.2f;
             for (int i = 0; i < options.Count; i++)
             {
                 var o = options[i];
-                float cx = -pw / 2f + 1f + (cw + 0.5f) * i + cw / 2f;
+                float x0 = 70f + i * 493f, x1 = x0 + 473f, cx = (x0 + x1) / 2f;
                 var el = ElementColor(o.Team.Element);
-                Box("Card", new Vector2(cx, cardTop - ch / 2f), new Vector2(cw, ch), Color.Lerp(new Color(0.02f, 0.2f, 0.34f), el, 0.12f), 2);
-                Box("Stripe", new Vector2(cx, cardTop - 0.25f), new Vector2(cw, 0.5f), el, 3);
-                float y = cardTop - 1.7f;
-                Text($"<noparse>{o.Team.Name.ToUpperInvariant()}</noparse>", new Vector2(cx, y), 0.75f, cw - 1f, Color.white);
-                y -= 1.2f;
-                Text($"{o.Team.Element.ToUpperInvariant()}  ·  {o.Team.Slot.ToUpperInvariant()} TEAM", new Vector2(cx, y), 0.42f, cw - 1f, el);
-                y -= 1.5f;
-                Text("ABILITIES", new Vector2(cx, y), 0.42f, cw - 1f, new Color(1f, 0.85f, 0.35f));
-                y -= 1.1f;
+                Rect("Card", x0, 192, x1, 800, new Color(0.094f, 0.275f, 0.46f, 1f), 2, true);
+                // the emblem on its banner
+                Rect("Banner", x0 + 20, 208, x1 - 20, 300, Color.Lerp(Hex(o.Team.Banner), Color.black, 0.42f), 3);
+                var tex = EmblemTexture(o.Team);
+                if (tex != null) Picture(tex, P(cx, 254), 80f / 25f, 5);
+                TC($"<noparse>{o.Team.Name.ToUpperInvariant()}</noparse>", cx, 328, 34, UiArt.Ink, 440);
+                float bw = (o.Team.Element.Length + o.Team.Slot.Length + 7) * 9.6f + 66f;
+                Badges(cx - bw / 2f, 362, (o.Team.Element.ToUpperInvariant(), el), (o.Team.Slot.ToUpperInvariant() + " TEAM", UiArt.Gold));
+                TL("ABILITIES", x0 + 28, 394, 20, UiArt.Gold, 200);
+                float y = 420;
                 foreach (var id in o.Perks)
                 {
                     var p = Perks.All.First(x => x.Id == id);
-                    string rc = "#" + ColorUtility.ToHtmlStringRGB(StatCards.RarityColor(p.Rarity));
-                    string ec = "#" + ColorUtility.ToHtmlStringRGB(ElementColor(p.Element));
-                    Text($"<color={rc}><noparse>{p.Title.ToUpperInvariant()}</noparse></color>  <size=75%><color={ec}>{p.Element.ToUpperInvariant().Replace("NONE", "")}</color></size>",
-                         new Vector2(cx, y), 0.5f, cw - 1f, Color.white);
-                    Text($"<noparse>{p.Description}</noparse>", new Vector2(cx, y - 1.25f), 0.36f, cw - 1.4f, new Color(0.85f, 0.95f, 1f), height: 1.8f, wrap: true);
-                    y -= 2.9f;
+                    string rc = TournamentMenu.Hex(StatCards.RarityColor(p.Rarity));
+                    string ec = TournamentMenu.Hex(ElementColor(p.Element));
+                    TL($"<color={rc}><noparse>{p.Title.ToUpperInvariant()}</noparse></color>  <size=70%><color={ec}>{p.Element.ToUpperInvariant().Replace("NONE", "")}</color></size>", x0 + 28, y, 25, Color.white, 420);
+                    TW($"<noparse>{p.Description}</noparse>", cx, y + 27, 15, new Color(0.78f, 0.88f, 1f), 420, 36);
+                    y += 60;
                 }
-                Text("STAT CARDS", new Vector2(cx, y), 0.42f, cw - 1f, new Color(1f, 0.85f, 0.35f));
-                y -= 1.1f;
+                TL("STAT CARDS", x0 + 28, 604, 20, UiArt.Gold, 200);
+                y = 630;
                 foreach (var id in o.Cards)
                 {
                     var c = StatCards.Get(id);
-                    string deltas = string.Join("  ", c.Stats.Select((s, k) => $"{StatCards.Label(s).ToUpperInvariant()} {(c.Points[k] > 0 ? "+" : "")}{c.Points[k]:0.##}"));
-                    Text($"<noparse>{c.Title.ToUpperInvariant()}</noparse>  <size=75%><color=#BFE6FF>{deltas}</color></size>", new Vector2(cx, y), 0.45f, cw - 1f, Color.white);
-                    y -= 1.1f;
+                    string deltas = string.Join("  ", c.Stats.Select((st, k) => $"{StatCards.Label(st).ToUpperInvariant()} {(c.Points[k] > 0 ? "+" : "")}{c.Points[k]:0.##}"));
+                    TL($"<noparse>{c.Title.ToUpperInvariant()}</noparse>  <size=70%><color=#C8E1FF>{deltas}</color></size>", x0 + 28, y, 22, UiArt.Ink, 420);
+                    y += 26;
                 }
-                // strength: the package's simulated power against the deal's target
+                // strength: flames from the simulator's early-match win rate (or the package's power)
                 float k = Mathf.Clamp(o.Power / Mathf.Max(0.001f, Draft.Target), 0f, 1.3f) / 1.3f;
-                float bw = cw - 3f, byy = cardTop - ch + 3.1f;
-                if (o.SimWin > 0f) k = Mathf.Clamp01((o.SimWin - 0.5f) / 0.45f);        // the simulator's result for the whole package
-                Text(o.SimWin > 0f ? $"STRENGTH  <size=80%>(SIMULATOR: WINS {o.SimWin:P0} OF EARLY MATCHES)</size>" : "STRENGTH",
-                     new Vector2(cx, byy + 0.8f), 0.38f, cw - 1f, new Color(0.85f, 0.95f, 1f));
-                Box("Bar", new Vector2(cx, byy), new Vector2(bw, 0.35f), new Color(0f, 0f, 0f, 0.35f), 3);
-                Box("Fill", new Vector2(cx - bw / 2f + bw * k / 2f, byy), new Vector2(bw * k, 0.35f), new Color(1f, 0.85f, 0.35f), 4);
+                if (o.SimWin > 0f) k = Mathf.Clamp01((o.SimWin - 0.5f) / 0.45f);
+                int lit = Mathf.Clamp(Mathf.RoundToInt(k * 10f), 1, 10);
+                TL(o.SimWin > 0f ? $"STRENGTH  ·  WINS {Mathf.RoundToInt(o.SimWin * 100f)}% OF EARLY MATCHES (SIMULATOR)" : "STRENGTH", x0 + 28, 690, 16, new Color(0.78f, 0.88f, 1f), 420);
+                for (int f = 0; f < 10; f++) Icon("flame", P(x0 + 40 + f * 22f, 711), 0.8f, f < lit ? UiArt.Orange : new Color(1f, 1f, 1f, 0.22f), 8);
                 var opt = o;
-                Button("PICK", new Vector2(cx, cardTop - ch + 1.5f), new Vector2(cw * 0.5f, 2f), () => Pick(opt), 0.6f);
+                GoldSign("PICK", x0 + 90, 736, x1 - 90, 786, () => Pick(opt), 32, "check");
             }
 
-            float by = -ph / 2f + 1.7f;
             var saved = RunSaves.DraftRun;
             if (saved.has && !string.IsNullOrEmpty(saved.draft))
             {
                 var team = Drafting.TeamOf(saved.draft);
-                Button($"CONTINUE  ({(team?.Name ?? "DRAFT").ToUpperInvariant()} · {RunSaves.Where(saved).ToUpperInvariant()})", new Vector2(-pw * 0.2f, by), new Vector2(pw * 0.3f, 2.2f), () => Continue(saved), 0.5f);
-                Text("PICKING A NEW TEAM DROPS THE SAVED DRAFT CUP", new Vector2(-pw * 0.2f, by + 1.6f), 0.36f, pw * 0.35f, new Color(1f, 0.85f, 0.35f));
+                IconBtn("play", $"CONTINUE  {(team?.Name ?? "DRAFT").ToUpperInvariant()} · {RunSaves.Where(saved).ToUpperInvariant()}", 70, 846, 640, 892, () => Continue(saved), 22);
+                TL("PICKING A NEW TEAM DROPS THE SAVED DRAFT CUP", 660, 869, 17, UiArt.Gold, 380);
             }
-            Button("BACK", new Vector2(pw * 0.2f, by), new Vector2(pw * 0.18f, 2.2f), () => Destroy(gameObject), 0.6f);
             var r = Records.Data;
-            Text($"DRAFTS {r.draftsPlayed}  ·  CUPS WON {r.draftCupsWon}  ·  BEST STREAK {Records.Best(Records.Draft)}", new Vector2(0f, by + 3.2f), 0.42f, pw - 2f, new Color(1f, 0.85f, 0.35f));
-            PadHint("A: PICK   ·   B: BACK", new Vector2(pw * 0.2f, by + 1.6f), pw * 0.3f);
+            TC($"DRAFTS {r.draftsPlayed}  ·  CUPS WON {r.draftCupsWon}  ·  BEST STREAK {Records.Best(Records.Draft)}", 1100, 869, 20, UiArt.Gold, 520);
+            PadHint("A: PICK   B: BACK", P(1100, 830), 300 / 25f * KX);
             navKeys = true;
             focus = 0;
             Plugin.Log.LogInfo("Draft dealt (seed " + dealSeed + "): " + string.Join(" | ", options.Select(o => $"{o.Team.Name} [{string.Join(", ", o.Perks)}; {string.Join(", ", o.Cards)}] {o.Power:F3}")));
+        }
+
+        // the team's shipped emblem (assets/emblems/<id>.png)
+        private static readonly Dictionary<string, Texture2D> emblems = new Dictionary<string, Texture2D>();
+        public static Texture2D EmblemTexture(TeamDef t)
+        {
+            if (t == null) return null;
+            if (emblems.TryGetValue(t.Id, out var have) && have != null) return have;
+            var path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(Plugin).Assembly.Location), "emblems", t.Id + ".png");
+            if (!System.IO.File.Exists(path)) return null;
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset, wrapMode = TextureWrapMode.Clamp };
+            tex.LoadImage(System.IO.File.ReadAllBytes(path));
+            emblems[t.Id] = tex;
+            return tex;
         }
 
         private static TitleButton ClassicButton() =>

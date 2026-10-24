@@ -86,7 +86,7 @@ namespace HangtimeOvertime.Patches
         // default for the "Panel" box; buttons get their own).
         protected SpriteRenderer Box(string name, Vector2 at, Vector2 size, Color color, int o, bool? outline = null)
         {
-            var sr = new GameObject(name).AddComponent<SpriteRenderer>();
+            var sr = new GameObject(name).AddComponent<SpriteRenderer>(); UiCamera.Own(sr.gameObject);
             sr.transform.SetParent(transform, false);
             sr.transform.localPosition = new Vector3(at.x, at.y, -0.001f * o);
             bool drawn = UiArt.Ready && Mathf.Min(size.x, size.y) >= UiArt.MinSize && size.x < W * 1.1f && color.a > 0.05f && name != "Focus";
@@ -107,7 +107,7 @@ namespace HangtimeOvertime.Patches
         {
             var sprite = UiArt.Icon(name);
             if (sprite == null) return null;
-            var sr = new GameObject("Icon " + name).AddComponent<SpriteRenderer>();
+            var sr = new GameObject("Icon " + name).AddComponent<SpriteRenderer>(); UiCamera.Own(sr.gameObject);
             sr.transform.SetParent(transform, false);
             sr.transform.localPosition = new Vector3(at.x, at.y, -0.001f * o - 0.0002f);
             UiArt.MakeUnlit(sr);
@@ -205,7 +205,7 @@ namespace HangtimeOvertime.Patches
         protected SpriteRenderer Picture(Texture2D tex, Vector2 at, float height, int o = 7)
         {
             if (tex == null) return null;
-            var sr = new GameObject("Picture").AddComponent<SpriteRenderer>();
+            var sr = new GameObject("Picture").AddComponent<SpriteRenderer>(); UiCamera.Own(sr.gameObject);
             sr.transform.SetParent(transform, false);
             sr.transform.localPosition = new Vector3(at.x, at.y, -0.001f * o - 0.0002f);
             UiArt.MakeUnlit(sr);
@@ -222,7 +222,7 @@ namespace HangtimeOvertime.Patches
             int v = box.sprite.name[box.sprite.name.Length - 1] - '0';
             SpriteRenderer Part(string name, Sprite s, Color c, Vector3 at)
             {
-                var r = new GameObject(name).AddComponent<SpriteRenderer>();
+                var r = new GameObject(name).AddComponent<SpriteRenderer>(); UiCamera.Own(r.gameObject);
                 r.transform.SetParent(box.transform, false);
                 r.transform.localPosition = at;
                 UiArt.MakeUnlit(r);
@@ -236,7 +236,7 @@ namespace HangtimeOvertime.Patches
 
         protected TextMeshPro Text(string s, Vector2 at, float size, float width, Color color, TextAlignmentOptions align = TextAlignmentOptions.Center, int o = 8, float height = 3f, bool wrap = false)
         {
-            var t = Instantiate(fontSource.gameObject, transform).GetComponent<TextMeshPro>();
+            var t = Instantiate(fontSource.gameObject, transform).GetComponent<TextMeshPro>(); UiCamera.Own(t.gameObject);
             t.gameObject.SetActive(true);
             t.name = "Text";
             foreach (var mb in t.GetComponents<MonoBehaviour>()) if (!(mb is TMP_Text)) DestroyImmediate(mb);   // typewriters, wobbles

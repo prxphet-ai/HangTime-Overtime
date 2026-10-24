@@ -1089,6 +1089,7 @@ namespace HangtimeOvertime.Generated
             new HookDef("tournament_no_skip", "UpgradeManager", "SkipUpgrade", "prefix", "TournamentRun"),
             new HookDef("tournament_champions", "WinManager", "Start", "postfix", "TournamentRun"),
             new HookDef("tournament_no_achievements", "AchievementManager", "Unlock", "prefix", "TournamentRun"),
+            new HookDef("title_camera_framing", "CameraController", "FixedUpdate", "postfix", "MenuPatches"),
         };
     }
 

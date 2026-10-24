@@ -1111,6 +1111,16 @@
       "purpose": "Community tournaments: no Steam achievements (a custom tournament's final is the game's final)",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "title_camera_framing",
+      "target_type": "CameraController",
+      "target_method": "FixedUpdate",
+      "kind": "postfix",
+      "patch_class": "MenuPatches",
+      "purpose": "Title screen: after a rally ends there the camera keeps the menu framing instead of centring on the court",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

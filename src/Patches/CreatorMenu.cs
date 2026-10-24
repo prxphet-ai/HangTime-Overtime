@@ -20,8 +20,10 @@ namespace HangtimeOvertime.Patches
         private void OnMouseDown() => OnClick?.Invoke();
     }
 
-    // Character creator: title-screen CUSTOMIZE button -> a panel with a live preview of the player and one row per option.
-    internal class CreatorMenu : MonoBehaviour
+    // CUSTOMIZE (title screen): the player's look, laid out like the tournaments screen: a stage with a live preview of the
+    // player on the left, one row per option on the right (left / right or the arrows change it; a colour swatch where it has
+    // one), RANDOMIZE / RESET and a gold DONE. The title-screen player wears the look as it changes.
+    internal class CreatorMenu : OvertimePanel
     {
         private static readonly AccessTools.FieldRef<ButtonController, OnClick> onClickOf = AccessTools.FieldRefAccess<ButtonController, OnClick>("onClick");
 
@@ -29,20 +31,11 @@ namespace HangtimeOvertime.Patches
         public static bool IsOpen => open != null;
         private PlayerLook work;
         private Transform preview, titleRig;
-        private ButtonGroup titleGroup;
-        private readonly List<Collider2D> disabled = new List<Collider2D>();
         private readonly List<(string label, string field)> rows = new List<(string, string)>
         {
             ("HAIR STYLE", "hairStyle"), ("HAIR COLOR", "hairColor"), ("SKIN TONE", "skin"), ("JERSEY", "jersey"), ("SHORTS & NUMBER", "trim"),
             ("NUMBER", "number"), ("BUILD", "build"), ("HEADBAND", "headband"), ("WRISTBANDS", "wristbands"), ("KNEE PADS", "kneePads"), ("SHOES", "shoes"),
         };
-        private readonly List<TextMeshPro> values = new List<TextMeshPro>();
-        private readonly List<SpriteRenderer> swatches = new List<SpriteRenderer>(), rowBoxes = new List<SpriteRenderer>();
-        private readonly List<SpriteRenderer> footer = new List<SpriteRenderer>();
-        private int selected, footerSel;
-        private float stickTimer;
-        private TextMeshPro fontSource;
-        private int layer, order;
 
         // ------------------------------------------------------------ the title-screen button
 
@@ -76,140 +69,91 @@ namespace HangtimeOvertime.Patches
             if (open != null) return;
             var go = new GameObject("Overtime Creator");
             open = go.AddComponent<CreatorMenu>();
-            open.Build(template);
+            if (!open.InitKit(200)) { Destroy(go); open = null; return; }
+            open.HoldTitle();
+            open.work = JsonUtility.FromJson<PlayerLook>(JsonUtility.ToJson(Look.Current));
+            var player = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(Look.IsPlayerOne);
+            if (player != null) open.titleRig = Look.RigOf(player);
+            open.Build();
         }
 
         private void Close(bool keep)
         {
             if (keep) { Look.Current = work; Look.Save(); }
             if (titleRig != null) Look.Apply(titleRig, Look.Current);
-            foreach (var c in disabled) if (c != null) c.enabled = true;
-            if (titleGroup != null)
-            {
-                titleGroup.enabled = true;
-                foreach (var b in titleGroup.buttons.Where(b => b != null)) { b.interactable = true; b.wasClicked = false; }
-            }
-            open = null;
             Destroy(gameObject);
         }
 
+        protected override void OnDestroy() { base.OnDestroy(); if (open == this) open = null; }
+
         // ------------------------------------------------------------ layout
 
-        private void Build(GameObject template)
+        private void Build()
         {
-            work = JsonUtility.FromJson<PlayerLook>(JsonUtility.ToJson(Look.Current));
-            titleGroup = template.GetComponentInParent<ButtonGroup>(true);
-            if (titleGroup != null)
-            {
-                titleGroup.enabled = false;
-                foreach (var b in titleGroup.buttons.Where(b => b != null))
-                    foreach (var c in b.GetComponents<Collider2D>().Where(c => c.enabled)) { c.enabled = false; disabled.Add(c); }
-            }
-            var baseSr = template.GetComponent<SpriteRenderer>();
-            layer = baseSr.sortingLayerID;
-            order = baseSr.sortingOrder + 60;
-            fontSource = template.GetComponentsInChildren<TextMeshPro>(true).OrderBy(l => l.name).FirstOrDefault();
+            int keep = focus;
+            foreach (Transform t in transform) Destroy(t.gameObject);
+            ClearStops();
+            preview = null;
+            Frame("CUSTOMIZE", null);
 
-            var cam = Camera.main;
-            float H = cam != null ? cam.orthographicSize * 2f : 34f, W = H * (cam != null ? cam.aspect : 1.78f);
-            var c0 = cam != null ? (Vector3)(Vector2)cam.transform.position : Vector3.zero;
-            float z = template.transform.position.z - 0.4f;
-            transform.position = new Vector3(c0.x, c0.y, z);
-
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.9f, ph = H * 0.88f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("CUSTOMIZE YOUR PLAYER", new Vector2(0f, ph / 2f - 1.6f), 1.1f, pw - 4f, Color.white);
-
-            // live preview: a copy of the title-screen player, larger
-            var player = FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(Look.IsPlayerOne);
-            float previewX = -pw / 2f + pw * 0.2f;
-            Box("Stage", new Vector2(previewX, -0.5f), new Vector2(pw * 0.32f, ph * 0.72f), new Color(0.62f, 0.86f, 0.97f, 1f), 2);
-            if (player != null)
-            {
-                titleRig = Look.RigOf(player);
-                // copy the player as the game draws it (not wearing the saved look), so "Original" means the game's look
-                Look.Apply(titleRig, new PlayerLook());
-                titleRig.GetComponent<LookKeeper>()?.SnapBuild();
-                var copy = Instantiate(titleRig.gameObject, transform);
-                foreach (var lk in copy.GetComponentsInChildren<LookKeeper>(true)) DestroyImmediate(lk);
-                preview = copy.transform;
-                preview.localScale = titleRig.lossyScale * 2.6f;
-                var b = Bounds(preview);
-                preview.position += new Vector3(transform.position.x + previewX - b.center.x, transform.position.y - 0.5f - b.center.y, z - 0.05f - preview.position.z);
-                foreach (var r in preview.GetComponentsInChildren<Renderer>(true)) { r.sortingLayerID = layer; r.sortingOrder = order + 10 + r.sortingOrder; }
-            }
+            // the stage and the live preview
+            Rect("Poster", 80, 170, 620, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            Rect("Stage", 110, 200, 590, 720, new Color(0.62f, 0.86f, 0.97f, 1f), 3);
+            Rect("Floor", 110, 640, 590, 720, new Color(1f, 0.6f, 0.25f, 1f), 4);
+            TC("YOUR PLAYER", 350, 760, 30, UiArt.Gold, 400);
+            if (titleRig != null) MakePreview();
 
             // option rows
-            float top = ph / 2f - 3.6f, bottom = -ph / 2f + 4.4f;
-            float rh = (top - bottom) / rows.Count;
-            float colL = -pw / 2f + pw * 0.42f, colV = pw / 2f - pw * 0.2f;
+            float y0 = 170f, rh = 57f;
             for (int i = 0; i < rows.Count; i++)
             {
                 int row = i;
-                float y = top - rh * (i + 0.5f);
-                float rowL = colL - 1f, rowR = colV + pw * 0.16f;
-                rowBoxes.Add(Box("Row", new Vector2((rowL + rowR) / 2f, y), new Vector2(rowR - rowL, rh * 0.86f), new Color(1f, 1f, 1f, 0f), 2));
-                Text(rows[i].label, new Vector2(colL, y), 0.75f, pw * 0.3f, Color.white, TextAlignmentOptions.Left, pivotLeft: true);
-                values.Add(Text("", new Vector2(colV, y), 0.75f, pw * 0.22f, Color.white));
-                swatches.Add(Box("Swatch", new Vector2(colV - pw * 0.165f, y), new Vector2(rh * 0.6f, rh * 0.6f), Color.white, 4));
-                Button("<", new Vector2(colV - pw * 0.12f, y), new Vector2(rh * 0.8f, rh * 0.8f), () => { selected = row; Step(row, -1); });
-                Button(">", new Vector2(colV + pw * 0.12f, y), new Vector2(rh * 0.8f, rh * 0.8f), () => { selected = row; Step(row, 1); });
+                float y = y0 + i * rh, cy = y + rh / 2f - 2f;
+                var b = Shade(Btn("", 650, y, 1530, y + rh - 6f, () => Step(row, 1)), i % 2 == 0 ? new Color(0.094f, 0.275f, 0.46f, 1f) : new Color(0.075f, 0.23f, 0.4f, 1f));
+                var stop = stops.Find(x => x.Box == b);
+                if (stop != null) stop.Adjust = d => Step(row, d);
+                int v = Get(rows[i].field);
+                TL(rows[i].label, 680, cy, 28, UiArt.Ink, 380);
+                var hex = SwatchHex(rows[i].field, v);
+                if (hex != null) Rect("Swatch", 1080, cy - 17, 1124, cy + 17, Vfx.Hex(hex), 7, true);
+                foreach (var (x, d) in new[] { (1160f, -1), (1490f, 1) })
+                {
+                    var arrow = Btn(d < 0 ? "<" : ">", x - 22, cy - 20, x + 22, cy + 20, () => Step(row, d), 24);
+                    stops.RemoveAll(st => st.Box == arrow);
+                }
+                TC(ValueText(rows[i].field, v).ToUpperInvariant(), 1325, cy, 28, UiArt.Gold, 280);
             }
+
             // footer
-            float fy = -ph / 2f + 2.2f;
-            footer.Add(Button("RANDOMIZE", new Vector2(-pw * 0.22f, fy), new Vector2(pw * 0.2f, 2.6f), Randomize));
-            footer.Add(Button("RESET", new Vector2(0f, fy), new Vector2(pw * 0.2f, 2.6f), ResetLook));
-            footer.Add(Button("DONE", new Vector2(pw * 0.22f, fy), new Vector2(pw * 0.2f, 2.6f), () => Close(true)));
-            Refresh();
+            IconBtn("star", "RANDOMIZE", 650, 846, 950, 892, Randomize);
+            IconBtn("refresh", "RESET", 970, 846, 1200, 892, ResetLook);
+            GoldSign("DONE", 1300, 838, 1540, 898, () => Close(true), 36, "check");
+            PadHint("UP / DOWN: CHOOSE   LEFT / RIGHT: CHANGE   B: DONE", P(330, 870), 520 / 25f * KX);
+            navKeys = true;
+            focus = keep >= 0 && keep < stops.Count ? keep : 0;
+            if (preview != null) Look.Apply(preview, work);
+            if (titleRig != null) Look.Apply(titleRig, work);
         }
 
-        private SpriteRenderer Box(string name, Vector2 at, Vector2 size, Color color, int o)
+        // a copy of the title-screen player, larger, standing on the stage
+        private void MakePreview()
         {
-            var sr = new GameObject(name).AddComponent<SpriteRenderer>();
-            sr.transform.SetParent(transform, false);
-            sr.transform.localPosition = new Vector3(at.x, at.y, -0.01f * o);
-            sr.sprite = ContinueMenu.Rounded();
-            sr.drawMode = SpriteDrawMode.Sliced;
-            sr.size = size;
-            sr.color = color;
-            sr.sortingLayerID = layer;
-            sr.sortingOrder = order + o;
-            return sr;
-        }
-
-        private TextMeshPro Text(string s, Vector2 at, float size, float width, Color color, TextAlignmentOptions align = TextAlignmentOptions.Center, bool pivotLeft = false)
-        {
-            var t = Instantiate(fontSource.gameObject, transform).GetComponent<TextMeshPro>();
-            t.name = "Text";
-            var ls = fontSource.transform.lossyScale;
-            t.transform.localScale = ls;
-            t.rectTransform.pivot = new Vector2(pivotLeft ? 0f : 0.5f, 0.5f);
-            t.transform.localPosition = new Vector3(at.x, at.y, -0.2f);
-            t.text = s;
-            t.margin = Vector4.zero;
-            t.alignment = align;
-            t.textWrappingMode = TextWrappingModes.NoWrap;
-            t.enableAutoSizing = false;
-            t.fontSize = fontSource.fontSize * size;
-            t.rectTransform.sizeDelta = new Vector2(width / ls.x, 3f / ls.y);
-            t.color = color;
-            var r = t.GetComponent<Renderer>();
-            r.sortingLayerID = layer;
-            r.sortingOrder = order + 8;
-            return t;
-        }
-
-        private SpriteRenderer Button(string label, Vector2 at, Vector2 size, Action act)
-        {
-            var normal = new Color(0.16f, 0.66f, 0.9f, 1f);
-            var sr = Box("Button " + label, at, size, normal, 5);
-            var col = sr.gameObject.AddComponent<BoxCollider2D>();
-            col.size = size;
-            var w = sr.gameObject.AddComponent<CreatorWidget>();
-            w.Box = sr; w.Normal = normal; w.Hover = new Color(0.4f, 0.8f, 1f, 1f); w.OnClick = act;
-            Text(label, at, label.Length <= 1 ? 0.8f : 0.8f, size.x, Color.white);
-            return sr;
+            Look.Apply(titleRig, new PlayerLook());          // copied as the game draws it, so "Original" means the game's look
+            titleRig.GetComponent<LookKeeper>()?.SnapBuild();
+            var copy = Instantiate(titleRig.gameObject, transform);
+            foreach (var lk in copy.GetComponentsInChildren<LookKeeper>(true)) DestroyImmediate(lk);
+            foreach (var mb in copy.GetComponentsInChildren<MonoBehaviour>(true).Where(m => m is PlayerController || m is Rigidbody2D)) mb.enabled = false;
+            foreach (var rb in copy.GetComponentsInChildren<Rigidbody2D>(true)) rb.simulated = false;
+            foreach (var c in copy.GetComponentsInChildren<Collider2D>(true)) c.enabled = false;
+            preview = copy.transform;
+            preview.localRotation = Quaternion.identity;
+            preview.localScale = titleRig.lossyScale * 2.4f / Mathf.Max(0.0001f, transform.lossyScale.x);
+            var b = Bounds(preview);
+            var want = transform.TransformPoint(P(350, 500));
+            preview.position += new Vector3(want.x - b.center.x, want.y - b.center.y, 0f);
+            preview.localPosition = new Vector3(preview.localPosition.x, preview.localPosition.y, -0.06f);
+            foreach (var r in preview.GetComponentsInChildren<Renderer>(true)) { r.sortingLayerID = layer; r.sortingOrder = order + 10 + r.sortingOrder; }
+            UiCamera.SetLayer(copy);
         }
 
         private static Bounds Bounds(Transform t)
@@ -231,11 +175,11 @@ namespace HangtimeOvertime.Patches
             string f = rows[row].field;
             int n = Look.Count(f);
             Set(f, ((Get(f) + dir) % n + n) % n);
-            Refresh();
+            Build();
         }
 
-        private void Randomize() { work = Look.Randomized(); Refresh(); }
-        private void ResetLook() { work = new PlayerLook(); Refresh(); }
+        private void Randomize() { work = Look.Randomized(); Build(); }
+        private void ResetLook() { work = new PlayerLook(); Build(); }
 
         private string ValueText(string f, int v)
         {
@@ -262,68 +206,13 @@ namespace HangtimeOvertime.Patches
             }
         }
 
-        private void Refresh()
-        {
-            for (int i = 0; i < rows.Count; i++)
-            {
-                int v = Get(rows[i].field);
-                values[i].text = ValueText(rows[i].field, v).ToUpperInvariant();
-                var hex = SwatchHex(rows[i].field, v);
-                swatches[i].enabled = hex != null;
-                if (hex != null) swatches[i].color = Vfx.Hex(hex);
-                rowBoxes[i].color = new Color(1f, 1f, 1f, i == selected ? 0.16f : 0f);
-            }
-            for (int i = 0; i < footer.Count; i++)
-                footer[i].transform.localScale = Vector3.one * (selected == rows.Count && i == footerSel ? 1.08f : 1f);
-            if (preview != null) Look.Apply(preview, work);
-            if (titleRig != null) Look.Apply(titleRig, work);
-        }
-
-        // ------------------------------------------------------------ keyboard and gamepad
-
         private void Update()
         {
+            if (NavUpdate()) return;
             var kb = Keyboard.current;
-            var pad = Gamepad.current;
-            int dy = 0, dx = 0;
-            bool ok = false, back = false;
-            if (kb != null)
-            {
-                if (kb.upArrowKey.wasPressedThisFrame || kb.wKey.wasPressedThisFrame) dy = -1;
-                if (kb.downArrowKey.wasPressedThisFrame || kb.sKey.wasPressedThisFrame) dy = 1;
-                if (kb.leftArrowKey.wasPressedThisFrame || kb.aKey.wasPressedThisFrame) dx = -1;
-                if (kb.rightArrowKey.wasPressedThisFrame || kb.dKey.wasPressedThisFrame) dx = 1;
-                ok = kb.enterKey.wasPressedThisFrame || kb.spaceKey.wasPressedThisFrame;
-                back = kb.escapeKey.wasPressedThisFrame;
-            }
-            if (pad != null)
-            {
-                if (pad.dpad.up.wasPressedThisFrame) dy = -1;
-                if (pad.dpad.down.wasPressedThisFrame) dy = 1;
-                if (pad.dpad.left.wasPressedThisFrame) dx = -1;
-                if (pad.dpad.right.wasPressedThisFrame) dx = 1;
-                var st = pad.leftStick.ReadValue();
-                stickTimer -= Time.unscaledDeltaTime;
-                if (stickTimer <= 0f && st.magnitude > 0.6f)
-                {
-                    if (Mathf.Abs(st.y) > Mathf.Abs(st.x)) dy = st.y > 0 ? -1 : 1; else dx = st.x > 0 ? 1 : -1;
-                    stickTimer = 0.22f;
-                }
-                ok |= pad.buttonSouth.wasPressedThisFrame;
-                back |= pad.buttonEast.wasPressedThisFrame;
-            }
-            if (back) { Close(true); return; }
-            if (dy != 0) { selected = Mathf.Clamp(selected + dy, 0, rows.Count); Refresh(); }
-            if (dx != 0)
-            {
-                if (selected < rows.Count) Step(selected, dx);
-                else { footerSel = Mathf.Clamp(footerSel + dx, 0, footer.Count - 1); Refresh(); }
-            }
-            if (ok)
-            {
-                if (selected < rows.Count) Step(selected, 1);
-                else footer[footerSel].GetComponent<CreatorWidget>().OnClick?.Invoke();
-            }
+            if (kb != null && kb.escapeKey.wasPressedThisFrame) Close(true);
         }
+
+        protected override void OnNavBack() => Close(true);
     }
 }

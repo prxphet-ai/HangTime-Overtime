@@ -63,6 +63,18 @@ namespace HangtimeOvertime.Patches
             catch (Exception e) { Plugin.Log.LogWarning("UI camera: " + e.Message); layer = -1; return false; }
         }
 
+        // a new menu object: on the menus' layer straight away (when the UI camera is in use)
+        public static void Own(GameObject go) { if (Layer >= 0 && go != null && Camera.main != null && Camera.main.transform.Find("Overtime UI Camera") != null) go.layer = Layer; }
+
+        // a menu that isn't a kit panel (the character creator, the title popups): keeps everything under it on the menus'
+        // layer and drawn without the game's lighting
+        public static void Adopt(GameObject root)
+        {
+            if (root == null || !Ensure(Camera.main)) return;
+            if (root.GetComponent<UiLayerKeeper>() == null) root.AddComponent<UiLayerKeeper>();
+            SetLayer(root);
+        }
+
         public static void SetLayer(GameObject go)
         {
             if (Layer < 0 || go == null) return;
@@ -81,6 +93,20 @@ namespace HangtimeOvertime.Patches
             if (Main == null || cam == null) return;
             cam.orthographicSize = Main.orthographicSize;
             cam.orthographic = Main.orthographic;
+        }
+    }
+
+    internal class UiLayerKeeper : MonoBehaviour
+    {
+        private int children = -1;
+        private void LateUpdate()
+        {
+            int n = GetComponentsInChildren<Transform>(true).Length;
+            if (n == children) return;
+            children = n;
+            UiCamera.SetLayer(gameObject);
+            foreach (var r in GetComponentsInChildren<SpriteRenderer>(true))
+                if (r.sharedMaterial == null || r.sharedMaterial.shader == null || !r.sharedMaterial.shader.name.Contains("Unlit")) UiArt.MakeUnlit(r);
         }
     }
 }

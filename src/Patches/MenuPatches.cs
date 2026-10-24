@@ -27,10 +27,20 @@ namespace HangtimeOvertime.Patches
                 .FirstOrDefault(r => r.name == "Title" && r.transform.parent != null && r.transform.parent.name == "Title Holder");
             if (title == null) { Plugin.Log.LogWarning("Title logo not found; no Overtime logo"); return; }
             if (title.transform.Find("Overtime Logo") != null) return;
+            // the game's logo moves over the gap between the VERSUS column and CLASSIC (its intro animation moves its parent)
+            var versus = Object.FindObjectsByType<ButtonController>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(x => x.name == "Versus Button");
+            var classicBtn = Object.FindObjectsByType<TitleButton>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+                .FirstOrDefault(x => Traverse.Create(x).Field("myNumberOfPlayers").GetValue<int>() == 1 && x.name == "1 Player Button");
+            float HalfW(Component c) { var bc = c.GetComponent<BoxCollider2D>(); return bc != null ? bc.size.x * Mathf.Abs(c.transform.lossyScale.x) / 2f : 0f; }
+            if (versus != null && classicBtn != null)
+            {
+                float gap = ((versus.transform.position.x + HalfW(versus)) + (classicBtn.transform.position.x - HalfW(classicBtn))) / 2f;
+                title.transform.position += new Vector3(gap - title.bounds.center.x, 0f, 0f);
+            }
             var logo = title.bounds;
             var over = TitleSprite(title, "Overtime Logo", Ui.TitleOvertime.Text, logo.size.x * 0.8f, 1);
             if (over == null) return;
-            float cx = logo.center.x - logo.size.x * 0.07f;                // the ribbon sits a little left of the logo's centre
+            float cx = logo.center.x;
             float overTop = logo.min.y + Ui.TitleOvertime.OffsetY;
             over.transform.position = new Vector3(cx, overTop - over.bounds.size.y / 2f, title.transform.position.z);
             var credit = TitleSprite(title, "Overtime Credit", Ui.TitleCredit.Text, logo.size.x * 0.42f, 2);
@@ -142,6 +152,31 @@ namespace HangtimeOvertime.Patches
         {
             [HarmonyPrefix]
             private static void Prefix() => RunSaves.SaveAfterPick();
+        }
+
+        // On the title screen the camera follows the ball, and when a rally ends there (the ball can be played on the title)
+        // the game pulls it to the court's centre and leaves it there, half the menu off screen. On the title it keeps the
+        // menu framing instead: the same target as during play, with the player standing in for the ball.
+        [HarmonyPatch(typeof(CameraController), "FixedUpdate")]
+        private static class TitleFraming
+        {
+            private static readonly AccessTools.FieldRef<CameraController, Transform> player = AccessTools.FieldRefAccess<CameraController, Transform>("player");
+            private static readonly AccessTools.FieldRef<CameraController, float> shift = AccessTools.FieldRefAccess<CameraController, float>("shift");
+            private static readonly AccessTools.FieldRef<CameraController, float> playerTarget = AccessTools.FieldRefAccess<CameraController, float>("playerTarget");
+            private static readonly AccessTools.FieldRef<CameraController, float> directionalShift = AccessTools.FieldRefAccess<CameraController, float>("directionalShift");
+
+            [HarmonyPostfix]
+            private static void Postfix(CameraController __instance)
+            {
+                if (!TitleController.onTitle || !BallMovement.rallyDone || GameManager.gameOver) return;
+                var p = player(__instance);
+                if (p == null) return;
+                float x = p.position.x / 3f + shift(__instance) + p.position.x * playerTarget(__instance) + Mathf.Sin(Time.time * 1.5f) + directionalShift(__instance) * (BallMovement.lastTouched == -1 ? 1f : -1f);
+                var t = __instance.transform;
+                var want = new Vector3(x, 1.5f, -10f);
+                // undo this step's pull to the centre and move toward the menu framing instead
+                t.position = Vector3.Lerp(t.position, want, Time.deltaTime * 4f);
+            }
         }
 
         [HarmonyPatch(typeof(RestartButton), "Click")]

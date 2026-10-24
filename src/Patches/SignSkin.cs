@@ -84,7 +84,9 @@ namespace HangtimeOvertime.Patches
                 if (mr != null) { mr.sortingLayerID = card.sortingLayerID; mr.sortingOrder = Mathf.Max(mr.sortingOrder, card.sortingOrder + 3); }
                 t.transform.localRotation = Quaternion.Euler(0f, 0f, tilt);
             }
-            if (uiCam) UiCamera.SetLayer(b.gameObject);
+            // the painted parts and the lettering go on the menus' layer; the button itself (its click area) stays where the
+            // main camera sends it the mouse
+            if (uiCam) foreach (Transform child in b.transform) UiCamera.SetLayer(child.gameObject);
             return true;
         }
     }
