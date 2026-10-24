@@ -45,7 +45,7 @@ namespace HangtimeOvertime.Patches
         private BoardReply reply;
         private string error, status = "";
         private int page;
-        private const int Rows = 12;
+        private const int Rows = 11;
         private Field nameField;
         private bool loading;
 
@@ -69,75 +69,83 @@ namespace HangtimeOvertime.Patches
             Leaderboards.Board(Boards[tab], (r, err) => { if (this == null || asked != tab) return; loading = false; reply = r; error = err; Build(); });
         }
 
+        private const float RowH = 46f;
+
+        // the overhaul's layout: ribbon, folder tabs, a ranking table (medals for the top three, your row in orange), your
+        // rank and name on the right
         private void Build()
         {
             int keep = focus;
             foreach (Transform t in transform) Destroy(t.gameObject);
             ClearStops();
             navKeys = false;
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.86f, ph = H * 0.92f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("LEADERBOARDS", new Vector2(0f, top - 1.7f), 1.1f, pw - 2f, Color.white);
-            for (int i = 0; i < Tabs.Length; i++)
-            {
-                int idx = i;
-                var b = Button(Tabs[i], new Vector2((i - 0.5f) * pw * 0.3f, top - 3.8f), new Vector2(pw * 0.28f, 1.9f), () => SetTab(idx), 0.5f);
-                b.color = UiArt.Paint(i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
-            }
+            Frame("LEADERBOARDS", () => Destroy(gameObject));
+            Tabs(60, 92, 300, new[] { "CLASSIC SPEEDRUN", "INFINITE" }, new[] { "clock", "ball" }, tab, SetTab);
+            TL("LB / RB", 690, 120, 18, new Color(0.7f, 1f, 0.75f), 90);
             string ver = Community.BoardVersion(Plugin.Version);
-            string what = tab == 0 ? "FASTEST CLASSIC CLEAR (REAL TIME, PAUSES DON'T COUNT)" : "MOST ROUNDS WON IN ONE SOLO INFINITE RUN";
-            Text($"{what}  ·  BOARD v{ver}.x" + (reply != null ? $"  ·  {reply.total} {(reply.total == 1 ? "PLAYER" : "PLAYERS")}" : ""), new Vector2(0f, top - 5.5f), 0.42f, pw - 2f, new Color(0.85f, 0.95f, 1f));
+            string what = tab == 0 ? "FASTEST CLASSIC CLEAR  ·  REAL TIME, PAUSES DON'T COUNT" : "MOST ROUNDS WON IN ONE SOLO INFINITE RUN";
+            TL(what, 90, 178, 22, new Color(0.78f, 0.88f, 1f), 700);
 
             // the table
-            float y = top - 7.2f, rowH = 1.45f;
-            float[] cx = { -pw * 0.4f, -pw * 0.2f, pw * 0.08f, pw * 0.26f, pw * 0.4f };
+            Rect("Table", 70, 200, 1060, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            float[] cx = { 130, 420, 740, 880, 1000 };
             string[] head = { "RANK", "PLAYER", "RESULT", "DATE", "VERSION" };
-            for (int i = 0; i < head.Length; i++) Text(head[i], new Vector2(cx[i], y), 0.45f, pw * 0.2f, new Color(1f, 0.85f, 0.35f));
-            y -= rowH;
-            Box("Table", new Vector2(0f, y - rowH * (Rows - 1) / 2f), new Vector2(pw - 2f, rowH * Rows + 0.3f), new Color(0.02f, 0.2f, 0.34f, 1f), 2);
+            for (int i = 0; i < head.Length; i++) TC(head[i], cx[i], 226, 20, UiArt.Gold, i == 1 ? 300 : 150);
+            float y = 268;
             if (loading || error != null || reply == null || reply.ranks == null || reply.ranks.Length == 0)
-                Text(loading ? "LOADING..." : error ?? "NO RESULTS YET: BE THE FIRST", new Vector2(0f, y - rowH * 5f), 0.55f, pw - 4f, Color.white);
+                TW(loading ? "LOADING..." : error ?? "NO RESULTS YET: BE THE FIRST", 565, 480, 34, UiArt.Ink, 880, 120);
             else
             {
                 int n = reply.ranks.Length;
+                var medal = new[] { new Color(1f, 0.82f, 0.29f), new Color(0.82f, 0.86f, 0.92f), new Color(0.86f, 0.55f, 0.3f) };
                 for (int i = page * Rows; i < Math.Min(n, (page + 1) * Rows); i++)
                 {
                     bool me = reply.ids[i] == Identity.Id;
-                    if (me) Box("Me", new Vector2(0f, y), new Vector2(pw - 2.4f, rowH - 0.1f), new Color(0.96f, 0.55f, 0.12f, 0.45f), 3);
-                    var col = me ? Color.white : new Color(0.9f, 0.96f, 1f);
-                    Text("#" + reply.ranks[i], new Vector2(cx[0], y), 0.5f, pw * 0.15f, col);
-                    Text($"<noparse>{reply.names[i]}</noparse>", new Vector2(cx[1], y), 0.5f, pw * 0.3f, col);
-                    Text(Leaderboards.Format(Boards[tab], reply.values[i]), new Vector2(cx[2], y), 0.5f, pw * 0.2f, col);
-                    Text(Date(reply.dates[i]), new Vector2(cx[3], y), 0.45f, pw * 0.18f, col);
-                    Text("v" + reply.mods[i], new Vector2(cx[4], y), 0.45f, pw * 0.12f, col);
-                    y -= rowH;
+                    int rank = reply.ranks[i];
+                    Rect("Row", 84, y - RowH / 2f + 3f, 1046, y + RowH / 2f - 3f, me ? new Color(1f, 0.6f, 0.2f, 1f) : (i % 2 == 0 ? new Color(0.094f, 0.275f, 0.46f, 1f) : new Color(0.07f, 0.2f, 0.35f, 1f)), 3);
+                    var col = me ? UiArt.Dark : UiArt.Ink;
+                    if (rank <= 3)
+                    {
+                        Icon("star", P(cx[0] - 22f, y), 1.1f, me ? UiArt.Dark : medal[rank - 1], 6);
+                        TC("#" + rank, cx[0] + 14f, y + 1f, 28, me ? UiArt.Dark : medal[rank - 1], 60);
+                    }
+                    else TC("#" + rank, cx[0], y + 1f, 26, col, 100);
+                    TL($"<noparse>{reply.names[i]}</noparse>", 300, y + 1f, 28, col, 320);
+                    TC(Leaderboards.Format(Boards[tab], reply.values[i]), cx[2], y + 1f, 28, me ? UiArt.Dark : UiArt.Gold, 180);
+                    TC(Date(reply.dates[i]), cx[3], y + 1f, 20, col, 140);
+                    TC("v" + reply.mods[i], cx[4], y + 1f, 20, col, 110);
+                    y += RowH;
                 }
             }
-            float ty = top - 7.2f - rowH * (Rows + 1) - 0.4f;
             int pages = reply?.ranks == null ? 1 : Math.Max(1, (reply.ranks.Length + Rows - 1) / Rows);
             if (pages > 1)
             {
-                Button("<", new Vector2(-pw * 0.43f, ty), new Vector2(1.8f, 1.6f), () => { page = (page - 1 + pages) % pages; Build(); }, 0.6f);
-                Button(">", new Vector2(-pw * 0.36f, ty), new Vector2(1.8f, 1.6f), () => { page = (page + 1) % pages; Build(); }, 0.6f);
+                Btn("<", 460, 812, 500, 840, () => { page = (page - 1 + pages) % pages; Build(); }, 24);
+                TC($"{page + 1} / {pages}", 565, 826, 20, new Color(0.78f, 0.88f, 1f), 100);
+                Btn(">", 630, 812, 670, 840, () => { page = (page + 1) % pages; Build(); }, 24);
             }
-            string mine = reply == null ? "" : reply.meRank > 0 ? $"YOU: #{reply.meRank} · {Leaderboards.Format(Boards[tab], reply.meValue)} · {Date(reply.meDate)}" : "YOU: NO RESULT ON THIS BOARD YET";
-            Text(mine, new Vector2(0f, ty), 0.55f, pw * 0.6f, new Color(1f, 0.85f, 0.35f));
 
-            // name, status, buttons
-            float ny = -ph / 2f + 5.2f;
-            Text("YOUR NAME", new Vector2(-pw * 0.36f, ny), 0.45f, pw * 0.2f, Color.white);
-            nameField = TextField(new Vector2(-pw * 0.12f, ny), new Vector2(pw * 0.26f, 1.7f), "TYPE A NAME", Rules.NameMax, v => SaveName(v), Identity.Name);
-            Button("SAVE NAME", new Vector2(pw * 0.1f, ny), new Vector2(pw * 0.14f, 1.7f), () => SaveName(nameField.Value), 0.45f);
+            // right: you
+            Rect("You", 1090, 200, 1530, 800, new Color(0.03f, 0.11f, 0.2f, 1f), 2);
+            TC("YOU", 1310, 238, 34, UiArt.Gold, 300);
+            if (reply != null && reply.meRank > 0)
+            {
+                TC("#" + reply.meRank, 1310, 312, 90, UiArt.Ink, 380);
+                TC(Leaderboards.Format(Boards[tab], reply.meValue), 1310, 392, 40, UiArt.Gold, 380);
+                TC(Date(reply.meDate), 1310, 432, 20, new Color(0.78f, 0.88f, 1f), 300);
+            }
+            else TW(reply == null ? "" : "NO RESULT ON THIS BOARD YET", 1310, 340, 30, UiArt.Ink, 380, 120);
+            TC($"BOARD v{ver}.x" + (reply != null ? $"  ·  {reply.total} {(reply.total == 1 ? "PLAYER" : "PLAYERS")}" : ""), 1310, 470, 19, new Color(0.78f, 0.88f, 1f), 400);
+            TL("YOUR NAME", 1120, 520, 22, UiArt.Gold, 200);
+            nameField = TextField(P(1310, 562), S(380, 50), "TYPE A NAME", Rules.NameMax, v => SaveName(v), Identity.Name);
+            IconBtn("check", "SAVE NAME", 1170, 600, 1450, 646, () => SaveName(nameField.Value), 24);
             int queued = Leaderboards.PendingCount;
             string st = status.Length > 0 ? status : Leaderboards.LastStatus.Length > 0 ? "LAST RESULT: " + Leaderboards.LastStatus : "";
             if (queued > 0) st += (st.Length > 0 ? "  ·  " : "") + $"{queued} WAITING TO SUBMIT";
             if (!Plugin.CommunitySubmit.Value) st += (st.Length > 0 ? "  ·  " : "") + "SUBMITTING IS OFF (SETTINGS)";
-            Text("<noparse>" + st + "</noparse>", new Vector2(0f, ny - 1.7f), 0.4f, pw - 2f, new Color(0.85f, 0.95f, 1f));
-            float by = -ph / 2f + 1.6f;
-            Button("REFRESH", new Vector2(-pw * 0.15f, by), new Vector2(pw * 0.18f, 2.1f), Load, 0.55f);
-            Button("BACK", new Vector2(pw * 0.15f, by), new Vector2(pw * 0.18f, 2.1f), () => Destroy(gameObject), 0.6f);
-            PadHint("A: CHOOSE · B: BACK · LB / RB: BOARDS", new Vector2(pw * 0.36f, by), pw * 0.25f);
+            TW("<noparse>" + st + "</noparse>", 1310, 712, 19, new Color(0.78f, 0.88f, 1f), 400, 110);
+            IconBtn("refresh", "REFRESH", 1170, 846, 1400, 892, Load);
+            PadHint("A: CHOOSE   B: BACK   LB / RB: BOARDS", P(620, 870), 600 / 25f * KX);
             focus = keep >= 0 && keep < stops.Count ? keep : 0;
         }
 

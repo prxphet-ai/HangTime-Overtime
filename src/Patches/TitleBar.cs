@@ -176,24 +176,32 @@ namespace HangtimeOvertime.Patches
             open.Build();
         }
 
+        private static readonly string[] Icons = { "play", "refresh", "film", "podium", "people", "back" };
+
+        // six big cards in two columns: the setting, what it does, ON / OFF; the whole card switches it
         private void Build()
         {
+            int keep = focus;
+            foreach (Transform t in transform) Destroy(t.gameObject);
+            ClearStops();
             HoldTitle();
-            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0f, 0.1f, 0.2f, 0.6f), 0);
-            float pw = W * 0.6f, ph = H * 0.8f, top = ph / 2f;
-            Box("Panel", Vector2.zero, new Vector2(pw, ph), new Color(0.05f, 0.42f, 0.66f, 0.97f), 1);
-            Text("OVERTIME SETTINGS", new Vector2(0f, top - 2f), 1.1f, pw - 2f, Color.white);
-            float y = top - 5f;
-            foreach (var (label, help, get, set) in Toggles)
+            Frame("SETTINGS", Close);
+            for (int i = 0; i < Toggles.Count; i++)
             {
-                Toggle(label, new Vector2(0f, y), new Vector2(pw * 0.6f, 2.2f), get, set, 0.6f);
-                Text(help, new Vector2(0f, y - 1.8f), 0.4f, pw - 2f, new Color(0.85f, 0.95f, 1f));
-                y -= 4.4f;
+                var (label, help, get, set) = Toggles[i];
+                float x0 = i % 2 == 0 ? 80f : 820f, y0 = 172f + (i / 2) * 212f, x1 = x0 + 700f, y1 = y0 + 192f;
+                bool on = get();
+                var g = get; var st = set;
+                Shade(Btn("", x0, y0, x1, y1, () => { st(!g()); Build(); }), on ? new Color(0.094f, 0.275f, 0.46f, 1f) : new Color(0.07f, 0.17f, 0.29f, 1f));
+                Icon(i < Icons.Length ? Icons[i] : "gear", P(x0 + 50f, y0 + 50f), 1.7f, on ? UiArt.Gold : UiArt.Ink, 8);
+                TL(label, x0 + 96f, y0 + 50f, 34, UiArt.Ink, 430);
+                var pill = Rect("Pill", x1 - 150f, y0 + 28f, x1 - 26f, y0 + 72f, on ? new Color(0.36f, 0.8f, 0.4f, 1f) : new Color(0.85f, 0.32f, 0.26f, 1f), 7);
+                TC(on ? "ON" : "OFF", x1 - 88f, y0 + 51f, 30, UiArt.Dark, 110);
+                TW(help, (x0 + x1) / 2f, y0 + 130f, 21, new Color(0.78f, 0.88f, 1f), 640f, 90f);
             }
-            Button("BACK", new Vector2(0f, -ph / 2f + 1.8f), new Vector2(pw * 0.3f, 2.4f), Close, 0.7f);
-            PadHint("A: CHANGE   ·   B: BACK", new Vector2(0f, -ph / 2f + 3.6f), pw - 2f);
+            PadHint("A: SWITCH   B: BACK", P(1180, 870), 380 / 25f * KX);
             navKeys = true;
-            focus = 0;
+            focus = keep >= 0 && keep < stops.Count ? keep : 0;
         }
 
         protected override void OnNavBack() => Close();

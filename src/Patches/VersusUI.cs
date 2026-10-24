@@ -119,6 +119,88 @@ namespace HangtimeOvertime.Patches
             return sr;
         }
 
+        // ------------------------------------------------------------ the overhaul's layout helpers
+        // Screens are laid out in the mockup's pixels (1600 x 900, 25 px a layout unit, centred), x scaled by KX on screens
+        // that aren't 16:9; F turns a mockup font size into the kit's text size.
+
+        protected float KX => W / 64f;
+        protected Vector2 P(float px, float py) => new Vector2((px - 800f) / 25f * KX, (450f - py) / 25f);
+        protected Vector2 S(float pw, float ph) => new Vector2(pw / 25f * KX, ph / 25f);
+        protected static float F(float px) => px / 40f;
+        protected TextMeshPro TL(string s, float px, float py, float size, Color c, float width) => Text(s, P(px + width / 2f, py), F(size), width / 25f * KX, c, TextAlignmentOptions.Left);
+        protected TextMeshPro TR(string s, float px, float py, float size, Color c, float width) => Text(s, P(px - width / 2f, py), F(size), width / 25f * KX, c, TextAlignmentOptions.Right);
+        protected TextMeshPro TC(string s, float px, float py, float size, Color c, float width) => Text(s, P(px, py), F(size), width / 25f * KX, c);
+        protected TextMeshPro TW(string s, float px, float py, float size, Color c, float width, float height) => Text(s, P(px, py), F(size), width / 25f * KX, c, TextAlignmentOptions.Center, 8, height / 25f, true);
+        protected SpriteRenderer Rect(string name, float x0, float y0, float x1, float y1, Color c, int o, bool outline = false) => Box(name, P((x0 + x1) / 2f, (y0 + y1) / 2f), S(x1 - x0, y1 - y0), c, o, outline);
+        protected SpriteRenderer Btn(string label, float x0, float y0, float x1, float y1, Action act, float size = 26f) => Button(label, P((x0 + x1) / 2f, (y0 + y1) / 2f), S(x1 - x0, y1 - y0), act, F(size));
+        protected static void Tilt(Component c, float deg) { if (c != null) c.transform.localRotation = Quaternion.Euler(0f, 0f, deg); }
+
+        // a button with an icon on its left and a label (the mockup's footer buttons)
+        protected SpriteRenderer IconBtn(string icon, string label, float x0, float y0, float x1, float y1, Action act, float size = 26f)
+        {
+            var b = Btn("", x0, y0, x1, y1, act);
+            float cy = (y0 + y1) / 2f, ih = Mathf.Min(y1 - y0 - 14f, 30f);
+            Icon(icon, P(x0 + 18f + ih / 2f, cy), ih / 25f, UiArt.Ink, 7);
+            TC(label, (x0 + ih + 24f + x1) / 2f, cy + 1f, size, UiArt.Ink, x1 - x0 - ih - 30f);
+            return b;
+        }
+
+        // a gold sign that clicks (the screens' main action), tilted a little
+        protected SpriteRenderer GoldSign(string label, float x0, float y0, float x1, float y1, Action act, float size = 50f, string icon = "play")
+        {
+            var b = Rect("Sign", x0, y0, x1, y1, UiArt.Gold, 5, true);
+            AddStop(b, act);
+            var col = b.gameObject.AddComponent<BoxCollider2D>();
+            col.size = b.size;
+            var w = b.gameObject.AddComponent<CreatorWidget>();
+            w.Box = b; w.Normal = UiArt.Paint(UiArt.Gold); w.Hover = UiArt.Paint(new Color(1f, 0.9f, 0.5f, 1f)); w.OnClick = act;
+            Tilt(b, -0.8f);
+            float cy = (y0 + y1) / 2f;
+            if (icon != null) Icon(icon, P(x0 + 42f, cy), Mathf.Min(1.5f, (y1 - y0) / 25f * 0.55f), UiArt.Dark, 8);
+            Tilt(TC(label, (x0 + (icon != null ? 70f : 0f) + x1) / 2f, cy + 2f, size, UiArt.Dark, x1 - x0 - (icon != null ? 90f : 30f)), -0.8f);
+            return b;
+        }
+
+        // the standard screen: dim, the navy panel, the gold ribbon with the title, BACK at the bottom right
+        protected void Frame(string title, Action back, float panelTop = 140f, float panelBottom = 830f)
+        {
+            Box("Dim", Vector2.zero, new Vector2(W * 1.2f, H * 1.2f), new Color(0.024f, 0.086f, 0.17f, 0.72f), 0);
+            Box("Panel", P(800, (panelTop + panelBottom) / 2f), S(1520, panelBottom - panelTop), UiArt.Navy, 1);
+            float rw = Mathf.Clamp(title.Length * 30f + 120f, 360f, 720f);
+            var ribbon = Rect("Ribbon", 800 - rw / 2f, 18, 800 + rw / 2f, 92, UiArt.Gold, 2, true);
+            Tilt(ribbon, -1.5f);
+            Tilt(TC(title, 800, 55, 54, UiArt.Dark, rw - 40f), -1.5f);
+            if (back != null) IconBtn("back", "BACK", 1420, 846, 1560, 892, back);
+        }
+
+        // little dark labels in a row ("FIXED", "3 MATCHES", ...)
+        protected void Badges(float x, float y, params (string text, Color color)[] items)
+        {
+            foreach (var (text, color) in items)
+            {
+                if (string.IsNullOrEmpty(text)) continue;
+                float w = text.Length * 9.6f + 28f;
+                Rect("Badge", x, y - 15, x + w, y + 15, new Color(0.03f, 0.094f, 0.17f, 0.92f), 6);
+                TC($"<noparse>{text}</noparse>", x + w / 2f, y, 19, color, w);
+                x += w + 10f;
+            }
+        }
+
+        // folder tabs along the top of the panel; the chosen one is the panel's colour
+        protected void Tabs(float x, float y0, float w, string[] labels, string[] icons, int chosen, Action<int> pick, float gap = 12f)
+        {
+            for (int i = 0; i < labels.Length; i++)
+            {
+                int k = i;
+                float x0 = x + i * (w + gap);
+                Shade(Btn("", x0, i == chosen ? y0 : y0 + 6f, x0 + w, 150f, () => pick(k)), i == chosen ? UiArt.Navy : UiArt.Blue);
+                float cy = (y0 + 150f) / 2f + (i == chosen ? -2f : 2f);
+                bool icon = icons != null && i < icons.Length && icons[i] != null;
+                if (icon) Icon(icons[i], P(x0 + 30f, cy), 1.1f, i == chosen ? UiArt.Gold : UiArt.Ink, 7);
+                TC(labels[i], x0 + (icon ? 30f : 0f) + w / 2f, cy, labels[i].Length > 14 ? 21 : 25, i == chosen ? UiArt.Gold : UiArt.Ink, w - (icon ? 60f : 16f));
+            }
+        }
+
         // a picture (an emblem texture) `height` layout units tall, centred on `at`
         protected SpriteRenderer Picture(Texture2D tex, Vector2 at, float height, int o = 7)
         {

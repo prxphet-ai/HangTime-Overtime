@@ -41,18 +41,6 @@ namespace HangtimeOvertime.Patches
         private static readonly Color Green = new Color(0.49f, 0.9f, 0.47f), Coral = new Color(1f, 0.42f, 0.36f), Sky = new Color(0.25f, 0.77f, 0.94f);
         private static readonly Color CardBlue = new Color(0.094f, 0.275f, 0.46f, 1f), PosterBack = new Color(0.03f, 0.11f, 0.2f, 1f), Badge = new Color(0.03f, 0.094f, 0.17f, 0.92f);
 
-        // the mockup's coordinates (1600 x 900 px, 25 px a layout unit, x scaled on screens that aren't 16:9)
-        private float KX => W / 64f;
-        private Vector2 P(float px, float py) => new Vector2((px - 800f) / 25f * KX, (450f - py) / 25f);
-        private Vector2 S(float pw, float ph) => new Vector2(pw / 25f * KX, ph / 25f);
-        private static float F(float px) => px / 40f;                          // a mockup font size -> the kit's text size
-        private TextMeshPro TL(string s, float px, float py, float size, Color c, float width) => Text(s, P(px + width / 2f, py), F(size), width / 25f * KX, c, TextAlignmentOptions.Left);
-        private TextMeshPro TR(string s, float px, float py, float size, Color c, float width) => Text(s, P(px - width / 2f, py), F(size), width / 25f * KX, c, TextAlignmentOptions.Right);
-        private TextMeshPro TC(string s, float px, float py, float size, Color c, float width) => Text(s, P(px, py), F(size), width / 25f * KX, c);
-        private SpriteRenderer Rect(string name, float x0, float y0, float x1, float y1, Color c, int o, bool outline = false) => Box(name, P((x0 + x1) / 2f, (y0 + y1) / 2f), S(x1 - x0, y1 - y0), c, o, outline);
-        private SpriteRenderer Btn(string label, float x0, float y0, float x1, float y1, Action act, float size = 26f) => Button(label, P((x0 + x1) / 2f, (y0 + y1) / 2f), S(x1 - x0, y1 - y0), act, F(size));
-        private static void Tilt(Component c, float deg) { if (c != null) c.transform.localRotation = Quaternion.Euler(0f, 0f, deg); }
-
         private void Build()
         {
             int keep = focus;
@@ -102,18 +90,6 @@ namespace HangtimeOvertime.Patches
         }
 
         // ------------------------------------------------------------ pieces
-
-        private void Badges(float x, float y, params (string text, Color color)[] items)
-        {
-            foreach (var (text, color) in items)
-            {
-                if (string.IsNullOrEmpty(text)) continue;
-                float w = text.Length * 9.6f + 28f;
-                Rect("Badge", x, y - 15, x + w, y + 15, Badge, 6);
-                TC($"<noparse>{text}</noparse>", x + w / 2f, y, 19, color, w);
-                x += w + 10f;
-            }
-        }
 
         private void Flames(float x, float y, int lit, bool onOrange)
         {
