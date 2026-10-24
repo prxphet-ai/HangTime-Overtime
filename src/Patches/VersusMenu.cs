@@ -362,7 +362,7 @@ namespace HangtimeOvertime.Patches
             else if (rulesLine != null) rulesLine.text = "RULES: " + (LobbyRules.MatchingPreset() is string pn ? pn + "  ·  " : "") + LobbyRules.Current.Summary();
             if (lobby) ShowPlayers();
             else heading.text = "VERSUS  <size=60%>" + VersusSetup.Label(Format) + "</size>";
-            for (int i = 0; i < formatTabs.Length; i++) formatTabs[i].color = i == format ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
+            for (int i = 0; i < formatTabs.Length; i++) formatTabs[i].color = UiArt.Paint(i == format ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
             var seats = Seats;
             for (int side = 0; side < 2; side++)
             {
@@ -386,7 +386,7 @@ namespace HangtimeOvertime.Patches
                         box = new Color(0.04f, 0.27f, 0.42f, 1f);
                     }
                     rows[side, r].text = text;
-                    rowBoxes[side, r].color = box;
+                    rowBoxes[side, r].color = UiArt.Paint(box);
                 }
                 if (team[side] >= teams[side].Count) team[side] = 0;
                 if (Leader(side) < 0)                                               // co-op Infinite: the AI's side
@@ -400,7 +400,7 @@ namespace HangtimeOvertime.Patches
                 swatch[side].enabled = joined;
                 teamText[side].text = joined ? "<  " + TeamLabel(side) + "  >" : "";
                 var c = TeamColour(side);
-                swatch[side].color = new Color(c.r * 0.7f, c.g * 0.7f, c.b * 0.7f, 1f);
+                swatch[side].color = UiArt.Paint(new Color(c.r * 0.7f, c.g * 0.7f, c.b * 0.7f, 1f));
             }
             SendState();
         }

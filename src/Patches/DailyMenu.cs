@@ -49,7 +49,7 @@ namespace HangtimeOvertime.Patches
             {
                 bool isCup = i == 1;
                 var b = Button(tabs[i], new Vector2((i - 0.5f) * pw * 0.32f, top - 4.4f), new Vector2(pw * 0.3f, 1.9f), () => SetTab(isCup), 0.5f);
-                b.color = isCup == cup ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
+                b.color = UiArt.Paint(isCup == cup ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
             }
             Text(cup ? "AN 8-MATCH BRACKET WITH THE SAME TEAMS AND CARD OFFERS FOR EVERYONE TODAY, AT CLASSIC DIFFICULTY. YOUR FIRST CUP OF THE DAY COUNTS; MORE ARE PRACTICE."
                      : "AN INFINITE RUN WITH THE SAME OPPONENTS AND CARD OFFERS FOR EVERYONE TODAY. YOUR FIRST RUN OF THE DAY COUNTS; MORE RUNS ARE PRACTICE (THEY ONLY COUNT FOR TODAY'S BEST).",

@@ -95,7 +95,7 @@ namespace HangtimeOvertime.Patches
             {
                 int idx = i;
                 var b = Button(Tabs[i], new Vector2(-pw * 0.3f + tw * (i + 0.5f), top - 3.9f), new Vector2(tw - 0.3f, 1.9f), () => SetTab(idx), 0.55f);
-                b.color = i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
+                b.color = UiArt.Paint(i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
             }
             PadHint("A: CHOOSE   ·   B: BACK   ·   LB / RB: TABS", new Vector2(0f, top - 5.4f), pw - 2f);
             if (tab == 3) BuildStats(top, left, teams, perks, cards);
@@ -134,7 +134,7 @@ namespace HangtimeOvertime.Patches
                 var at = new Vector2(gx + cw * (i % Cols + 0.5f), gy - (ch + 0.3f) * (i / Cols));
                 var cell = Button("", at, new Vector2(cw - 0.3f, ch), () => { selected = e.Key; ShowDetail(); }, 0.45f);
                 var tint = e.Found ? Color.Lerp(ElementColor(e.Element), new Color(0.05f, 0.25f, 0.45f), 0.45f) : new Color(0.07f, 0.24f, 0.4f, 1f);
-                cell.color = tint;
+                cell.color = UiArt.Paint(tint);
                 var w = cell.GetComponent<CreatorWidget>();
                 if (w != null) { w.Normal = tint; w.Hover = Color.Lerp(tint, Color.white, 0.25f); }
                 Text(e.Found ? e.Title.ToUpperInvariant() : "???", at + new Vector2(0f, 0.15f), 0.45f, cw - 0.6f, e.Found ? Color.white : new Color(0.6f, 0.7f, 0.8f), o: 9);

@@ -105,7 +105,7 @@ namespace HangtimeOvertime.Patches
             for (int i = 0; i < boxes.Count; i++)
             {
                 var c = i == sel ? new Color(0.1f, 0.42f, 0.68f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f);
-                boxes[i].color = c;
+                boxes[i].color = UiArt.Paint(c);
                 var w = boxes[i].GetComponent<CreatorWidget>();
                 if (w != null) { w.Normal = c; w.Hover = Color.Lerp(c, Color.white, 0.2f); }
             }

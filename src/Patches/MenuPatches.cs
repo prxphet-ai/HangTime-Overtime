@@ -28,12 +28,12 @@ namespace HangtimeOvertime.Patches
             if (title == null) { Plugin.Log.LogWarning("Title logo not found; no Overtime logo"); return; }
             if (title.transform.Find("Overtime Logo") != null) return;
             var logo = title.bounds;
-            var over = TitleSprite(title, "Overtime Logo", Ui.TitleOvertime.Text, logo.size.x * 0.48f, 1);
+            var over = TitleSprite(title, "Overtime Logo", Ui.TitleOvertime.Text, logo.size.x * 0.8f, 1);
             if (over == null) return;
-            float cx = logo.center.x + logo.size.x * 0.04f;
+            float cx = logo.center.x - logo.size.x * 0.07f;                // the ribbon sits a little left of the logo's centre
             float overTop = logo.min.y + Ui.TitleOvertime.OffsetY;
             over.transform.position = new Vector3(cx, overTop - over.bounds.size.y / 2f, title.transform.position.z);
-            var credit = TitleSprite(title, "Overtime Credit", Ui.TitleCredit.Text, logo.size.x * 0.34f, 2);
+            var credit = TitleSprite(title, "Overtime Credit", Ui.TitleCredit.Text, logo.size.x * 0.42f, 2);
             if (credit != null)
                 credit.transform.position = new Vector3(cx, over.bounds.min.y + Ui.TitleCredit.OffsetY - credit.bounds.size.y / 2f, title.transform.position.z);
             // the title menu's group (other menus use the same object name), found the same way as for the INFINITE button

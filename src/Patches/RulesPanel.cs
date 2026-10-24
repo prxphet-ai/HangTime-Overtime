@@ -107,7 +107,7 @@ namespace HangtimeOvertime.Patches
                 else
                 {
                     var b = Button("", at, new Vector2(ew - 0.25f, 1.6f), () => { R.BannedElements = banned ? R.BannedElements.Where(x => x != e.Id).ToArray() : R.BannedElements.Concat(new[] { e.Id }).ToArray(); Changed(); }, 0.42f);
-                    b.color = banned ? new Color(0.35f, 0.1f, 0.12f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f);
+                    b.color = UiArt.Paint(banned ? new Color(0.35f, 0.1f, 0.12f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f));
                     var w = b.GetComponent<CreatorWidget>(); if (w != null) { w.Normal = b.color; w.Hover = Color.Lerp(b.color, Color.white, 0.2f); }
                     Text(label, at, 0.42f, ew, Color.white, o: 9);
                 }
@@ -221,7 +221,7 @@ namespace HangtimeOvertime.Patches
                     VersusMenu.RulesChanged();
                     Build();
                 }, 0.42f);
-                b.color = banned ? new Color(0.35f, 0.1f, 0.12f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f);
+                b.color = UiArt.Paint(banned ? new Color(0.35f, 0.1f, 0.12f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f));
                 var w = b.GetComponent<CreatorWidget>(); if (w != null) { w.Normal = b.color; w.Hover = Color.Lerp(b.color, Color.white, 0.2f); }
                 Text(label, at, 0.42f, cw - 0.4f, Color.white, o: 9);
             }

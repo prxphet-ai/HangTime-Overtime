@@ -491,6 +491,7 @@ namespace HangtimeOvertime.Online
             OnlineFlow.TitleTick();
             PingHud.Tick();
             TitleBar.Tick();
+            Debugging.ColorTest.Tick();
         }
 
         private void LateUpdate() => Net.LateUpdate();

@@ -35,7 +35,7 @@
       "clone_of": "-",
       "text": "overtime.png",
       "subtext": "-",
-      "offset_y": 0.55,
+      "offset_y": 0.45,
       "verified": "no"
     },
     {
@@ -44,7 +44,7 @@
       "clone_of": "-",
       "text": "credit.png",
       "subtext": "-",
-      "offset_y": 0.1,
+      "offset_y": 0.2,
       "verified": "no"
     },
     {
@@ -53,7 +53,7 @@
       "clone_of": "-",
       "text": "-",
       "subtext": "-",
-      "offset_y": -0.45,
+      "offset_y": -2.4,
       "verified": "no"
     },
     {

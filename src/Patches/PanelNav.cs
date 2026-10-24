@@ -175,11 +175,14 @@ namespace HangtimeOvertime.Patches
             {
                 frame = Box("Focus", Vector2.zero, Vector2.one, new Color(1f, 0.85f, 0.25f, 1f), 0);
                 frame.name = "Focus frame";
+                if (UiArt.Ready) frame.sprite = UiArt.Line(1);          // a white marker ring around the focused control
             }
             frame.enabled = true;
-            frame.transform.position = box.transform.position + new Vector3(0f, 0f, 0.001f);
-            frame.size = box.size + new Vector2(0.5f, 0.45f);
-            frame.sortingOrder = box.sortingOrder - 1;
+            bool ring = UiArt.Ready;
+            frame.transform.position = box.transform.position + new Vector3(0f, 0f, ring ? -0.0008f : 0.001f);
+            frame.size = box.size + (ring ? new Vector2(0.55f, 0.55f) : new Vector2(0.5f, 0.45f));
+            frame.sortingOrder = ring ? box.sortingOrder + 1 : box.sortingOrder - 1;
+            if (ring) frame.color = UiArt.Paint(Color.Lerp(Color.white, UiArt.Gold, 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 5f)));
         }
 
         protected void HideFocusFrame() { if (frame != null) frame.enabled = false; }

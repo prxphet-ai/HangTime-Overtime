@@ -48,7 +48,7 @@ namespace HangtimeOvertime.Patches
             {
                 int idx = i;
                 var b = Button(Tabs[i], new Vector2(-pw / 2f + 1f + tw * (i + 0.5f), top - 4f), new Vector2(tw - 0.3f, 1.9f), () => { tab = idx; captureKey = null; capturePad = null; warning = ""; Build(); }, 0.48f);
-                b.color = i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
+                b.color = UiArt.Paint(i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
             }
             Text(Help(), new Vector2(0f, top - 6.2f), 0.42f, pw - 3f, new Color(0.85f, 0.95f, 1f), height: 2f, wrap: true);
             float y = top - 8.6f, rowH = 2.1f;

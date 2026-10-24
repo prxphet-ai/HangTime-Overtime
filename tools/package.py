@@ -58,6 +58,8 @@ files = [(os.path.join(root, "src", "bin", "Release", "HangtimeOvertime.dll"), "
 files += [(p, "HangtimeOvertime/emblems/" + os.path.basename(p)) for p in sorted(glob.glob(os.path.join(root, "assets", "emblems", "*.png")))
           if os.path.basename(p) != "preview.png"]
 files += [(p, "HangtimeOvertime/emblems/parts/" + os.path.basename(p)) for p in sorted(glob.glob(os.path.join(root, "assets", "emblems", "parts", "*.*")))]
+files += [(p, "HangtimeOvertime/ui/" + os.path.basename(p)) for p in sorted(glob.glob(os.path.join(root, "assets", "ui", "*.*")))
+          if os.path.basename(p) != "preview.png"]
 files += [(p, "HangtimeOvertime/title/" + os.path.basename(p)) for p in sorted(glob.glob(os.path.join(root, "assets", "title", "*.png")))]
 files += [(os.path.join(root, "LICENSE"), "HangtimeOvertime/LICENSE.txt")]
 

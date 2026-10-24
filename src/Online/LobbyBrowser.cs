@@ -150,7 +150,7 @@ namespace HangtimeOvertime.Online
                 for (int col = 0; col < 5; col++)
                 {
                     cells[i, col].text = has ? v[col].Replace("<", "‹").Replace(">", "›") : "";
-                    cells[i, col].color = col == 3 && has && e.State != "LOBBY" ? new Color(1f, 0.85f, 0.35f) : c;
+                    cells[i, col].color = UiArt.Paint(col == 3 && has && e.State != "LOBBY" ? new Color(1f, 0.85f, 0.35f) : c);
                 }
             }
         }

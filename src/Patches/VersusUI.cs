@@ -34,7 +34,13 @@ namespace HangtimeOvertime.Patches
         {
             var cam = Camera.main;
             if (cam != null && baseOrtho > 0f) transform.localScale = Vector3.one * unit * (cam.orthographicSize / baseOrtho);
+            // everything the panel made goes on the menus' layer (drawn by the UI camera, without the game's grading)
+            int n = transform.childCount;
+            if (onUiCamera && (n != layeredChildren || Time.frameCount % 30 == 0)) { layeredChildren = n; UiCamera.SetLayer(gameObject); }
         }
+
+        private bool onUiCamera;
+        private int layeredChildren = -1;
 
         // Lays the panel over the camera's view (it follows camera shake and zoom).
         protected bool InitKit(int orderBase)
@@ -67,24 +73,52 @@ namespace HangtimeOvertime.Patches
             unit = H / LayoutH;
             H = LayoutH; W = LayoutH * cam.aspect;
             transform.SetParent(cam.transform, false);
+            onUiCamera = UiCamera.Ensure(cam);
+            if (onUiCamera) gameObject.layer = UiCamera.Layer;
             transform.localPosition = new Vector3(0f, 0f, 1f);
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one * unit;
             return true;
         }
 
-        protected SpriteRenderer Box(string name, Vector2 at, Vector2 size, Color color, int o)
+        // A box: the hand-drawn panel shape (UiArt) when it's big enough for the drawn corners, else the plain rounded one.
+        // The older menus' colours are mapped onto the new palette here. outline: a marker outline and a drop shadow (by
+        // default for the "Panel" box; buttons get their own).
+        protected SpriteRenderer Box(string name, Vector2 at, Vector2 size, Color color, int o, bool? outline = null)
         {
             var sr = new GameObject(name).AddComponent<SpriteRenderer>();
             sr.transform.SetParent(transform, false);
             sr.transform.localPosition = new Vector3(at.x, at.y, -0.001f * o);
-            sr.sprite = ContinueMenu.Rounded();
+            bool drawn = UiArt.Ready && Mathf.Min(size.x, size.y) >= UiArt.MinSize && size.x < W * 1.1f && color.a > 0.05f && name != "Focus";
+            int v = Mathf.Abs(name.GetHashCode() ^ Mathf.RoundToInt(at.x * 7f) * 31 ^ Mathf.RoundToInt(at.y * 13f) * 17) % UiArt.Variants;
+            sr.sprite = drawn ? UiArt.Fill(v) : ContinueMenu.Rounded();
             sr.drawMode = SpriteDrawMode.Sliced;
             sr.size = size;
-            sr.color = color;
+            UiArt.MakeUnlit(sr);
+            sr.color = UiArt.Paint(color);
             sr.sortingLayerID = layer;
             sr.sortingOrder = order + o;
+            if (drawn && (outline ?? name == "Panel")) Decorate(sr, 0.24f);
             return sr;
+        }
+
+        // a drawn box's marker outline (in front) and drop shadow (behind, down and right)
+        protected static void Decorate(SpriteRenderer box, float shadow)
+        {
+            if (box.sprite == null || !box.sprite.name.StartsWith("panel_fill_")) return;
+            int v = box.sprite.name[box.sprite.name.Length - 1] - '0';
+            SpriteRenderer Part(string name, Sprite s, Color c, Vector3 at)
+            {
+                var r = new GameObject(name).AddComponent<SpriteRenderer>();
+                r.transform.SetParent(box.transform, false);
+                r.transform.localPosition = at;
+                UiArt.MakeUnlit(r);
+                r.sprite = s; r.drawMode = SpriteDrawMode.Sliced; r.size = box.size; r.color = UiArt.Paint(c);
+                r.sortingLayerID = box.sortingLayerID; r.sortingOrder = box.sortingOrder;
+                return r;
+            }
+            Part("Outline", UiArt.Line(v), UiArt.Ink, new Vector3(0f, 0f, -0.0004f));
+            if (shadow > 0f) Part("Shadow", UiArt.Fill(v), UiArt.Shadow, new Vector3(shadow, -shadow, 0.0004f));
         }
 
         protected TextMeshPro Text(string s, Vector2 at, float size, float width, Color color, TextAlignmentOptions align = TextAlignmentOptions.Center, int o = 8, float height = 3f, bool wrap = false)
@@ -94,6 +128,8 @@ namespace HangtimeOvertime.Patches
             t.name = "Text";
             foreach (var mb in t.GetComponents<MonoBehaviour>()) if (!(mb is TMP_Text)) DestroyImmediate(mb);   // typewriters, wobbles
             if (kitFont != null) { t.font = kitFont; t.fontSharedMaterial = kitMaterial; }
+            var lettering = UiArt.Lettering;
+            if (lettering != null) { t.font = lettering; t.fontSharedMaterial = lettering.material; }
             var ls = textScale;
             t.transform.localScale = ls;
             t.transform.localRotation = Quaternion.identity;          // a tilted source label stays straight here
@@ -105,7 +141,7 @@ namespace HangtimeOvertime.Patches
             t.textWrappingMode = wrap ? TextWrappingModes.Normal : TextWrappingModes.NoWrap;
             t.overflowMode = TextOverflowModes.Overflow;
             t.enableAutoSizing = false;
-            t.fontSize = fontSource.fontSize * size * fontFix;
+            t.fontSize = fontSource.fontSize * size * fontFix * (lettering != null ? UiArt.LetteringScale : 1f);
             t.rectTransform.sizeDelta = new Vector2(width / ls.x, height / ls.y);
             t.color = color;
             var r = t.GetComponent<Renderer>();
@@ -137,11 +173,12 @@ namespace HangtimeOvertime.Patches
         {
             var normal = new Color(0.02f, 0.2f, 0.34f, 1f);
             var box = Box("Field", at, size, normal, 5);
+            Decorate(box, 0f);
             var col = box.gameObject.AddComponent<BoxCollider2D>();
             col.size = size;
             var f = new Field { Box = box, Value = value ?? "", Placeholder = placeholder, Max = max, OnSubmit = onSubmit, Upper = upper, Owner = this };
             var w = box.gameObject.AddComponent<CreatorWidget>();
-            w.Box = box; w.Normal = normal; w.Hover = new Color(0.05f, 0.3f, 0.48f, 1f); w.OnClick = () => Focus(f);
+            w.Box = box; w.Normal = box.color; w.Hover = UiArt.Paint(new Color(0.05f, 0.3f, 0.48f, 1f)); w.OnClick = () => Focus(f);
             f.Text = Text("", at, 0.55f, size.x - 0.8f, Color.white, TextAlignmentOptions.Left, o: 9);
             ShowField(f);
             AddStop(box, () => Focus(f), f);
@@ -177,7 +214,7 @@ namespace HangtimeOvertime.Patches
             bool on = focused == f;
             string shown = f.Value.Replace("<", "‹").Replace(">", "›");
             f.Text.text = shown.Length == 0 && !on ? $"<color=#7FA9C4>{f.Placeholder}</color>" : shown + (on ? "<color=#FFD95A>|</color>" : "");
-            if (f.Box != null) f.Box.color = on ? new Color(0.08f, 0.36f, 0.56f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f);
+            if (f.Box != null) f.Box.color = UiArt.Paint(on ? new Color(0.08f, 0.36f, 0.56f, 1f) : new Color(0.02f, 0.2f, 0.34f, 1f));
         }
 
         public static void SetField(Field f, string value) { if (f == null) return; f.Value = value ?? ""; ShowField(f); }
@@ -257,23 +294,25 @@ namespace HangtimeOvertime.Patches
         }
 
         // a button in other colours (list entries whose text has its own colours, the chosen tab); hover keeps them
-        public static readonly Color ListColor = new Color(0.03f, 0.25f, 0.42f, 1f), ListHover = new Color(0.08f, 0.38f, 0.6f, 1f);
+        public static Color ListColor => UiArt.Blue;
         protected static SpriteRenderer Shade(SpriteRenderer b, Color normal, Color? hover = null)
         {
-            b.color = normal;
+            var raw = UiArt.Remap(normal);
+            b.color = UiArt.Paint(raw);
             var w = b.GetComponent<CreatorWidget>();
-            if (w != null) { w.Normal = normal; w.Hover = hover ?? Color.Lerp(normal, Color.white, 0.25f); }
+            if (w != null) { w.Normal = b.color; w.Hover = UiArt.Paint(hover ?? Color.Lerp(raw, Color.white, 0.25f)); }
             return b;
         }
 
         protected SpriteRenderer Button(string label, Vector2 at, Vector2 size, Action act, float textSize = 0.8f)
         {
-            var normal = new Color(0.16f, 0.66f, 0.9f, 1f);
-            var sr = Box("Button " + label, at, size, normal, 5);
+            var normal = UiArt.Blue;
+            var sr = Box("Button " + label, at, size, normal, 5, false);
+            Decorate(sr, 0.14f);
             var col = sr.gameObject.AddComponent<BoxCollider2D>();
             col.size = size;
             var w = sr.gameObject.AddComponent<CreatorWidget>();
-            w.Box = sr; w.Normal = normal; w.Hover = new Color(0.4f, 0.8f, 1f, 1f); w.OnClick = act;
+            w.Box = sr; w.Normal = sr.color; w.Hover = UiArt.Paint(UiArt.BlueHover); w.OnClick = act;
             Text(label, at, textSize, size.x, Color.white);
             AddStop(sr, act);
             return sr;
@@ -542,7 +581,7 @@ namespace HangtimeOvertime.Patches
         {
             for (int i = 0; i < offerBoxes.Count; i++)
             {
-                offerBoxes[i].color = i == sel ? new Color(0.45f, 0.82f, 1f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
+                offerBoxes[i].color = UiArt.Paint(i == sel ? new Color(0.45f, 0.82f, 1f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
                 offerBoxes[i].transform.localScale = Vector3.one * (i == sel ? 1.06f : 1f);
             }
             for (int i = 0; i < endButtons.Count; i++) endButtons[i].transform.localScale = Vector3.one * (i == endSel ? 1.08f : 1f);

@@ -40,6 +40,7 @@ namespace HangtimeOvertime.Patches
             {
                 if (!TitleController.onTitle || !VersusMenu.TitleReady || Camera.main == null) return;
                 UpdateCheck.Start();
+                if (Plugin.DevKeys.Value) Debugging.PostDump.Log();
                 var go = new GameObject("Overtime Title Bar");
                 current = go.AddComponent<TitleBar>();
                 if (!current.InitKit(150)) { Destroy(go); current = null; return; }

@@ -83,7 +83,7 @@ namespace HangtimeOvertime.Patches
             {
                 int idx = i;
                 var b = Button(Tabs[i], new Vector2((i - 0.5f) * pw * 0.3f, top - 3.8f), new Vector2(pw * 0.28f, 1.9f), () => SetTab(idx), 0.5f);
-                b.color = i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f);
+                b.color = UiArt.Paint(i == tab ? new Color(0.96f, 0.55f, 0.12f, 1f) : new Color(0.16f, 0.6f, 0.86f, 1f));
             }
             string ver = Community.BoardVersion(Plugin.Version);
             string what = tab == 0 ? "FASTEST CLASSIC CLEAR (REAL TIME, PAUSES DON'T COUNT)" : "MOST ROUNDS WON IN ONE SOLO INFINITE RUN";
