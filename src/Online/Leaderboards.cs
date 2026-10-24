@@ -30,7 +30,7 @@ namespace HangtimeOvertime.Online
     {
         public const string Classic = "classic", Infinite = "infinite";
         public static string LastStatus = "";               // what happened to the last result (shown on the boards screen)
-        private static string PathOf => Path.Combine(Application.persistentDataPath, "HangtimeOvertime_pending.json");
+        private static string PathOf => Path.Combine(Application.persistentDataPath, $"HangtimeOvertime_pending{Identity.Profile}.json");
         private static bool sending;
         private static float nextTry;
 
@@ -58,13 +58,8 @@ namespace HangtimeOvertime.Online
             if (!Plugin.CommunitySubmit.Value) { Report($"{shown}: NOT SUBMITTED (SUBMITTING IS OFF IN SETTINGS)"); return; }
             string why = Check(board, value, log);
             if (why != null) { Report($"{shown}: NOT SUBMITTED ({why})"); return; }
-            var items = Pending();
-            while (items.Count >= 20) items.RemoveAt(0);                  // a long time offline: keep the newest 20
-            items.Add(Community.Json("board", board, "value", value, "log", log, "mod", Plugin.Version, "seed", seed ?? "", "at", DateTime.UtcNow.ToString("o")));
-            SavePending(items);
+            Queue(Community.Json("board", board, "value", value, "log", log, "mod", Plugin.Version, "seed", seed ?? "", "at", DateTime.UtcNow.ToString("o")));
             Report($"{shown}: " + (Community.Configured ? "SUBMITTING..." : "SAVED: IT SUBMITS WHEN THE COMMUNITY SERVER IS SET UP"));
-            nextTry = 0f;
-            Flush();
         }
 
         private static void Report(string text)
@@ -99,6 +94,23 @@ namespace HangtimeOvertime.Online
             return null;
         }
 
+        // a result to send: a board score, or (with "_path") a community tournament's result
+        public static void Queue(string item)
+        {
+            var items = Pending();
+            while (items.Count >= 20) items.RemoveAt(0);                  // a long time offline: keep the newest 20
+            items.Add(item);
+            SavePending(items);
+            nextTry = 0f;
+            Flush();
+        }
+
+        private static string PathIn(string item)
+        {
+            var m = System.Text.RegularExpressions.Regex.Match(item, "\"_path\":\"([^\"]+)\"");
+            return m.Success ? m.Groups[1].Value : "/v1/scores";
+        }
+
         // sends the queue, oldest first; each answered item (accepted or refused) leaves it, unreachable ones stay
         public static void Flush()
         {
@@ -109,11 +121,19 @@ namespace HangtimeOvertime.Online
             sending = true;
             var item = items[0];
             var body = item.TrimEnd().TrimEnd('}') + "," + Community.Json("name", Identity.Name).TrimStart('{');
-            Community.Post("/v1/scores", body, (text, err) =>
+            string path = PathIn(item);
+            Community.Post(path, body, (text, err) =>
             {
                 sending = false;
                 if (err != null && !Community.Reachable) { nextTry = Time.realtimeSinceStartup + 60f; LastStatus = "SAVED: SUBMITS WHEN THE GAME IS ONLINE AGAIN"; return; }
                 var list = Pending(); list.Remove(item); SavePending(list);
+                if (path != "/v1/scores")
+                {
+                    Plugin.Log.LogInfo($"Tournament result {path}: {(err ?? "sent")}");
+                    if (err != null) Patches.Toast.Show("TOURNAMENT RESULT REFUSED: " + err);
+                    if (list.Count > 0) Flush();
+                    return;
+                }
                 var board = item.Contains("\"board\":\"classic\"") ? Classic : Infinite;
                 if (err != null) { Report("REFUSED: " + err); return; }
                 var r = JsonUtility.FromJson<ScoreReply>(text);

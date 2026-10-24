@@ -1197,6 +1197,42 @@ Modes:
   with "Our abilities: Frost Serve!". Closed mid-run and continued (section 2). 0 errors in the log.
 - Not online: tournaments are single-player runs; nothing here talks to other PCs except the browser (section 4).
 
+### 4. Tournament browser (done; online once the server is up)
+- **TOURNAMENTS** has two tabs (click, or LB / RB): MY TOURNAMENTS and **BROWSE ONLINE**.
+- **Publishing** (MY TOURNAMENTS, your own): PUBLISH ONLINE once you've cleared it (otherwise "BEAT IT FIRST"); the server
+  checks the code again, the clear record (every match won, at least 20 s each, for exactly this content) and the word
+  filter, computes the difficulty itself, and allows 5 new tournaments a player a day. The same content published twice
+  is one tournament. After an edit (and a new clear): UPDATE ONLINE (same id; its plays, clears and fastest clears start
+  again, its ratings stay). REMOVE ONLINE (press twice) takes it down for everyone and keeps it in your list. Deleting it
+  from your list doesn't take it down (the status says so).
+- **Browsing**: the published tournaments, 6 a screen, more pages fetched as you go; each row: name, creator, the mod
+  version it was made with, FIXED / DRAFT, matches, difficulty, players, clear rate, rating. SORT (newest, most played, top
+  rated, hardest, easiest), TYPE (all / fixed / draft), MINE, REFRESH. The detail adds the description, every match (with
+  the simulator's win chance) and the **fastest clears** (top 4 and your rank). PLAY (adds it to your list and starts it),
+  ADD TO MY LIST, **RATE IT 1-5** (after playing it; one rating a player, changeable), **REPORT** (press twice; three
+  players' reports hide it until you look at it, `server/SETUP.md`). Your own published ones show REMOVE ONLINE instead.
+- **Results**: every finished attempt at a downloaded (or your published) tournament is sent (cleared or not, the time and
+  the run log) through the leaderboards' offline queue; the server counts players, clears and keeps each player's
+  fastest clear. Refused: a run log that doesn't show every match won in at least 20 s, an impossible time, a result for an
+  older version ("this tournament was updated since you got it"), modified runs (not sent at all), more than 60 results a
+  player an hour.
+- **Server additions**: the list returns the mod version; an update resets that tournament's plays / clears / fastest
+  clears; results carry the content hash. All in `server/worker.js` (no new tables).
+- **Tested** with the local server and two identities (`-ovt-profile A` / `B`, run one after the other: two windows can't
+  share the input driver): A published its cleared 3-match tournament -> listed with "BY TESTERA · v0.4.1 · FIXED · 3
+  MATCHES · DIFFICULTY 5/10"; B browsed, PLAY added and started it, cleared it in 1:49.5 -> the server had 1 player, 1
+  clear, B first on the fastest clears; B rated it 4 (server 4.0 from 1 rating) and reported it (once: still listed); A
+  removed it online from its list. By script against the same server: update by someone else refused, update without a
+  clear record refused, the creator's update reset plays and fastest clears and kept the rating, a result for the old
+  version refused, an impossible run log refused, rating without playing refused, a filtered tournament name and team name
+  refused, an unknown perk refused, a damaged code refused, three reports hid a tournament, delete by someone else refused,
+  delete by the creator worked, sort / type filters. The pad switches the tabs (RB / LB). Leaderboard server tests re-run:
+  unchanged.
+- **Limits**: a clear record proves only that the content was beaten plausibly by a client that follows the rules; a
+  rewritten client could forge one (as with leaderboard results). Reports only hide; removing is up to you (SETUP.md).
+- **Found and fixed while testing**: the tab buttons both opened MY TOURNAMENTS (a loop variable captured by the click);
+  with `-ovt-profile` the tournament list and result queue now get their own files too (two test identities on one PC).
+
 ## Session status (2026-10-22)
 - **Done**: the three known bugs (net wall, perk zoom stuck, ball lost on serve) and features 1-17, each built,
   deployed, tested (keyboard, gamepad through the dev virtual pad, local multiplayer; online with two or three copies of

@@ -65,6 +65,7 @@ namespace HangtimeOvertime.Core
         public string content = "", verify = "";          // the share code's parts (base64url deflate), kept verbatim
         public bool mine;
         public string remote = "", creator = "";         // the server's id once published / where it came from
+        public string published = "";                     // the content hash that's online under `remote`
         public int attempts, clears;
         public float best;                                // fastest clear (s), 0 = none
         public long added;
@@ -293,7 +294,7 @@ namespace HangtimeOvertime.Core
         // ------------------------------------------------------------ this PC's list
 
         private static List<TourEntry> file;
-        private static string PathOf => Path.Combine(Application.persistentDataPath, "HangtimeOvertime_tournaments.json");
+        private static string PathOf => Path.Combine(Application.persistentDataPath, $"HangtimeOvertime_tournaments{Online.Identity.Profile}.json");
         public static long Now => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
         public static List<TourEntry> All { get { Load(); return file; } }

@@ -118,6 +118,7 @@ namespace HangtimeOvertime.Patches
             Tournaments.Save();
             RunSaves.ClearCommunity();
             Toast.Show(line);
+            Online.TournamentNet.Result(p, true, secs, RunClock.LogText);
             Plugin.Log.LogInfo($"Community tournament cleared: {p.T.name} in {secs:F1}s (clears {e.clears}, attempts {e.attempts}, best {e.best:F1}s); log {RunClock.LogText}");
         }
 
@@ -126,6 +127,7 @@ namespace HangtimeOvertime.Patches
             var p = Tournaments.Current;
             RunClock.Stop();
             RunSaves.ClearCommunity();
+            Online.TournamentNet.Result(p, false, RunClock.Seconds, RunClock.LogText);
             Plugin.Log.LogInfo($"Community tournament lost at match {p.IndexOf(GameManager.gameNumber) + 1}/{p.Matches}: {p.T.name}");
         }
 

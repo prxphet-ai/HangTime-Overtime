@@ -141,3 +141,7 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Tournament play: `BracketMatch.EmblemB` (this PC only, not on the wire) drawn by BracketPanel; `TournamentRun.Bracket`
   (one column per match), `Retry` (MenuPatches.Restart), `Cleared` / `Lost` (StreakPatches); TournamentMenu CONTINUE uses
   `RunSaves.CommunityRun`. The game's lose screen says "Bracket: Semi Finals" etc. by slot (vanilla text).
+- Tournament browser: `src/Online/TournamentNet.cs` (list / fetch / scores / publish / unpublish / rate / report; results through
+  `Leaderboards.Queue` with a `_path` key), TournamentMenu tabs (BROWSE ONLINE), `TourEntry.published` (the hash online). Server:
+  list returns `mods`, update resets plays / clears / tplays, results need the current `hash`. `Identity.Profile` suffixes the
+  identity, tournament list and pending queue files with `-ovt-profile`.

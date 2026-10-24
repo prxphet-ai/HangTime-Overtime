@@ -275,17 +275,22 @@ async function tournaments(request, env, body, q, id, action) {
       const row = await env.DB.prepare("SELECT owner FROM tournaments WHERE id = ?").bind(id).first();
       if (!row) throw new UserError("no such tournament", 404);
       if (row.owner !== owner) throw new UserError("only its creator can change this tournament", 403);
-      await env.DB.prepare("UPDATE tournaments SET name = ?, description = ?, mode = ?, matches = ?, difficulty = ?, code = ?, hash = ?, updated = ?, mod = ? WHERE id = ?")
-        .bind(d.content.name, d.content.desc || "", d.content.mode, d.content.teams.length, difficulty, body.code, d.hash, Date.now(), String(body.mod || "").slice(0, 16), id).run();
-      return json({ ok: true, id, updated: true });
+      const other = await env.DB.prepare("SELECT id FROM tournaments WHERE hash = ? AND id <> ?").bind(d.hash, id).first();
+      if (other) throw new UserError("that version is already published as another tournament");
+      // a new version: its plays, clears and fastest clears start again (the ratings stay)
+      await env.DB.batch([
+        env.DB.prepare("UPDATE tournaments SET name = ?, description = ?, mode = ?, matches = ?, difficulty = ?, code = ?, hash = ?, updated = ?, mod = ?, plays = 0, clears = 0 WHERE id = ?")
+          .bind(d.content.name, d.content.desc || "", d.content.mode, d.content.teams.length, difficulty, body.code, d.hash, Date.now(), String(body.mod || "").slice(0, 16), id),
+        env.DB.prepare("DELETE FROM tplays WHERE tid = ?").bind(id)]);
+      return json({ ok: true, id, updated: true, difficulty });
     }
     await limit(env, "publish:" + owner, RULES.publishes_per_day, 86400);
     const dupe = await env.DB.prepare("SELECT id FROM tournaments WHERE hash = ?").bind(d.hash).first();
-    if (dupe) return json({ ok: true, id: dupe.id, existing: true });
+    if (dupe) return json({ ok: true, id: dupe.id, existing: true, difficulty });
     const nid = newId();
     await env.DB.prepare("INSERT INTO tournaments (id, owner, name, description, mode, matches, difficulty, code, hash, created, updated, mod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .bind(nid, owner, d.content.name, d.content.desc || "", d.content.mode, d.content.teams.length, difficulty, body.code, d.hash, Date.now(), Date.now(), String(body.mod || "").slice(0, 16)).run();
-    return json({ ok: true, id: nid });
+    return json({ ok: true, id: nid, difficulty });
   }
   // list
   if (!id && method === "GET") {
@@ -296,12 +301,12 @@ async function tournaments(request, env, body, q, id, action) {
     const where = ["t.hidden = 0"]; const args = [];
     if (mode) { where.push("t.mode = ?"); args.push(mode); }
     if (mine) { where.push("t.owner = ?"); args.push(mine); }
-    const rows = (await env.DB.prepare(`SELECT t.id, t.name, p.name AS creator, t.owner, t.mode, t.matches, t.difficulty, t.plays, t.clears, t.rating_sum, t.rating_n, t.created FROM tournaments t ` +
+    const rows = (await env.DB.prepare(`SELECT t.id, t.name, p.name AS creator, t.owner, t.mode, t.matches, t.difficulty, t.plays, t.clears, t.rating_sum, t.rating_n, t.created, t.mod FROM tournaments t ` +
       `JOIN players p ON p.id = t.owner WHERE ${where.join(" AND ")} ORDER BY ${LIST_ORDER[sort]} LIMIT ? OFFSET ?`).bind(...args, RULES.page_size, offset).all()).results;
-    const out = { ok: true, ids: [], names: [], creators: [], owners: [], modes: [], matches: [], difficulty: [], plays: [], clears: [], rating: [], ratings: [], created: [] };
+    const out = { ok: true, ids: [], names: [], creators: [], owners: [], modes: [], matches: [], difficulty: [], plays: [], clears: [], rating: [], ratings: [], created: [], mods: [] };
     for (const r of rows) {
       out.ids.push(r.id); out.names.push(r.name); out.creators.push(r.creator); out.owners.push(r.owner); out.modes.push(r.mode); out.matches.push(r.matches);
-      out.difficulty.push(r.difficulty); out.plays.push(r.plays); out.clears.push(r.clears); out.rating.push(r.rating_n ? r.rating_sum / r.rating_n : 0); out.ratings.push(r.rating_n); out.created.push(r.created);
+      out.difficulty.push(r.difficulty); out.plays.push(r.plays); out.clears.push(r.clears); out.rating.push(r.rating_n ? r.rating_sum / r.rating_n : 0); out.ratings.push(r.rating_n); out.created.push(r.created); out.mods.push(r.mod || "");
     }
     return json(out);
   }
@@ -311,7 +316,7 @@ async function tournaments(request, env, body, q, id, action) {
   if (!action && method === "GET") {
     const creator = (await env.DB.prepare("SELECT name FROM players WHERE id = ?").bind(t.owner).first())?.name || "?";
     return json({ ok: true, id: t.id, name: t.name, description: t.description, creator, owner: t.owner, mode: t.mode, matches: t.matches, difficulty: t.difficulty,
-      plays: t.plays, clears: t.clears, rating: t.rating_n ? t.rating_sum / t.rating_n : 0, ratings: t.rating_n, code: t.code, hidden: t.hidden });
+      plays: t.plays, clears: t.clears, rating: t.rating_n ? t.rating_sum / t.rating_n : 0, ratings: t.rating_n, code: t.code, hash: t.hash, mod: t.mod || "", hidden: t.hidden });
   }
   if (action === "delete" && method === "POST") {
     const owner = await playerOf(body);
@@ -323,6 +328,7 @@ async function tournaments(request, env, body, q, id, action) {
   // a finished attempt: plays, clears, fastest clears
   if (action === "result" && method === "POST") {
     const player = await playerOf(body);
+    if (body.hash !== t.hash) throw new UserError("this tournament was updated since you got it: get the new version");
     await limit(env, "result:" + player, RULES.results_per_hour, 3600);
     const name = cleanName(body.name, RULES.name_max);
     const cleared = !!body.cleared;

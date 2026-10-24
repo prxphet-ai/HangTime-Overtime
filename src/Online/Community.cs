@@ -28,21 +28,20 @@ namespace HangtimeOvertime.Online
         private static IdentityData data;
         private static string id;
 
-        private static string PathOf
+        // development: two copies of the game on one PC need two identities (-ovt-profile NAME), and their own tournament
+        // lists and result queues; "" normally, "_NAME" with dev keys and -ovt-profile
+        public static string Profile
         {
             get
             {
-                // development: two copies of the game on one PC need two identities (-ovt-profile NAME)
-                string profile = null;
-                if (Plugin.DevKeys.Value)
-                {
-                    var args = Environment.GetCommandLineArgs();
-                    int i = Array.IndexOf(args, "-ovt-profile");
-                    if (i >= 0 && i + 1 < args.Length) profile = Regex.Replace(args[i + 1], "[^A-Za-z0-9]", "");
-                }
-                return Path.Combine(Application.persistentDataPath, profile == null ? "HangtimeOvertime_identity.json" : $"HangtimeOvertime_identity_{profile}.json");
+                if (!Plugin.DevKeys.Value) return "";
+                var args = Environment.GetCommandLineArgs();
+                int i = Array.IndexOf(args, "-ovt-profile");
+                return i >= 0 && i + 1 < args.Length ? "_" + Regex.Replace(args[i + 1], "[^A-Za-z0-9]", "") : "";
             }
         }
+
+        private static string PathOf => Path.Combine(Application.persistentDataPath, $"HangtimeOvertime_identity{Profile}.json");
 
         private static IdentityData Data
         {
