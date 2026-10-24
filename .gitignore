@@ -7,3 +7,7 @@ sim_data/
 # python
 __pycache__/
 *.pyc
+server/dev.sqlite
+server/*.sqlite*
+server/.wrangler/
+server/node_modules/

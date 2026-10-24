@@ -129,7 +129,7 @@ namespace HangtimeOvertime.Patches
                 if (infinite) RunState.StartInfinite();
                 else if (Drafting.Pending != null) RunState.StartDraft();
                 else if (Daily.Pending != null && Daily.PendingCup) RunState.StartCup();
-                else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); }
+                else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); RunClock.Start(); }
                 return true;
             }
         }
@@ -181,6 +181,7 @@ namespace HangtimeOvertime.Patches
             {
                 if (__instance.GetComponent<LoopContinueMarker>()) return;
                 if (RunState.Mode == RunMode.Infinite && !__instance.toTitle && !__instance.toTutorial) RunState.StartInfinite();   // co-op too: numberOfPlayers stays 2
+                else if (!__instance.toTitle && !__instance.toTutorial) { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); RunClock.Start(); }
                 else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); }
             }
         }

@@ -26,6 +26,7 @@ namespace HangtimeOvertime.Patches
             Buttons.Add(("DRAFT", () => DraftMenu.Open()));
             Buttons.Add(("COLLECTION", () => CollectionMenu.Open()));
             Buttons.Add(("REPLAYS", () => ReplayMenu.Open()));
+            Buttons.Add(("LEADERBOARDS", () => LeaderboardMenu.Open()));
             Buttons.Add(("CONTROLS", () => ControlsMenu.Open()));
             Buttons.Add(("REPORT BUG", () => BugReport.Open()));
         }
@@ -47,7 +48,7 @@ namespace HangtimeOvertime.Patches
         }
 
         // any full-screen panel of the mod
-        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || ReplayMenu.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
+        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || ReplayMenu.IsOpen || LeaderboardMenu.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
         public static int PanelCount;                     // other menus register themselves while open
 
         private bool barFocus;                           // a gamepad is driving the bar (SELECT), the title menu is held
@@ -73,12 +74,12 @@ namespace HangtimeOvertime.Patches
 
         private void Build()
         {
-            float x = -W / 2f + 4.2f, y = H / 2f - 1.6f, w = 6.6f;
+            float w = 5.9f, x = -W / 2f + 0.5f + w / 2f, y = H / 2f - 1.6f;
             foreach (var (label, open) in Buttons)
             {
-                var b = Button(label, new Vector2(x, y), new Vector2(w, 1.8f), () => { if (barFocus) OnNavBack(); open(); }, 0.5f);
+                var b = Button(label, new Vector2(x, y), new Vector2(w, 1.8f), () => { if (barFocus) OnNavBack(); open(); }, label.Length > 10 ? 0.4f : 0.46f);
                 parts.Add(b.gameObject);
-                x += w + 0.4f;
+                x += w + 0.25f;
             }
             hint = Text("SELECT: THIS BAR", new Vector2(x + 4f, y), 0.42f, 8f, new Color(0.7f, 1f, 0.75f), TextAlignmentOptions.Left);
             notice = Text("", new Vector2(-W / 2f + 1f + 11f, y - 2.1f), 0.5f, 22f, new Color(1f, 0.85f, 0.35f), TextAlignmentOptions.Left);
@@ -119,6 +120,8 @@ namespace HangtimeOvertime.Patches
                 () => Plugin.CheckForUpdates.Value, v => { Plugin.CheckForUpdates.Value = v; if (!v) { TitleBar.Notice = null; } else UpdateCheck.Start(); }));
             Toggles.Add(("RECORD REPLAYS", "KEEP A REPLAY OF EVERY MATCH AND VERSUS ROUND (THE LAST 10; REPLAYS > SAVE KEEPS ONE)",
                 () => Plugin.RecordReplays.Value, v => Plugin.RecordReplays.Value = v));
+            Toggles.Add(("SUBMIT TO LEADERBOARDS", "SEND YOUR CLASSIC SPEEDRUN AND INFINITE RESULTS TO THE GLOBAL BOARDS (NAME, RESULT AND RUN LOG)",
+                () => Plugin.CommunitySubmit.Value, v => Plugin.CommunitySubmit.Value = v));
             Toggles.Add(("CHAT BUBBLES", "IN MATCHES, CHAT AND EMOTES SHOW ABOVE THE PLAYER (OFF: ONLY THE CHAT LOG IN THE CORNER)",
                 () => Plugin.ChatBubbles.Value, v => Plugin.ChatBubbles.Value = v));
             Toggles.Add(("MUTE OTHERS' CHAT", "ONLINE: HIDE OTHER PLAYERS' CHAT LINES AND EMOTES",

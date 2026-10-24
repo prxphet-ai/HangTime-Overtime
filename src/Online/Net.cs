@@ -484,6 +484,9 @@ namespace HangtimeOvertime.Online
             Lobbies.Hook();
             Net.EarlyUpdate();
             Patches.ChatHud.Tick();
+            Core.RunClock.Tick();
+            Patches.Toast.Tick();
+            Leaderboards.Tick();
             SpectatorHud.Tick();
             OnlineFlow.TitleTick();
             PingHud.Tick();

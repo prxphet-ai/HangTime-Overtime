@@ -1047,6 +1047,67 @@ Modes:
   lost -> RUN OVER on both, TRY AGAIN -> a new run at match 1, LOBBY -> both back in the lobby. Online 1v1 regression:
   rounds and picks fine. 0 errors.
 
+## Leaderboards and community tournaments (2026-10-23)
+
+### 0. Backend decision — needs your free Cloudflare account (setup steps in `server/SETUP.md`)
+- **Chosen: Cloudflare Workers + D1** (`server/`). Free tier: 100,000 requests a day, 5 GB, no card; at the limit it stops
+  for the day instead of charging. One small JavaScript file (`server/worker.js`) holds every rule, so the server, not the
+  game, decides what is valid. Other options looked at: Supabase / Firebase (free, but their row rules can't run the
+  run-log checks, and a public key there is a write key to the tables), a VPS (costs money), Steam leaderboards (need the
+  game's own Steam app; a mod can't add boards to it).
+- **Every option needs an account you create**, so per the plan the online part is built and tested only against a local
+  copy (`node server/dev_server.mjs`, the same worker on a SQLite file) and is **not deployed**. The game's default
+  server address is empty: until it's set, LEADERBOARDS says "NOT CONNECTED: THE COMMUNITY SERVER ISN'T SET UP YET"
+  and finished runs queue up locally.
+- **What you do** (about 10 minutes, `server/SETUP.md`): Cloudflare sign-up, `npx wrangler login`, `wrangler d1 create`,
+  paste the database id into `server/wrangler.toml`, `wrangler d1 execute ... --file=schema.sql`, `wrangler deploy`, then
+  give me the `https://....workers.dev` address to make it the default in `Plugin.cs`.
+- **No secret keys anywhere**: the game carries no key. Each player's game makes a random 64-hex secret
+  (`HangtimeOvertime_identity.json` next to the saves, never in the repo or the queue file); the player id is the first 20
+  hex of its SHA-256, and the server stores only the id. The database id in `wrangler.toml` isn't a secret (it only works
+  with your Cloudflare login). `server/*.sqlite` and `.wrangler/` are git-ignored.
+- `sheets/community.json` (limits + filtered words) -> `Generated.Community` and `server/generated.js` (the same numbers
+  and the perk / card ids for the server) from `python tools/sheets.py gen`.
+
+### 1. Leaderboards (done; online once the server is up)
+- **Boards**: CLASSIC SPEEDRUN (fastest Classic clear, solo, normal difficulty) and INFINITE (most rounds won in one solo
+  Infinite run). One set of boards per mod version line: v0.4.x results never mix with v0.5.x (balance changes between
+  them). Each player keeps their best per board.
+- **What's timed**: real time from the run's start (the first match's loading) to the final point of match 8, counting
+  every match, upgrade screen, bracket and loading in between; **not** the pause menu or the title screen; slow motion and
+  game-speed perks don't change it (real time). A freeze or alt-tab counts at most 1 s per frame. Saved with the run, so
+  CONTINUE keeps the time (quitting to the title stops it). RESTART starts again at 0.
+- **Screen** (title bar LEADERBOARDS, under the other buttons): tabs CLASSIC SPEEDRUN / INFINITE (click, or LB / RB), the
+  board's version line and player count, a table of rank / player / result / date / version (top 50, pages of 12 with
+  < >), your own row highlighted, "YOU: #rank · best · date" even when you're outside the top 50, your name box + SAVE
+  NAME, the last result's status ("NEW BEST: #3", "QUEUED (OFFLINE)", "NOT SUBMITTED: DEV KEYS ON"...), how many results
+  are waiting, REFRESH / BACK. Gamepad: d-pad / stick between controls, A, B back, LB / RB tabs, the on-screen keyboard
+  for the name.
+- **Name**: your Steam name by default (if it passes the rules), or one you type (2-16 characters, no `<` `>`, the
+  word filter), changeable any time; the server keeps the newest name for all your scores.
+- **Submitting**: automatic at the end of a qualifying run (a line at the top of the screen shows the result); Settings
+  has **SUBMIT TO LEADERBOARDS** (on by default) to opt out. Without a name yet, the result waits until you set one.
+  Offline or server down: queued in `HangtimeOvertime_pending.json` (up to 20) and sent on the next launch / when the
+  leaderboard opens.
+- **Not submitted** (the run is "modified"): dev keys on, debug logging on, Infinite difficulty changed, any `-ovt-`
+  development launch option, a daily run / cup, draft, co-op, a run continued from an older mod version. Modified runs
+  don't submit at all (there's no separate board for them).
+- **Cheat checks** (server side, `checkScore`): Classic: 4 min to 6 h, a run log with 8 won matches in slots 1-8, each at
+  least 20 s, adding up to no more than the time; Infinite: 1-500 rounds, a log with exactly that many wins, at least 25 s
+  per round. Rate limits: 20 scores a player an hour, 300 requests an IP an hour. Every score keeps its run log
+  (`slot,points,opponent points,seconds,opponent` per match) and seed for you to inspect; `flagged = 1` hides one
+  (`server/SETUP.md`). This stops edited requests with impossible results, not a careful cheater who fakes a believable
+  log: anything the game can send, a modified game can too.
+- **Code**: `src/Online/Community.cs` (Identity, HTTP), `src/Online/Leaderboards.cs` (queue, submit, boards),
+  `src/Core/RunClock.cs`, `src/Patches/LeaderboardMenu.cs` (+ `Toast`), `server/` (worker, schema, local dev server).
+- **Tested** (local server on 127.0.0.1, dev launch `-ovt-boardtest` which lets a dev-keys run submit): an Infinite run
+  submitted and ranked, a worse one kept the best; no name -> queued -> SAVE NAME -> sent; a real Classic clear (driven,
+  10:11.8, 9-match log) accepted with rank 1; a run with dev keys and no `-ovt-boardtest` refused ("DEV KEYS ON");
+  server stopped -> "QUEUED (OFFLINE)" -> relaunch with the server up -> sent; board tabs, pages, name box and buttons by
+  keyboard and by the virtual pad; a second identity (`-ovt-profile B`) showed both players with the right row
+  highlighted. Server rules by script (`node`): short / long times, missing or inconsistent logs, too many rounds, bad
+  names and filtered words, rate limits, all refused with the right message. 0 errors in the game log.
+
 ## Session status (2026-10-22)
 - **Done**: the three known bugs (net wall, perk zoom stuck, ball lost on serve) and features 1-17, each built,
   deployed, tested (keyboard, gamepad through the dev virtual pad, local multiplayer; online with two or three copies of

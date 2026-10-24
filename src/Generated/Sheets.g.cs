@@ -1195,6 +1195,38 @@ namespace HangtimeOvertime.Generated
         };
     }
 
+    // LEADERBOARDS AND COMMUNITY TOURNAMENTS (sheets/community.json; the server reads the same numbers from server/generated.js).
+    public static class Community
+    {
+        public const int ClassicMinSeconds = 240;
+        public const int ClassicMaxSeconds = 21600;
+        public const int MatchMinSeconds = 20;
+        public const int InfiniteMaxRounds = 500;
+        public const int InfiniteSecondsPerRound = 25;
+        public const int NameMin = 2;
+        public const int NameMax = 16;
+        public const int TournamentNameMax = 32;
+        public const int DescriptionMax = 160;
+        public const int TeamNameMax = 20;
+        public const int TournamentMinMatches = 1;
+        public const int TournamentMaxMatches = 8;
+        public const int TeamMaxPerks = 6;
+        public const int TeamMaxCards = 6;
+        public const int LoadoutMaxPerks = 8;
+        public const int LoadoutMaxCards = 8;
+        public const int StatMaxLevel = 3;
+        public const int CodeMaxChars = 12000;
+        public const int ScoresPerHour = 20;
+        public const int RequestsPerIpHour = 300;
+        public const int PublishesPerDay = 5;
+        public const int ResultsPerHour = 60;
+        public const int ReportsPerDay = 20;
+        public const int ReportsToHide = 3;
+        public const int TopEntries = 50;
+        public const int PageSize = 20;
+        public static readonly string[] Words = new[] { "fuck", "shit", "cunt", "bitch", "whore", "slut", "nigger", "nigga", "faggot", "fag", "retard", "rape", "nazi", "hitler", "kike", "chink", "spic", "tranny", "dick", "cock", "pussy", "porn", "kys" };
+    }
+
     // IN-MATCH CHAT (sheets/chat.json): quick chat and emote wheels (clockwise from the top), timings.
     public static class Chat
     {

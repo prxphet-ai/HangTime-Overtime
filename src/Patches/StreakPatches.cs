@@ -33,6 +33,13 @@ namespace HangtimeOvertime.Patches
             {
                 if (__instance.done || VersusState.Active || TitleController.onTitle || TutorialManager.onTutorial) return;
                 bool won = nextScene != "Lose";
+                RunClock.MatchEnded(__instance.playerPoints, __instance.opponentPoints, __instance.opponentTeam?.teamName);
+                // the Classic speedrun board: a solo Classic clear (not a daily / draft cup, not co-op, not a loop)
+                if (nextScene == "Win" && RunState.Mode == RunMode.Normal && RunState.Daily == null && RunState.Draft == null && __instance.numberOfPlayers == 1)
+                {
+                    RunClock.Stop();
+                    Online.Leaderboards.Finish(Online.Leaderboards.Classic, RunClock.Seconds, RunClock.LogText, "lineup:" + TournamentLineUps.currentLineUp);
+                }
                 string mode = ModeKey();
                 var (_, before) = Records.Record(mode, won);
                 if (won && RunState.Mode == RunMode.Infinite) Records.InfiniteRound(RunState.InfiniteMatch);

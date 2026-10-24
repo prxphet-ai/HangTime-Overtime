@@ -123,3 +123,10 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
 - Co-op Infinite: local via `ContinueMenu.ShowCoop` (title CO-OP), run slot `coop` (`players`, `owners`); online as
   Versus format `coop` (`VersusState.Coop`, `CoopSlot`, `PickCoopOpponent`; `VersusPatches.SetupMatch` scales instead of
   equal footing; `VersusOverlay.CoopScreen`). `RoundScreen.RematchLabel`; protocol 9. Dev: `-ovt-winfirst N` (host).
+- Leaderboards: `server/` (Cloudflare Worker `worker.js` + D1 `schema.sql`, `dev_server.mjs` runs it on node:sqlite,
+  `SETUP.md`); `sheets/community.json` -> `Generated.Community` + `server/generated.js`. Client: `src/Online/Community.cs`
+  (Identity = local secret, id = sha256[:20]; Get / Post with UnityWebRequest), `src/Online/Leaderboards.cs` (pending
+  queue, Finish / Flush), `src/Core/RunClock.cs` (unscaled time, run log, taint; saved in the run slot),
+  `src/Patches/LeaderboardMenu.cs` (+ Toast). Hooks: Classic finish in `StreakPatches` EndGame prefix (nextScene "Win"),
+  Infinite in `RunState.EndInfinite`. Config `[Community] Server` (empty = offline) / `Submit`. Dev: `-ovt-boardtest`
+  (dev keys still submit), `-ovt-profile NAME` (second identity file).

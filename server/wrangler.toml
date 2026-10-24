@@ -1,0 +1,11 @@
+# Cloudflare Worker config for the Overtime community server (see server/SETUP.md).
+# The database_id below is NOT a secret (it only works with your Cloudflare login), but it's yours: paste it in after
+# `npx wrangler d1 create overtime`.
+name = "overtime-community"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "overtime"
+database_id = "PASTE-YOUR-DATABASE-ID-HERE"

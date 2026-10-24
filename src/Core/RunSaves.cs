@@ -34,6 +34,11 @@ namespace HangtimeOvertime.Core
         public bool dailyCounts;
         public string draft = "";                         // a draft cup: the drafted team's id
         public int players = 1;                           // 2: a co-op run (player 2 is the game's co-op partner)
+        public int clockVersion;                          // 1: the run clock below was saved (older saves don't submit)
+        public float clockSeconds;
+        public string clockLog = "";
+        public bool clockTainted;
+        public string clockWhy = "";
         public int[] owners = new int[0];                 // co-op: who picked each technique (0 = team-wide), parallel to techniques
     }
 
@@ -231,6 +236,7 @@ namespace HangtimeOvertime.Core
                 techniques = ps.techniques.Select(Encode).Where(x => x != null).ToArray(),
                 owners = ps.techniques.Where(t => Encode(t) != null).Select(t => Ownership.Of(0, t)).ToArray(),
                 players = Coop ? 2 : 1,
+                clockVersion = 1, clockSeconds = RunClock.Seconds, clockLog = RunClock.LogText, clockTainted = RunClock.Tainted, clockWhy = RunClock.TaintReason,
                 cardStats = StatCards.Points.Keys.ToArray(),
                 cardPoints = StatCards.Points.Values.ToArray(),
                 limits = new[] { LimitBreakEffects.limitSpike, LimitBreakEffects.limitBump, LimitBreakEffects.limitJump,
@@ -286,6 +292,7 @@ namespace HangtimeOvertime.Core
             RunState.InfiniteWins = s.infiniteWins;
             RunState.Loop = Math.Max(1, s.loop);
             RunState.Daily = string.IsNullOrEmpty(s.daily) ? null : s.daily;
+            RunClock.Restore(s.clockSeconds, s.clockLog, s.clockTainted || s.clockVersion < 1, s.clockVersion < 1 ? "SAVED BY AN OLDER VERSION" : s.clockWhy);
             RunState.DailyCounts = s.dailyCounts;
             RunState.Draft = string.IsNullOrEmpty(s.draft) ? null : s.draft;
             GameManager.gameNumber = s.gameNumber;

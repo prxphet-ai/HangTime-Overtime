@@ -102,6 +102,7 @@ namespace HangtimeOvertime.Patches
                                    $"infiniteMatch={RunState.InfiniteMatch} loop={RunState.Loop} vs {__instance.opponentTeam?.teamName}");
                 if (RunState.Draft != null) Drafting.GiveOpponent(team, slot);
                 CollectionPatches.MatchStarted(__instance);
+                if (RunState.Mode != RunMode.Versus) RunClock.MatchStarted(slot);
                 if (RunState.Mode == RunMode.Normal || RunState.Mode == RunMode.Loop) Bracket.MatchStarted(slot, __instance.opponentTeam?.teamName);
                 if (RunState.Mode != RunMode.Versus && slot >= 1 && Plugin.RecordReplays.Value)
                 {

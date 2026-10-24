@@ -59,6 +59,7 @@ namespace HangtimeOvertime.Core
             else if (Daily != null) Daily = Core.Daily.Today;
             if (Daily != null) DailyCounts = Core.Daily.Begin(Core.Daily.Key(Daily, false));
             Mode = RunMode.Infinite;
+            RunClock.Start();
             InfiniteMatch = 1;
             InfiniteWins = 0;
             Loop = 1;
@@ -96,6 +97,7 @@ namespace HangtimeOvertime.Core
             GameManager.gameNumber = 1;
             Draft = null;
             DailyCounts = Core.Daily.Begin(Core.Daily.Key(Daily, true));
+            RunClock.Start();
             Plugin.Log.LogInfo("Daily cup started (" + Daily + ")");
         }
 
@@ -123,6 +125,7 @@ namespace HangtimeOvertime.Core
             foreach (var id in pick.Perks) { var t = PerkRegistry.Get(id); if (t != null) gm.playerStats.techniques.Add(t); }
             foreach (var id in pick.Cards) { var c = Engine.StatCards.Get(id); if (c != null) Engine.StatCards.Take(c); }
             Records.DraftStarted();
+            RunClock.Start();
             Plugin.Log.LogInfo($"Draft cup started: {pick.Team.Name} with {string.Join(", ", pick.Perks)} + {string.Join(", ", pick.Cards)} (power {pick.Power:F3}, seed {seed})");
         }
 
@@ -140,6 +143,8 @@ namespace HangtimeOvertime.Core
             if (Daily != null) { Core.Daily.Finish(Core.Daily.Key(Daily, false), DailyCounts, InfiniteWins); DailyCounts = false; return; }   // its own records
             if (GameManager.Instance != null && GameManager.Instance.numberOfPlayers == 2) { Records.CoopInfiniteRun(InfiniteWins); return; }
             if (InfiniteWins > Save.bestInfiniteWins) Save.bestInfiniteWins = InfiniteWins;
+            RunClock.Stop();
+            if (InfiniteWins > 0) Online.Leaderboards.Finish(Online.Leaderboards.Infinite, InfiniteWins, RunClock.LogText, "");
             WriteSave();
             Plugin.Log.LogInfo($"Infinite run over: {InfiniteWins} wins (best {Save.bestInfiniteWins})");
         }
