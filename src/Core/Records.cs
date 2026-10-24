@@ -22,7 +22,7 @@ namespace HangtimeOvertime.Core
     internal static class Records
     {
         // mode keys (also the labels on the stats page)
-        public const string Classic = "Classic", Coop = "Co-op", Infinite = "Infinite", VersusLocal = "Versus (local)", VersusOnline = "Versus (online)", Draft = "Draft", CoopInfinite = "Co-op Infinite";
+        public const string Classic = "Classic", Coop = "Co-op", Infinite = "Infinite", VersusLocal = "Versus (local)", VersusOnline = "Versus (online)", Draft = "Draft", CoopInfinite = "Co-op Infinite", Community = "Community";
 
         private static RecordsData data;
         private static string PathOf => Path.Combine(Application.persistentDataPath, "HangtimeOvertime_stats.json");

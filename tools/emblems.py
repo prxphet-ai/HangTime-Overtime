@@ -3,6 +3,8 @@ silhouettes, a mascot or symbol, and the team name in bold hand lettering. Drawn
 generation), from each teams.json row's `emblem` cell: {"mascot": ..., "layout": ..., "font": ...}.
 
 usage: python tools/emblems.py            # writes assets/emblems/<team id>.png and assets/emblems/preview.png
+       python tools/emblems.py parts      # the in-game emblem builder's pieces (assets/emblems/parts): each mascot alone
+                                          # (accent drawn black, recoloured in game) and a letter atlas per lettering font
 Output is our own art (shipped with the mod). Lettering fonts (tools/fonts): Permanent Marker (Apache 2.0),
 Bangers (SIL OFL 1.1).
 """
@@ -768,5 +770,55 @@ def main():
     print("wrote assets/emblems/preview.png")
 
 
+# ---------------------------------------------------------------- the in-game emblem builder's pieces
+
+PART_SCALE, PART_W, PART_H = 1.3, 540, 420      # mascots drawn at the largest layout scale, centred on a canvas this size
+GLYPH_SIZE, GLYPHS = 120, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!?&'.-#+:"
+
+
+def parts():
+    """src/Engine/EmblemArt.cs composes emblems like draw() above from these: mascot_<id>.png (white, accent parts black)
+    and glyphs_<font>.png + glyphs_<font>.txt (per letter: x y w h of its cell, the ink box's left / top from the pen at
+    GLYPH_SIZE, and its advance)."""
+    out = os.path.join(OUT, "parts")
+    os.makedirs(out, exist_ok=True)
+    global W, H
+    keep = (W, H)
+    W, H = PART_W, PART_H
+    try:
+        for mid, fn in MASCOTS.items():
+            p = Pen(hash(mid) & 0xFFFF)
+            fn(p, PART_W / 2, PART_H / 2, PART_SCALE, (0, 0, 0, 255))
+            img = p.result()
+            box = img.split()[3].getbbox()
+            if box and (box[0] <= 1 or box[1] <= 1 or box[2] >= PART_W - 1 or box[3] >= PART_H - 1):
+                print(f"WARNING mascot {mid} touches the edge {box}")
+            img.save(os.path.join(out, f"mascot_{mid}.png"))
+    finally:
+        W, H = keep
+    for font, path in FONTS.items():
+        f = ImageFont.truetype(path, GLYPH_SIZE * SS)
+        cells, lines = [], []
+        for ch in GLYPHS:
+            bb = f.getbbox(ch)
+            layer = Image.new("RGBA", (bb[2] - bb[0] + 4 * SS, bb[3] - bb[1] + 4 * SS), CLEAR)
+            ImageDraw.Draw(layer).text((2 * SS - bb[0], 2 * SS - bb[1]), ch, font=f, fill=INK)
+            layer = layer.resize((max(1, layer.width // SS), max(1, layer.height // SS)), Image.LANCZOS)
+            cells.append((ch, layer, (bb[0] / SS - 2, bb[1] / SS - 2, (bb[2] - bb[0]) / SS)))
+        cols = 12
+        cw = max(c[1].width for c in cells) + 2
+        chh = max(c[1].height for c in cells) + 2
+        atlas = Image.new("RGBA", (cols * cw, ((len(cells) + cols - 1) // cols) * chh), CLEAR)
+        for i, (ch, layer, (left, top, adv)) in enumerate(cells):
+            x, y = (i % cols) * cw, (i // cols) * chh
+            atlas.alpha_composite(layer, (x, y))
+            lines.append(f"{ord(ch)} {x} {y} {layer.width} {layer.height} {left:.2f} {top:.2f} {adv:.2f}")
+        atlas.save(os.path.join(out, f"glyphs_{font}.png"))
+        with open(os.path.join(out, f"glyphs_{font}.txt"), "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(f"# {font}: size {GLYPH_SIZE}; code x y w h left top advance (src/Engine/EmblemArt.cs)\n" + "\n".join(lines) + "\n")
+    print(f"wrote {len(MASCOTS)} mascots and {len(FONTS)} letter atlases to assets/emblems/parts")
+
+
 if __name__ == "__main__":
-    main()
+    import sys
+    parts() if sys.argv[1:] == ["parts"] else main()

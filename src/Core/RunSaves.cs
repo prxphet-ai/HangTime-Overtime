@@ -39,6 +39,8 @@ namespace HangtimeOvertime.Core
         public string clockLog = "";
         public bool clockTainted;
         public string clockWhy = "";
+        public string community = "";                     // a community tournament: its content hash (Tournaments)
+        public bool communityTest;                        // the creator's test play
         public int[] owners = new int[0];                 // co-op: who picked each technique (0 = team-wide), parallel to techniques
     }
 
@@ -53,6 +55,7 @@ namespace HangtimeOvertime.Core
         public string cup = "";
         public string draft = "";
         public string coop = "";
+        public string community = "";
         public string[] titleClasses = new string[0];      // the game's card titles, see PerkRegistry.KnownTitles
         public string[] titleNames = new string[0];
         public string[] descClasses = new string[0];       // and their card descriptions (Versus offers show them)
@@ -67,6 +70,7 @@ namespace HangtimeOvertime.Core
         public RunSnapshot cup = new RunSnapshot();
         public RunSnapshot draft = new RunSnapshot();
         public RunSnapshot coop = new RunSnapshot();
+        public RunSnapshot community = new RunSnapshot();
     }
 
     internal static class RunSaves
@@ -82,6 +86,7 @@ namespace HangtimeOvertime.Core
         public static RunSnapshot DailyCup => file.cup;
         public static RunSnapshot DraftRun => file.draft;
         public static RunSnapshot CoopRun => file.coop;
+        public static RunSnapshot CommunityRun => file.community;
         public static bool Has(bool infinite) => (infinite ? file.infinite : file.classic).has;
 
         // ------------------------------------------------------------ file
@@ -116,7 +121,7 @@ namespace HangtimeOvertime.Core
             for (int i = 0; f.descClasses != null && f.descTexts != null && i < f.descClasses.Length && i < f.descTexts.Length; i++)
                 PerkRegistry.KnownDescriptions[f.descClasses[i]] = f.descTexts[i];
             RunSnapshot Read(string json) => string.IsNullOrEmpty(json) ? new RunSnapshot() : JsonUtility.FromJson<RunSnapshot>(json) ?? new RunSnapshot();
-            return new RunSlots { infinite = Read(f.infinite), classic = Read(f.classic), daily = Read(f.daily), cup = Read(f.cup), draft = Read(f.draft), coop = Read(f.coop) };
+            return new RunSlots { infinite = Read(f.infinite), classic = Read(f.classic), daily = Read(f.daily), cup = Read(f.cup), draft = Read(f.draft), coop = Read(f.coop), community = Read(f.community) };
         }
 
         public static void Flush()
@@ -132,6 +137,7 @@ namespace HangtimeOvertime.Core
                     cup = file.cup.has ? JsonUtility.ToJson(file.cup) : "",
                     draft = file.draft.has ? JsonUtility.ToJson(file.draft) : "",
                     coop = file.coop.has ? JsonUtility.ToJson(file.coop) : "",
+                    community = file.community.has ? JsonUtility.ToJson(file.community) : "",
                     titleClasses = PerkRegistry.KnownTitles.Keys.ToArray(),
                     titleNames = PerkRegistry.KnownTitles.Values.ToArray(),
                     descClasses = PerkRegistry.KnownDescriptions.Keys.ToArray(),
@@ -150,11 +156,14 @@ namespace HangtimeOvertime.Core
         private static bool DailySlot => RunState.Mode == RunMode.Infinite && RunState.Daily != null;
         private static bool DraftSlot => RunState.Mode == RunMode.Normal && RunState.Daily != null && RunState.Draft != null;
         private static bool CupSlot => RunState.Mode == RunMode.Normal && RunState.Daily != null && RunState.Draft == null;
-        private static RunSnapshot Current => CoopSlot ? file.coop : DailySlot ? file.daily : CupSlot ? file.cup : DraftSlot ? file.draft : InfiniteSlot ? file.infinite : file.classic;
+        private static bool CommunitySlot => Tournaments.Current != null;
+        private static RunSnapshot Current => CommunitySlot ? file.community : CoopSlot ? file.coop : DailySlot ? file.daily : CupSlot ? file.cup : DraftSlot ? file.draft : InfiniteSlot ? file.infinite : file.classic;
 
         // runs worth saving: one player (or co-op Infinite), past the tutorial
         private static bool Saving =>
             RunState.Mode != RunMode.Versus && GameManager.Instance != null && (GameManager.Instance.numberOfPlayers == 1 || CoopSlot) && !TutorialManager.onTutorial && !TitleController.onTitle;
+
+        public static void ClearCommunity() { file.community = new RunSnapshot(); Flush(); Plugin.Log.LogInfo("Saved community tournament run cleared"); }
 
         public static void ClearCoop() { file.coop = new RunSnapshot(); Flush(); Plugin.Log.LogInfo("Saved co-op Infinite run cleared"); }
 
@@ -172,6 +181,7 @@ namespace HangtimeOvertime.Core
         public static void ClearCurrent()
         {
             if (RunState.Mode == RunMode.Versus || GameManager.Instance == null) return;
+            if (CommunitySlot) { ClearCommunity(); return; }
             if (CoopSlot) { ClearCoop(); return; }
             if (GameManager.Instance.numberOfPlayers != 1) return;
             if (DailySlot || CupSlot) ClearDaily(CupSlot);
@@ -211,9 +221,9 @@ namespace HangtimeOvertime.Core
 
         private static void Store(RunSnapshot s)
         {
-            if (CoopSlot) file.coop = s; else if (DailySlot) file.daily = s; else if (CupSlot) file.cup = s; else if (DraftSlot) file.draft = s; else if (InfiniteSlot) file.infinite = s; else file.classic = s;
+            if (CommunitySlot) file.community = s; else if (CoopSlot) file.coop = s; else if (DailySlot) file.daily = s; else if (CupSlot) file.cup = s; else if (DraftSlot) file.draft = s; else if (InfiniteSlot) file.infinite = s; else file.classic = s;
             Flush();
-            Plugin.Log.LogInfo($"Run saved ({(CoopSlot ? "Co-op Infinite" : DailySlot ? "Daily" : CupSlot ? "Daily cup" : DraftSlot ? "Draft cup" : InfiniteSlot ? "Infinite" : "Classic")}, {s.stage}): {Summary(s)}");
+            Plugin.Log.LogInfo($"Run saved ({(CommunitySlot ? "Community tournament" : CoopSlot ? "Co-op Infinite" : DailySlot ? "Daily" : CupSlot ? "Daily cup" : DraftSlot ? "Draft cup" : InfiniteSlot ? "Infinite" : "Classic")}, {s.stage}): {Summary(s)}");
         }
 
         private static RunSnapshot Capture(string stage)
@@ -246,6 +256,8 @@ namespace HangtimeOvertime.Core
                 daily = RunState.Daily ?? "",
                 dailyCounts = RunState.DailyCounts,
                 draft = RunState.Draft ?? "",
+                community = Tournaments.Current?.Entry.Hash ?? "",
+                communityTest = Tournaments.Current?.Test ?? false,
             };
         }
 
@@ -295,6 +307,14 @@ namespace HangtimeOvertime.Core
             RunClock.Restore(s.clockSeconds, s.clockLog, s.clockTainted || s.clockVersion < 1, s.clockVersion < 1 ? "SAVED BY AN OLDER VERSION" : s.clockWhy);
             RunState.DailyCounts = s.dailyCounts;
             RunState.Draft = string.IsNullOrEmpty(s.draft) ? null : s.draft;
+            Tournaments.Current = null;
+            if (!string.IsNullOrEmpty(s.community))
+            {
+                var entry = Tournaments.Find(s.community);
+                var t = entry != null ? Tournaments.Content(entry) : null;
+                if (t == null) { problem = "That tournament isn't on this PC any more."; Plugin.Log.LogWarning("Saved run: tournament " + s.community + " not found"); return false; }
+                Tournaments.Current = new Tournaments.Play { Entry = entry, T = t, Test = s.communityTest };
+            }
             GameManager.gameNumber = s.gameNumber;
             TournamentLineUps.currentLineUp = s.lineUp;
             StatTracker.runTimer = s.runTimer;

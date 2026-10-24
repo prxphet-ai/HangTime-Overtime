@@ -170,7 +170,7 @@ namespace HangtimeOvertime.Patches
 
         // ------------------------------------------------------------ when it shows
 
-        private static bool BracketMode => (RunState.Mode == RunMode.Normal || RunState.Mode == RunMode.Loop) && !VersusState.Active && !TutorialManager.onTutorial;
+        private static bool BracketMode => (RunState.Mode == RunMode.Normal || RunState.Mode == RunMode.Loop) && !VersusState.Active && !TutorialManager.onTutorial && !TournamentRun.Active;
 
         [HarmonyPatch(typeof(UpgradeManager), "Start")]
         private static class BetweenMatches

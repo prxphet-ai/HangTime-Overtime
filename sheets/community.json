@@ -34,28 +34,121 @@
     "page_size": 20
   },
   "rows": [
-    { "id": "fuck", "verified": "no" },
-    { "id": "shit", "verified": "no" },
-    { "id": "cunt", "verified": "no" },
-    { "id": "bitch", "verified": "no" },
-    { "id": "whore", "verified": "no" },
-    { "id": "slut", "verified": "no" },
-    { "id": "nigger", "verified": "no" },
-    { "id": "nigga", "verified": "no" },
-    { "id": "faggot", "verified": "no" },
-    { "id": "fag", "verified": "no" },
-    { "id": "retard", "verified": "no" },
-    { "id": "rape", "verified": "no" },
-    { "id": "nazi", "verified": "no" },
-    { "id": "hitler", "verified": "no" },
-    { "id": "kike", "verified": "no" },
-    { "id": "chink", "verified": "no" },
-    { "id": "spic", "verified": "no" },
-    { "id": "tranny", "verified": "no" },
-    { "id": "dick", "verified": "no" },
-    { "id": "cock", "verified": "no" },
-    { "id": "pussy", "verified": "no" },
-    { "id": "porn", "verified": "no" },
-    { "id": "kys", "verified": "no" }
-  ]
+    {
+      "id": "fuck",
+      "verified": "no"
+    },
+    {
+      "id": "shit",
+      "verified": "no"
+    },
+    {
+      "id": "cunt",
+      "verified": "no"
+    },
+    {
+      "id": "bitch",
+      "verified": "no"
+    },
+    {
+      "id": "whore",
+      "verified": "no"
+    },
+    {
+      "id": "slut",
+      "verified": "no"
+    },
+    {
+      "id": "nigger",
+      "verified": "no"
+    },
+    {
+      "id": "nigga",
+      "verified": "no"
+    },
+    {
+      "id": "faggot",
+      "verified": "no"
+    },
+    {
+      "id": "fag",
+      "verified": "no"
+    },
+    {
+      "id": "retard",
+      "verified": "no"
+    },
+    {
+      "id": "rape",
+      "verified": "no"
+    },
+    {
+      "id": "nazi",
+      "verified": "no"
+    },
+    {
+      "id": "hitler",
+      "verified": "no"
+    },
+    {
+      "id": "kike",
+      "verified": "no"
+    },
+    {
+      "id": "chink",
+      "verified": "no"
+    },
+    {
+      "id": "spic",
+      "verified": "no"
+    },
+    {
+      "id": "tranny",
+      "verified": "no"
+    },
+    {
+      "id": "dick",
+      "verified": "no"
+    },
+    {
+      "id": "cock",
+      "verified": "no"
+    },
+    {
+      "id": "pussy",
+      "verified": "no"
+    },
+    {
+      "id": "porn",
+      "verified": "no"
+    },
+    {
+      "id": "kys",
+      "verified": "no"
+    }
+  ],
+  "rating": {
+    "about": "Difficulty rating, fitted by tools/tournament_rating.py fit on the simulator. logit of the player's win chance per match = intercept + base[squad] + coefficient * each sum. Do not edit by hand; refit after balance changes.",
+    "intercept": 0.3812,
+    "bases": {
+      "Rensho": 0.0,
+      "Hinami Kai": 0.0048,
+      "Daigan Tech": -0.3734,
+      "Namasito Academy": 0.761,
+      "Kozuki Dan": 0.0568,
+      "Aomori": 1.367,
+      "Ten-Roku": -0.0356,
+      "Tenzio": 0.0795,
+      "Sunaumi High": 0.1287,
+      "Shirogane": -0.0952
+    },
+    "team_levels": -0.0692,
+    "team_perks": -1.8246,
+    "team_cards": -1.7397,
+    "player_levels": 0.0573,
+    "player_perks": 1.4685,
+    "player_cards": 1.3815,
+    "draft_pick": 0.0895,
+    "verified": "tools/tournament_rating.py fit --configs 3000 --n 40 --seed 11"
+  }
 }

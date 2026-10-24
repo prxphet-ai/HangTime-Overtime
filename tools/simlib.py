@@ -271,6 +271,15 @@ def build_player(D, perks=(), cards=(), vanilla_cards=(), level_ups=None):
     side.block_chance = st_.get("SetterInput", {}).get("blockChance", 5)
     side.ai = dict(D.sim["player_ai"])
     side.ai["shouldFloat"] = False
+    apply_cards(D, side, cards)
+    side.perks = [D.perk_row(p) for p in perks]
+    for p in side.perks:
+        side.abilities |= set(p.get("abilities", []))
+    return side
+
+
+def apply_cards(D, side, cards):
+    """Overtime stat cards on a team (the mod's StatCards.ApplyTo): card points per stat, then game units."""
     points = {}
     for cid in cards:
         c = D.cards[cid]
@@ -291,9 +300,27 @@ def build_player(D, perks=(), cards=(), vanilla_cards=(), level_ups=None):
                 side.stats[f] = max(side.stats[f] * 0.6, side.stats[f] + v * D.serve_steps[f])
             else:
                 side.stats[f] = max(side.stats[f] * 0.6 if f != "Bump" else 1.0, side.stats[f] + v * sd["step"])
+
+
+def build_custom(D, base, levels, perks=(), cards=()):
+    """A community tournament's team (src/Core/Tournaments.cs): a vanilla squad's stat tables at fixed levels (0-3, no
+    round scaling), its AI, the chosen perks and stat cards."""
+    g = D.game["teams"][base]
+    side = Side(base)
+    side.key = "custom:" + base
+    side.levels = {st: max(0, min(3, int(levels.get(st, 0)))) for st in STATS7}
+    for st in STATS7:
+        side.stats[st] = g["levels"][st][min(side.levels[st], len(g["levels"][st]) - 1)]
+    spiker, setter = _ai_of(g)
+    side.move = spiker["controller"]["moveSpeed"] if spiker else 1.5
+    side.setter_move = setter["controller"]["moveSpeed"] if setter else 1.5
+    side.ai = dict(spiker["SpikerInput"]) if spiker else {}
+    side.block_chance = setter["SetterInput"]["blockChance"] if setter else 8
+    apply_cards(D, side, cards)
     side.perks = [D.perk_row(p) for p in perks]
     for p in side.perks:
         side.abilities |= set(p.get("abilities", []))
+    side.ai["shouldFloat"] = side.levels.get("FloatServe", 0) > side.levels.get("SpinServe", 0)
     return side
 
 

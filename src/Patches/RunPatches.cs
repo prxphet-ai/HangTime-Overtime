@@ -48,7 +48,7 @@ namespace HangtimeOvertime.Patches
                 TeamRoster.ClearChoice();
                 int slot = GameManager.gameNumber;
                 if (TitleController.onTitle || slot < 1 || slot > 8) return;
-                if (RunState.Mode == RunMode.Normal && TeamRoster.ResumeKey == null && !Daily.Cup) return;   // Classic: the game's own bracket
+                if (RunState.Mode == RunMode.Normal && TeamRoster.ResumeKey == null && !Daily.Cup && !TournamentRun.Active) return;   // Classic: the game's own bracket
                 var prefab = TeamRoster.Choose(slot);
                 switch (slot)
                 {
@@ -96,14 +96,15 @@ namespace HangtimeOvertime.Patches
                 OpponentScaling.LastGiven.Clear();
                 if (RunState.Mode == RunMode.Versus) VersusPatches.SetupMatch(__instance, team);
                 else if (RunState.Mode != RunMode.Normal) OpponentScaling.Apply(team, TeamRoster.Current, slot);
+                if (TournamentRun.Active) TournamentRun.SetupOpponent(team, slot);
                 RunSaves.SaveMatchStart(team, TeamRoster.CurrentKey ?? team.name.Replace("(Clone)", "").Trim(), OpponentScaling.LastGiven);
                 Engine.Engine.FirePassives();
                 Plugin.Log.LogInfo($"Match start: mode={RunState.Mode} slot={slot} round={OpponentScaling.Round} " +
                                    $"infiniteMatch={RunState.InfiniteMatch} loop={RunState.Loop} vs {__instance.opponentTeam?.teamName}");
                 if (RunState.Draft != null) Drafting.GiveOpponent(team, slot);
                 CollectionPatches.MatchStarted(__instance);
-                if (RunState.Mode != RunMode.Versus) RunClock.MatchStarted(slot);
-                if (RunState.Mode == RunMode.Normal || RunState.Mode == RunMode.Loop) Bracket.MatchStarted(slot, __instance.opponentTeam?.teamName);
+                if (RunState.Mode != RunMode.Versus) RunClock.MatchStarted(TournamentRun.LogSlot(slot));
+                if ((RunState.Mode == RunMode.Normal && !TournamentRun.Active) || RunState.Mode == RunMode.Loop) Bracket.MatchStarted(slot, __instance.opponentTeam?.teamName);
                 if (RunState.Mode != RunMode.Versus && slot >= 1 && Plugin.RecordReplays.Value)
                 {
                     Online.MatchSync.SetupHost();                                                 // the match stream, for its replay

@@ -40,6 +40,14 @@ namespace HangtimeOvertime.Engine
         public static GameObject Choose(int slot)
         {
             if (prefabs.Count == 0) CollectPrefabs();
+            // a community tournament: its custom team for this slot (a resumed run lands here too)
+            if (Patches.TournamentRun.Active)
+            {
+                ResumeKey = null;
+                var custom = Tournaments.DefOf(Tournaments.Current, slot);
+                if (custom != null && prefabs.ContainsKey(custom.Base)) { Current = custom; currentKey = custom.Id; return prefabs[custom.Base]; }
+                Plugin.Log.LogWarning($"Community tournament: no team for slot {slot}");
+            }
             if (ResumeKey != null)
             {
                 string key = ResumeKey;
@@ -175,16 +183,27 @@ namespace HangtimeOvertime.Engine
         // shipped in the plugin's emblems folder; sized to the vanilla emblem it replaces.
         private static Sprite Banner(Sprite baseBanner, TeamDef def)
         {
-            if (banners.TryGetValue(def.Id, out var cached) && cached != null) return cached;
-            var path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(Plugin).Assembly.Location), "emblems", def.Id + ".png");
-            if (!System.IO.File.Exists(path)) { Plugin.Log.LogWarning("No emblem " + path); return baseBanner; }
-            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset, wrapMode = TextureWrapMode.Clamp };
-            tex.LoadImage(System.IO.File.ReadAllBytes(path));
+            bool own = def.Id.StartsWith("custom:");                          // built each time (the builder's textures come and go)
+            if (!own && banners.TryGetValue(def.Id, out var cached) && cached != null) return cached;
+            Texture2D tex;
+            var custom = Tournaments.EmblemOf(def.Id, out var emblemName);     // a community team: built from the emblem builder's pieces
+            if (custom != null)
+            {
+                tex = EmblemArt.Make(custom, emblemName);
+                if (tex == null) return baseBanner;
+            }
+            else
+            {
+                var path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(Plugin).Assembly.Location), "emblems", def.Id + ".png");
+                if (!System.IO.File.Exists(path)) { Plugin.Log.LogWarning("No emblem " + path); return baseBanner; }
+                tex = new Texture2D(2, 2, TextureFormat.RGBA32, false) { hideFlags = HideFlags.DontUnloadUnusedAsset, wrapMode = TextureWrapMode.Clamp };
+                tex.LoadImage(System.IO.File.ReadAllBytes(path));
+            }
             float fit = baseBanner != null ? Mathf.Max(tex.width / baseBanner.bounds.size.x, tex.height / baseBanner.bounds.size.y) : 100f;
             var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), fit);
             sprite.hideFlags = HideFlags.DontUnloadUnusedAsset;
             sprite.name = def.Name + " emblem";
-            banners[def.Id] = sprite;
+            if (!own) banners[def.Id] = sprite;
             return sprite;
         }
 

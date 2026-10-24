@@ -2,11 +2,12 @@
 // A Cloudflare Worker with a D1 (SQLite) database; free tier. No secret keys anywhere: a player proves who they are
 // with a random secret their game keeps locally (the server stores only its hash), and every write is validated and
 // rate-limited here. Setup: server/SETUP.md. Local testing: node server/dev_server.mjs (same code, SQLite file).
-import { RULES, WORDS, PERKS, CARDS, BASES, MASCOTS, STATS, TEAMS } from "./generated.js";
+import { RULES, WORDS, PERKS, CARDS, BASES, MASCOTS, STATS, RATING, PERK_POWER, CARD_POWER } from "./generated.js";
 
 const BOARDS = ["classic", "infinite"];
 const LOWER_IS_BETTER = { classic: true, infinite: false };
-const PERK_SET = new Set(PERKS), CARD_SET = new Set(CARDS), BASE_SET = new Set(BASES), MASCOT_SET = new Set(MASCOTS), TEAM_SET = new Set(TEAMS);
+const PERK_SET = new Set(PERKS), CARD_SET = new Set(CARDS), BASE_SET = new Set(BASES), MASCOT_SET = new Set(MASCOTS);
+const INTRO_MAX = 60;
 
 // ------------------------------------------------------------------ helpers
 
@@ -120,34 +121,54 @@ export async function decodeCode(code) {
 }
 
 const hex6 = s => /^[0-9A-Fa-f]{6}$/.test(String(s));
+const levelsOk = a => Array.isArray(a) && a.length === STATS.length && a.every(l => Number.isInteger(l) && l >= 0 && l <= RULES.stat_max_level);
+const listOk = (a, set, max, unique) => Array.isArray(a) && a.length <= max && a.every(x => set.has(x)) && (!unique || new Set(a).size === a.length);
 
+// the same checks as the game's (src/Core/Tournaments.cs Problem); keys as Tournaments.ToJson writes them
 export function checkTournament(t) {
   const R = RULES;
   if (!t || typeof t !== "object") return "empty tournament";
   if (t.v !== 1) return `made with a newer Overtime (format ${t.v})`;
-  if (!t.name || t.name.length > R.tournament_name_max || blocked(t.name)) return "the tournament name isn't allowed";
-  if ((t.desc || "").length > R.description_max || blocked(t.desc)) return "the description isn't allowed";
-  if (t.mode !== "fixed" && t.mode !== "draft") return "unknown tournament version";
-  const teams = t.teams || [];
+  if (typeof t.name !== "string" || !t.name.trim() || t.name.length > R.tournament_name_max || blocked(t.name)) return "the tournament name isn't allowed";
+  if (typeof (t.desc ?? "") !== "string" || (t.desc || "").length > R.description_max || blocked(t.desc)) return "the description isn't allowed";
+  if (t.mode !== "fixed" && t.mode !== "draft") return "unknown tournament type";
+  const teams = Array.isArray(t.teams) ? t.teams : [];
   if (teams.length < R.tournament_min_matches || teams.length > R.tournament_max_matches) return "wrong number of matches";
   for (const [i, tm] of teams.entries()) {
-    const n = `opponent ${i + 1}`;
-    if (!tm.name || tm.name.length > R.team_name_max || blocked(tm.name) || blocked(tm.intro || "")) return `${n}: the name or line isn't allowed`;
-    if (!BASE_SET.has(tm.base)) return `${n}: unknown squad ${tm.base}`;
-    if (![tm.jersey, tm.shorts, tm.banner, ...(tm.hair || [])].every(hex6) || (tm.hair || []).length !== 2) return `${n}: bad colours`;
+    const n = `match ${i + 1}`;
+    if (!tm || typeof tm.name !== "string" || !tm.name.trim() || tm.name.length > R.team_name_max || blocked(tm.name)) return `${n}: the team name isn't allowed`;
+    if (typeof (tm.intro ?? "") !== "string" || (tm.intro || "").length > INTRO_MAX || blocked(tm.intro)) return `${n}: the team's line isn't allowed`;
+    if (!BASE_SET.has(tm.base)) return `${n}: unknown squad`;
+    if (![tm.jersey, tm.shorts, tm.banner].every(hex6) || !Array.isArray(tm.hair) || tm.hair.length !== 2 || !tm.hair.every(hex6)) return `${n}: bad colours`;
     const e = tm.emblem || {};
     if (!MASCOT_SET.has(e.mascot) || !["top", "stacked", "split"].includes(e.layout) || !["marker", "bangers"].includes(e.font) || !hex6(e.accent)) return `${n}: bad emblem`;
-    for (const [k, lv] of Object.entries(tm.levels || {})) if (!STATS.includes(k) || !(Number.isInteger(lv) && lv >= 0 && lv <= R.stat_max_level)) return `${n}: bad stat ${k}`;
-    if ((tm.perks || []).length > R.team_max_perks || !(tm.perks || []).every(p => PERK_SET.has(p))) return `${n}: unknown or too many perks`;
-    if ((tm.cards || []).length > R.team_max_cards || !(tm.cards || []).every(c => CARD_SET.has(c))) return `${n}: unknown or too many stat cards`;
+    if (!levelsOk(tm.levels)) return `${n}: bad stat levels`;
+    if (!listOk(tm.perks, PERK_SET, R.team_max_perks, true)) return `${n}: unknown or too many perks`;
+    if (!listOk(tm.cards, CARD_SET, R.team_max_cards, false)) return `${n}: unknown or too many stat cards`;
   }
   if (t.mode === "fixed") {
     const p = t.player || {};
-    if (p.team && !TEAM_SET.has(p.team)) return "the player's team is unknown";
-    if ((p.perks || []).length > R.loadout_max_perks || !(p.perks || []).every(x => PERK_SET.has(x))) return "the player's perks are unknown or too many";
-    if ((p.cards || []).length > R.loadout_max_cards || !(p.cards || []).every(x => CARD_SET.has(x))) return "the player's stat cards are unknown or too many";
+    if (!levelsOk(p.levels)) return "the player's stat levels are bad";
+    if (!listOk(p.perks, PERK_SET, R.loadout_max_perks, true)) return "the player's perks are unknown or too many";
+    if (!listOk(p.cards, CARD_SET, R.loadout_max_cards, false)) return "the player's stat cards are unknown or too many";
   }
   return null;
+}
+
+// the difficulty 1-10 from the simulator-fitted rating (same formula as Tournaments.WinChance / Difficulty)
+export function difficultyOf(t) {
+  const sum = a => (a || []).reduce((x, y) => x + y, 0);
+  const pp = a => sum((a || []).map(id => PERK_POWER[id] || 0)), cp = a => sum((a || []).map(id => CARD_POWER[id] || 0));
+  let clear = 1;
+  t.teams.forEach((tm, i) => {
+    let pl, ppow, cpow;
+    if (t.mode === "fixed") { pl = sum(t.player.levels); ppow = pp(t.player.perks); cpow = cp(t.player.cards); }
+    else { pl = 0; ppow = Math.floor((i + 1) / 2) * RATING.draft_pick; cpow = Math.floor(i / 2) * RATING.draft_pick; }
+    const logit = RATING.intercept + (RATING.bases[tm.base] || 0) + RATING.team_levels * sum(tm.levels) + RATING.team_perks * pp(tm.perks) + RATING.team_cards * cp(tm.cards)
+      + RATING.player_levels * pl + RATING.player_perks * ppow + RATING.player_cards * cpow;
+    clear *= 1 / (1 + Math.exp(-logit));
+  });
+  return Math.max(1, Math.min(10, Math.round(1 + 4.5 * -Math.log10(Math.max(1e-4, clear)))));
 }
 
 // the creator's own clear, attached to the code: every match won, plausible times
@@ -248,7 +269,7 @@ async function tournaments(request, env, body, q, id, action) {
     const d = await decodeCode(body.code);
     const why = checkTournament(d.content) || checkVerify(d.content, d.verify, d.hash);
     if (why) throw new UserError(why);
-    const difficulty = Math.max(1, Math.min(10, Number(body.difficulty) || 5));
+    const difficulty = difficultyOf(d.content);
     await env.DB.prepare("INSERT INTO players (id, name, created) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET name = excluded.name").bind(owner, name, Date.now()).run();
     if (id) {
       const row = await env.DB.prepare("SELECT owner FROM tournaments WHERE id = ?").bind(id).first();

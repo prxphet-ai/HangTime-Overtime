@@ -24,6 +24,7 @@ namespace HangtimeOvertime.Patches
             Buttons.Add(("SETTINGS", () => SettingsMenu.Open()));
             Buttons.Add(("DAILY RUN", () => DailyMenu.Open()));
             Buttons.Add(("DRAFT", () => DraftMenu.Open()));
+            Buttons.Add(("TOURNAMENTS", () => TournamentMenu.Open()));
             Buttons.Add(("COLLECTION", () => CollectionMenu.Open()));
             Buttons.Add(("REPLAYS", () => ReplayMenu.Open()));
             Buttons.Add(("LEADERBOARDS", () => LeaderboardMenu.Open()));
@@ -48,7 +49,7 @@ namespace HangtimeOvertime.Patches
         }
 
         // any full-screen panel of the mod
-        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || ReplayMenu.IsOpen || LeaderboardMenu.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
+        public static bool OverlayOpen() => VersusMenu.IsOpen || Online.LobbyBrowser.IsOpen || SettingsMenu.IsOpen || ControlsMenu.IsOpen || BugReport.IsOpen || CollectionMenu.IsOpen || DailyMenu.IsOpen || DraftMenu.IsOpen || ReplayMenu.IsOpen || LeaderboardMenu.IsOpen || TournamentMenu.IsOpen || TournamentEditor.IsOpen || CreatorMenu.IsOpen || ContinueMenu.IsOpen || PanelCount > 0;
         public static int PanelCount;                     // other menus register themselves while open
 
         private bool barFocus;                           // a gamepad is driving the bar (SELECT), the title menu is held
@@ -74,12 +75,12 @@ namespace HangtimeOvertime.Patches
 
         private void Build()
         {
-            float w = 5.9f, x = -W / 2f + 0.5f + w / 2f, y = H / 2f - 1.6f;
+            float w = 5.5f, x = -W / 2f + 0.5f + w / 2f, y = H / 2f - 1.6f;
             foreach (var (label, open) in Buttons)
             {
-                var b = Button(label, new Vector2(x, y), new Vector2(w, 1.8f), () => { if (barFocus) OnNavBack(); open(); }, label.Length > 10 ? 0.4f : 0.46f);
+                var b = Button(label, new Vector2(x, y), new Vector2(w, 1.8f), () => { if (barFocus) OnNavBack(); open(); }, label.Length > 10 ? 0.37f : 0.43f);
                 parts.Add(b.gameObject);
-                x += w + 0.25f;
+                x += w + 0.2f;
             }
             hint = Text("SELECT: THIS BAR", new Vector2(x + 4f, y), 0.42f, 8f, new Color(0.7f, 1f, 0.75f), TextAlignmentOptions.Left);
             notice = Text("", new Vector2(-W / 2f + 1f + 11f, y - 2.1f), 0.5f, 22f, new Color(1f, 0.85f, 0.35f), TextAlignmentOptions.Left);

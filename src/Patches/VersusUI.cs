@@ -209,12 +209,19 @@ namespace HangtimeOvertime.Patches
 
         // ------------------------------------------------------------ the title menu behind a panel
 
-        private ButtonGroup heldGroup;
-        private readonly List<Collider2D> heldColliders = new List<Collider2D>();
+        // one hold for all panels: a panel that opens another and closes in the same frame (its OnDestroy runs at the end of
+        // the frame, after the new one held the menu) mustn't hand the title menu back while the new one is up
+        private static int titleHolds;
+        private static ButtonGroup heldGroup;
+        private static readonly List<Collider2D> heldColliders = new List<Collider2D>();
+        private bool holdingTitle;
 
         // the title menu's buttons stop taking clicks and keys until this panel closes
         protected void HoldTitle()
         {
+            if (holdingTitle) return;
+            holdingTitle = true;
+            if (titleHolds++ > 0 && heldGroup != null) return;
             var classic = VersusMenu.ClassicButton;
             heldGroup = classic != null ? classic.GetComponentInParent<ButtonGroup>(true) : null;
             if (heldGroup == null) return;
@@ -225,6 +232,10 @@ namespace HangtimeOvertime.Patches
 
         protected void ReleaseTitle()
         {
+            if (!holdingTitle) return;
+            holdingTitle = false;
+            if (--titleHolds > 0) return;
+            titleHolds = 0;
             foreach (var c in heldColliders) if (c != null) c.enabled = true;
             heldColliders.Clear();
             if (heldGroup == null) return;
@@ -243,6 +254,16 @@ namespace HangtimeOvertime.Patches
             t = Text("", at, textSize, size.x, Color.white, o: 9);
             Show();
             return box;
+        }
+
+        // a button in other colours (list entries whose text has its own colours, the chosen tab); hover keeps them
+        public static readonly Color ListColor = new Color(0.03f, 0.25f, 0.42f, 1f), ListHover = new Color(0.08f, 0.38f, 0.6f, 1f);
+        protected static SpriteRenderer Shade(SpriteRenderer b, Color normal, Color? hover = null)
+        {
+            b.color = normal;
+            var w = b.GetComponent<CreatorWidget>();
+            if (w != null) { w.Normal = normal; w.Hover = hover ?? Color.Lerp(normal, Color.white, 0.25f); }
+            return b;
         }
 
         protected SpriteRenderer Button(string label, Vector2 at, Vector2 size, Action act, float textSize = 0.8f)

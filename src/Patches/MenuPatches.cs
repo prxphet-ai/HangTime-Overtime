@@ -125,8 +125,10 @@ namespace HangtimeOvertime.Patches
                 ContinueMenu.Bypass = false;
                 if (Daily.Pending == null) RunState.Daily = null;           // INFINITE / CLASSIC from the title: a normal run
                 RunState.Draft = null;
+                if (Tournaments.Pending == null) Tournaments.Current = null;   // any other run leaves a community tournament
                 Engine.Ownership.Clear();                                   // a new run: nobody owns anything yet
                 if (infinite) RunState.StartInfinite();
+                else if (Tournaments.Pending != null) TournamentRun.Start();
                 else if (Drafting.Pending != null) RunState.StartDraft();
                 else if (Daily.Pending != null && Daily.PendingCup) RunState.StartCup();
                 else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); RunClock.Start(); }
@@ -180,7 +182,8 @@ namespace HangtimeOvertime.Patches
             private static void Postfix(RestartButton __instance)
             {
                 if (__instance.GetComponent<LoopContinueMarker>()) return;
-                if (RunState.Mode == RunMode.Infinite && !__instance.toTitle && !__instance.toTutorial) RunState.StartInfinite();   // co-op too: numberOfPlayers stays 2
+                if (TournamentRun.Active && !__instance.toTitle && !__instance.toTutorial) TournamentRun.Retry();
+                else if (RunState.Mode == RunMode.Infinite && !__instance.toTitle && !__instance.toTutorial) RunState.StartInfinite();   // co-op too: numberOfPlayers stays 2
                 else if (!__instance.toTitle && !__instance.toTutorial) { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); RunClock.Start(); }
                 else { RunState.Mode = RunMode.Normal; RunState.Loop = 1; Engine.StatCards.ResetRun(); }
             }
@@ -192,6 +195,7 @@ namespace HangtimeOvertime.Patches
             [HarmonyPostfix]
             private static void Postfix()
             {
+                if (TournamentRun.Active) return;                         // a community tournament ends at its final
                 var restart = Object.FindObjectsByType<RestartButton>(FindObjectsInactive.Include, FindObjectsSortMode.None)
                     .OrderByDescending(b => b.gameObject.activeInHierarchy).FirstOrDefault();
                 if (restart == null) { Plugin.Log.LogWarning("Win screen: no restart button to copy"); return; }

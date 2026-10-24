@@ -1071,6 +1071,46 @@
       "purpose": "Co-op's keyboard split follows the saved key sets 2 (player 1) and 1 (player 2)",
       "changes_score": "no",
       "verified": "no"
+    },
+    {
+      "id": "tournament_between",
+      "target_type": "UpgradeManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "TournamentRun",
+      "purpose": "Community tournaments: the bracket between matches; FIXED hides the pick buttons and loads the next match when it closes",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "tournament_no_skip",
+      "target_type": "UpgradeManager",
+      "target_method": "SkipUpgrade",
+      "kind": "prefix",
+      "patch_class": "TournamentRun",
+      "purpose": "Community tournaments (FIXED): the pad's START skip can't load the next match a second time",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "tournament_champions",
+      "target_type": "WinManager",
+      "target_method": "Start",
+      "kind": "postfix",
+      "patch_class": "TournamentRun",
+      "purpose": "Community tournaments: the CHAMPIONS bracket on the win screen",
+      "changes_score": "no",
+      "verified": "no"
+    },
+    {
+      "id": "tournament_no_achievements",
+      "target_type": "AchievementManager",
+      "target_method": "Unlock",
+      "kind": "prefix",
+      "patch_class": "TournamentRun",
+      "purpose": "Community tournaments: no Steam achievements (a custom tournament's final is the game's final)",
+      "changes_score": "no",
+      "verified": "no"
     }
   ]
 }

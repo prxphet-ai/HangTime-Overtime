@@ -21,7 +21,7 @@ namespace HangtimeOvertime.Patches
         };
 
         private static string ModeKey() =>
-            RunState.Mode == RunMode.Infinite ? (GameManager.Instance.numberOfPlayers == 2 ? Records.CoopInfinite : Records.Infinite) : RunState.Draft != null ? Records.Draft : GameManager.Instance.numberOfPlayers == 2 ? Records.Coop : Records.Classic;
+            TournamentRun.Active ? Records.Community : RunState.Mode == RunMode.Infinite ? (GameManager.Instance.numberOfPlayers == 2 ? Records.CoopInfinite : Records.Infinite) : RunState.Draft != null ? Records.Draft : GameManager.Instance.numberOfPlayers == 2 ? Records.Coop : Records.Classic;
 
         // the game's match end (Classic, Co-op, Loop, Infinite); Versus has its own round flow
         [HarmonyPatch(typeof(GameManager), "EndGame")]
@@ -35,7 +35,7 @@ namespace HangtimeOvertime.Patches
                 bool won = nextScene != "Lose";
                 RunClock.MatchEnded(__instance.playerPoints, __instance.opponentPoints, __instance.opponentTeam?.teamName);
                 // the Classic speedrun board: a solo Classic clear (not a daily / draft cup, not co-op, not a loop)
-                if (nextScene == "Win" && RunState.Mode == RunMode.Normal && RunState.Daily == null && RunState.Draft == null && __instance.numberOfPlayers == 1)
+                if (nextScene == "Win" && RunState.Mode == RunMode.Normal && RunState.Daily == null && RunState.Draft == null && !TournamentRun.Active && __instance.numberOfPlayers == 1)
                 {
                     RunClock.Stop();
                     Online.Leaderboards.Finish(Online.Leaderboards.Classic, RunClock.Seconds, RunClock.LogText, "lineup:" + TournamentLineUps.currentLineUp);
@@ -43,7 +43,8 @@ namespace HangtimeOvertime.Patches
                 string mode = ModeKey();
                 var (_, before) = Records.Record(mode, won);
                 if (won && RunState.Mode == RunMode.Infinite) Records.InfiniteRound(RunState.InfiniteMatch);
-                if (nextScene == "Win" && RunState.Mode == RunMode.Normal) Records.ClassicRunWon();
+                if (TournamentRun.Active) { if (nextScene == "Win") TournamentRun.Cleared(); else if (!won) TournamentRun.Lost(); }
+                else if (nextScene == "Win" && RunState.Mode == RunMode.Normal) Records.ClassicRunWon();
                 lastLine = Records.Line(mode, won, before);
             }
         }

@@ -19,6 +19,7 @@ namespace HangtimeOvertime.Patches
             public SpriteRenderer Box;
             public Action Activate;
             public Field Field;
+            public Action<int> Adjust;                   // a value row: left / right change it instead of moving
         }
 
         protected readonly List<Stop> stops = new List<Stop>();
@@ -121,6 +122,7 @@ namespace HangtimeOvertime.Patches
             if (step != Vector2.zero && stops.Count > 0)
             {
                 if (focus < 0 || focus >= stops.Count) focus = 0;
+                else if (step.x != 0f && stops[focus].Adjust != null) stops[focus].Adjust((int)step.x);
                 else Move(step);
                 used = true;
             }

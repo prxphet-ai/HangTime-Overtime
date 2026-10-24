@@ -130,3 +130,11 @@ OnBump/OnSpike/OnServe/OnTip itself); modes patch GameManager/UpgradeManager/Tit
   `src/Patches/LeaderboardMenu.cs` (+ Toast). Hooks: Classic finish in `StreakPatches` EndGame prefix (nextScene "Win"),
   Infinite in `RunState.EndInfinite`. Config `[Community] Server` (empty = offline) / `Submit`. Dev: `-ovt-boardtest`
   (dev keys still submit), `-ovt-profile NAME` (second identity file).
+- Community tournaments: `src/Core/Tournaments.cs` (Tournament / TourTeam / TourLoadout / TourEntry, share codes OVT1, checks,
+  rating, HangtimeOvertime_tournaments.json with one JSON string per entry), `src/Core/MiniJson.cs` (nested JSON: JsonUtility
+  won't nest a mod's classes), `src/Engine/EmblemArt.cs` (emblems from `assets/emblems/parts`, made by `tools/emblems.py parts`),
+  `src/Patches/TournamentMenu.cs`, `src/Patches/TournamentEditor.cs` (+ TourPicker), `src/Patches/TournamentRun.cs` (start at
+  slot 9 - N, SetupOpponent, FIXED skips picks via UpgradeManager.LoadGame after the bracket, no achievements). Hooks in
+  TeamRoster.Choose / Banner (custom ids `custom:<hash>:<i>`), RunPatches TeamSelect / MatchStart, StreakPatches, MenuPatches
+  TitleMenu / Restart / WinScreen, run slot `community`. Rating: `tools/tournament_rating.py fit|check` -> `sheets/community.json`
+  rating; `simlib.build_custom` / `apply_cards`. Panel kit: `Stop.Adjust` (value rows), `Shade`, one shared title hold.

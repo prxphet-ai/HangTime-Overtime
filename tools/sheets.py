@@ -574,6 +574,7 @@ def generate(S):
           "        public string Id, Name, Base, Slot, Element, Jersey, Shorts, Banner, Intro, Win, Lose, Comment;",
           "        public float Pitch, PointsOffset;",
           "        public string[] Hair, GotPoint, LostPoint, Signature, WeightStats;",
+          "        public string[] Emblem;                        // mascot, layout, font, accent (tools/emblems.py)",
           "        public float[] Weights;",
           "    }", "",
           "    public static class Teams", "    {",
@@ -604,7 +605,8 @@ def generate(S):
             f"Jersey = {cs(t['jersey'])}", f"Shorts = {cs(t['shorts'])}", f"Banner = {cs(t['banner'])}", f"Intro = {cs(t['intro'])}",
             f"Win = {cs(t['win'])}", f"Lose = {cs(t['lose'])}", f"Comment = {cs(t['comment'])}", f"Pitch = {fl(t['pitch'])}", f"PointsOffset = {fl(t['points_offset'])}",
             f"Hair = {arr(t['hair'])}", f"GotPoint = {arr(t['got_point'])}", f"LostPoint = {arr(t['lost_point'])}", f"Signature = {arr(t['signature'])}",
-            f"WeightStats = {arr(list(t['weights'].keys()))}", "Weights = new[] { " + ", ".join(fl(v) for v in t["weights"].values()) + " }"]) + " },")
+            f"WeightStats = {arr(list(t['weights'].keys()))}", "Weights = new[] { " + ", ".join(fl(v) for v in t["weights"].values()) + " }",
+            f"Emblem = {arr([t['emblem']['mascot'], t['emblem']['layout'], t['emblem'].get('font', 'marker'), t['emblem'].get('accent', t['jersey'])])}"]) + " },")
     L += ["        };", "    }", ""]
 
     L += ["    public readonly struct HookDef",
@@ -700,7 +702,13 @@ def generate(S):
           "    public static class Community", "    {"]
     for k, v in cm.items():
         L.append(f"        public const int {const(k)} = {int(v)};")
-    L += [f"        public static readonly string[] Words = {arr([r['id'] for r in S['community']['rows']])};", "    }", ""]
+    L += [f"        public static readonly string[] Words = {arr([r['id'] for r in S['community']['rows']])};"]
+    L += [f"        public static readonly string[] Mascots = {arr(emblem_mascots())};"]
+    rt = S["community"]["rating"]          # tools/tournament_rating.py fit
+    for k in ("intercept", "team_levels", "team_perks", "team_cards", "player_levels", "player_perks", "player_cards", "draft_pick"):
+        L.append(f"        public const float Rating{const(k)} = {float(rt[k])!r}f;")
+    L += [f"        public static readonly string[] RatingBases = {arr(list(rt['bases']))};",
+          "        public static readonly float[] RatingBaseValues = { " + ", ".join(f"{float(v)!r}f" for v in rt["bases"].values()) + " };", "    }", ""]
     write_server(S)
 
     # CHAT (sheets/chat.json): the wheels and timings
@@ -741,10 +749,16 @@ def generate(S):
     return out
 
 
+def emblem_mascots():
+    """The emblem builder's mascots: tools/emblems.py's MASCOTS table, in its order."""
+    import re as _re
+    return _re.findall(r'"(\w+)": \w+', open(os.path.join(ROOT, "tools", "emblems.py"), encoding="utf-8").read().split("MASCOTS = {", 1)[1].split("}", 1)[0])
+
+
 def write_server(S):
     """server/generated.js: what the server must know about the mod's data (limits, words, ids)."""
-    import re as _re
-    mascots = _re.findall(r'"(\w+)": \w+', open(os.path.join(ROOT, "tools", "emblems.py"), encoding="utf-8").read().split("MASCOTS = {", 1)[1].split("}", 1)[0])
+    mascots = emblem_mascots()
+    draft = S["draft"]["rows"]
     vt = S["teams"]["vanilla_teams"]
     data = {
         "RULES": S["community"]["settings"],
@@ -755,6 +769,9 @@ def write_server(S):
         "BASES": vt["regular"] + vt["combo"] + vt["boss"],
         "MASCOTS": mascots,
         "STATS": GAME_STATS,
+        "RATING": S["community"]["rating"],
+        "PERK_POWER": {r["id"]: r["power"] for r in draft if r["kind"] == "perk"},
+        "CARD_POWER": {r["id"]: r["power"] for r in draft if r["kind"] == "card"},
     }
     out = os.path.join(ROOT, "server", "generated.js")
     os.makedirs(os.path.dirname(out), exist_ok=True)

@@ -1108,6 +1108,67 @@ Modes:
   highlighted. Server rules by script (`node`): short / long times, missing or inconsistent logs, too many rounds, bad
   names and filtered words, rate limits, all refused with the right message. 0 errors in the game log.
 
+### 2. Tournament creator and share codes (done; works offline)
+- **Where**: title bar **TOURNAMENTS** -> this PC's tournaments (made here or added from a code), each with your record
+  (attempts, clears, fastest). NEW TOURNAMENT opens the editor; ADD CODE (PASTE) reads a code from the clipboard (a
+  button, so a pad can do it; Ctrl+V works too). Per tournament: PLAY / TEST PLAY, CONTINUE (a saved run), EDIT (your
+  own), COPY CODE, DELETE (press twice).
+- **Editor, tournament page**: name (32), a line about it (160), **TYPE** FIXED LOADOUT or NORMAL DRAFT, **MATCHES** 1-8
+  (the last is the final), the match list (each opponent with the simulator's "YOU WIN ~n%"), **YOUR TEAM** (FIXED), the
+  **difficulty** 1-10 with the estimated clear chance; SAVE, TEST PLAY, COPY CODE, CLOSE (saves). New tournaments start
+  as "MY TOURNAMENT n" with three of the mod's teams to edit.
+- **A match's page**: team name (20) and kick-off line (60), **SQUAD** (one of the ten vanilla teams: its body, AI and stat
+  tables), **COPY LOOK** from any of the mod's 34 teams (colours + emblem), JERSEY / SHORTS / HAIR 1 / HAIR 2 / BANNER
+  (a palette of the mod's team colours), the emblem builder (**MASCOT** from the 34 emblem mascots, **LAYOUT** top /
+  stacked / split, **LETTERING** bangers / marker, **ACCENT** colour) with a live preview on the banner cloth, **stat levels**
+  0-3 for the seven stats, up to 6 **perks** and 6 **stat cards** (only the mod's own: 154 perks, 47 cards), < EARLIER /
+  LATER > to reorder, REMOVE THIS MATCH. LB / RB go to the other matches.
+- **YOUR TEAM** (FIXED): the player's seven stat levels 0-3, up to 8 perks and 8 stat cards.
+- **Picker** (ADD PERK / ADD CARD): every perk by element (cards by rarity), pages of 24, the pointed-at or focused one
+  described at the bottom with its simulator value.
+- **Emblem builder** (`src/Engine/EmblemArt.cs`): the same pictures as the mod's team emblems, composed in game from pieces
+  `tools/emblems.py parts` draws (`assets/emblems/parts`: each mascot alone with its accent parts black, recoloured in game;
+  a letter atlas per lettering font; deployed and in the zip). The layouts match `tools/emblems.py` (checked side by side
+  against the shipped Fukurou emblem: the same picture). Lettering covers A-Z, 0-9 and `!?&'.-#+:`; other letters are left
+  out of the emblem (the name itself keeps them; the editor says so).
+- **Difficulty** (the simulator option, not a budget): `tools/tournament_rating.py fit` plays 3000 random custom teams
+  (random squad, levels, perks, cards) against random player loadouts in the match simulator (40 matches each) and fits
+  one logistic formula: the player's win chance per match from the squad, the summed stat levels and the summed perk /
+  card powers (`sheets/draft.json`, each perk / card's simulated win-rate gain) on both sides. The clear chance is the
+  product over the matches; difficulty = 1 + 4.5 x -log10(clear chance), 1-10 (about 1 in 100 = 10). DRAFT counts one
+  pick per match won (a good offered pick's power, perk and card in turn). `check` on 400 fresh matchups x 200 matches:
+  mean error 0.13, well calibrated by band (predicted 0.4-0.6 -> simulated 0.49; 0.6-0.8 -> 0.72; 0.8-1.0 -> 0.83). Per-stat
+  levels and perk counts as extra inputs only took the error from 0.140 to 0.128, so the simple form stays. Coefficients:
+  `sheets/community.json` `rating` -> the game (`Generated.Community.Rating*`) and the server (`server/generated.js`), which
+  computes a published tournament's difficulty itself.
+- **Share codes**: `OVT1.<content>.<clear record>.<check>`: the tournament as JSON, deflated, base64url; the creator's
+  clear record (hash of exactly this content, the match log, the time) the same way, or empty; the first 8 hex of the
+  SHA-256 of the rest. Checked on paste: the checksum ("damaged or incomplete"), the format number ("made with a newer
+  Overtime: update the mod"), then every rule the server also checks (names and the word filter, squads, colours, emblem,
+  levels 0-3, known perks / cards and the limits). A 1-match code is about 500 characters (the server's limit is 12000).
+  The same content gives the same id (hash) on every PC, so adding a code twice keeps one entry and its record.
+- **Beat it before publishing**: a clear of your own tournament (any play of it; TEST PLAY says so) stores the clear
+  record in it ("READY TO PUBLISH"); any edit is a new version and needs a new clear; a run with dev keys / debug options
+  doesn't count. Codes can be copied before that, marked "NOT CLEARED BY ITS MAKER YET"; publishing (section 4) needs it.
+- **Playing one** (details in section 3): the game's own run from slot 9 - N to the final, each opponent a custom team with
+  exactly its levels, perks and cards (`src/Patches/TournamentRun.cs`); its own run slot and record; no Classic boards,
+  Classic stats or Steam achievements.
+- **Tested** (keyboard, mouse and the virtual pad, one copy of the game): made a tournament, renamed it, edited a team
+  (squad, colours, emblem, perks via the picker), saw the win chance move (72% -> 54% after adding a perk); TEST PLAY of a
+  1-match FIXED tournament -> custom banner on the gym wall, the team's perks only, cleared -> "READY TO PUBLISH"; COPY CODE
+  -> decoded by the server's own code in node: same hash, every check passes, the clear record verifies, the same
+  difficulty (2); ADD CODE with a damaged code, a non-code and the same code again -> the right messages; a 3-match FIXED run:
+  bracket between matches, no picks, the next match loads; closed the game mid-match -> CONTINUE -> cleared with a 3-match
+  log and the clock carried over. Pad: title bar -> TOURNAMENTS -> NEW -> a team page, left / right change a row, the picker
+  (RB pages, A adds), the on-screen keyboard on a text field. Simulator parity check 0 mismatches; the card refactor in
+  `tools/simlib.py` gives identical results. No online part in this section (codes are copy / paste).
+- **Found and fixed while testing**: Unity's JsonUtility dropped the nested teams (codes had 0 matches): tournaments now use
+  a small JSON reader / writer (`src/Core/MiniJson.cs`). A menu opening another in the same frame handed the title menu
+  back (the old menu's cleanup ran after the new one held it), so a pad A on the editor started the saved Classic run
+  underneath: the title hold is now shared by all menus (this affected any menu-to-menu switch, not only these). The
+  MATCHES row couldn't be reached by keys / pad and its arrows didn't redraw: value rows are now one stop that left / right
+  change.
+
 ## Session status (2026-10-22)
 - **Done**: the three known bugs (net wall, perk zoom stuck, ball lost on serve) and features 1-17, each built,
   deployed, tested (keyboard, gamepad through the dev virtual pad, local multiplayer; online with two or three copies of
