@@ -16,14 +16,24 @@ INSTALL
    You should end up with BepInEx/plugins/HangtimeOvertime/HangtimeOvertime.dll
 3. Start the game - the title screen reads HangTime! OVERTIME.
 
-TITLE SCREEN BAR (top left; on a gamepad press SELECT to reach it)
-  SETTINGS     skip tutorial, update check, record replays, chat bubbles, mute others' chat
-  DAILY RUN    today's seeded Infinite run and 8-match cup: same opponents and offers for everyone
-  DRAFT        pick 1 of 3 teams (3 abilities + 2 stat cards each) and win an 8-match cup
-  COLLECTION   every team, perk and stat card you've found, plus your stats and streaks
-  REPLAYS      watch your last 10 matches (pause, speed, seek, cameras) and save the good ones
-  CONTROLS     rebind the 4 key sets, 4 gamepads and chat
-  REPORT BUG   opens a pre-filled GitHub issue (names and paths taken out; you see it first)
+TITLE SCREEN BAR (top; on a gamepad press SELECT to reach it)
+  PLAY
+    DAILY        today's seeded Infinite run and 8-match cup: same opponents and offers for everyone
+    DRAFT        pick 1 of 3 teams (3 abilities + 2 stat cards each) and win an 8-match cup
+    TOURNEYS     community tournaments: make your own (custom teams, emblems, perks, stat cards,
+                 FIXED LOADOUT or NORMAL DRAFT, a difficulty rating), beat it, then share it as a
+                 code or publish it; BROWSE ONLINE plays everyone else's (ratings, fastest clears)
+  COMMUNITY
+    BOARDS       global leaderboards: CLASSIC SPEEDRUN and INFINITE (most rounds) per mod version
+    REPLAYS      watch your last 10 matches (pause, speed, seek, cameras) and save the good ones
+    COLLECTION   every team, perk and stat card you've found, plus your stats and streaks
+  GAME
+    SETTINGS     skip tutorial, update check, replays, leaderboard submitting, chat
+    CONTROLS     rebind the 4 key sets, 4 gamepads and chat
+    REPORT BUG   opens a pre-filled GitHub issue (names and paths taken out; you see it first)
+
+LEADERBOARDS AND TOURNAMENT BROWSER need the internet. Results wait on your PC when you're offline
+and send later. Set your name on the BOARDS screen. Runs with debug options never submit.
 
 VERSUS (title screen, 1V1 / 1V2 / 2V2, up to 4 players on one PC)
 Pick a mode at the top, then each player presses a key on their own set (or A on a gamepad) to join:
